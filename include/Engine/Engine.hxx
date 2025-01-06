@@ -1,18 +1,32 @@
 #pragma once
 
+#include "States/MainMenuState.hxx"
+
 class Engine
 {
 private:
+	/* ATTRIBUTES */
+
 	sf::VideoMode vm;
 	sf::RenderWindow window;
 	std::optional<sf::Event> event;
 
 	sf::Clock dtClock;
 	float dt; // Delta time
+	unsigned int gridSize;
+
+	StateData stateData;
+	std::stack<State *> states;
+
+	/* PRIVATE METHODS */
 
 	void initWindow();
 
-	void initDeltaClock();
+	void initVariables();
+
+	void initStateData();
+
+	void initMainMenuState();
 
 	void pollWindowEvents();
 
@@ -21,6 +35,8 @@ private:
 public:
 	Engine();
 	virtual ~Engine();
+
+	/* PUBLIC METHODS */
 
 	void run();
 

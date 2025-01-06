@@ -1,6 +1,8 @@
 #include "stdafx.hxx"
 #include "Engine/Engine.hxx"
 
+/* PRIVATE METHODS */
+
 void Engine::initWindow()
 {
 	vm = sf::VideoMode({900, 600});
@@ -8,10 +10,22 @@ void Engine::initWindow()
 	window.setFramerateLimit(60);
 }
 
-void Engine::initDeltaClock()
+void Engine::initVariables()
 {
 	dt = 0.f;
 	dtClock.restart();
+	gridSize = 32;
+}
+
+void Engine::initStateData()
+{
+	stateData.gridSize = &gridSize;
+	stateData.states = &states;
+}
+
+void Engine::initMainMenuState()
+{
+	states.push(new MainMenuState(stateData));
 }
 
 void Engine::pollWindowEvents()
@@ -28,15 +42,26 @@ void Engine::updateDeltaTime()
 	dt = dtClock.restart().asSeconds();
 }
 
+/* CONSTRUCTOR / DESTRUCTOR */
+
 Engine::Engine()
 {
 	initWindow();
-	initDeltaClock();
+	initVariables();
+	initStateData();
+	initMainMenuState();
 }
 
 Engine::~Engine()
 {
+	while (!states.empty())
+	{
+		delete states.top();
+		states.pop();
+	}
 }
+
+/* PUBLIC METHODS */
 
 void Engine::run()
 {
@@ -45,20 +70,32 @@ void Engine::run()
 		pollWindowEvents();
 		
 		update();
-		render();	
+
+		// Only render if the window is active.
+		if (window.hasFocus())
+			render();
 	}
 }
 
 void Engine::update()
 {
 	updateDeltaTime();
+
+	if (!states.empty())
+	{
+		if (states.top()->isDead())
+			states.pop();
+		else
+			states.top()->update(dt);
+	}
 }
 
 void Engine::render()
 {
 	window.clear();
 
-	// Render between here
+	if (!states.empty())
+		states.top()->render(window);
 
 	window.display();
 }
