@@ -33,6 +33,7 @@ class State
 
     virtual void render(sf::RenderTarget &target) = 0;
 
+    // Kills the current state.
     void killState();
 
     const bool &isDead() const;

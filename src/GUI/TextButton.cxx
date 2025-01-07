@@ -12,8 +12,9 @@ TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, con
     text->setFillColor(text_color);
     text->setOutlineColor(sf::Color(50, 50, 50, 200));
     text->setOutlineThickness(1.f);
-    text->setPosition({body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f,
-                       body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f - (char_size / 10.f)});
+    text->setPosition(sf::Vector2f(
+        static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f),
+        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f)));
 }
 
 TextButton::~TextButton()

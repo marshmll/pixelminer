@@ -5,6 +5,8 @@
 
 void Engine::initWindow()
 {
+    // vm = sf::VideoMode({864, 486});
+    // window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
     vm = sf::VideoMode::getDesktopMode();
     window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
     window.setFramerateLimit(60);
@@ -104,7 +106,7 @@ void Engine::update()
         else
             states.top()->update(dt);
     }
-    else
+    if (states.empty())
         window.close();
 }
 

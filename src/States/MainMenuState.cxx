@@ -4,7 +4,7 @@
 void MainMenuState::initGUI()
 {
     // BACKGROUND
-    if (!bgTexture.loadFromFile("Assets/Images/Backgrounds/background.png"))
+    if (!bgTexture.loadFromFile("Assets/Images/Backgrounds/stone.png"))
         throw std::runtime_error("[ MainMenuState::initGUI ] -> ERROR LOADING BACKGROUND IMAGE\n");
 
     bgShape.setPosition({0.f, 0.f});
@@ -13,9 +13,9 @@ void MainMenuState::initGUI()
     bgShape.setFillColor({255, 255, 255, 90});
 
     // TITLE
-    title = std::make_unique<sf::Text>(data.fonts->at("MinecraftBold"), "PIXELMINER", GUI::charSize(*data.vm, 25));
-    title->setPosition(
-        {data.vm->size.x / 2.f - title->getGlobalBounds().size.x / 2.f, GUI::percent(data.vm->size.y, 15.f)});
+    title = std::make_unique<sf::Text>(data.fonts->at("MinecraftBold"), "PIXELMINER", GUI::charSize(*data.vm, 20));
+    title->setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - title->getGlobalBounds().size.x / 2.f),
+                                    static_cast<int>(GUI::percent(data.vm->size.y, 15.f))));
     title->setFillColor({200, 200, 200, 255});
     title->setOutlineThickness(2.f);
     title->setOutlineColor({50, 50, 50, 255});
@@ -26,7 +26,7 @@ void MainMenuState::initGUI()
                          GUI::percent(data.vm->size.x, 45.f) / 2.f,
                      GUI::percent(data.vm->size.y, 38.f)),
         sf::Vector2f(GUI::percent(data.vm->size.x, 45.f), GUI::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 255), "Singleplayer", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
+        sf::Color(200, 200, 200, 200), "Singleplayer", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
         sf::Color::White, 2.f, sf::Color(80, 80, 80, 200));
 
     buttons["Multiplayer"] = std::make_unique<GUI::TextButton>(
@@ -34,13 +34,13 @@ void MainMenuState::initGUI()
                          GUI::percent(data.vm->size.x, 45.f) / 2.f,
                      GUI::percent(data.vm->size.y, 46.f)),
         sf::Vector2f(GUI::percent(data.vm->size.x, 45.f), GUI::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 255), "Multiplayer", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
+        sf::Color(200, 200, 200, 200), "Multiplayer", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
         sf::Color::White, 2.f, sf::Color(80, 80, 80, 200));
 
     buttons["Options"] = std::make_unique<GUI::TextButton>(
         sf::Vector2f(buttons["Multiplayer"]->getPosition().x, GUI::percent(data.vm->size.y, 54.f)),
         sf::Vector2f(GUI::percent(data.vm->size.x, 21.8f), GUI::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 255), "Options", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
+        sf::Color(200, 200, 200, 200), "Options", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
         sf::Color::White, 2.f, sf::Color(80, 80, 80, 200));
 
     buttons["Quit"] = std::make_unique<GUI::TextButton>(
@@ -48,7 +48,7 @@ void MainMenuState::initGUI()
                          GUI::percent(data.vm->size.x, 21.8f),
                      GUI::percent(data.vm->size.y, 54.f)),
         sf::Vector2f(GUI::percent(data.vm->size.x, 21.8f), GUI::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 255), "Quit", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
+        sf::Color(200, 200, 200, 200), "Quit", data.fonts->at("MinecraftRegular"), GUI::charSize(*data.vm, 83),
         sf::Color::White, 2.f, sf::Color(80, 80, 80, 200));
 }
 
