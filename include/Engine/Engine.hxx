@@ -1,7 +1,8 @@
 #pragma once
 
 #include "States/MainMenuState.hxx"
-#include <memory>
+#include "Map/PerlinNoise.hxx"
+#include "Map/Biome.hxx"
 
 class Engine
 {
