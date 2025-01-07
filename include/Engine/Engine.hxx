@@ -4,43 +4,47 @@
 
 class Engine
 {
-private:
-	/* ATTRIBUTES */
+  private:
+    /* ATTRIBUTES */
 
-	sf::VideoMode vm;
-	sf::RenderWindow window;
-	std::optional<sf::Event> event;
+    sf::VideoMode vm;
+    sf::RenderWindow window;
+    std::optional<sf::Event> event;
 
-	sf::Clock dtClock;
-	float dt; // Delta time
-	unsigned int gridSize;
+    sf::Clock dtClock;
+    float dt; // Delta time
+    unsigned int gridSize;
 
-	StateData stateData;
-	std::stack<State *> states;
+    StateData stateData;
+    std::stack<State *> states;
 
-	/* PRIVATE METHODS */
+    std::map<std::string, sf::Font> fonts;
 
-	void initWindow();
+    /* PRIVATE METHODS */
 
-	void initVariables();
+    void initWindow();
 
-	void initStateData();
+    void initVariables();
 
-	void initMainMenuState();
+    void initFonts();
 
-	void pollWindowEvents();
+    void initStateData();
 
-	void updateDeltaTime();
+    void initMainMenuState();
 
-public:
-	Engine();
-	virtual ~Engine();
+    void pollWindowEvents();
 
-	/* PUBLIC METHODS */
+    void updateDeltaTime();
 
-	void run();
+  public:
+    Engine();
+    virtual ~Engine();
 
-	void update();
+    /* PUBLIC METHODS */
 
-	void render();
+    void run();
+
+    void update();
+
+    void render();
 };

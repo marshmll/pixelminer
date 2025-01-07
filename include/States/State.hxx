@@ -6,11 +6,15 @@ typedef struct
 {
 	unsigned int *gridSize;
 	std::stack<State *> *states;
+	std::map<std::string, sf::Font> *fonts;
+	sf::VideoMode *vm;
 } StateData;
 
 class State
 {
 private:
+	
+protected:
 	StateData &data;
 	bool dead;
 

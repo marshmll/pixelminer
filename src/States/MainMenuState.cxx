@@ -1,21 +1,35 @@
-#include "stdafx.hxx"
 #include "States/MainMenuState.hxx"
+#include "stdafx.hxx"
 
-MainMenuState::MainMenuState(StateData &data): State(data) { }
+void MainMenuState::initGUI()
+{
+    if (!bgTexture.loadFromFile("Assets/Images/Backgrounds/background.png"))
+    {
+        std::cerr << "[ MainMenuState::initGUI ] -> ERROR LOADING BACKGROUND IMAGE" << "\n";
 
-MainMenuState::~MainMenuState() { }
+        // TODO: Handle memory safe exit.
+    };
+
+    bgShape.setPosition({0.f, 0.f});
+
+    bgShape.setSize(sf::Vector2f(data.vm->size.x, data.vm->size.y));
+    bgShape.setTexture(&bgTexture);
+}
+
+MainMenuState::MainMenuState(StateData &data) : State(data)
+{
+    initGUI();
+}
+
+MainMenuState::~MainMenuState()
+{
+}
 
 void MainMenuState::update(const float &dt)
 {
-
 }
 
 void MainMenuState::render(sf::RenderTarget &target)
 {
-	// TEST ONLY!
-	sf::RectangleShape rect;
-	rect.setPosition({200.f, 200.f});
-	rect.setSize({100.f, 100.f});
-
-	target.draw(rect);
+    target.draw(bgShape);
 }

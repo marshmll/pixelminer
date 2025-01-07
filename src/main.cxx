@@ -1,11 +1,11 @@
-#include "stdafx.hxx"
 #include "Engine/Engine.hxx"
+#include "stdafx.hxx"
 
 int main(void)
 {
-	Engine engine;
+    Engine engine;
 
-	engine.run();
+    engine.run();
 
-	exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }

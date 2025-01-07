@@ -5,6 +5,10 @@
 class MainMenuState: public State
 {
 private:
+	sf::Texture bgTexture;
+	sf::RectangleShape bgShape;
+
+	void initGUI();
 
 public:
 	MainMenuState(StateData &data);

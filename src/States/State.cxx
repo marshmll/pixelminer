@@ -1,11 +1,15 @@
-#include "stdafx.hxx"
 #include "States/State.hxx"
+#include "stdafx.hxx"
 
-State::State(StateData &data) : data(data), dead(false) { }
+State::State(StateData &data) : data(data), dead(false)
+{
+}
 
-State::~State() { }
+State::~State()
+{
+}
 
 const bool &State::isDead() const
 {
-	return dead;
+    return dead;
 };
