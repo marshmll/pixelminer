@@ -2,31 +2,40 @@
 
 class State;
 
-typedef struct 
+typedef struct
 {
-	unsigned int *gridSize;
-	std::stack<State *> *states;
-	std::map<std::string, sf::Font> *fonts;
-	sf::VideoMode *vm;
+    unsigned int *gridSize;
+    std::stack<std::unique_ptr<State>> *states;
+    std::map<std::string, sf::Font> *fonts;
+    sf::RenderWindow *window;
+    sf::VideoMode *vm;
 } StateData;
 
 class State
 {
-private:
-	
-protected:
-	StateData &data;
-	bool dead;
+  private:
+  protected:
+    StateData &data;
 
-public:
-	State(StateData &data);
+    sf::Vector2i mousePosScreen;
+    sf::Vector2i mousePosWindow;
+    sf::Vector2f mousePosView;
+    sf::Vector2i mousePosGrid;
 
-	virtual ~State();
-	
-	virtual void update(const float &dt) = 0;
+    bool dead;
 
-	virtual void render(sf::RenderTarget &target) = 0;
+  public:
+    State(StateData &data);
 
-	const bool &isDead() const;
+    virtual ~State();
 
+    virtual void update(const float &dt) = 0;
+
+    virtual void render(sf::RenderTarget &target) = 0;
+
+    void killState();
+
+    const bool &isDead() const;
+
+    void updateMousePositions(std::optional<sf::View> view = {});
 };

@@ -1,22 +1,25 @@
 #pragma once
 
+#include "GUI/GUI.hxx"
 #include "States/State.hxx"
 
-class MainMenuState: public State
+class MainMenuState : public State
 {
-private:
-	sf::Texture bgTexture;
-	sf::RectangleShape bgShape;
+  private:
+    sf::Texture bgTexture;
+    sf::RectangleShape bgShape;
+    std::unique_ptr<sf::Text> title;
 
-	void initGUI();
+    std::map<std::string, std::unique_ptr<GUI::Button>> buttons;
 
-public:
-	MainMenuState(StateData &data);
+    void initGUI();
 
-	~MainMenuState();
+  public:
+    MainMenuState(StateData &data);
 
-	void update(const float &dt);
+    ~MainMenuState();
 
-	void render(sf::RenderTarget &target);
-	
+    void update(const float &dt);
+
+    void render(sf::RenderTarget &target);
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "States/MainMenuState.hxx"
+#include <memory>
 
 class Engine
 {
@@ -16,7 +17,7 @@ class Engine
     unsigned int gridSize;
 
     StateData stateData;
-    std::stack<State *> states;
+    std::stack<std::unique_ptr<State>> states;
 
     std::map<std::string, sf::Font> fonts;
 

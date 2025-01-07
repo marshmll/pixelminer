@@ -1,4 +1,5 @@
 Debug/
 Release/
 .cache
+.vscode
 compile_commands.json

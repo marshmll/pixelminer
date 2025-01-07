@@ -5,8 +5,8 @@
 
 void Engine::initWindow()
 {
-    vm = sf::VideoMode({900, 600});
-    window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+    vm = sf::VideoMode::getDesktopMode();
+    window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
     window.setFramerateLimit(60);
 }
 
@@ -19,23 +19,17 @@ void Engine::initVariables()
 
 void Engine::initFonts()
 {
-    // TODO: Handle memory safe exit.
     if (!fonts["MinecraftRegular"].openFromFile("Assets/Fonts/MinecraftRegular.otf"))
-    {
-        std::cerr << "[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftRegular\"" << "\n";
-    }
+        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftRegular\"\n");
+
     if (!fonts["MinecraftItalic"].openFromFile("Assets/Fonts/MinecraftItalic.otf"))
-    {
-        std::cerr << "[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftItalic\"" << "\n";
-    }
+        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftItalic\"\n");
+
     if (!fonts["MinecraftBold"].openFromFile("Assets/Fonts/MinecraftBold.otf"))
-    {
-        std::cerr << "[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBold\"" << "\n";
-    }
+        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBold\"\n");
+
     if (!fonts["MinecraftBoldItalic"].openFromFile("Assets/Fonts/MinecraftBoldItalic.otf"))
-    {
-        std::cerr << "[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBoldItalic\"" << "\n";
-    }
+        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBoldItalic\"\n");
 }
 
 void Engine::initStateData()
@@ -43,12 +37,13 @@ void Engine::initStateData()
     stateData.gridSize = &gridSize;
     stateData.states = &states;
     stateData.fonts = &fonts;
+    stateData.window = &window;
     stateData.vm = &vm;
 }
 
 void Engine::initMainMenuState()
 {
-    states.push(new MainMenuState(stateData));
+    states.push(std::make_unique<MainMenuState>(stateData));
 }
 
 void Engine::pollWindowEvents()
@@ -79,10 +74,7 @@ Engine::Engine()
 Engine::~Engine()
 {
     while (!states.empty())
-    {
-        delete states.top();
         states.pop();
-    }
 }
 
 /* PUBLIC METHODS */
@@ -112,6 +104,8 @@ void Engine::update()
         else
             states.top()->update(dt);
     }
+    else
+        window.close();
 }
 
 void Engine::render()

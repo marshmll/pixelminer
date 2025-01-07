@@ -1,6 +1,8 @@
 target_sources(pixelminer PRIVATE
-	main.cxx
-	Engine/Engine.cxx
-	States/State.cxx
-	States/MainMenuState.cxx
+./States/MainMenuState.cxx
+./States/State.cxx
+./GUI/TextButton.cxx
+./GUI/Button.cxx
+./main.cxx
+./Engine/Engine.cxx
 )
