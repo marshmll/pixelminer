@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GUI/GUI.hxx"
-#include "States/State.hxx"
+#include "States/GameState.hxx"
 
 class MainMenuState : public State
 {

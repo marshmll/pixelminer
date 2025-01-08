@@ -68,6 +68,9 @@ void MainMenuState::update(const float &dt)
     for (auto &[key, button] : buttons)
         button->update(mousePosView);
 
+    if (buttons.at("Singleplayer")->isPressed())
+        data.states->push(std::make_unique<GameState>(data));
+
     if (buttons.at("Quit")->isPressed())
         killState();
 }
