@@ -47,7 +47,7 @@ void Engine::initTextures()
 
 void Engine::initStateData()
 {
-    stateData.gridSize = &gridSize;
+    stateData.gridSize = gridSize;
     stateData.scale = scale;
     stateData.states = &states;
     stateData.fonts = &fonts;

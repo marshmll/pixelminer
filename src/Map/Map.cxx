@@ -51,14 +51,25 @@ void Map::initBiomes()
     };
 }
 
-Map::Map(const sf::Vector3<unsigned int> dimensions) : dimensions(dimensions)
+Map::Map(const sf::Vector3<unsigned int> dimensions, sf::Texture &texture_pack, const unsigned int &grid_size,
+         const float &scale)
+    : dimensions(dimensions), texturePack(texture_pack), gridSize(grid_size), scale(scale)
 {
-    // clear();
-    // resize(dimensions);
+    clear();
+    resize(dimensions);
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
-    generate();
+    // generate();
+
+    for (unsigned int x = 0; x < dimensions.x; x++)
+    {
+        for (unsigned int y = 0; y < dimensions.y; y++)
+        {
+            tiles[x][y][0] = std::make_unique<Tile>("Grass", 1, texturePack, sf::IntRect({0, 0}, {16, 16}), gridSize,
+                                                    sf::Vector2u(x, y), scale);
+        }
+    }
 }
 
 Map::~Map()
@@ -128,4 +139,22 @@ void Map::generate()
     }
 
     (void)image.saveToFile("Assets/map.png");
+}
+
+void Map::update(const float &dt)
+{
+}
+
+void Map::render(sf::RenderTarget &target)
+{
+    for (auto &x : tiles)
+    {
+        for (auto &y : x)
+        {
+            for (auto &tile : y)
+            {
+                tile->render(target);
+            }
+        }
+    }
 }

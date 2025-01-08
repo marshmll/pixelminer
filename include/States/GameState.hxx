@@ -18,6 +18,8 @@ class GameState : public State
 
     void initThisPlayer();
 
+    void initMap();
+
     void initUdpSocket();
 
     void initNetworkThreads(const unsigned short port);

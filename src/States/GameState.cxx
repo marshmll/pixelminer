@@ -7,6 +7,12 @@ void GameState::initThisPlayer()
         std::make_unique<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
 }
 
+void GameState::initMap()
+{
+    map = std::make_unique<Map>(sf::Vector3<unsigned int>(20, 20, 1), data.textures->at("TexturePack"), data.gridSize,
+                                data.scale);
+}
+
 void GameState::initUdpSocket()
 {
     udpSocket.setBlocking(false);
@@ -30,7 +36,7 @@ void GameState::initNetworkThreads(const unsigned short port)
 
 void GameState::initDebugging()
 {
-    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", 16);
+    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", GUI::charSize(*data.vm, 120));
     debugText->setPosition(
         sf::Vector2f((int)GUI::percent(data.vm->size.x, 1.f), (int)GUI::percent(data.vm->size.y, 1.f)));
 }
@@ -55,7 +61,7 @@ void GameState::broadcastGameStateThread()
             std::cout << "[ Network ] -> Error sending the data." << "\n";
         }
 
-        std::this_thread::sleep_for(20ms);
+        std::this_thread::sleep_for(30ms);
     }
 }
 
@@ -88,10 +94,6 @@ void GameState::receiveGameStateThread()
 
                         players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
                             ->setPosition({x, y});
-
-                        // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() <<
-                        // ":"
-                        //           << senderPort << ": \"x: " << x << ", y: " << y << "\"\n";
                     }
                 }
             }
@@ -102,11 +104,10 @@ void GameState::receiveGameStateThread()
 GameState::GameState(StateData &data) : State(data)
 {
     initThisPlayer();
-    initUdpSocket();
-    initNetworkThreads(0);
+    initMap();
+    // initUdpSocket();
+    // initNetworkThreads(0);
     initDebugging();
-
-    // map = std::make_unique<Map>(sf::Vector3<unsigned int>(500, 500, 1));
 }
 
 GameState::~GameState()
@@ -115,6 +116,8 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
+    map->update(dt);
+
     for (auto &[addr, player] : players)
         player->update(
             dt, addr == std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
@@ -124,6 +127,8 @@ void GameState::update(const float &dt)
 
 void GameState::render(sf::RenderTarget &target)
 {
+    map->render(target);
+
     for (auto &[name, player] : players)
         player->render(target);
 

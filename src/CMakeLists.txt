@@ -1,16 +1,17 @@
 target_sources(pixelminer PRIVATE
-./Map/Biome.cxx
-./Map/PerlinNoise.cxx
-./Map/Map.cxx
-./Map/TileBase.cxx
-./States/GameState.cxx
-./States/MainMenuState.cxx
-./States/State.cxx
+./main.cxx
+./Entities/Functionalities/MovementFunctionality.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx
-./Entities/Functionalities/MovementFunctionality.cxx
+./States/State.cxx
+./States/GameState.cxx
+./States/MainMenuState.cxx
+./TIles/TileBase.cxx
+./TIles/Tile.cxx
+./Engine/Engine.cxx
 ./GUI/TextButton.cxx
 ./GUI/Button.cxx
-./main.cxx
-./Engine/Engine.cxx
+./Map/Map.cxx
+./Map/PerlinNoise.cxx
+./Map/Biome.cxx
 )
