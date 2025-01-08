@@ -76,7 +76,7 @@ Engine::Engine()
 
     // Define waves for height, moisture, and heat maps
     std::vector<Wave> height_waves = {{120.f, .009f, 4.f}, {300.f, .2f, 1.5f}, {500.f, .018f, 8.f}};
-    std::vector<Wave> moisture_waves = {{622.f, .04f, 5.f}, {200.f, .08f, 2.f}, {400.f, .2f, .5f}};
+    std::vector<Wave> moisture_waves = {{622.f, .04f, 5.f}, {200.f, .08f, 2.f}, {400.f, .2f, .8f}};
     std::vector<Wave> heat_waves = {{318.6f, .05f, 5.f}, {329.7f, .5f, 1.f}};
 
     // Generate noise maps with adjusted scale for height
@@ -87,7 +87,7 @@ Engine::Engine()
     // Define biomes with refined parameters
     std::vector<Biome> biomes = {
         {"Desert", .2f, 0.1f, .8f}, {"Forest", .4f, .6f, .4f},    {"Grassland", .3f, .5f, .5f},
-        {"Jungle", .4f, .8f, .7f},  {"Mountains", .9f, .3f, .3f}, {"Ocean", .3f, .7f, .4f},
+        {"Jungle", .45f, .8f, .7f},  {"Mountains", .9f, .3f, .3f}, {"Ocean", .35f, .7f, .4f},
         {"Tundra", .8f, .3f, .1f},
     };
     sf::Image image({500, 500});
