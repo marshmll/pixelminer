@@ -31,15 +31,15 @@ clear &&
 ./pixelminer &&
 cd ../../
 
-rm -rf \
-src/Assets/ \
+# rm -rf \
+# src/Assets/ \
 # src/Config/ \
 # src/Fonts/ \
 # src/Maps/ \
 # src/Shaders \
 # src/Logs
 
-cp -r Debug/bin/Assets src/
+cp -rf Debug/bin/Assets src/
 # cp -r Debug/bin/Config src/
 # cp -r Debug/bin/Fonts src/
 # cp -r Debug/bin/Maps src/
