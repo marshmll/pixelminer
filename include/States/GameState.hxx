@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entities/Entity.hxx"
+#include "Entities/Playable/Player.hxx"
 #include "Map/Map.hxx"
 #include "States/State.hxx"
 
@@ -8,7 +8,9 @@ class GameState : public State
 {
   private:
     std::unique_ptr<Map> map;
-    std::unique_ptr<Entity> entity;
+    std::map<std::string, std::unique_ptr<Player>> players;
+
+    void initThisPlayer();
 
   public:
     GameState(StateData &data);

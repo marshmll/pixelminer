@@ -19,7 +19,9 @@ class Engine
     StateData stateData;
     std::stack<std::unique_ptr<State>> states;
 
+    // Assets
     std::map<std::string, sf::Font> fonts;
+    std::map<std::string, sf::Texture> textures;
 
     /* PRIVATE METHODS */
 
@@ -28,6 +30,8 @@ class Engine
     void initVariables();
 
     void initFonts();
+
+    void initTextures();
 
     void initStateData();
 

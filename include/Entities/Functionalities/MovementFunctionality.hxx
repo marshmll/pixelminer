@@ -26,7 +26,7 @@ enum MovementDirection
     Right
 };
 
-class MovementAbility
+class MovementFunctionality
 {
   private:
     sf::Sprite &sprite;
@@ -37,9 +37,9 @@ class MovementAbility
     MovementDirection direction;
 
   public:
-    MovementAbility(sf::Sprite &sprite, const float max_velocity, const std::uint8_t movement_flags);
+    MovementFunctionality(sf::Sprite &sprite, const float max_velocity, const std::uint8_t movement_flags);
 
-    ~MovementAbility();
+    ~MovementFunctionality();
 
     void move(const float &dt, const MovementDirection direction);
 

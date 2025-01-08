@@ -5,10 +5,10 @@
 
 void Engine::initWindow()
 {
-    // vm = sf::VideoMode({864, 486});
-    // window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
-    vm = sf::VideoMode::getDesktopMode();
-    window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+    vm = sf::VideoMode({864, 486});
+    window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+    // vm = sf::VideoMode::getDesktopMode();
+    // window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
     window.setFramerateLimit(60);
 }
 
@@ -16,8 +16,9 @@ void Engine::initVariables()
 {
     dt = 0.f;
     dtClock.restart();
-    gridSize = 16; // 16x16 pixels tile textures.
-    scale = 1.f;
+
+    gridSize = 16;                                                           // 16x16 pixels tile textures.
+    scale = static_cast<float>(std::round((vm.size.x + vm.size.y) / 693.f)); // Dynamic scaling
 }
 
 void Engine::initFonts()
@@ -35,12 +36,22 @@ void Engine::initFonts()
         throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBoldItalic\"\n");
 }
 
+void Engine::initTextures()
+{
+    if (!textures["TexturePack"].loadFromFile("Assets/Images/Textures/texture_pack.png"))
+        throw std::runtime_error("[ Engine::initTextures ] -> ERROR: COULD NOT LOAD TEXTURE \"TexturePack\"\n");
+
+    if (!textures["Player1"].loadFromFile("Assets/Images/Sprites/Player/player_1.png"))
+        throw std::runtime_error("[ Engine::initTextures ] -> ERROR: COULD NOT LOAD TEXTURE \"Player1\"\n");
+}
+
 void Engine::initStateData()
 {
     stateData.gridSize = &gridSize;
-    stateData.scale = &scale;
+    stateData.scale = scale;
     stateData.states = &states;
     stateData.fonts = &fonts;
+    stateData.textures = &textures;
     stateData.window = &window;
     stateData.vm = &vm;
 }
@@ -71,6 +82,7 @@ Engine::Engine()
     initWindow();
     initVariables();
     initFonts();
+    initTextures();
     initStateData();
     initMainMenuState();
 }

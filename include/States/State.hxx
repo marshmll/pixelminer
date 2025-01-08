@@ -5,9 +5,10 @@ class State;
 typedef struct
 {
     unsigned int *gridSize;
-    float *scale;
+    float scale;
     std::stack<std::unique_ptr<State>> *states;
     std::map<std::string, sf::Font> *fonts;
+    std::map<std::string, sf::Texture> *textures;
     sf::RenderWindow *window;
     sf::VideoMode *vm;
 } StateData;
