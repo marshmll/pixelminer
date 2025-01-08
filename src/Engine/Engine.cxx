@@ -17,6 +17,7 @@ void Engine::initVariables()
     dt = 0.f;
     dtClock.restart();
     gridSize = 16; // 16x16 pixels tile textures.
+    scale = 1.f;
 }
 
 void Engine::initFonts()
@@ -37,6 +38,7 @@ void Engine::initFonts()
 void Engine::initStateData()
 {
     stateData.gridSize = &gridSize;
+    stateData.scale = &scale;
     stateData.states = &states;
     stateData.fonts = &fonts;
     stateData.window = &window;

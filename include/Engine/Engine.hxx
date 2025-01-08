@@ -1,8 +1,6 @@
 #pragma once
 
 #include "States/MainMenuState.hxx"
-#include "Map/PerlinNoise.hxx"
-#include "Map/Biome.hxx"
 
 class Engine
 {
@@ -16,6 +14,7 @@ class Engine
     sf::Clock dtClock;
     float dt; // Delta time
     unsigned int gridSize;
+    float scale;
 
     StateData stateData;
     std::stack<std::unique_ptr<State>> states;

@@ -5,6 +5,7 @@ class State;
 typedef struct
 {
     unsigned int *gridSize;
+    float *scale;
     std::stack<std::unique_ptr<State>> *states;
     std::map<std::string, sf::Font> *fonts;
     sf::RenderWindow *window;
