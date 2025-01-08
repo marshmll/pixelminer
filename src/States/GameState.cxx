@@ -40,8 +40,9 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
-    for (auto &[name, player] : players)
-        player->update(dt);
+    for (auto &[addr, player] : players)
+        player->update(
+            dt, addr == std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
 
     sf::Packet packet;
 
@@ -57,7 +58,7 @@ void GameState::update(const float &dt)
         std::cout << "[ Network ] -> Error sending the data." << "\n";
     }
 
-    if (socketSelector.wait(sf::milliseconds(20)))
+    if (socketSelector.wait(sf::milliseconds(10)))
     {
         if (socketSelector.isReady(serverSocket))
         {

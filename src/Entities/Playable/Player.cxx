@@ -17,8 +17,11 @@ Player::~Player()
 {
 }
 
-void Player::update(const float &dt)
+void Player::update(const float &dt, const bool &update_movement)
 {
+    if (!update_movement)
+        return;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         move(dt, Up);
 
