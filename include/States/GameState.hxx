@@ -13,12 +13,20 @@ class GameState : public State
     std::map<std::pair<sf::IpAddress, unsigned short>, std::unique_ptr<Player>> players;
 
     // MULTIPLAYER
-    sf::UdpSocket serverSocket;
+    sf::UdpSocket udpSocket;
     sf::SocketSelector socketSelector;
 
     void initThisPlayer();
 
-    void initUdpListener();
+    void initUdpSocket();
+
+    void initNetworkThreads(const unsigned short port);
+
+    void initDebugging();
+
+    void broadcastGameStateThread();
+
+    void receiveGameStateThread();
 
   public:
     GameState(StateData &data);

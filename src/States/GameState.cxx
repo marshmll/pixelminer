@@ -7,67 +7,71 @@ void GameState::initThisPlayer()
         std::make_unique<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
 }
 
-void GameState::initUdpListener()
+void GameState::initUdpSocket()
 {
-    serverSocket.setBlocking(false);
+    udpSocket.setBlocking(false);
 
-    if (serverSocket.bind(47542) != sf::Socket::Status::Done)
+    if (udpSocket.bind(47542) != sf::Socket::Status::Done)
     {
         std::cerr << "[ Network ] -> Error binding UDP listener to a port." << "\n";
     }
 
     std::cout << "[ Network ] -> Listening to " << sf::IpAddress::getLocalAddress()->toString() << ":"
-              << serverSocket.getLocalPort() << "\n";
+              << udpSocket.getLocalPort() << "\n";
 
-    socketSelector.add(serverSocket);
+    socketSelector.add(udpSocket);
 }
 
-GameState::GameState(StateData &data) : State(data)
+void GameState::initNetworkThreads(const unsigned short port)
 {
-    initThisPlayer();
-    initUdpListener();
+    std::thread(&GameState::receiveGameStateThread, this).detach();
+    std::thread(&GameState::broadcastGameStateThread, this).detach();
+}
 
+void GameState::initDebugging()
+{
     debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", 16);
     debugText->setPosition(
         sf::Vector2f((int)GUI::percent(data.vm->size.x, 1.f), (int)GUI::percent(data.vm->size.y, 1.f)));
-
-    // map = std::make_unique<Map>(sf::Vector3<unsigned int>(500, 500, 1));
 }
 
-GameState::~GameState()
+void GameState::broadcastGameStateThread()
 {
-}
+    using namespace std::chrono_literals;
 
-void GameState::update(const float &dt)
-{
-    for (auto &[addr, player] : players)
-        player->update(
-            dt, addr == std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
-
-    sf::Packet packet;
-
-    packet << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
-                  ->getPosition()
-                  .x
-           << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
-                  ->getPosition()
-                  .y;
-
-    if (serverSocket.send(packet, sf::IpAddress::Broadcast, serverSocket.getLocalPort()) != sf::Socket::Status::Done)
+    while (!isDead())
     {
-        std::cout << "[ Network ] -> Error sending the data." << "\n";
-    }
+        sf::Packet packet;
 
-    if (socketSelector.wait(sf::milliseconds(10)))
-    {
-        if (socketSelector.isReady(serverSocket))
+        packet << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
+                      ->getPosition()
+                      .x
+               << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
+                      ->getPosition()
+                      .y;
+
+        if (udpSocket.send(packet, sf::IpAddress::Broadcast, udpSocket.getLocalPort()) != sf::Socket::Status::Done)
         {
+            std::cout << "[ Network ] -> Error sending the data." << "\n";
+        }
+
+        std::this_thread::sleep_for(50ms);
+    }
+}
+
+void GameState::receiveGameStateThread()
+{
+    while (!isDead())
+    {
+        if (socketSelector.isReady(udpSocket))
+        {
+            sf::Packet packet;
             std::optional<sf::IpAddress> senderAddress;
             unsigned short senderPort;
             float x;
             float y;
 
-            if (serverSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
+            if (udpSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
             {
                 if (senderAddress.value() != sf::IpAddress::getLocalAddress().value())
                 {
@@ -82,12 +86,34 @@ void GameState::update(const float &dt)
                     players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
                         ->setPosition({x, y});
 
-                    // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() << ":"
+                    // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() <<
+                    // ":"
                     //           << senderPort << ": \"x: " << x << ", y: " << y << "\"\n";
                 }
             }
         }
     }
+}
+
+GameState::GameState(StateData &data) : State(data)
+{
+    initThisPlayer();
+    initUdpSocket();
+    initNetworkThreads(0);
+    initDebugging();
+
+    // map = std::make_unique<Map>(sf::Vector3<unsigned int>(500, 500, 1));
+}
+
+GameState::~GameState()
+{
+}
+
+void GameState::update(const float &dt)
+{
+    for (auto &[addr, player] : players)
+        player->update(
+            dt, addr == std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
 
     debugText->setString(std::to_string(static_cast<int>(1.f / dt)));
 }
