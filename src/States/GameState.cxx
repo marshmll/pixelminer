@@ -37,7 +37,8 @@ GameState::GameState(StateData &data) : State(data)
     initUdpListener();
 
     debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", 16);
-    debugText->setPosition({GUI::percent(data.vm->size.x, 1.f), GUI::percent(data.vm->size.y, 1.f)});
+    debugText->setPosition(
+        sf::Vector2f((int)GUI::percent(data.vm->size.x, 1.f), (int)GUI::percent(data.vm->size.y, 1.f)));
 
     // map = std::make_unique<Map>(sf::Vector3<unsigned int>(500, 500, 1));
 }
