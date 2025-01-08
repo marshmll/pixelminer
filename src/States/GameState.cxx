@@ -3,6 +3,7 @@
 
 GameState::GameState(StateData &data) : State(data)
 {
+    map = std::make_unique<Map>(sf::Vector3<unsigned int>(500, 500, 1));
     entity = std::make_unique<Entity>("Entity", sf::Vector2f(100.f, 100.f));
 }
 
