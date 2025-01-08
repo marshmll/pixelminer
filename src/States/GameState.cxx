@@ -16,7 +16,8 @@ void GameState::initUdpListener()
         std::cerr << "[ Network ] -> Error binding UDP listener to a port." << "\n";
     }
 
-    std::cout << "[ Network ] -> UDP listener listening to port " << serverSocket.getLocalPort() << "\n";
+    std::cout << "[ Network ] -> Listening to " << sf::IpAddress::getLocalAddress()->toString() << ":"
+              << serverSocket.getLocalPort() << "\n";
 
     socketSelector.add(serverSocket);
 
@@ -54,7 +55,7 @@ void GameState::update(const float &dt)
 
     packet << players.at("ThisPlayer")->getPosition().x << players.at("ThisPlayer")->getPosition().y;
 
-    if (serverSocket.send(packet, sf::IpAddress(127, 0, 0, 1), serverSocket.getLocalPort()) != sf::Socket::Status::Done)
+    if (serverSocket.send(packet, sf::IpAddress::Broadcast, serverSocket.getLocalPort()) != sf::Socket::Status::Done)
     {
         std::cout << "[ Network ] -> Error sending the data." << "\n";
     }
