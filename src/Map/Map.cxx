@@ -16,14 +16,14 @@ void Map::clear()
 
 void Map::resize(const sf::Vector3<unsigned int> &dimensions)
 {
-    tiles.reserve(dimensions.x);
+    tiles.resize(dimensions.x);
 
     for (auto &x : tiles)
     {
-        x.reserve(dimensions.y);
+        x.resize(dimensions.y);
 
         for (auto &y : x)
-            y.reserve(dimensions.z);
+            y.resize(dimensions.z);
     }
 }
 
@@ -66,7 +66,7 @@ Map::Map(const sf::Vector3<unsigned int> dimensions, sf::Texture &texture_pack, 
     {
         for (unsigned int y = 0; y < dimensions.y; y++)
         {
-            tiles[x][y][0] = std::make_unique<Tile>("Grass", 1, texturePack, sf::IntRect({0, 0}, {16, 16}), gridSize,
+            tiles[x][y][0] = std::make_unique<Tile>("Dirt", 1, texturePack, sf::IntRect({0, 0}, {16, 16}), gridSize,
                                                     sf::Vector2u(x, y), scale);
         }
     }
