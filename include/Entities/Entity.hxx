@@ -28,4 +28,6 @@ class Entity
     void move(const float &dt, const MovementDirection &direction);
 
     const sf::Vector2f getPosition() const;
+
+    void setPosition(const sf::Vector2f &position);
 };

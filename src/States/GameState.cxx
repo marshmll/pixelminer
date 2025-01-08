@@ -3,7 +3,7 @@
 
 void GameState::initThisPlayer()
 {
-    players["ThisPlayer"] =
+    players[std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542)] =
         std::make_unique<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
 }
 
@@ -11,7 +11,7 @@ void GameState::initUdpListener()
 {
     serverSocket.setBlocking(false);
 
-    if (serverSocket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
+    if (serverSocket.bind(47542) != sf::Socket::Status::Done)
     {
         std::cerr << "[ Network ] -> Error binding UDP listener to a port." << "\n";
     }
@@ -20,15 +20,6 @@ void GameState::initUdpListener()
               << serverSocket.getLocalPort() << "\n";
 
     socketSelector.add(serverSocket);
-
-    sf::Packet packet;
-
-    packet << "Teste";
-
-    if (serverSocket.send(packet, sf::IpAddress(127, 0, 0, 1), serverSocket.getLocalPort()) != sf::Socket::Status::Done)
-    {
-        std::cout << "[ Network ] -> Error sending the data." << "\n";
-    }
 }
 
 GameState::GameState(StateData &data) : State(data)
@@ -54,7 +45,12 @@ void GameState::update(const float &dt)
 
     sf::Packet packet;
 
-    packet << players.at("ThisPlayer")->getPosition().x << players.at("ThisPlayer")->getPosition().y;
+    packet << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
+                  ->getPosition()
+                  .x
+           << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
+                  ->getPosition()
+                  .y;
 
     if (serverSocket.send(packet, sf::IpAddress::Broadcast, serverSocket.getLocalPort()) != sf::Socket::Status::Done)
     {
@@ -73,6 +69,15 @@ void GameState::update(const float &dt)
             if (serverSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
             {
                 packet >> x >> y;
+
+                if (players.count(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)) == 0)
+                {
+                    players[std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)] =
+                        std::make_unique<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
+                }
+
+                players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
+                    ->setPosition({x, y});
 
                 // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() << ":"
                 //           << senderPort << ": \"x: " << x << ", y: " << y << "\"\n";

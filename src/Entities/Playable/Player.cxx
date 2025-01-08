@@ -21,10 +21,13 @@ void Player::update(const float &dt)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         move(dt, Up);
+
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         move(dt, Down);
+
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         move(dt, Left);
+
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         move(dt, Right);
 }
