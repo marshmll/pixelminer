@@ -25,5 +25,7 @@ class Entity
 
     virtual void render(sf::RenderTarget &target);
 
-    virtual void move(const float &dt, const MovementDirection &direction);
+    void move(const float &dt, const MovementDirection &direction);
+
+    const sf::Vector2f getPosition() const;
 };

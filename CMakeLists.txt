@@ -15,7 +15,7 @@ FetchContent_MakeAvailable(SFML)
 
 add_executable(pixelminer src/main.cxx)
 add_subdirectory(src)
-target_link_libraries(pixelminer PRIVATE SFML::Graphics)
+target_link_libraries(pixelminer PRIVATE SFML::Graphics SFML::Network)
 target_compile_features(pixelminer PRIVATE cxx_std_17)
 
 target_include_directories(pixelminer PRIVATE include/)

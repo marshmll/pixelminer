@@ -20,7 +20,6 @@ Entity::~Entity()
 
 void Entity::update(const float &dt)
 {
-    
 }
 
 void Entity::render(sf::RenderTarget &target)
@@ -35,4 +34,9 @@ void Entity::move(const float &dt, const MovementDirection &direction)
     else
         std::cout << "[ Entity: \"" << name << "\" ID: " << std::hex << id << std::dec
                   << " ]: Tried to move without an initialized movement component." << "\n";
+}
+
+const sf::Vector2f Entity::getPosition() const
+{
+    return sprite.getPosition();
 }
