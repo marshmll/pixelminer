@@ -55,7 +55,7 @@ void GameState::broadcastGameStateThread()
             std::cout << "[ Network ] -> Error sending the data." << "\n";
         }
 
-        std::this_thread::sleep_for(50ms);
+        std::this_thread::sleep_for(20ms);
     }
 }
 
