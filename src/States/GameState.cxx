@@ -63,32 +63,36 @@ void GameState::receiveGameStateThread()
 {
     while (!isDead())
     {
-        if (socketSelector.isReady(udpSocket))
+        if (socketSelector.wait(sf::seconds(5.f)))
         {
-            sf::Packet packet;
-            std::optional<sf::IpAddress> senderAddress;
-            unsigned short senderPort;
-            float x;
-            float y;
-
-            if (udpSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
+            if (socketSelector.isReady(udpSocket))
             {
-                if (senderAddress.value() != sf::IpAddress::getLocalAddress().value())
+                sf::Packet packet;
+                std::optional<sf::IpAddress> senderAddress;
+                unsigned short senderPort;
+                float x;
+                float y;
+
+                if (udpSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
                 {
-                    packet >> x >> y;
-
-                    if (players.count(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)) == 0)
+                    if (senderAddress.value() != sf::IpAddress::getLocalAddress().value())
                     {
-                        players[std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)] =
-                            std::make_unique<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
+                        packet >> x >> y;
+
+                        if (players.count(
+                                std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)) == 0)
+                        {
+                            players[std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)] =
+                                std::make_unique<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
+                        }
+
+                        players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
+                            ->setPosition({x, y});
+
+                        // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() <<
+                        // ":"
+                        //           << senderPort << ": \"x: " << x << ", y: " << y << "\"\n";
                     }
-
-                    players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
-                        ->setPosition({x, y});
-
-                    // std::cout << "[ Network ] -> Some data was received from " << senderAddress->toString() <<
-                    // ":"
-                    //           << senderPort << ": \"x: " << x << ", y: " << y << "\"\n";
                 }
             }
         }
