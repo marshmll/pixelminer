@@ -11,6 +11,9 @@ enum TileId : std::uint32_t
     GrassSide,
     Cobblestone,
     GrassTop,
+    Sand,
+    Snow,
+    Water,
 };
 
 typedef struct

@@ -5,10 +5,10 @@
 
 void Engine::initWindow()
 {
-    vm = sf::VideoMode({864, 486});
-    window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
-    // vm = sf::VideoMode::getDesktopMode();
-    // window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+    // vm = sf::VideoMode({864, 486});
+    // window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+    vm = sf::VideoMode::getDesktopMode();
+    window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
     window.setFramerateLimit(60);
 }
 
@@ -30,6 +30,9 @@ void Engine::initTileData()
     tileData[GrassSide] = {"Grass Side", GrassSide, sf::IntRect({32, 0}, texture_size)};
     tileData[Cobblestone] = {"Cobblestone", Cobblestone, sf::IntRect({48, 0}, texture_size)};
     tileData[GrassTop] = {"Grass Top", GrassTop, sf::IntRect({64, 0}, texture_size)};
+    tileData[Sand] = {"Sand", Sand, sf::IntRect({80, 0}, texture_size)};
+    tileData[Snow] = {"Snow", Snow, sf::IntRect({96, 0}, texture_size)};
+    tileData[Water] = {"Water", Water, sf::IntRect({112, 0}, texture_size)};
 }
 
 void Engine::initFonts()

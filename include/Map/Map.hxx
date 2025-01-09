@@ -19,6 +19,8 @@ class Map
 
     std::vector<std::vector<std::unique_ptr<Chunk>>> chunks;
 
+    sf::Vector2f spawnPoint;
+
     PerlinNoise noise;
 
     std::vector<Wave> height_waves;
@@ -40,6 +42,8 @@ class Map
     void initNoiseMaps();
 
     void initBiomes();
+
+    void randomizeSpawnPoint();
 
   public:
     Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
@@ -63,4 +67,6 @@ class Map
     void saveToFile(std::filesystem::path path);
 
     void loadFromFile(std::filesystem::path path);
+
+    const sf::Vector2f &getSpawnPoint() const;
 };

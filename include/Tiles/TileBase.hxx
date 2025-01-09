@@ -24,6 +24,8 @@ class TileBase
 
     const sf::Vector2f getPosition() const;
 
+    const sf::Color getColor() const;
+
     const sf::FloatRect getGlobalBounds() const;
 
     const sf::Vector2f getCenter() const;
@@ -31,4 +33,6 @@ class TileBase
     void setPosition(const sf::Vector2f &position);
 
     void setGridPosition(const sf::Vector2u &position);
+
+    void setColor(const sf::Color &color);
 };

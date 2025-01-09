@@ -27,6 +27,11 @@ const sf::Vector2f TileBase::getPosition() const
     return sprite.getPosition();
 }
 
+const sf::Color TileBase::getColor() const
+{
+    return sprite.getColor();
+}
+
 const sf::FloatRect TileBase::getGlobalBounds() const
 {
     return sprite.getGlobalBounds();
@@ -46,4 +51,9 @@ void TileBase::setGridPosition(const sf::Vector2u &position)
 {
     sprite.setPosition(
         sf::Vector2f(position.x * GRID_SIZE * sprite.getScale().x, position.y * GRID_SIZE * sprite.getScale().y));
+}
+
+void TileBase::setColor(const sf::Color &color)
+{
+    sprite.setColor(color);
 }
