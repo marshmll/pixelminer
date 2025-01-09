@@ -29,5 +29,7 @@ class Entity
 
     const sf::Vector2f getPosition() const;
 
+    const sf::Vector2f getCenter() const;
+
     void setPosition(const sf::Vector2f &position);
 };

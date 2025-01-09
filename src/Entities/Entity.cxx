@@ -41,6 +41,12 @@ const sf::Vector2f Entity::getPosition() const
     return sprite.getPosition();
 }
 
+const sf::Vector2f Entity::getCenter() const
+{
+    return sf::Vector2f(sprite.getPosition().x + sprite.getGlobalBounds().size.x / 2.f,
+                        sprite.getPosition().y + sprite.getGlobalBounds().size.y / 2.f);
+}
+
 void Entity::setPosition(const sf::Vector2f &position)
 {
     sprite.setPosition(position);

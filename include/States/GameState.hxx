@@ -8,15 +8,22 @@
 class GameState : public State
 {
   private:
+    std::map<std::pair<sf::IpAddress, unsigned short>, std::shared_ptr<Player>> players;
+    std::shared_ptr<Player> thisPlayer;
+
+    sf::View playerCamera;
+
     std::unique_ptr<Map> map;
-    std::unique_ptr<sf::Text> debugText;
-    std::map<std::pair<sf::IpAddress, unsigned short>, std::unique_ptr<Player>> players;
 
     // MULTIPLAYER
     sf::UdpSocket udpSocket;
     sf::SocketSelector socketSelector;
 
+    std::unique_ptr<sf::Text> debugText;
+
     void initThisPlayer();
+
+    void initPlayerCamera();
 
     void initMap();
 

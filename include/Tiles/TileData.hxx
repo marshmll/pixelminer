@@ -7,6 +7,10 @@ enum TileId : std::uint32_t
 {
     Unknown = 0,
     Dirt,
+    Stone,
+    GrassSide,
+    Cobblestone,
+    GrassTop,
 };
 
 typedef struct

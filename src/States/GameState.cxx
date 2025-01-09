@@ -4,12 +4,20 @@
 void GameState::initThisPlayer()
 {
     players[std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542)] =
-        std::make_unique<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
+        std::make_shared<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
+
+    thisPlayer = players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
+}
+
+void GameState::initPlayerCamera()
+{
+    playerCamera.setSize(sf::Vector2f(data.vm->size));
+    playerCamera.setCenter(thisPlayer->getCenter());
 }
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>(sf::Vector2u(5, 5), *data.tileData, data.textures->at("TexturePack"), data.gridSize,
+    map = std::make_unique<Map>(sf::Vector2u(2, 2), *data.tileData, data.textures->at("TexturePack"), data.gridSize,
                                 data.scale);
 }
 
@@ -49,12 +57,7 @@ void GameState::broadcastGameStateThread()
     {
         sf::Packet packet;
 
-        packet << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
-                      ->getPosition()
-                      .x
-               << players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542))
-                      ->getPosition()
-                      .y;
+        packet << thisPlayer->getPosition().x << thisPlayer->getPosition().y;
 
         if (udpSocket.send(packet, sf::IpAddress::Broadcast, udpSocket.getLocalPort()) != sf::Socket::Status::Done)
         {
@@ -89,7 +92,7 @@ void GameState::receiveGameStateThread()
                                 std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)) == 0)
                         {
                             players[std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)] =
-                                std::make_unique<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
+                                std::make_shared<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
                         }
 
                         players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
@@ -104,6 +107,7 @@ void GameState::receiveGameStateThread()
 GameState::GameState(StateData &data) : State(data)
 {
     initThisPlayer();
+    initPlayerCamera();
     initMap();
     // initUdpSocket();
     // initNetworkThreads(0);
@@ -116,21 +120,25 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
+    playerCamera.setCenter(thisPlayer->getCenter());
+
     map->update(dt);
 
     for (auto &[addr, player] : players)
-        player->update(
-            dt, addr == std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
+        player->update(dt, player.get() == thisPlayer.get());
 
     debugText->setString(std::to_string(static_cast<int>(1.f / dt)));
 }
 
 void GameState::render(sf::RenderTarget &target)
 {
+    target.setView(playerCamera);
+
     map->render(target);
 
     for (auto &[name, player] : players)
         player->render(target);
 
+    target.setView(target.getDefaultView());
     target.draw(*debugText);
 }

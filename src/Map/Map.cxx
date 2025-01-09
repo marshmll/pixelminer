@@ -57,16 +57,7 @@ Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
-    // generate();
-
-    for (unsigned int x = 0; x < amount_of_chunks.x * CHUNK_SIZE.x; x++)
-    {
-        for (unsigned int y = 0; y < amount_of_chunks.y * CHUNK_SIZE.y; y++)
-        {
-            putTile(Tile("Dirt", Dirt, texture_pack, tileData.at(Dirt).textureRect, grid_size, sf::Vector2u(), scale),
-                    x, y, 0);
-        }
-    }
+    generate();
 
     // loadFromFile("Assets/Maps/mymap.map");
     // saveToFile("Assets/Maps/mymap.map");
@@ -105,6 +96,7 @@ void Map::generate()
             float max_weight = -1.f;
             BiomeType biome_type;
             sf::Color biome_color;
+            TileData tile_data;
 
             for (const auto &biome : biomes)
             {
@@ -120,28 +112,38 @@ void Map::generate()
             {
             case Desert:
                 biome_color = sf::Color(196, 178, 94, 255);
+                tile_data = tileData.at(TileId::Cobblestone);
+
                 break;
             case Forest:
                 biome_color = sf::Color(29, 110, 29, 255);
+                tile_data = tileData.at(TileId::Dirt);
                 break;
             case Grassland:
                 biome_color = sf::Color(22, 148, 22, 255);
+                tile_data = tileData.at(TileId::GrassTop);
                 break;
             case Jungle:
                 biome_color = sf::Color(2, 31, 8, 255);
+                tile_data = tileData.at(TileId::GrassSide);
                 break;
             case Mountains:
                 biome_color = sf::Color(91, 99, 93, 255);
+                tile_data = tileData.at(TileId::Stone);
                 break;
             case Ocean:
                 biome_color = sf::Color(16, 51, 163);
+                tile_data = tileData.at(TileId::Cobblestone);
                 break;
             case Tundra:
                 biome_color = sf::Color(216, 242, 230, 255);
+                tile_data = tileData.at(TileId::Stone);
                 break;
             };
 
             image.setPixel({x, y}, biome_color);
+            putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale), x, y,
+                    0);
         }
     }
 

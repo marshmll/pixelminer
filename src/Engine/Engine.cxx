@@ -5,10 +5,10 @@
 
 void Engine::initWindow()
 {
-    // vm = sf::VideoMode({864, 486});
-    // window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
-    vm = sf::VideoMode::getDesktopMode();
-    window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+    vm = sf::VideoMode({864, 486});
+    window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+    // vm = sf::VideoMode::getDesktopMode();
+    // window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
     window.setFramerateLimit(60);
 }
 
@@ -23,7 +23,13 @@ void Engine::initVariables()
 
 void Engine::initTileData()
 {
-    tileData[Dirt] = {"Dirt", Dirt, sf::IntRect({0, 0}, {GRID_SIZE, GRID_SIZE})};
+    sf::Vector2i texture_size(GRID_SIZE, GRID_SIZE);
+
+    tileData[Dirt] = {"Dirt", Dirt, sf::IntRect({0, 0}, texture_size)};
+    tileData[Stone] = {"Stone", Stone, sf::IntRect({16, 0}, texture_size)};
+    tileData[GrassSide] = {"Grass Side", GrassSide, sf::IntRect({32, 0}, texture_size)};
+    tileData[Cobblestone] = {"Cobblestone", Cobblestone, sf::IntRect({48, 0}, texture_size)};
+    tileData[GrassTop] = {"Grass Top", GrassTop, sf::IntRect({64, 0}, texture_size)};
 }
 
 void Engine::initFonts()
