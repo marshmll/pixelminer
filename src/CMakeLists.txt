@@ -6,13 +6,12 @@ target_sources(pixelminer PRIVATE
 ./States/State.cxx
 ./States/GameState.cxx
 ./States/MainMenuState.cxx
-./TIles/TileBase.cxx
-./TIles/Tile.cxx
+./Tiles/TileBase.cxx
+./Tiles/Tile.cxx
 ./Engine/Engine.cxx
 ./GUI/TextButton.cxx
 ./GUI/Button.cxx
 ./Map/Map.cxx
-./Map/TileBase.cxx
 ./Map/PerlinNoise.cxx
 ./Map/Biome.cxx
 ./Map/Chunk.cxx

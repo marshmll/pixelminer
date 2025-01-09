@@ -18,7 +18,7 @@ class TileBase
 
     virtual ~TileBase();
 
-    virtual void render(sf::RenderTarget &target) = 0;
+    virtual void render(sf::RenderTarget &target);
 
     const std::uint32_t &getId() const;
 
@@ -27,4 +27,8 @@ class TileBase
     const sf::FloatRect getGlobalBounds() const;
 
     const sf::Vector2f getCenter() const;
+
+    void setPosition(const sf::Vector2f &position);
+
+    void setGridPosition(const sf::Vector2u &position);
 };

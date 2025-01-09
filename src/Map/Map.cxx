@@ -59,7 +59,16 @@ Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32
     initBiomes();
     // generate();
 
-    loadFromFile("Assets/Maps/mymap.map");
+    for (unsigned int x = 0; x < amount_of_chunks.x * CHUNK_SIZE.x; x++)
+    {
+        for (unsigned int y = 0; y < amount_of_chunks.y * CHUNK_SIZE.y; y++)
+        {
+            putTile(Tile("Dirt", Dirt, texture_pack, tileData.at(Dirt).textureRect, grid_size, sf::Vector2u(), scale),
+                    x, y, 0);
+        }
+    }
+
+    // loadFromFile("Assets/Maps/mymap.map");
     // saveToFile("Assets/Maps/mymap.map");
 }
 
@@ -163,6 +172,37 @@ void Map::render(sf::RenderTarget &target)
     }
 }
 
+void Map::putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z)
+{
+    unsigned int chunk_index_x = static_cast<unsigned int>(x / CHUNK_SIZE.x);
+    unsigned int chunk_index_y = static_cast<unsigned int>(y / CHUNK_SIZE.y);
+
+    if (chunk_index_x < amountOfChunks.x && chunk_index_y < amountOfChunks.y && z < CHUNK_SIZE.z)
+    {
+        unsigned int tile_chunk_x = x % CHUNK_SIZE.x;
+        unsigned int tile_chunk_y = y % CHUNK_SIZE.x;
+
+        // std::cout << "tile_chunk_x: " << tile_chunk_x << " tile_chunk_y: " << tile_chunk_y << "\n";
+
+        tile.setGridPosition(
+            sf::Vector2u(tile_chunk_x + (chunk_index_x * CHUNK_SIZE.x), tile_chunk_y + (chunk_index_y * CHUNK_SIZE.y)));
+
+        if (chunks[chunk_index_x][chunk_index_y])
+        {
+            chunks[chunk_index_x][chunk_index_y]->tiles[tile_chunk_x][tile_chunk_y][z] =
+                std::make_unique<TileBase>(tile);
+        }
+        else
+        {
+            chunks[chunk_index_x][chunk_index_y] =
+                std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
+
+            chunks[chunk_index_x][chunk_index_y]->tiles[tile_chunk_x][tile_chunk_y][z] =
+                std::make_unique<TileBase>(tile);
+        }
+    }
+}
+
 void Map::saveToFile(std::filesystem::path path)
 {
     std::ofstream out(path);
@@ -233,8 +273,6 @@ void Map::loadFromFile(std::filesystem::path path)
     /* MAP DATA */
     while (in >> chunk_index_x >> chunk_index_y)
     {
-        std::cout << "chunk_index_x: " << chunk_index_x << " chunk_index_y: " << chunk_index_y << "\n";
-
         chunks[chunk_index_x][chunk_index_y] =
             std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
         unsigned int x, y, z;

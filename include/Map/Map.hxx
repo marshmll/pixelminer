@@ -58,6 +58,8 @@ class Map
 
     void render(sf::RenderTarget &target);
 
+    void putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z);
+
     void saveToFile(std::filesystem::path path);
 
     void loadFromFile(std::filesystem::path path);

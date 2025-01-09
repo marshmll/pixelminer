@@ -12,6 +12,11 @@ TileBase::~TileBase()
 {
 }
 
+void TileBase::render(sf::RenderTarget &target)
+{
+    target.draw(sprite);
+}
+
 const std::uint32_t &TileBase::getId() const
 {
     return id;
@@ -30,4 +35,15 @@ const sf::FloatRect TileBase::getGlobalBounds() const
 const sf::Vector2f TileBase::getCenter() const
 {
     return sprite.getGlobalBounds().getCenter();
+}
+
+void TileBase::setPosition(const sf::Vector2f &position)
+{
+    sprite.setPosition(position);
+}
+
+void TileBase::setGridPosition(const sf::Vector2u &position)
+{
+    sprite.setPosition(
+        sf::Vector2f(position.x * GRID_SIZE * sprite.getScale().x, position.y * GRID_SIZE * sprite.getScale().y));
 }
