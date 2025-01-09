@@ -17,8 +17,13 @@ void Engine::initVariables()
     dt = 0.f;
     dtClock.restart();
 
-    gridSize = 16;                                                           // 16x16 pixels tile textures.
+    gridSize = GRID_SIZE;                                                    // 16x16 pixels tile textures.
     scale = static_cast<float>(std::round((vm.size.x + vm.size.y) / 693.f)); // Dynamic scaling
+}
+
+void Engine::initTileData()
+{
+    tileData[Dirt] = {"Dirt", Dirt, sf::IntRect({0, 0}, {GRID_SIZE, GRID_SIZE})};
 }
 
 void Engine::initFonts()
@@ -52,6 +57,7 @@ void Engine::initStateData()
     stateData.states = &states;
     stateData.fonts = &fonts;
     stateData.textures = &textures;
+    stateData.tileData = &tileData;
     stateData.window = &window;
     stateData.vm = &vm;
 }
@@ -81,6 +87,7 @@ Engine::Engine()
 {
     initWindow();
     initVariables();
+    initTileData();
     initFonts();
     initTextures();
     initStateData();

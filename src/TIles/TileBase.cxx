@@ -12,6 +12,11 @@ TileBase::~TileBase()
 {
 }
 
+const std::uint32_t &TileBase::getId() const
+{
+    return id;
+}
+
 const sf::Vector2f TileBase::getPosition() const
 {
     return sprite.getPosition();

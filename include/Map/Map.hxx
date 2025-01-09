@@ -8,8 +8,12 @@
 class Map
 {
   private:
+    sf::Vector2u amountOfChunks;
     sf::Vector3<unsigned int> dimensions;
+
+    std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
+
     unsigned int gridSize;
     float scale;
 
@@ -38,8 +42,11 @@ class Map
     void initBiomes();
 
   public:
-    Map(const sf::Vector2<unsigned int> &amount_of_chunks, sf::Texture &texture_pack, const unsigned int &grid_size,
-        const float &scale);
+    Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
+        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
+
+    Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
+        const unsigned int &grid_size, const float &scale);
 
     ~Map();
 
@@ -50,4 +57,8 @@ class Map
     void update(const float &dt);
 
     void render(sf::RenderTarget &target);
+
+    void saveToFile(std::filesystem::path path);
+
+    void loadFromFile(std::filesystem::path path);
 };

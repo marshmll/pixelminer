@@ -2,6 +2,8 @@
 
 class State;
 
+#include "Tiles/TileData.hxx"
+
 typedef struct
 {
     unsigned int gridSize;
@@ -9,6 +11,7 @@ typedef struct
     std::stack<std::unique_ptr<State>> *states;
     std::map<std::string, sf::Font> *fonts;
     std::map<std::string, sf::Texture> *textures;
+    std::map<std::uint32_t, TileData> *tileData;
     sf::RenderWindow *window;
     sf::VideoMode *vm;
 } StateData;

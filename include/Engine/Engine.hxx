@@ -1,6 +1,8 @@
 #pragma once
 
 #include "States/MainMenuState.hxx"
+#include "Engine/Configuration.hxx"
+#include "Tiles/TileData.hxx"
 
 class Engine
 {
@@ -22,12 +24,15 @@ class Engine
     // Assets
     std::map<std::string, sf::Font> fonts;
     std::map<std::string, sf::Texture> textures;
+    std::map<std::uint32_t, TileData> tileData;
 
     /* PRIVATE METHODS */
 
     void initWindow();
 
     void initVariables();
+
+    void initTileData();
 
     void initFonts();
 

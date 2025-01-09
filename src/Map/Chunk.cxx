@@ -1,12 +1,12 @@
 #include "Map/Chunk.hxx"
 #include "stdafx.hxx"
 
-Chunk::Chunk(const sf::Vector2u grid_coords, const unsigned int &grid_size, const float &scale)
-    : gridCoords(grid_coords)
+Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale)
+    : chunkIndex(chunk_index), gridSize(grid_size), scale(scale)
 {
     chunkBorders.setSize(sf::Vector2f(CHUNK_SIZE.x * grid_size * scale, CHUNK_SIZE.y * grid_size * scale));
-    chunkBorders.setPosition(sf::Vector2f(grid_coords.x * CHUNK_SIZE.x * grid_size * scale,
-                                          grid_coords.y * CHUNK_SIZE.y * grid_size * scale));
+    chunkBorders.setPosition(sf::Vector2f(chunk_index.x * CHUNK_SIZE.x * grid_size * scale,
+                                          chunk_index.y * CHUNK_SIZE.y * grid_size * scale));
     chunkBorders.setFillColor(sf::Color(0, 100, 0, 20));
     chunkBorders.setOutlineThickness(-1.f);
     chunkBorders.setOutlineColor(sf::Color::Green);

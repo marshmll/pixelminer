@@ -47,9 +47,10 @@ void Map::initBiomes()
     };
 }
 
-Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, sf::Texture &texture_pack, const unsigned int &grid_size,
-         const float &scale)
-    : texturePack(texture_pack), gridSize(grid_size), scale(scale)
+Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
+         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
+    : amountOfChunks(amount_of_chunks), tileData(tile_data), texturePack(texture_pack), gridSize(grid_size),
+      scale(scale)
 {
     clear();
     resize(amount_of_chunks);
@@ -58,28 +59,15 @@ Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, sf::Texture &texture
     initBiomes();
     // generate();
 
-    chunks[0][0] = std::make_unique<Chunk>(sf::Vector2u(0, 0), gridSize, scale);
-    chunks[1][0] = std::make_unique<Chunk>(sf::Vector2u(1, 0), gridSize, scale);
+    loadFromFile("Assets/Maps/mymap.map");
+    // saveToFile("Assets/Maps/mymap.map");
+}
 
-    for (int i = 0; i < amount_of_chunks.x; i++)
-    {
-        for (int j = 0; j < amount_of_chunks.x; j++)
-        {
-            if (chunks[i][j])
-            {
-                for (unsigned int chunk_x = 0; chunk_x < CHUNK_SIZE.x; chunk_x++)
-                {
-                    for (unsigned int chunk_y = 0; chunk_y < CHUNK_SIZE.y; chunk_y++)
-                    {
-                        chunks[i][j]->tiles[chunk_x][chunk_y][0] = std::make_unique<Tile>(
-                            "Dirt", 1, texture_pack,
-                            sf::IntRect({0, 0}, {static_cast<int>(gridSize), static_cast<int>(gridSize)}), gridSize,
-                            sf::Vector2u(chunk_x + (CHUNK_SIZE.x * i), chunk_y + (CHUNK_SIZE.y * j)), scale);
-                    }
-                }
-            }
-        }
-    }
+Map::Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
+         const unsigned int &grid_size, const float &scale)
+    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale)
+{
+    loadFromFile(path);
 }
 
 Map::~Map()
@@ -173,4 +161,101 @@ void Map::render(sf::RenderTarget &target)
                 chunk->render(target, true);
         }
     }
+}
+
+void Map::saveToFile(std::filesystem::path path)
+{
+    std::ofstream out(path);
+
+    if (!out.is_open())
+        throw std::runtime_error("[ Map::saveToFile ] -> ERROR: Unable to write to file: " + path.string() + "\n");
+
+    /* MAP HEADER */
+
+    // Creation data timestamp
+
+    // Chunks Amount X, Chunks Amount Y
+    out << amountOfChunks.x << " " << amountOfChunks.y << "\n";
+
+    /* MAP DATA */
+    for (auto &x : chunks)
+    {
+        for (auto &chunk : x)
+        {
+            if (chunk)
+            {
+                out << chunk->chunkIndex.x << " " << chunk->chunkIndex.y << "\n";
+
+                for (unsigned int x = 0; x < CHUNK_SIZE.x; x++)
+                {
+                    for (unsigned int y = 0; y < CHUNK_SIZE.y; y++)
+                    {
+                        for (unsigned int z = 0; z < CHUNK_SIZE.z; z++)
+                        {
+                            if (chunk->tiles[x][y][z])
+                            {
+                                out << x << " " << y << " " << z << " " << chunk->tiles[x][y][z]->getId() << "\n";
+                            }
+                            else
+                            {
+                                out << "0 0 0 0" << "\n";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::cout << "[ Map::saveToFile ] -> Map saved to: " << path.string() << "\n";
+
+    out.close();
+}
+
+void Map::loadFromFile(std::filesystem::path path)
+{
+    std::ifstream in(path);
+
+    if (!in.is_open())
+        throw std::runtime_error("[ Map::loadFromFile ] -> ERROR: Unable to load from file: " + path.string() + "\n");
+
+    /* MAP HEADER */
+
+    // Creation data timestamp
+
+    // Chunks Amount X, Chunks Amount Y
+    in >> amountOfChunks.x >> amountOfChunks.y;
+    resize(amountOfChunks);
+
+    unsigned int chunk_index_x;
+    unsigned int chunk_index_y;
+
+    /* MAP DATA */
+    while (in >> chunk_index_x >> chunk_index_y)
+    {
+        std::cout << "chunk_index_x: " << chunk_index_x << " chunk_index_y: " << chunk_index_y << "\n";
+
+        chunks[chunk_index_x][chunk_index_y] =
+            std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
+        unsigned int x, y, z;
+        std::int32_t tile_id;
+
+        for (unsigned int i = 0; i < (CHUNK_SIZE.x * CHUNK_SIZE.y * CHUNK_SIZE.z); i++)
+        {
+            in >> x >> y >> z >> tile_id; // x, y and z relative to chunk
+
+            if (x + y + z + tile_id == 0)
+                continue;
+
+            TileData t_data = tileData.at(tile_id);
+
+            chunks[chunk_index_x][chunk_index_y]->tiles[x][y][z] = std::make_unique<Tile>(
+                t_data.name, t_data.id, texturePack, t_data.textureRect, gridSize,
+                sf::Vector2u(x + (chunk_index_x * CHUNK_SIZE.x), y + (chunk_index_y * CHUNK_SIZE.y)), scale);
+        }
+    }
+
+    std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path.string() << "\n";
+
+    in.close();
 }

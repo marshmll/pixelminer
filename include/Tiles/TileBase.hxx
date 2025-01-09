@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
+#include "TileData.hxx"
+
 class TileBase
 {
   protected:
     std::string name;
-    std::uint8_t id;
+    std::uint32_t id;
     sf::Texture &texture;
     sf::IntRect textureRect;
     sf::Sprite sprite;
@@ -16,6 +19,8 @@ class TileBase
     virtual ~TileBase();
 
     virtual void render(sf::RenderTarget &target) = 0;
+
+    const std::uint32_t &getId() const;
 
     const sf::Vector2f getPosition() const;
 
