@@ -14,4 +14,5 @@ target_sources(pixelminer PRIVATE
 ./Map/Map.cxx
 ./Map/PerlinNoise.cxx
 ./Map/Biome.cxx
+./Map/Chunk.cxx
 )

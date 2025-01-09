@@ -3,28 +3,24 @@
 
 void Map::clear()
 {
-    for (auto &x : tiles)
+    for (auto &x : chunks)
     {
-        for (auto &y : x)
-            y.clear();
-
         x.clear();
     }
 
-    tiles.clear();
+    chunks.clear();
 }
 
-void Map::resize(const sf::Vector3<unsigned int> &dimensions)
+void Map::resize(const sf::Vector2<unsigned int> &amount_of_chunks)
 {
-    tiles.resize(dimensions.x);
+    chunks.resize(amount_of_chunks.x);
 
-    for (auto &x : tiles)
-    {
-        x.resize(dimensions.y);
+    for (auto &vector : chunks)
+        vector.resize(amount_of_chunks.y);
 
-        for (auto &y : x)
-            y.resize(dimensions.z);
-    }
+    dimensions.x = amount_of_chunks.x * CHUNK_SIZE.x;
+    dimensions.y = amount_of_chunks.y * CHUNK_SIZE.y;
+    dimensions.z = CHUNK_SIZE.z;
 }
 
 void Map::initPerlinWaves()
@@ -51,23 +47,37 @@ void Map::initBiomes()
     };
 }
 
-Map::Map(const sf::Vector3<unsigned int> dimensions, sf::Texture &texture_pack, const unsigned int &grid_size,
+Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale)
-    : dimensions(dimensions), texturePack(texture_pack), gridSize(grid_size), scale(scale)
+    : texturePack(texture_pack), gridSize(grid_size), scale(scale)
 {
     clear();
-    resize(dimensions);
+    resize(amount_of_chunks);
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
     // generate();
 
-    for (unsigned int x = 0; x < dimensions.x; x++)
+    chunks[0][0] = std::make_unique<Chunk>(sf::Vector2u(0, 0), gridSize, scale);
+    chunks[1][0] = std::make_unique<Chunk>(sf::Vector2u(1, 0), gridSize, scale);
+
+    for (int i = 0; i < amount_of_chunks.x; i++)
     {
-        for (unsigned int y = 0; y < dimensions.y; y++)
+        for (int j = 0; j < amount_of_chunks.x; j++)
         {
-            tiles[x][y][0] = std::make_unique<Tile>("Dirt", 1, texturePack, sf::IntRect({0, 0}, {16, 16}), gridSize,
-                                                    sf::Vector2u(x, y), scale);
+            if (chunks[i][j])
+            {
+                for (unsigned int chunk_x = 0; chunk_x < CHUNK_SIZE.x; chunk_x++)
+                {
+                    for (unsigned int chunk_y = 0; chunk_y < CHUNK_SIZE.y; chunk_y++)
+                    {
+                        chunks[i][j]->tiles[chunk_x][chunk_y][0] = std::make_unique<Tile>(
+                            "Dirt", 1, texture_pack,
+                            sf::IntRect({0, 0}, {static_cast<int>(gridSize), static_cast<int>(gridSize)}), gridSize,
+                            sf::Vector2u(chunk_x + (CHUNK_SIZE.x * i), chunk_y + (CHUNK_SIZE.y * j)), scale);
+                    }
+                }
+            }
         }
     }
 }
@@ -143,18 +153,24 @@ void Map::generate()
 
 void Map::update(const float &dt)
 {
+    for (auto &x : chunks)
+    {
+        for (auto &chunk : x)
+        {
+            if (chunk)
+                chunk->update(dt);
+        }
+    }
 }
 
 void Map::render(sf::RenderTarget &target)
 {
-    for (auto &x : tiles)
+    for (auto &x : chunks)
     {
-        for (auto &y : x)
+        for (auto &chunk : x)
         {
-            for (auto &tile : y)
-            {
-                tile->render(target);
-            }
+            if (chunk)
+                chunk->render(target, true);
         }
     }
 }

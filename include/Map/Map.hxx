@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Map/Biome.hxx"
+#include "Map/Chunk.hxx"
 #include "Map/PerlinNoise.hxx"
 #include "Tiles/Tile.hxx"
 
@@ -12,7 +13,7 @@ class Map
     unsigned int gridSize;
     float scale;
 
-    std::vector<std::vector<std::vector<std::unique_ptr<TileBase>>>> tiles;
+    std::vector<std::vector<std::unique_ptr<Chunk>>> chunks;
 
     PerlinNoise noise;
 
@@ -28,7 +29,7 @@ class Map
 
     void clear();
 
-    void resize(const sf::Vector3<unsigned int> &dimensions);
+    void resize(const sf::Vector2<unsigned int> &amount_of_chunks);
 
     void initPerlinWaves();
 
@@ -37,7 +38,7 @@ class Map
     void initBiomes();
 
   public:
-    Map(const sf::Vector3<unsigned int> dimensions, sf::Texture &texture_pack, const unsigned int &grid_size,
+    Map(const sf::Vector2<unsigned int> &amount_of_chunks, sf::Texture &texture_pack, const unsigned int &grid_size,
         const float &scale);
 
     ~Map();

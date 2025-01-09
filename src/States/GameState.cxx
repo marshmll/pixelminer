@@ -9,8 +9,7 @@ void GameState::initThisPlayer()
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>(sf::Vector3<unsigned int>(20, 20, 1), data.textures->at("TexturePack"), data.gridSize,
-                                data.scale);
+    map = std::make_unique<Map>(sf::Vector2u(2, 2), data.textures->at("TexturePack"), data.gridSize, data.scale);
 }
 
 void GameState::initUdpSocket()
