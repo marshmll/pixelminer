@@ -30,15 +30,15 @@ void Map::initPerlinWaves()
 
 void Map::initNoiseMaps()
 {
-    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .12f, height_waves, {0.f, 0.f});
-    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .22f, moisture_waves, {10.f, 10.f});
-    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .12f, heat_waves, {5.f, 5.f});
+    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .08f, height_waves, {0.f, 0.f});
+    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .18f, moisture_waves, {10.f, 10.f});
+    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .08f, heat_waves, {5.f, 5.f});
 }
 
 void Map::initBiomes()
 {
     biomes = {
-        {BiomeType::Desert, .3f, 0.1f, .9f},   {BiomeType::Forest, .4f, .6f, .4f},
+        {BiomeType::Desert, .35f, 0.1f, .8f},   {BiomeType::Forest, .4f, .6f, .4f},
         {BiomeType::Grassland, .3f, .5f, .5f}, {BiomeType::Jungle, .45f, .8f, .7f},
         {BiomeType::Mountains, .9f, .3f, .3f}, {BiomeType::Ocean, .35f, .7f, .4f},
         {BiomeType::Tundra, .8f, .3f, .1f},
