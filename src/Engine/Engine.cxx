@@ -32,8 +32,6 @@ void Engine::initGraphicsSettings()
         window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
         window.setFramerateLimit(60);
     }
-
-    gfx.saveToFile("Assets/Settings/graphics.json");
 }
 
 void Engine::initVariables()

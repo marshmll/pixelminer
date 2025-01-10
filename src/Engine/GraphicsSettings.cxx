@@ -24,10 +24,9 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
         std::cout << "[ GraphicsSettings ] -> Loaded settings from file: " << path.string() << "\n";
         return true;
     }
-    catch (std::exception e)
+    catch (std::runtime_error e)
     {
-        std::cerr << "[ GraphicsSettings ] -> Could not load settings from file " << path << " : \"" << e.what() << "\""
-                  << "\n";
+        std::cerr << "[ GraphicsSettings ] -> Could not load settings from file " << path << " :\n      " << e.what();
     }
 
     return false;
@@ -53,7 +52,7 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
     {
         out << JSON::stringify(obj);
     }
-    catch (std::exception e)
+    catch (std::runtime_error e)
     {
         out.close();
         std::cerr << "[ GraphicsSettings ] -> Error while saving to file: \"" << e.what() << "\"\n";

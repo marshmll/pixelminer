@@ -15,7 +15,14 @@ struct JSONValue : public std::variant<std::nullptr_t, bool, double, long long, 
     // Helper functions to access JSON types
     template <typename T> T get()
     {
-        return std::get<T>(*this);
+        try
+        {
+            return std::get<T>(*this);
+        }
+        catch (std::exception e)
+        {
+            throw std::runtime_error("[ JSONValue ] -> Throwed an exception after variant type mismatch\n");
+        }
     }
 
     bool isNull() const
