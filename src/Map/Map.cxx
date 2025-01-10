@@ -30,9 +30,9 @@ void Map::initPerlinWaves()
 
 void Map::initNoiseMaps()
 {
-    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .2f, height_waves, {0.f, 0.f});
-    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .3f, moisture_waves, {10.f, 10.f});
-    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .2f, heat_waves, {5.f, 5.f});
+    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .12f, height_waves, {0.f, 0.f});
+    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .22f, moisture_waves, {10.f, 10.f});
+    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .12f, heat_waves, {5.f, 5.f});
 }
 
 void Map::initBiomes()
