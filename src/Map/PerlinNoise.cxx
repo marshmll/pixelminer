@@ -49,19 +49,20 @@ float PerlinNoise::noise(float x, float y)
     return (result + 1.0f) / 2.0f; // Normalize to [0, 1]
 }
 
-PerlinNoise::PerlinNoise()
+PerlinNoise::PerlinNoise(const unsigned int &seed)
 {
-    // Initialize permutation vector with values 0-255
-    permutation.resize(PERMUTATION_SIZE, 0.f);
+    // Initialize the random generator with the given seed
+    Random rng(seed);
 
+    // Initialize permutation vector with values 0-255
+    permutation.resize(PERMUTATION_SIZE, 0);
     for (int i = 0; i < PERMUTATION_SIZE; i++)
         permutation[i] = i;
 
-    // Shuffle using a random seed
-    std::srand(static_cast<unsigned>(std::time(0)));
+    // Shuffle the permutation vector
     for (int i = PERMUTATION_SIZE - 1; i > 0; i--)
     {
-        int j = std::rand() % (i + 1);
+        int j = rng.nextInt(0, i);
         std::swap(permutation[i], permutation[j]);
     }
 

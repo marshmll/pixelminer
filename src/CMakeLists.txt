@@ -4,6 +4,7 @@ target_sources(pixelminer PRIVATE
 ./Map/Map.cxx
 ./Map/Chunk.cxx
 ./Tools/JSON.cxx
+./Tools/LinearCongruentialGenerator.cxx
 ./States/GameState.cxx
 ./States/MainMenuState.cxx
 ./States/State.cxx

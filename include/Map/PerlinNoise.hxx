@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Tools/LinearCongruentialGenerator.hxx"
+
 typedef struct
 {
     float seed;
@@ -22,7 +24,7 @@ class PerlinNoise
     float noise(float x, float y);
 
   public:
-    PerlinNoise();
+    PerlinNoise(const unsigned int &seed);
     ~PerlinNoise();
 
     const NoiseMap generateNoiseMap(const unsigned int width, const unsigned int height, const float scale,

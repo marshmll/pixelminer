@@ -21,7 +21,8 @@ class Map
 
     sf::Vector2f spawnPoint;
 
-    PerlinNoise noise;
+    long long int seed;
+    std::unique_ptr<PerlinNoise> noise;
 
     std::vector<Wave> height_waves;
     std::vector<Wave> moisture_waves;
@@ -47,7 +48,7 @@ class Map
 
   public:
     Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
-        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
+        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale, const long int &seed);
 
     Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
         const unsigned int &grid_size, const float &scale);

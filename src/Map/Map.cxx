@@ -4,9 +4,7 @@
 void Map::clear()
 {
     for (auto &x : chunks)
-    {
         x.clear();
-    }
 
     chunks.clear();
 }
@@ -32,9 +30,9 @@ void Map::initPerlinWaves()
 
 void Map::initNoiseMaps()
 {
-    height_map = noise.generateNoiseMap(dimensions.x, dimensions.y, .08f, height_waves, {0.f, 0.f});
-    moisture_map = noise.generateNoiseMap(dimensions.x, dimensions.y, .18f, moisture_waves, {10.f, 10.f});
-    heat_map = noise.generateNoiseMap(dimensions.x, dimensions.y, .08f, heat_waves, {5.f, 5.f});
+    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .2f, height_waves, {0.f, 0.f});
+    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .3f, moisture_waves, {10.f, 10.f});
+    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .2f, heat_waves, {5.f, 5.f});
 }
 
 void Map::initBiomes()
@@ -54,9 +52,9 @@ void Map::randomizeSpawnPoint()
 }
 
 Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
-         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
+         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale, const long int &seed)
     : amountOfChunks(amount_of_chunks), tileData(tile_data), texturePack(texture_pack), gridSize(grid_size),
-      scale(scale)
+      scale(scale), seed(seed), noise(std::make_unique<PerlinNoise>(seed))
 {
     clear();
     resize(amount_of_chunks);
@@ -66,7 +64,7 @@ Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32
     generate();
     randomizeSpawnPoint();
 
-    saveToFile("Assets/Maps/mymap.map");
+    // saveToFile("Assets/Maps/mymap.map");
     // loadFromFile("Assets/Maps/mymap.map");
 }
 
@@ -88,7 +86,7 @@ const sf::Vector3<unsigned int> &Map::getDimensions() const
 
 void Map::generate()
 {
-    // sf::Image image({dimensions.x, dimensions.y});
+    sf::Image image({dimensions.x, dimensions.y});
 
     // Smooth biome transitions
     for (unsigned int y = 0; y < dimensions.y; y++)
@@ -119,6 +117,7 @@ void Map::generate()
             {
             case Desert:
                 tile_data = tileData.at(TileId::Sand);
+                biome_color = sf::Color(194, 178, 128, 255);
                 break;
 
             case Forest:
@@ -137,6 +136,7 @@ void Map::generate()
                 break;
 
             case Mountains:
+                biome_color = sf::Color(150, 150, 150, 255);
                 tile_data = tileData.at(TileId::Stone);
                 break;
 
@@ -151,8 +151,7 @@ void Map::generate()
                 break;
             };
 
-            // image.setPixel({x, y}, sf::Color(255 * ((heat + moisture) / 2), 255 * ((heat + moisture) / 2),
-            //                                  255 * ((heat + moisture) / 2), 255));
+            image.setPixel({x, y}, biome_color);
 
             Tile tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale);
 
@@ -163,31 +162,31 @@ void Map::generate()
         }
     }
 
-    // (void)image.saveToFile("Assets/map.png");
+    (void)image.saveToFile("Assets/map.png");
 }
 
 void Map::update(const float &dt)
 {
-    for (auto &x : chunks)
-    {
-        for (auto &chunk : x)
-        {
-            if (chunk)
-                chunk->update(dt);
-        }
-    }
+    // for (auto &x : chunks)
+    // {
+    //     for (auto &chunk : x)
+    //     {
+    //         if (chunk)
+    //             chunk->update(dt);
+    //     }
+    // }
 }
 
 void Map::render(sf::RenderTarget &target)
 {
-    for (auto &x : chunks)
-    {
-        for (auto &chunk : x)
-        {
-            if (chunk)
-                chunk->render(target, false);
-        }
-    }
+    // for (auto &x : chunks)
+    // {
+    //     for (auto &chunk : x)
+    //     {
+    //         if (chunk)
+    //             chunk->render(target, false);
+    //     }
+    // }
 }
 
 void Map::putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z)
