@@ -101,6 +101,10 @@ Engine::Engine()
     initTextures();
     initStateData();
     initMainMenuState();
+
+    JSONObject level = JSON::parse(std::filesystem::path("Assets/level.json")).get<JSONObject>();
+
+    std::cout << JSON::stringify(level) << "\n";
 }
 
 Engine::~Engine()

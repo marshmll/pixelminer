@@ -1,8 +1,9 @@
 #pragma once
 
-#include "States/MainMenuState.hxx"
 #include "Engine/Configuration.hxx"
+#include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
+#include "Tools/JSON.hxx"
 
 class Engine
 {
