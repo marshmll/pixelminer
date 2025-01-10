@@ -15,5 +15,6 @@ target_sources(pixelminer PRIVATE
 ./main.cxx
 ./Tiles/Tile.cxx
 ./Tiles/TileBase.cxx
+./Engine/GraphicsSettings.cxx
 ./Engine/Engine.cxx
 )

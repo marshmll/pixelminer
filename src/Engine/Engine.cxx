@@ -3,13 +3,37 @@
 
 /* PRIVATE METHODS */
 
-void Engine::initWindow()
+void Engine::initGraphicsSettings()
 {
-    // vm = sf::VideoMode({864, 486});
-    // window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
-    vm = sf::VideoMode::getDesktopMode();
-    window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
-    window.setFramerateLimit(60);
+    if (gfx.loadFromFile("Assets/Settings/graphics.json"))
+    {
+        vm = sf::VideoMode({gfx.screenWidth, gfx.screenHeight});
+
+        if (!vm.isValid() && gfx.fullscreen)
+        {
+            std::cout << "[ Engine ] -> Invalid resolution for fullscreen. Using windowed mode." << "\n";
+            gfx.fullscreen = false;
+        }
+
+        if (gfx.fullscreen)
+            window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+        else
+            window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+
+        window.setFramerateLimit(gfx.framerateLimit);
+
+        window.setVerticalSyncEnabled(gfx.vsync);
+    }
+    else
+    {
+        std::cout << "[ Engine ] -> Using default graphics settings." << "\n";
+
+        vm = sf::VideoMode::getDesktopMode();
+        window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+        window.setFramerateLimit(60);
+    }
+
+    gfx.saveToFile("Assets/Settings/graphics.json");
 }
 
 void Engine::initVariables()
@@ -94,17 +118,13 @@ void Engine::updateDeltaTime()
 
 Engine::Engine()
 {
-    initWindow();
+    initGraphicsSettings();
     initVariables();
     initTileData();
     initFonts();
     initTextures();
     initStateData();
     initMainMenuState();
-
-    JSONObject level = JSON::parse(std::filesystem::path("Assets/level.json")).get<JSONObject>();
-
-    std::cout << JSON::stringify(level) << "\n";
 }
 
 Engine::~Engine()

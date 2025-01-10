@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/GraphicsSettings.hxx"
 #include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
@@ -9,6 +10,8 @@ class Engine
 {
   private:
     /* ATTRIBUTES */
+
+    GraphicsSettings gfx;
 
     sf::VideoMode vm;
     sf::RenderWindow window;
@@ -29,7 +32,7 @@ class Engine
 
     /* PRIVATE METHODS */
 
-    void initWindow();
+    void initGraphicsSettings();
 
     void initVariables();
 

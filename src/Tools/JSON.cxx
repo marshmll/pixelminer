@@ -10,7 +10,7 @@ std::string JSON::stringify(const JSONValue &value)
 
 void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int indentLevel)
 {
-    const std::string indent(indentLevel * 2, ' '); // Each level indents by 2 spaces
+    const std::string indent(indentLevel * 4, ' ');
     const std::string newLine = "\n";
 
     if (value.isNull())
@@ -44,7 +44,7 @@ void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int 
             oss << indent;
             stringifyHelper(array[i], oss, indentLevel + 1);
         }
-        oss << newLine << std::string((indentLevel - 1) * 2, ' ') << "]";
+        oss << newLine << std::string((indentLevel - 1) * 4, ' ') << "]";
     }
     else if (value.isObject())
     {
@@ -59,7 +59,7 @@ void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int 
             oss << indent << '"' << key << "\": ";
             stringifyHelper(val, oss, indentLevel + 1);
         }
-        oss << newLine << std::string((indentLevel - 1) * 2, ' ') << "}";
+        oss << newLine << std::string((indentLevel - 1) * 4, ' ') << "}";
     }
 }
 
