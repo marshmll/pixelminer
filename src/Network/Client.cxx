@@ -70,6 +70,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
         connected = false;
     }
 
+    clientSocket.setBlocking(false);
     mutex.unlock();
 }
 
@@ -103,7 +104,6 @@ void Client::listenerThread()
                         disconnect();
                         mutex.unlock();
                         continue;
-                        ;
                     }
                 }
             }
@@ -144,6 +144,7 @@ void Client::disconnect()
     }
 
     GamePacket pkt = (GamePacket){"KIL", {}};
+    packetBuffer.clear();
     packetBuffer << pkt;
 
     if (clientSocket.send(packetBuffer, serverAddress->first, serverAddress->second) != sf::Socket::Status::Done)
@@ -152,14 +153,13 @@ void Client::disconnect()
                   << serverAddress->first.toString() << ":" << serverAddress->second << ". Disconnecting anyways.\n";
     }
 
-    packetBuffer.clear();
-
-    serverAddress->first = sf::IpAddress(0, 0, 0, 0);
-    serverAddress->second = 0;
     connected = false;
 
     std::cout << "[ Client::disconnect ] -> Disconnected from server " << serverAddress->first.toString() << ":"
               << serverAddress->second << "\n";
+
+    serverAddress->first = sf::IpAddress(0, 0, 0, 0);
+    serverAddress->second = 0;
 }
 
 const bool Client::isReady() const
