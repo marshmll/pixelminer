@@ -25,7 +25,7 @@ class Server
 
     void unsubscribeClient(const sf::IpAddress &ip);
 
-    void sendControlMessage(ControlPacketType type, const sf::IpAddress &ip, const unsigned short &port);
+    void sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port);
 
   public:
     Server();

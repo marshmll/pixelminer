@@ -25,8 +25,8 @@ void GameState::initServer()
 {
     try
     {
-        server.listen(55000);
-        // client.connect(sf::IpAddress::LocalHost, 55000);
+        // server.listen(55000);
+        client.connect(sf::IpAddress(192, 168, 100, 178), 55000);
     }
     catch (std::runtime_error e)
     {
@@ -61,8 +61,8 @@ void GameState::update(const float &dt)
     updatePlayerCamera();
     updateDebugText(dt);
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        server.shutdown();
+    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+    //     client.shutdown();
 }
 
 void GameState::updateMap(const float &dt)

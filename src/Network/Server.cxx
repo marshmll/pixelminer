@@ -20,19 +20,19 @@ void Server::listenerThread()
                     GamePacket game_packet;
                     packetBuffer >> game_packet;
 
-                    if (game_packet.header == Connect) // Handle player connection
+                    if (game_packet.header == "CON") // Handle player connection
                     {
                         if (!subscribeClient(ipBuffer, portBuffer))
-                            sendControlMessage(Refuse, ipBuffer, portBuffer);
+                            sendControlMessage("RFS", ipBuffer, portBuffer);
                         else
-                            sendControlMessage(Acknowledge, ipBuffer, portBuffer);
+                            sendControlMessage("ACK", ipBuffer, portBuffer);
                     }
                     else if (clients.count(ipBuffer) == 0)
                     {
                         mutex.unlock();
                         continue; // Ignore clients that did not ask to connect
                     }
-                    else if (game_packet.header == Disconnect) // Handle player disconnection
+                    else if (game_packet.header == "KIL") // Handle player disconnection
                     {
                         unsubscribeClient(ipBuffer);
                     }
@@ -73,11 +73,11 @@ void Server::unsubscribeClient(const sf::IpAddress &ip)
     }
 }
 
-void Server::sendControlMessage(ControlPacketType type, const sf::IpAddress &ip, const unsigned short &port)
+void Server::sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port)
 {
     try
     {
-        GamePacket pkt = (GamePacket){Acknowledge, {}};
+        GamePacket pkt = (GamePacket){header, {}};
 
         packetBuffer.clear();
         packetBuffer << pkt;
@@ -134,7 +134,7 @@ void Server::shutdown()
     {
         std::cout << "[ Server::shutdown ] -> Killing connection with " << ip.toString() << ":" << std::to_string(port)
                   << "\n";
-        sendControlMessage(Disconnect, ip, port);
+        sendControlMessage("KIL", ip, port);
     }
 
     online = false;

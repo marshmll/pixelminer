@@ -8,7 +8,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     ready = false;
 
     sf::Packet data;
-    GamePacket conn_pkt = (GamePacket){Connect, {}};
+    GamePacket conn_pkt = (GamePacket){"CON", {}};
 
     packetBuffer << conn_pkt;
 
@@ -31,9 +31,12 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
             if (clientSocket.receive(packetBuffer, ipBuffer, portBuffer) == sf::Socket::Status::Done)
             {
                 ready = true;
-                packetBuffer >> gamePacketBuffer;
+                GamePacket game_packet;
+                packetBuffer >> game_packet;
 
-                if (gamePacketBuffer.header == Acknowledge)
+                std::cout << "Received: " << game_packet.header << "\n";
+
+                if (game_packet.header == "ACK")
                 {
                     std::cout << "[ Client::connectorThread ] -> Connected to server: " << ip.toString() << ":"
                               << std::to_string(port) << "\n";
@@ -41,8 +44,10 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                     connected = true;
                     serverAddress->first = ipBuffer.value();
                     serverAddress->second = portBuffer;
+
+                    std::thread(&Client::listenerThread, this).detach();
                 }
-                else if (gamePacketBuffer.header == Refuse)
+                else if (game_packet.header == "RFS")
                 {
                     std::cerr << ("[ Client::connectorThread ] -> Connection with server " + ip.toString() + ":" +
                                   std::to_string(port) + " was refused.\n");
@@ -86,16 +91,18 @@ void Client::listenerThread()
                 {
                     ipBuffer = ip.value();
 
-                    if (ip != serverAddress->first || portBuffer != serverAddress->second)
-                    {
-                        mutex.unlock();
-                        continue; // Ignore any other connection
-                    }
+                    // if (ip != serverAddress->first || portBuffer != serverAddress->second)
+                    // {
+                    //     mutex.unlock();
+                    //     continue; // Ignore any other connection
+                    // }
 
                     GamePacket game_packet;
                     packetBuffer >> game_packet;
 
-                    if (game_packet.header == Disconnect) // Handle player disconnection
+                    std::cout << game_packet.header << "\n";
+
+                    if (game_packet.header == "KIL") // Handle player disconnection
                     {
                         std::cout << "[ Client::listenerThread ] -> Disconnected from server " << ip->toString() << ":"
                                   << clientSocket.getLocalPort() << "\n";

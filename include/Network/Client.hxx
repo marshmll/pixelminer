@@ -20,7 +20,6 @@ class Client
     bool connected;
 
     sf::Packet packetBuffer;
-    GamePacket gamePacketBuffer;
 
     std::optional<sf::IpAddress> ipBuffer;
     unsigned short portBuffer;
