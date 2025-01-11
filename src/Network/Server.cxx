@@ -54,6 +54,8 @@ const bool Server::subscribeClient(const sf::IpAddress &ip, const unsigned short
     else
     {
         clients[ip] = port; // Link IP and Port
+        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now subscribed."
+                  << "\n";
         return true;
     }
 }
@@ -93,7 +95,7 @@ void Server::sendControlMessage(ControlPacketType type, const sf::IpAddress &ip,
     }
 }
 
-Server::Server() : online(true), ipBuffer(0, 0, 0, 0)
+Server::Server() : online(false), ipBuffer(0, 0, 0, 0)
 {
 }
 
@@ -112,6 +114,8 @@ void Server::listen(const unsigned short port)
 
     std::thread(&Server::listenerThread, this).detach();
 
+    online = true;
+
     std::cout << "[ Server::listen ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
               << std::to_string(serverSocket.getLocalPort()) << ") online" << "\n";
 }
@@ -121,16 +125,24 @@ void Server::shutdown()
     if (!online)
     {
         std::cerr << "[ Server::shutdown ] -> Server is not online" << "\n";
+        return;
     }
-    std::cout << "[ Server::shutdown ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
-              << std::to_string(serverSocket.getLocalPort()) << ") offline" << "\n";
+
+    unsigned short port = serverSocket.getLocalPort();
 
     for (auto &[ip, port] : clients)
+    {
+        std::cout << "[ Server::shutdown ] -> Killing connection with " << ip.toString() << ":" << std::to_string(port)
+                  << "\n";
         sendControlMessage(Disconnect, ip, port);
+    }
 
     online = false;
     serverSocket.unbind();
     socketSelector.clear();
+
+    std::cout << "[ Server::shutdown ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+              << std::to_string(port) << ") offline" << "\n";
 }
 
 std::optional<GamePacket> Server::consumePacket()
