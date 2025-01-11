@@ -39,6 +39,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                               << std::to_string(port) << "\n";
 
                     connected = true;
+                    serverAddress->first = ipBuffer.value();
+                    serverAddress->second = portBuffer;
                 }
                 else if (gamePacketBuffer.header == Refuse)
                 {
