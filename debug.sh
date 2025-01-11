@@ -8,8 +8,6 @@ then
     cd ../
 fi
 
-cp Debug/compile_commands.json .
-
 rm -rf \
 Debug/bin/Assets/
 
@@ -23,3 +21,5 @@ clear &&
 cd ../../
 
 cp -rf Debug/bin/Assets src/
+
+cp Debug/compile_commands.json .

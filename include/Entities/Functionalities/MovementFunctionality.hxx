@@ -9,7 +9,7 @@ enum Movement : std::uint8_t
     AllowAll = 0b00001111,   // Allow moving all directions
 };
 
-enum MovementState
+enum MovementState : unsigned int
 {
     Idle = 0,
     Walking,
@@ -18,7 +18,7 @@ enum MovementState
     Crouching,
 };
 
-enum MovementDirection
+enum MovementDirection : unsigned int
 {
     Up = 0,
     Down,
