@@ -21,25 +21,17 @@ void GameState::initPlayerCamera()
     playerCamera.setCenter(thisPlayer->getCenter());
 }
 
-void GameState::initUdpSocket()
+void GameState::initServer()
 {
-    udpSocket.setBlocking(false);
-
-    if (udpSocket.bind(47542) != sf::Socket::Status::Done)
+    try
     {
-        std::cerr << "[ Network ] -> Error binding UDP listener to a port." << "\n";
+        server.listen(55000);
+        client.connect(sf::IpAddress::LocalHost, 55000);
     }
-
-    std::cout << "[ Network ] -> Listening to " << sf::IpAddress::getLocalAddress()->toString() << ":"
-              << udpSocket.getLocalPort() << "\n";
-
-    socketSelector.add(udpSocket);
-}
-
-void GameState::initNetworkThreads(const unsigned short port)
-{
-    std::thread(&GameState::receiveGameStateThread, this).detach();
-    std::thread(&GameState::broadcastGameStateThread, this).detach();
+    catch (std::runtime_error e)
+    {
+        std::cout << e.what();
+    }
 }
 
 void GameState::initDebugging()
@@ -49,73 +41,18 @@ void GameState::initDebugging()
         sf::Vector2f((int)GUI::percent(data.vm->size.x, 1.f), (int)GUI::percent(data.vm->size.y, 1.f)));
 }
 
-void GameState::broadcastGameStateThread()
-{
-    using namespace std::chrono_literals;
-
-    while (!isDead())
-    {
-        sf::Packet packet;
-
-        packet << thisPlayer->getPosition().x << thisPlayer->getPosition().y;
-
-        if (udpSocket.send(packet, sf::IpAddress::Broadcast, udpSocket.getLocalPort()) != sf::Socket::Status::Done)
-        {
-            std::cout << "[ Network ] -> Error sending the data." << "\n";
-        }
-
-        std::this_thread::sleep_for(30ms);
-    }
-}
-
-void GameState::receiveGameStateThread()
-{
-    while (!isDead())
-    {
-        if (socketSelector.wait(sf::seconds(5.f)))
-        {
-            if (socketSelector.isReady(udpSocket))
-            {
-                sf::Packet packet;
-                std::optional<sf::IpAddress> senderAddress;
-                unsigned short senderPort;
-                float x;
-                float y;
-
-                if (udpSocket.receive(packet, senderAddress, senderPort) == sf::Socket::Status::Done)
-                {
-                    if (senderAddress.value() != sf::IpAddress::getLocalAddress().value())
-                    {
-                        packet >> x >> y;
-
-                        if (players.count(
-                                std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)) == 0)
-                        {
-                            players[std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort)] =
-                                std::make_shared<Player>(sf::Vector2f(x, y), data.textures->at("Player1"), data.scale);
-                        }
-
-                        players.at(std::pair<sf::IpAddress, unsigned short>(senderAddress.value(), senderPort))
-                            ->setPosition({x, y});
-                    }
-                }
-            }
-        }
-    }
-}
-
 GameState::GameState(StateData &data) : State(data)
 {
     initMap();
     initThisPlayer();
     initPlayerCamera();
-    // initUdpSocket();
-    // initNetworkThreads(0);
+    initServer();
     initDebugging();
 }
 
 GameState::~GameState()
 {
+    server.shutdown();
 }
 
 void GameState::update(const float &dt)
@@ -124,6 +61,9 @@ void GameState::update(const float &dt)
     updatePlayers(dt);
     updatePlayerCamera();
     updateDebugText(dt);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        killState();
 }
 
 void GameState::updateMap(const float &dt)

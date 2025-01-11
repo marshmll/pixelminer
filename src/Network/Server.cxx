@@ -10,28 +10,31 @@ void Server::listenerThread()
         {
             if (socketSelector.isReady(serverSocket))
             {
-                if (serverSocket.receive(packetBuffer, ipBuffer, portBuffer) == sf::Socket::Status::Done)
+                packetBuffer.clear();
+                std::optional<sf::IpAddress> ip;
+
+                if (serverSocket.receive(packetBuffer, ip, portBuffer) == sf::Socket::Status::Done)
                 {
+                    ipBuffer = ip.value();
+
                     GamePacket game_packet;
                     packetBuffer >> game_packet;
 
-                    if (game_packet.type == PacketType::Connect) // Handle player connection
+                    if (game_packet.header == Connect) // Handle player connection
                     {
-                        clients[ipBuffer.value()] = portBuffer; // Link IP and Port
-
-                        GamePacket cnfrm_pkt = (GamePacket){PacketType::Accept, {}};
-                        packetBuffer << cnfrm_pkt;
-
-                        if (serverSocket.send(packetBuffer, ipBuffer.value(), portBuffer) != sf::Socket::Status::Done)
-                        {
-                            std::cerr << "[ Server ] -> Error while accepting connection from client "
-                                      << ipBuffer.value().toString() << ":" << std::to_string(portBuffer) << "\n";
-
-                            clients.erase(ipBuffer.value());
-                        }
-
-                        std::cout << "[ Server ] -> Connection with " << ipBuffer.value().toString() << ":"
-                                  << std::to_string(portBuffer) << " established successfully" << "\n";
+                        if (!subscribeClient(ipBuffer, portBuffer))
+                            sendControlMessage(Refuse, ipBuffer, portBuffer);
+                        else
+                            sendControlMessage(Acknowledge, ipBuffer, portBuffer);
+                    }
+                    else if (clients.count(ipBuffer) == 0)
+                    {
+                        mutex.unlock();
+                        continue; // Ignore clients that did not ask to connect
+                    }
+                    else if (game_packet.header == Disconnect) // Handle player disconnection
+                    {
+                        unsubscribeClient(ipBuffer);
                     }
                 }
             }
@@ -40,7 +43,57 @@ void Server::listenerThread()
     }
 }
 
-Server::Server() : online(true)
+const bool Server::subscribeClient(const sf::IpAddress &ip, const unsigned short &port)
+{
+    if (clients.count(ip) != 0)
+    {
+        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " already subscribed."
+                  << "\n";
+        return false;
+    }
+    else
+    {
+        clients[ip] = port; // Link IP and Port
+        return true;
+    }
+}
+
+void Server::unsubscribeClient(const sf::IpAddress &ip)
+{
+    try
+    {
+        clients.erase(ip);
+    }
+    catch (std::exception e)
+    {
+        std::cerr << "[ Server::unsubscribeClient ] -> Client with IP " << ip.toString() << " is not subscribed."
+                  << "\n";
+    }
+}
+
+void Server::sendControlMessage(ControlPacketType type, const sf::IpAddress &ip, const unsigned short &port)
+{
+    try
+    {
+        GamePacket pkt = (GamePacket){Acknowledge, {}};
+
+        packetBuffer.clear();
+        packetBuffer << pkt;
+
+        if (serverSocket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
+        {
+            std::cerr << "[ Server ] -> Could not send control message to " << ipBuffer.toString() << ":"
+                      << std::to_string(portBuffer) << "\n";
+        }
+    }
+    catch (std::exception e)
+    {
+        std::cerr << "[ Server ] -> Error while sending control message to " << ip.toString() << ": " << e.what()
+                  << "\n";
+    }
+}
+
+Server::Server() : online(true), ipBuffer(0, 0, 0, 0)
 {
 }
 
@@ -58,11 +111,22 @@ void Server::listen(const unsigned short port)
     socketSelector.add(serverSocket);
 
     std::thread(&Server::listenerThread, this).detach();
+
+    std::cout << "[ Server ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+              << std::to_string(serverSocket.getLocalPort()) << ") online" << "\n";
 }
 
 void Server::shutdown()
 {
+    std::cout << "[ Server ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+              << std::to_string(serverSocket.getLocalPort()) << ") offline" << "\n";
+
+    for (auto &[ip, port] : clients)
+        sendControlMessage(Disconnect, ip, port);
+
     online = false;
+    serverSocket.unbind();
+    socketSelector.clear();
 }
 
 std::optional<GamePacket> Server::consumePacket()

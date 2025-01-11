@@ -3,18 +3,17 @@
 #include "Network/GameData.hxx"
 #include <SFML/Network/Packet.hpp>
 
-enum PacketType : unsigned int
+enum ControlPacketType : unsigned int
 {
     Connect,
-    Accept,
+    Acknowledge,
     Refuse,
-    EntityData,
-    PlayerData,
+    Disconnect
 };
 
 struct GamePacket
 {
-    unsigned int type;
+    unsigned int header;
     sf::Packet data;
 };
 

@@ -16,10 +16,16 @@ class Server
     bool online;
 
     sf::Packet packetBuffer;
-    std::optional<sf::IpAddress> ipBuffer;
+    sf::IpAddress ipBuffer;
     unsigned short portBuffer;
 
     void listenerThread();
+
+    const bool subscribeClient(const sf::IpAddress &ip, const unsigned short &port);
+
+    void unsubscribeClient(const sf::IpAddress &ip);
+
+    void sendControlMessage(ControlPacketType type, const sf::IpAddress &ip, const unsigned short &port);
 
   public:
     Server();

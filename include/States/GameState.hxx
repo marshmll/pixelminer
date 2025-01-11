@@ -3,6 +3,8 @@
 #include "Entities/Playable/Player.hxx"
 #include "GUI/Utils.hxx"
 #include "Map/Map.hxx"
+#include "Network/Client.hxx"
+#include "Network/Server.hxx"
 #include "States/State.hxx"
 
 class GameState : public State
@@ -15,9 +17,8 @@ class GameState : public State
 
     std::unique_ptr<Map> map;
 
-    // MULTIPLAYER
-    sf::UdpSocket udpSocket;
-    sf::SocketSelector socketSelector;
+    Server server;
+    Client client;
 
     std::unique_ptr<sf::Text> debugText;
 
@@ -27,15 +28,9 @@ class GameState : public State
 
     void initPlayerCamera();
 
-    void initUdpSocket();
-
-    void initNetworkThreads(const unsigned short port);
+    void initServer();
 
     void initDebugging();
-
-    void broadcastGameStateThread();
-
-    void receiveGameStateThread();
 
   public:
     GameState(StateData &data);
