@@ -6,7 +6,13 @@ void Entity::createMovementFunctionality(const float &max_velocity, const std::u
     movementFunctionality.emplace(sprite, max_velocity, movement_flags);
 }
 
+void Entity::createAnimationFunctionality()
+{
+    animationFunctionality.emplace(name, id, sprite, spriteSheet);
+}
+
 Entity::Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
+
     : name(name), spawnPosition(spawn_position), id(reinterpret_cast<std::uint64_t>(this)), spriteSheet(sprite_sheet),
       sprite(spriteSheet)
 {
@@ -34,6 +40,16 @@ void Entity::move(const float &dt, const MovementDirection &direction)
     else
         std::cout << "[ Entity: \"" << name << "\" ID: " << std::hex << id << std::dec
                   << " ]: Tried to move without an initialized movement component." << "\n";
+}
+
+void Entity::playAnimation(const std::string &name)
+{
+    if (animationFunctionality.has_value())
+        animationFunctionality->play(name);
+
+    else
+        std::cout << "[ Entity: \"" << name << "\" ID: " << std::hex << id << std::dec
+                  << " ]: Tried to play animation without an initialized animation component." << "\n";
 }
 
 const sf::Vector2f Entity::getPosition() const

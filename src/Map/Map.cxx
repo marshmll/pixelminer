@@ -179,14 +179,14 @@ void Map::update(const float &dt)
 
 void Map::render(sf::RenderTarget &target)
 {
-    // for (auto &x : chunks)
-    // {
-    //     for (auto &chunk : x)
-    //     {
-    //         if (chunk)
-    //             chunk->render(target, false);
-    //     }
-    // }
+    for (auto &x : chunks)
+    {
+         for (auto &chunk : x)
+         {
+             if (chunk)
+                 chunk->render(target, false);
+         }
+     }
 }
 
 void Map::putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z)

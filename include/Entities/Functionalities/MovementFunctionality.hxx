@@ -12,7 +12,7 @@ enum Movement : std::uint8_t
 enum MovementState
 {
     Idle = 0,
-    Moving,
+    Walking,
     Sprinting,
     Jumping,
     Crouching,
@@ -41,9 +41,13 @@ class MovementFunctionality
 
     ~MovementFunctionality();
 
+    void update();
+
     void move(const float &dt, const MovementDirection direction);
 
     const MovementState &getState() const;
 
     const MovementDirection &getDirection() const;
+
+    const std::string getDirectionAsString() const;
 };

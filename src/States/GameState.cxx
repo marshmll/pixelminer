@@ -120,12 +120,12 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
-    playerCamera.setCenter(thisPlayer->getCenter());
-
     map->update(dt);
 
     for (auto &[addr, player] : players)
         player->update(dt, player.get() == thisPlayer.get());
+
+	playerCamera.setCenter(thisPlayer->getCenter());
 
     std::stringstream sstream;
 

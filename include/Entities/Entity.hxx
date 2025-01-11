@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entities/Functionalities/AnimationFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
 
 class Entity
@@ -14,8 +15,11 @@ class Entity
     sf::Sprite sprite;
 
     std::optional<MovementFunctionality> movementFunctionality;
+    std::optional<AnimationFunctionality> animationFunctionality;
 
     void createMovementFunctionality(const float &max_velocity, const std::uint8_t &movement_flags);
+
+    void createAnimationFunctionality();
 
   public:
     Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale);
@@ -26,6 +30,8 @@ class Entity
     virtual void render(sf::RenderTarget &target);
 
     void move(const float &dt, const MovementDirection &direction);
+
+    void playAnimation(const std::string &name);
 
     const sf::Vector2f getPosition() const;
 
