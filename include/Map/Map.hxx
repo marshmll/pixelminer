@@ -55,7 +55,9 @@ class Map
 
     ~Map();
 
-    const sf::Vector3<unsigned int> &getDimensions() const;
+    const sf::Vector3<unsigned int> &getGridDimensions() const;
+
+    const sf::Vector2f getRealDimensions() const;
 
     void generate();
 

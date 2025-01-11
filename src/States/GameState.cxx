@@ -120,13 +120,49 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
-    map->update(dt);
+    updateMap(dt);
+    updatePlayers(dt);
+    updatePlayerCamera();
+    updateDebugText(dt);
+}
 
+void GameState::updateMap(const float &dt)
+{
+    map->update(dt);
+}
+
+void GameState::updatePlayers(const float &dt)
+{
     for (auto &[addr, player] : players)
         player->update(dt, player.get() == thisPlayer.get());
+}
 
-	playerCamera.setCenter(thisPlayer->getCenter());
+void GameState::updatePlayerCamera()
+{
+    playerCamera.setCenter(thisPlayer->getCenter());
 
+    if ((playerCamera.getCenter().x - playerCamera.getSize().x / 2.f) <= 0.f)
+    {
+        playerCamera.setCenter({playerCamera.getSize().x / 2.f, playerCamera.getCenter().y});
+    }
+    else if ((playerCamera.getCenter().x + playerCamera.getSize().x / 2.f) >= map->getRealDimensions().x)
+    {
+        playerCamera.setCenter(
+            {map->getRealDimensions().x - playerCamera.getSize().x / 2.f, playerCamera.getCenter().y});
+    }
+    if ((playerCamera.getCenter().y - playerCamera.getSize().y / 2.f) <= 0.f)
+    {
+        playerCamera.setCenter({playerCamera.getCenter().x, playerCamera.getSize().y / 2.f});
+    }
+    else if ((playerCamera.getCenter().y + playerCamera.getSize().y / 2.f) >= map->getRealDimensions().y)
+    {
+        playerCamera.setCenter(
+            {playerCamera.getCenter().x, map->getRealDimensions().y - playerCamera.getSize().y / 2.f});
+    }
+}
+
+void GameState::updateDebugText(const float &dt)
+{
     std::stringstream sstream;
 
     sstream << static_cast<int>(1.f / dt) << " fps" << "\n"

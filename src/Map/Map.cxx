@@ -38,7 +38,7 @@ void Map::initNoiseMaps()
 void Map::initBiomes()
 {
     biomes = {
-        {BiomeType::Desert, .35f, 0.1f, .8f},   {BiomeType::Forest, .4f, .6f, .4f},
+        {BiomeType::Desert, .35f, 0.1f, .8f},  {BiomeType::Forest, .4f, .6f, .4f},
         {BiomeType::Grassland, .3f, .5f, .5f}, {BiomeType::Jungle, .45f, .8f, .7f},
         {BiomeType::Mountains, .9f, .3f, .3f}, {BiomeType::Ocean, .35f, .7f, .4f},
         {BiomeType::Tundra, .8f, .3f, .1f},
@@ -79,9 +79,14 @@ Map::~Map()
 {
 }
 
-const sf::Vector3<unsigned int> &Map::getDimensions() const
+const sf::Vector3<unsigned int> &Map::getGridDimensions() const
 {
     return dimensions;
+}
+
+const sf::Vector2f Map::getRealDimensions() const
+{
+    return sf::Vector2f(dimensions.x * gridSize * scale, dimensions.y * gridSize * scale);
 }
 
 void Map::generate()
@@ -181,12 +186,12 @@ void Map::render(sf::RenderTarget &target)
 {
     for (auto &x : chunks)
     {
-         for (auto &chunk : x)
-         {
-             if (chunk)
-                 chunk->render(target, false);
-         }
-     }
+        for (auto &chunk : x)
+        {
+            if (chunk)
+                chunk->render(target, false);
+        }
+    }
 }
 
 void Map::putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z)

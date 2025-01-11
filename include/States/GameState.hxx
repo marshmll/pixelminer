@@ -39,9 +39,18 @@ class GameState : public State
 
   public:
     GameState(StateData &data);
+
     ~GameState();
 
     void update(const float &dt);
+
+    void updateMap(const float &dt);
+
+    void updatePlayers(const float &dt);
+
+    void updatePlayerCamera();
+
+    void updateDebugText(const float &dt);
 
     void render(sf::RenderTarget &target);
 };
