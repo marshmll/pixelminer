@@ -14,7 +14,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
 
     if (clientSocket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
     {
-        std::cerr << "[ Client ] -> Could not ask for a connection with " << ip.toString() << ":"
+        std::cerr << "[ Client::connectorThread ] -> Could not ask for a connection with " << ip.toString() << ":"
                   << std::to_string(port) << "\n";
         ready = true;
         connected = false;
@@ -33,26 +33,24 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 ready = true;
                 packetBuffer >> gamePacketBuffer;
 
-                std::cout << gamePacketBuffer.header << "\n";
-
                 if (gamePacketBuffer.header == Acknowledge)
                 {
-                    std::cout << "[ Client ] -> Connected to server: " << ip.toString() << ":" << std::to_string(port)
-                              << "\n";
+                    std::cout << "[ Client::connectorThread ] -> Connected to server: " << ip.toString() << ":"
+                              << std::to_string(port) << "\n";
 
                     connected = true;
                 }
                 else if (gamePacketBuffer.header == Refuse)
                 {
-                    std::cerr << ("[ Client ] -> Connection with server " + ip.toString() + ":" + std::to_string(port) +
-                                  " refused.\n");
+                    std::cerr << ("[ Client::connectorThread ] -> Connection with server " + ip.toString() + ":" +
+                                  std::to_string(port) + " was refused.\n");
 
                     connected = false;
                 }
                 else
                 {
-                    std::cerr << ("[ Client ] -> Bad response from server " + ip.toString() + ":" +
-                                  std::to_string(port) + ", refuse to connect.\n");
+                    std::cerr << ("[ Client::connectorThread ] -> Bad response from server " + ip.toString() + ":" +
+                                  std::to_string(port) + ", refusing to connect.\n");
 
                     connected = false;
                 }
@@ -61,7 +59,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     }
     else
     {
-        std::cerr << ("[ Client ] -> Connection timeout with " + ip.toString() + ":" + std::to_string(port) + "\n");
+        std::cerr << ("[ Client::connectorThread ] -> Connection timeout with " + ip.toString() + ":" +
+                      std::to_string(port) + "\n");
         ready = true;
         connected = false;
     }
@@ -96,7 +95,7 @@ void Client::listenerThread()
 
                     if (game_packet.header == Disconnect) // Handle player disconnection
                     {
-                        std::cout << "[ Client ] -> Disconnected from server " << ip->toString() << ":"
+                        std::cout << "[ Client::listenerThread ] -> Disconnected from server " << ip->toString() << ":"
                                   << clientSocket.getLocalPort() << "\n";
                         connected = false;
                         mutex.unlock();
@@ -114,7 +113,7 @@ Client::Client() : ready(true), connected(false)
     clientSocket.setBlocking(false);
 
     if (clientSocket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
-        throw std::runtime_error("[ Client ] -> Could not bind to a port\n");
+        throw std::runtime_error("[ Client::Client ] -> Could not bind to a port\n");
 
     socketSelector.add(clientSocket);
 }

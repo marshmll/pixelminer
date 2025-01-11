@@ -82,14 +82,14 @@ void Server::sendControlMessage(ControlPacketType type, const sf::IpAddress &ip,
 
         if (serverSocket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
         {
-            std::cerr << "[ Server ] -> Could not send control message to " << ipBuffer.toString() << ":"
-                      << std::to_string(portBuffer) << "\n";
+            std::cerr << "[ Server::sendControlMessage ] -> Could not send control message to " << ipBuffer.toString()
+                      << ":" << std::to_string(portBuffer) << "\n";
         }
     }
     catch (std::exception e)
     {
-        std::cerr << "[ Server ] -> Error while sending control message to " << ip.toString() << ": " << e.what()
-                  << "\n";
+        std::cerr << "[ Server::sendControlMessage ] -> Error while sending control message to " << ip.toString()
+                  << ": " << e.what() << "\n";
     }
 }
 
@@ -106,19 +106,23 @@ void Server::listen(const unsigned short port)
     serverSocket.setBlocking(false);
 
     if (serverSocket.bind(port) != sf::Socket::Status::Done)
-        throw std::runtime_error("[ Server ] -> Could not bind to port " + std::to_string(port) + "\n");
+        throw std::runtime_error("[ Server::listen ] -> Could not bind to port " + std::to_string(port) + "\n");
 
     socketSelector.add(serverSocket);
 
     std::thread(&Server::listenerThread, this).detach();
 
-    std::cout << "[ Server ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+    std::cout << "[ Server::listen ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
               << std::to_string(serverSocket.getLocalPort()) << ") online" << "\n";
 }
 
 void Server::shutdown()
 {
-    std::cout << "[ Server ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+    if (!online)
+    {
+        std::cerr << "[ Server::shutdown ] -> Server is not online" << "\n";
+    }
+    std::cout << "[ Server::shutdown ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
               << std::to_string(serverSocket.getLocalPort()) << ") offline" << "\n";
 
     for (auto &[ip, port] : clients)
