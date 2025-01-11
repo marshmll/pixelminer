@@ -61,8 +61,8 @@ void GameState::update(const float &dt)
     updatePlayerCamera();
     updateDebugText(dt);
 
-    // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-    //     client.shutdown();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        client.disconnect();
 }
 
 void GameState::updateMap(const float &dt)

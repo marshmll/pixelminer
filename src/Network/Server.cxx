@@ -22,7 +22,7 @@ void Server::listenerThread()
 
                     if (game_packet.header == "CON") // Handle player connection
                     {
-                        if (!subscribeClient(ipBuffer, portBuffer))
+                        if (!connectClient(ipBuffer, portBuffer))
                             sendControlMessage("RFS", ipBuffer, portBuffer);
                         else
                             sendControlMessage("ACK", ipBuffer, portBuffer);
@@ -34,7 +34,7 @@ void Server::listenerThread()
                     }
                     else if (game_packet.header == "KIL") // Handle player disconnection
                     {
-                        unsubscribeClient(ipBuffer);
+                        disconnectClient(ipBuffer);
                     }
                 }
             }
@@ -43,32 +43,34 @@ void Server::listenerThread()
     }
 }
 
-const bool Server::subscribeClient(const sf::IpAddress &ip, const unsigned short &port)
+const bool Server::connectClient(const sf::IpAddress &ip, const unsigned short &port)
 {
     if (clients.count(ip) != 0)
     {
-        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " already subscribed."
+        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is already connected."
                   << "\n";
         return false;
     }
     else
     {
         clients[ip] = port; // Link IP and Port
-        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now subscribed."
+        std::cout << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now connected."
                   << "\n";
         return true;
     }
 }
 
-void Server::unsubscribeClient(const sf::IpAddress &ip)
+void Server::disconnectClient(const sf::IpAddress &ip)
 {
     try
     {
         clients.erase(ip);
+        std::cout << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now disconnected."
+                  << "\n";
     }
     catch (std::exception e)
     {
-        std::cerr << "[ Server::unsubscribeClient ] -> Client with IP " << ip.toString() << " is not subscribed."
+        std::cerr << "[ Server::unsubscribeClient ] -> Client with IP " << ip.toString() << " is not connected."
                   << "\n";
     }
 }

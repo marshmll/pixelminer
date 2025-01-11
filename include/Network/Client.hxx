@@ -34,6 +34,8 @@ class Client
 
     void connect(const sf::IpAddress &ip, const unsigned short &port, const float &timeout = 10.f);
 
+    void disconnect();
+
     const bool isReady() const;
 
     const bool isConnected() const;

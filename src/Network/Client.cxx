@@ -34,8 +34,6 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 GamePacket game_packet;
                 packetBuffer >> game_packet;
 
-                std::cout << "Received: " << game_packet.header << "\n";
-
                 if (game_packet.header == "ACK")
                 {
                     std::cout << "[ Client::connectorThread ] -> Connected to server: " << ip.toString() << ":"
@@ -91,24 +89,21 @@ void Client::listenerThread()
                 {
                     ipBuffer = ip.value();
 
-                    // if (ip != serverAddress->first || portBuffer != serverAddress->second)
-                    // {
-                    //     mutex.unlock();
-                    //     continue; // Ignore any other connection
-                    // }
+                    if (ip != serverAddress->first || portBuffer != serverAddress->second)
+                    {
+                        mutex.unlock();
+                        continue; // Ignore any other connection
+                    }
 
                     GamePacket game_packet;
                     packetBuffer >> game_packet;
 
-                    std::cout << game_packet.header << "\n";
-
                     if (game_packet.header == "KIL") // Handle player disconnection
                     {
-                        std::cout << "[ Client::listenerThread ] -> Disconnected from server " << ip->toString() << ":"
-                                  << clientSocket.getLocalPort() << "\n";
-                        connected = false;
+                        disconnect();
                         mutex.unlock();
-                        return;
+                        continue;
+                        ;
                     }
                 }
             }
@@ -138,6 +133,33 @@ void Client::connect(const sf::IpAddress &ip, const unsigned short &port, const 
                                  serverAddress->first.toString() + ":" + std::to_string(serverAddress->second) + "\n");
 
     std::thread(&Client::connectorThread, this, ip, port, timeout).detach();
+}
+
+void Client::disconnect()
+{
+    if (!connected)
+    {
+        std::cerr << "[ Client::disconnect ] -> Not connected to any server" << "\n";
+        return;
+    }
+
+    GamePacket pkt = (GamePacket){"KIL", {}};
+    packetBuffer << pkt;
+
+    if (clientSocket.send(packetBuffer, serverAddress->first, serverAddress->second) != sf::Socket::Status::Done)
+    {
+        std::cerr << "[ Client::disconnect ] -> Could not communicate disconnection with server "
+                  << serverAddress->first.toString() << ":" << serverAddress->second << ". Disconnecting anyways.\n";
+    }
+
+    packetBuffer.clear();
+
+    serverAddress->first = sf::IpAddress(0, 0, 0, 0);
+    serverAddress->second = 0;
+    connected = false;
+
+    std::cout << "[ Client::disconnect ] -> Disconnected from server " << serverAddress->first.toString() << ":"
+              << serverAddress->second << "\n";
 }
 
 const bool Client::isReady() const

@@ -21,9 +21,9 @@ class Server
 
     void listenerThread();
 
-    const bool subscribeClient(const sf::IpAddress &ip, const unsigned short &port);
+    const bool connectClient(const sf::IpAddress &ip, const unsigned short &port);
 
-    void unsubscribeClient(const sf::IpAddress &ip);
+    void disconnectClient(const sf::IpAddress &ip);
 
     void sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port);
 
