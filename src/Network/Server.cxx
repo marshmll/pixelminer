@@ -29,6 +29,10 @@ void Server::listenerThread()
                     }
                     else if (clients.count(ipBuffer) == 0)
                     {
+                        std::cerr << "[ Server::listenerThread ] -> Client with IP " << ipBuffer.toString()
+                                  << " is not connected."
+                                  << "\n";
+
                         mutex.unlock();
                         continue; // Ignore clients that did not ask to connect
                     }
