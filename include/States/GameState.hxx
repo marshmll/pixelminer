@@ -22,13 +22,13 @@ class GameState : public State
 
     std::unique_ptr<sf::Text> debugText;
 
-    void initServer();
-
     void initMap();
 
     void initThisPlayer();
 
     void initPlayerCamera();
+
+    void initServer();
 
     void initDebugging();
 

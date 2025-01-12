@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Network/GamePacket.hxx"
-
-using NetworkAddress = std::pair<sf::IpAddress, unsigned short>;
+#include "Network/File.hxx"
 
 class Client
 {
@@ -10,9 +8,10 @@ class Client
     std::mutex mutex;
 
     sf::SocketSelector socketSelector;
-    sf::UdpSocket clientSocket;
+    sf::UdpSocket socket;
 
-    std::optional<NetworkAddress> serverAddress;
+    sf::IpAddress serverIp;
+    unsigned short serverPort;
 
     std::queue<sf::Packet> packetQueue;
 
@@ -25,6 +24,12 @@ class Client
     unsigned short portBuffer;
 
     void connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout);
+
+    void handleServerACK(const sf::IpAddress &ip, const unsigned short &port);
+
+    void handleServerRFS(const sf::IpAddress &ip, const unsigned short &port);
+
+    void handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port);
 
     void listenerThread();
 
@@ -39,4 +44,8 @@ class Client
     const bool isReady() const;
 
     const bool isConnected() const;
+
+    void sendFile(std::filesystem::path path, std::ios::openmode mode);
+
+    void receiveFile(std::filesystem::path folder);
 };

@@ -4,7 +4,7 @@ target_sources(pixelminer PRIVATE
 ./Entities/Functionalities/AnimationFunctionalitiy.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx
-./Network/GamePacket.cxx
+./Network/File.cxx
 ./Network/Server.cxx
 ./Network/Client.cxx
 ./States/State.cxx

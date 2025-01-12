@@ -1,19 +1,6 @@
 #include "States/GameState.hxx"
 #include "stdafx.hxx"
 
-void GameState::initServer()
-{
-    try
-    {
-        // server.listen(55000);
-        client.connect(sf::IpAddress(192, 168, 100, 178), 55000);
-    }
-    catch (std::runtime_error e)
-    {
-        std::cout << e.what();
-    }
-}
-
 void GameState::initMap()
 {
     map = std::make_unique<Map>(*data.tileData, data.textures->at("TexturePack"), data.gridSize, data.scale,
@@ -32,6 +19,19 @@ void GameState::initPlayerCamera()
 {
     playerCamera.setSize(sf::Vector2f(data.vm->size));
     playerCamera.setCenter(thisPlayer->getCenter());
+}
+
+void GameState::initServer()
+{
+    try
+    {
+        server.listen(55000);
+        client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
+    }
+    catch (std::runtime_error e)
+    {
+        std::cout << e.what();
+    }
 }
 
 void GameState::initDebugging()

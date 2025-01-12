@@ -8,24 +8,26 @@ void Server::listenerThread()
         mutex.lock();
         if (socketSelector.wait(sf::seconds(10.f)))
         {
-            if (socketSelector.isReady(serverSocket))
+            if (socketSelector.isReady(socket))
             {
                 packetBuffer.clear();
                 std::optional<sf::IpAddress> ip;
 
-                if (serverSocket.receive(packetBuffer, ip, portBuffer) == sf::Socket::Status::Done)
+                if (socket.receive(packetBuffer, ip, portBuffer) == sf::Socket::Status::Done)
                 {
                     ipBuffer = ip.value();
 
-                    GamePacket game_packet;
-                    packetBuffer >> game_packet;
+                    std::string header;
+                    packetBuffer >> header;
 
-                    if (game_packet.header == "CON") // Handle player connection
+                    if (header == "CON") // Handle player connection
                     {
                         if (!connectClient(ipBuffer, portBuffer))
                             sendControlMessage("RFS", ipBuffer, portBuffer);
                         else
+                        {
                             sendControlMessage("ACK", ipBuffer, portBuffer);
+                        }
                     }
                     else if (clients.count(ipBuffer) == 0)
                     {
@@ -36,15 +38,48 @@ void Server::listenerThread()
                         mutex.unlock();
                         continue; // Ignore clients that did not ask to connect
                     }
-                    else if (game_packet.header == "KIL") // Handle player disconnection
+                    else if (header == "KIL") // Handle player disconnection
                     {
                         disconnectClient(ipBuffer);
+                    }
+                    else if (header == "FIL")
+                    {
+                        receiveFile(ipBuffer, "Assets/Server");
+                    }
+                    else
+                    {
+                        packetQueue.push(packetBuffer); // Send to queue
                     }
                 }
             }
         }
         mutex.unlock();
     }
+}
+
+Server::Server() : online(false), ipBuffer(0, 0, 0, 0)
+{
+}
+
+Server::~Server()
+{
+}
+
+void Server::listen(const unsigned short port)
+{
+    socket.setBlocking(false);
+
+    if (socket.bind(port) != sf::Socket::Status::Done)
+        throw std::runtime_error("[ Server::listen ] -> Could not bind to port " + std::to_string(port) + "\n");
+
+    socketSelector.add(socket);
+
+    std::thread(&Server::listenerThread, this).detach();
+
+    online = true;
+
+    std::cout << "[ Server::listen ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
+              << std::to_string(socket.getLocalPort()) << ") online" << "\n";
 }
 
 const bool Server::connectClient(const sf::IpAddress &ip, const unsigned short &port)
@@ -83,16 +118,16 @@ void Server::sendControlMessage(const std::string header, const sf::IpAddress &i
 {
     try
     {
-        GamePacket pkt = (GamePacket){header, {}};
-
         packetBuffer.clear();
-        packetBuffer << pkt;
+        packetBuffer << header;
 
-        if (serverSocket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
+        if (socket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
         {
             std::cerr << "[ Server::sendControlMessage ] -> Could not send control message to " << ipBuffer.toString()
                       << ":" << std::to_string(portBuffer) << "\n";
         }
+
+        packetBuffer.clear();
     }
     catch (std::exception e)
     {
@@ -101,29 +136,103 @@ void Server::sendControlMessage(const std::string header, const sf::IpAddress &i
     }
 }
 
-Server::Server() : online(false), ipBuffer(0, 0, 0, 0)
+void Server::sendFile(const sf::IpAddress client, std::filesystem::path path, std::ios::openmode mode)
 {
+    if (clients.count(client) == 0)
+        throw std::runtime_error("[ Server::sendFile ] -> Client " + client.toString() = " is not connected.\n");
+
+    if (!std::filesystem::exists(path))
+        throw std::runtime_error("[ Server::sendFile ] -> File \"" + path.string() = "\" does not exist.\n");
+
+    std::ifstream file(path, mode);
+
+    if (!file.is_open())
+        throw std::runtime_error("[ Server::sendFile ] -> Could not open file \"" + path.string() = "\"\n");
+
+    FileDescriptor f_desc;
+
+    f_desc.filename = path.filename().string();
+    f_desc.filesize = std::filesystem::file_size(path);
+    f_desc.mode = static_cast<int>(mode);
+    f_desc.part = 1;
+    f_desc.total_parts = 1;
+
+    if (f_desc.filesize > sf::UdpSocket::MaxDatagramSize) // TODO: Segment files bigger than MaxDatagramSize
+        throw std::runtime_error("[ Server::sendFile ] -> File \"" + path.string() =
+                                     "\" too big (" + std::to_string(f_desc.filesize) + " bytes)\n");
+
+    packetBuffer.clear();
+    packetBuffer << "FIL";
+    packetBuffer << f_desc;
+
+    if (mode == std::ios::binary)
+    {
+        std::uint8_t byte;
+        while (!file.eof())
+        {
+            file.read(reinterpret_cast<char *>(&byte), sizeof(byte));
+            packetBuffer << byte;
+        }
+    }
+    else
+    {
+        char c;
+        while (file >> std::noskipws >> c)
+            packetBuffer << c;
+    }
+
+    file.close();
+
+    if (socket.send(packetBuffer, client, clients.at(client)) != sf::Socket::Status::Done)
+        throw std::runtime_error("[ Server::sendFile ] -> Error sending file \"" + path.string() = "\"\n");
+
+    packetBuffer.clear();
+
+    std::cout << "[ Server::sendFile ] -> Sent file \"" << f_desc.filename << "\" (" << f_desc.filesize << " bytes) to "
+              << client.toString() << ":" << clients.at(client) << "\n";
 }
 
-Server::~Server()
+void Server::receiveFile(const sf::IpAddress client, std::filesystem::path folder)
 {
-}
+    if (clients.count(client) == 0)
+        throw std::runtime_error("[ Server::sendFile ] -> Client " + client.toString() = " is not connected.\n");
 
-void Server::listen(const unsigned short port)
-{
-    serverSocket.setBlocking(false);
+    if (!std::filesystem::exists(folder))
+        std::filesystem::create_directory(folder);
 
-    if (serverSocket.bind(port) != sf::Socket::Status::Done)
-        throw std::runtime_error("[ Server::listen ] -> Could not bind to port " + std::to_string(port) + "\n");
+    std::string path_str = folder.string();
+    if (path_str.back() != '/')
+        path_str.push_back('/');
 
-    socketSelector.add(serverSocket);
+    FileDescriptor f_desc;
+    packetBuffer >> f_desc;
 
-    std::thread(&Server::listenerThread, this).detach();
+    std::ofstream file(path_str + f_desc.filename, static_cast<std::ios::openmode>(f_desc.mode));
 
-    online = true;
+    if (!file.is_open())
+        throw std::runtime_error("[ Server::receiveFile ] -> Could not write file \"" + path_str + f_desc.filename +
+                                 "\"\n");
 
-    std::cout << "[ Server::listen ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
-              << std::to_string(serverSocket.getLocalPort()) << ") online" << "\n";
+    if (static_cast<std::ios::openmode>(f_desc.mode) == std::ios::binary)
+    {
+        std::uint8_t byte;
+
+        while (packetBuffer >> byte)
+            file.write(reinterpret_cast<char *>(&byte), sizeof(byte));
+    }
+    else
+    {
+        std::uint8_t c;
+
+        while (packetBuffer >> c)
+            file.write(reinterpret_cast<char *>(c), sizeof(c));
+    }
+
+    packetBuffer.clear();
+    file.close();
+
+    std::cout << "[ Server::receiveFile ] -> Received file \"" << path_str + f_desc.filename << "\" ("
+              << f_desc.filesize << " bytes) to " << client.toString() << ":" << clients.at(client) << "\n";
 }
 
 void Server::shutdown()
@@ -134,7 +243,7 @@ void Server::shutdown()
         return;
     }
 
-    unsigned short port = serverSocket.getLocalPort();
+    unsigned short port = socket.getLocalPort();
 
     for (auto &[ip, port] : clients)
     {
@@ -144,16 +253,16 @@ void Server::shutdown()
     }
 
     online = false;
-    serverSocket.unbind();
+    socket.unbind();
     socketSelector.clear();
 
     std::cout << "[ Server::shutdown ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
               << std::to_string(port) << ") offline" << "\n";
 }
 
-std::optional<GamePacket> Server::consumePacket()
+std::optional<sf::Packet> Server::consumePacket()
 {
-    std::optional<GamePacket> packet;
+    std::optional<sf::Packet> packet;
 
     if (!packetQueue.empty())
     {
