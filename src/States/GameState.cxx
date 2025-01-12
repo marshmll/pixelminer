@@ -26,7 +26,7 @@ void GameState::initServer()
     try
     {
         server.listen(55000);
-        client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
+        // client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
     }
     catch (std::runtime_error e)
     {

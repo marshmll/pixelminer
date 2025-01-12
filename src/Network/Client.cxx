@@ -36,10 +36,6 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 if (header == "ACK")
                 {
                     handleServerACK(ipBuffer.value(), portBuffer);
-                    sendFile("Assets/Maps/myworld/regions/r.0.0.region", std::ios::binary);
-                    sendFile("Assets/Maps/myworld/regions/r.0.1.region", std::ios::binary);
-                    sendFile("Assets/Maps/myworld/regions/r.1.0.region", std::ios::binary);
-                    sendFile("Assets/Maps/myworld/regions/r.1.1.region", std::ios::binary);
                 }
                 else if (header == "RFS")
                 {

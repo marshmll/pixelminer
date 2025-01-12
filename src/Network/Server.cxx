@@ -27,6 +27,10 @@ void Server::listenerThread()
                         else
                         {
                             sendControlMessage("ACK", ipBuffer, portBuffer);
+                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.0.0.region", std::ios::binary);
+                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.0.1.region", std::ios::binary);
+                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.1.0.region", std::ios::binary);
+                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.1.1.region", std::ios::binary);
                         }
                     }
                     else if (clients.count(ipBuffer) == 0)
