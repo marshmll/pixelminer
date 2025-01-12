@@ -3,7 +3,7 @@
 #include "Engine/Configuration.hxx"
 #include "Tiles/TileBase.hxx"
 
-static constexpr sf::Vector3<unsigned int> CHUNK_SIZE = {16, 16, 2};
+static constexpr sf::Vector3<unsigned int> CHUNK_SIZE_IN_TILES = {16, 16, 2};
 
 class Chunk
 {
@@ -12,7 +12,7 @@ class Chunk
     sf::Vector2<unsigned int> chunkIndex;
     unsigned int gridSize;
     float scale;
-    std::array<std::array<std::array<std::unique_ptr<TileBase>, CHUNK_SIZE.z>, CHUNK_SIZE.y>, CHUNK_SIZE.x> tiles;
+    std::array<std::array<std::array<std::unique_ptr<TileBase>, CHUNK_SIZE_IN_TILES.z>, CHUNK_SIZE_IN_TILES.y>, CHUNK_SIZE_IN_TILES.x> tiles;
 
     Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale);
     ~Chunk();

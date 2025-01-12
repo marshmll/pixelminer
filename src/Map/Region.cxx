@@ -4,11 +4,11 @@
 Region::Region(const sf::Vector2u region_index, const unsigned int &grid_size, const float &scale)
     : regionIndex(region_index), gridSize(grid_size), scale(scale)
 {
-    regionBorders.setSize(sf::Vector2f(REGION_SIZE.x * CHUNK_SIZE.x * grid_size * scale,
-                                       REGION_SIZE.y * CHUNK_SIZE.y * grid_size * scale));
+    regionBorders.setSize(sf::Vector2f(REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * grid_size * scale,
+                                       REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * grid_size * scale));
 
-    regionBorders.setPosition(sf::Vector2f(region_index.x * REGION_SIZE.x * CHUNK_SIZE.x * grid_size * scale,
-                                           region_index.y * REGION_SIZE.y * CHUNK_SIZE.y * grid_size * scale));
+    regionBorders.setPosition(sf::Vector2f(region_index.x * REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * grid_size * scale,
+                                           region_index.y * REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * grid_size * scale));
 
     regionBorders.setFillColor(sf::Color::Transparent);
     regionBorders.setOutlineThickness(-1.f);

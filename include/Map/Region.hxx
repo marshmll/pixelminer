@@ -2,13 +2,13 @@
 
 #include "Map/Chunk.hxx"
 
-static constexpr sf::Vector2u REGION_SIZE = {2, 2};
+static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {8, 8};
 
 class Region
 {
   public:
     sf::RectangleShape regionBorders;
-    std::array<std::array<std::unique_ptr<Chunk>, REGION_SIZE.y>, REGION_SIZE.x> chunks;
+    std::array<std::array<std::unique_ptr<Chunk>, REGION_SIZE_IN_CHUNKS.y>, REGION_SIZE_IN_CHUNKS.x> chunks;
     sf::Vector2<unsigned int> regionIndex;
     unsigned int gridSize;
     float scale;

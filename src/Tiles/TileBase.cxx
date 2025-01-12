@@ -27,7 +27,7 @@ const sf::Vector2f TileBase::getPosition() const
     return sprite.getPosition();
 }
 
-const sf::Color TileBase::getColor() const
+sf::Color TileBase::getColor() const
 {
     return sprite.getColor();
 }

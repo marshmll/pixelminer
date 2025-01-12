@@ -6,11 +6,11 @@
 #include "Tiles/Tile.hxx"
 
 static constexpr sf::Vector2u MAX_REGIONS = {1, 1}; // TEMP
-static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE.x, MAX_REGIONS.y *REGION_SIZE.y};
+static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x, MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
 
 static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
-    MAX_CHUNKS.x * CHUNK_SIZE.x,
-    MAX_CHUNKS.y *CHUNK_SIZE.y,
+    MAX_CHUNKS.x * CHUNK_SIZE_IN_TILES.x,
+    MAX_CHUNKS.y *CHUNK_SIZE_IN_TILES.y,
 };
 
 class Map
