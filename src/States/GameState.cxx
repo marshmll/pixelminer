@@ -109,9 +109,20 @@ void GameState::updateDebugText(const float &dt)
             << "XY: " << std::fixed << std::setprecision(5) << thisPlayer->getCenter().x / data.gridSize << " | "
             << std::fixed << std::setprecision(5) << thisPlayer->getCenter().y / data.gridSize << "\n"
             << "chunk: ["
-            << static_cast<unsigned int>(thisPlayer->getCenter().x / (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale)) << ", "
-            << static_cast<unsigned int>(thisPlayer->getCenter().y / (CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale)) << "]"
-            << "\n";
+            << static_cast<unsigned int>(thisPlayer->getCenter().x /
+                                         (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+            << ", "
+            << static_cast<unsigned int>(thisPlayer->getCenter().y /
+                                         (CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+            << "]"
+            << "\n"
+            << "region: ["
+            << static_cast<unsigned int>(thisPlayer->getCenter().x /
+                                         (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+            << ", "
+            << static_cast<unsigned int>(thisPlayer->getCenter().y /
+                                         (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+            << "]";
 
     debugText->setString(sstream.str());
 }
@@ -120,7 +131,7 @@ void GameState::render(sf::RenderTarget &target)
 {
     target.setView(playerCamera);
 
-    map->render(target, true);
+    map->render(target, false);
 
     for (auto &[name, player] : players)
         player->render(target);

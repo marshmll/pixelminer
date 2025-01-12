@@ -5,7 +5,7 @@
 #include "Map/Region.hxx"
 #include "Tiles/Tile.hxx"
 
-static constexpr sf::Vector2u MAX_REGIONS = {1, 1}; // TEMP
+static constexpr sf::Vector2u MAX_REGIONS = {2, 2}; // TEMP
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x, MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
 
 static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {

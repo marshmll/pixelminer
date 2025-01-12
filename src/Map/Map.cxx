@@ -175,13 +175,15 @@ void Map::putTile(TileBase tile, const unsigned int &grid_x, const unsigned int 
     const unsigned int region_index_x = grid_x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
     const unsigned int region_index_y = grid_y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
 
-    const unsigned int chunk_index_x = (grid_x - (region_index_x * REGION_SIZE_IN_CHUNKS.x)) / CHUNK_SIZE_IN_TILES.x;
-    const unsigned int chunk_index_y = (grid_y - (region_index_y * REGION_SIZE_IN_CHUNKS.y)) / CHUNK_SIZE_IN_TILES.y;
+    const unsigned int chunk_index_x =
+        ((grid_x - (region_index_x * REGION_SIZE_IN_CHUNKS.x)) / CHUNK_SIZE_IN_TILES.x) % REGION_SIZE_IN_CHUNKS.x;
+    const unsigned int chunk_index_y =
+        ((grid_y - (region_index_y * REGION_SIZE_IN_CHUNKS.y)) / CHUNK_SIZE_IN_TILES.y) % REGION_SIZE_IN_CHUNKS.y;
 
-    const unsigned int tile_index_x = (grid_x - (chunk_index_x * CHUNK_SIZE_IN_TILES.x));
-    const unsigned int tile_index_y = (grid_y - (chunk_index_y * CHUNK_SIZE_IN_TILES.y));
+    const unsigned int tile_index_x = (grid_x - (chunk_index_x * CHUNK_SIZE_IN_TILES.x)) % CHUNK_SIZE_IN_TILES.x;
+    const unsigned int tile_index_y = (grid_y - (chunk_index_y * CHUNK_SIZE_IN_TILES.y)) % CHUNK_SIZE_IN_TILES.y;
 
-    // std::cout << region_index_x << " " << region_index_y << "\n";
+    // std::cout << chunk_index_x << " " << chunk_index_y << "\n";
 
     tile.setGridPosition({grid_x, grid_y});
 
@@ -194,7 +196,9 @@ void Map::putTile(TileBase tile, const unsigned int &grid_x, const unsigned int 
     if (!regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y])
     {
         regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y] =
-            std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
+            std::make_unique<Chunk>(sf::Vector2u(chunk_index_x + (region_index_x * REGION_SIZE_IN_CHUNKS.x),
+                                                 chunk_index_y + (region_index_y * REGION_SIZE_IN_CHUNKS.y)),
+                                    gridSize, scale);
     }
 
     regions[region_index_x][region_index_y]

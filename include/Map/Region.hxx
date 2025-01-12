@@ -2,7 +2,7 @@
 
 #include "Map/Chunk.hxx"
 
-static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {8, 8};
+static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {2, 2};
 
 class Region
 {
