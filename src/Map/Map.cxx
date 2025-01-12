@@ -219,8 +219,6 @@ void Map::saveToFile(std::filesystem::path path)
     if (!std::filesystem::exists(path_str + "regions"))
         std::filesystem::create_directory(path_str + "regions");
 
-    std::stringstream fname;
-
     for (auto &row : regions)
     {
         for (auto &region : row)
@@ -228,14 +226,16 @@ void Map::saveToFile(std::filesystem::path path)
             if (!region)
                 continue;
 
-            fname.clear();
-            fname << "r." << region->regionIndex.x << "." << region->regionIndex.y << ".region";
+            std::string fname =
+                "r." + std::to_string(region->regionIndex.x) + "." + std::to_string(region->regionIndex.y) + ".region";
 
-            std::ofstream region_file(path_str + "regions/" + fname.str(), std::ios::binary);
+            std::ofstream region_file(path_str + "regions/" + fname, std::ios::binary);
+
+            std::cout << path_str + "regions/" + fname << "\n";
 
             if (!region_file.is_open())
                 throw std::runtime_error("[ Map::saveToFile ] -> Could not write region file: " + path_str +
-                                         "regions/" + fname.str() + "\n");
+                                         "regions/" + fname + "\n");
 
             for (unsigned short chunk_offset_x = 0; chunk_offset_x < REGION_SIZE_IN_CHUNKS.x; chunk_offset_x++)
             {
