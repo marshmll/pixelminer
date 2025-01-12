@@ -17,6 +17,7 @@ target_sources(pixelminer PRIVATE
 ./GUI/TextButton.cxx
 ./GUI/Button.cxx
 ./Map/Map.cxx
+./Map/Region.cxx
 ./Map/PerlinNoise.cxx
 ./Map/Biome.cxx
 ./Map/Chunk.cxx

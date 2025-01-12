@@ -1,23 +1,28 @@
 #pragma once
 
 #include "Map/Biome.hxx"
-#include "Map/Chunk.hxx"
 #include "Map/PerlinNoise.hxx"
+#include "Map/Region.hxx"
 #include "Tiles/Tile.hxx"
+
+static constexpr sf::Vector2u MAX_REGIONS = {1, 1}; // TEMP
+static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE.x, MAX_REGIONS.y *REGION_SIZE.y};
+
+static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
+    MAX_CHUNKS.x * CHUNK_SIZE.x,
+    MAX_CHUNKS.y *CHUNK_SIZE.y,
+};
 
 class Map
 {
   private:
-    sf::Vector2u amountOfChunks;
-    sf::Vector3<unsigned int> dimensions;
-
     std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
 
     unsigned int gridSize;
     float scale;
 
-    std::vector<std::vector<std::unique_ptr<Chunk>>> chunks;
+    std::vector<std::vector<std::unique_ptr<Region>>> regions;
 
     sf::Vector2f spawnPoint;
 
@@ -34,9 +39,7 @@ class Map
 
     std::vector<Biome> biomes;
 
-    void clear();
-
-    void resize(const sf::Vector2<unsigned int> &amount_of_chunks);
+    void resize();
 
     void initPerlinWaves();
 
@@ -47,15 +50,13 @@ class Map
     void randomizeSpawnPoint();
 
   public:
-    Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
-        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale, const long int &seed);
+    Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
+        const float &scale, const long int &seed);
 
     Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
         const unsigned int &grid_size, const float &scale);
 
     ~Map();
-
-    const sf::Vector3<unsigned int> &getGridDimensions() const;
 
     const sf::Vector2f getRealDimensions() const;
 
@@ -63,9 +64,9 @@ class Map
 
     void update(const float &dt);
 
-    void render(sf::RenderTarget &target);
+    void render(sf::RenderTarget &target, const bool show_regions_and_chunks = false);
 
-    void putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z);
+    void putTile(TileBase tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
 
     void saveToFile(std::filesystem::path path);
 

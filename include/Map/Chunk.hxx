@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
-#include "Tiles/Tile.hxx"
+#include "Tiles/TileBase.hxx"
+
+static constexpr sf::Vector3<unsigned int> CHUNK_SIZE = {16, 16, 2};
 
 class Chunk
 {

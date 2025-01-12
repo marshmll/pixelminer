@@ -1,24 +1,12 @@
 #include "Map/Map.hxx"
 #include "stdafx.hxx"
 
-void Map::clear()
+void Map::resize()
 {
-    for (auto &x : chunks)
-        x.clear();
+    regions.resize(MAX_REGIONS.x);
 
-    chunks.clear();
-}
-
-void Map::resize(const sf::Vector2<unsigned int> &amount_of_chunks)
-{
-    chunks.resize(amount_of_chunks.x);
-
-    for (auto &vector : chunks)
-        vector.resize(amount_of_chunks.y);
-
-    dimensions.x = amount_of_chunks.x * CHUNK_SIZE.x;
-    dimensions.y = amount_of_chunks.y * CHUNK_SIZE.y;
-    dimensions.z = CHUNK_SIZE.z;
+    for (auto &row : regions)
+        row.resize(MAX_REGIONS.y);
 }
 
 void Map::initPerlinWaves()
@@ -30,9 +18,10 @@ void Map::initPerlinWaves()
 
 void Map::initNoiseMaps()
 {
-    height_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .08f, height_waves, {0.f, 0.f});
-    moisture_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .18f, moisture_waves, {10.f, 10.f});
-    heat_map = noise->generateNoiseMap(dimensions.x, dimensions.y, .08f, heat_waves, {5.f, 5.f});
+    height_map = noise->generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, height_waves, {0.f, 0.f});
+    moisture_map =
+        noise->generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .18f, moisture_waves, {10.f, 10.f});
+    heat_map = noise->generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heat_waves, {5.f, 5.f});
 }
 
 void Map::initBiomes()
@@ -47,17 +36,17 @@ void Map::initBiomes()
 
 void Map::randomizeSpawnPoint()
 {
-    spawnPoint.x = static_cast<float>((std::rand() % dimensions.x) * gridSize);
-    spawnPoint.y = static_cast<float>((std::rand() % dimensions.y) * gridSize);
+    spawnPoint.x = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.x) * gridSize);
+    spawnPoint.y = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.y) * gridSize);
 }
 
-Map::Map(const sf::Vector2<unsigned int> &amount_of_chunks, std::map<std::uint32_t, TileData> &tile_data,
-         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale, const long int &seed)
-    : amountOfChunks(amount_of_chunks), tileData(tile_data), texturePack(texture_pack), gridSize(grid_size),
-      scale(scale), seed(seed), noise(std::make_unique<PerlinNoise>(seed))
+Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
+         const float &scale, const long int &seed)
+
+    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), seed(seed),
+      noise(std::make_unique<PerlinNoise>(seed))
 {
-    clear();
-    resize(amount_of_chunks);
+    resize();
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
@@ -79,24 +68,19 @@ Map::~Map()
 {
 }
 
-const sf::Vector3<unsigned int> &Map::getGridDimensions() const
-{
-    return dimensions;
-}
-
 const sf::Vector2f Map::getRealDimensions() const
 {
-    return sf::Vector2f(dimensions.x * gridSize * scale, dimensions.y * gridSize * scale);
+    return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
 }
 
 void Map::generate()
 {
-    sf::Image image({dimensions.x, dimensions.y});
+    sf::Image image({MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y});
 
     // Smooth biome transitions
-    for (unsigned int y = 0; y < dimensions.y; y++)
+    for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
     {
-        for (unsigned int x = 0; x < dimensions.x; x++)
+        for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
         {
             float height = height_map[x][y];
             float moisture = moisture_map[x][y];
@@ -172,57 +156,50 @@ void Map::generate()
 
 void Map::update(const float &dt)
 {
-    // for (auto &x : chunks)
-    // {
-    //     for (auto &chunk : x)
-    //     {
-    //         if (chunk)
-    //             chunk->update(dt);
-    //     }
-    // }
 }
 
-void Map::render(sf::RenderTarget &target)
+void Map::render(sf::RenderTarget &target, const bool show_regions_and_chunks)
 {
-    for (auto &x : chunks)
+    for (auto &row : regions)
     {
-        for (auto &chunk : x)
+        for (auto &region : row)
         {
-            if (chunk)
-                chunk->render(target, false);
+            if (region)
+                region->render(target, show_regions_and_chunks);
         }
     }
 }
 
-void Map::putTile(TileBase tile, const unsigned int &x, const unsigned int &y, const unsigned int &z)
+void Map::putTile(TileBase tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z)
 {
-    unsigned int chunk_index_x = static_cast<unsigned int>(x / CHUNK_SIZE.x);
-    unsigned int chunk_index_y = static_cast<unsigned int>(y / CHUNK_SIZE.y);
+    const unsigned int region_index_x = grid_x / (REGION_SIZE.x * CHUNK_SIZE.x);
+    const unsigned int region_index_y = grid_y / (REGION_SIZE.y * CHUNK_SIZE.y);
 
-    if (chunk_index_x < amountOfChunks.x && chunk_index_y < amountOfChunks.y && z < CHUNK_SIZE.z)
+    const unsigned int chunk_index_x = (grid_x - (region_index_x * REGION_SIZE.x)) / CHUNK_SIZE.x;
+    const unsigned int chunk_index_y = (grid_y - (region_index_y * REGION_SIZE.y)) / CHUNK_SIZE.y;
+
+    const unsigned int tile_index_x = (grid_x - (chunk_index_x * CHUNK_SIZE.x));
+    const unsigned int tile_index_y = (grid_y - (chunk_index_y * CHUNK_SIZE.y));
+
+    // std::cout << region_index_x << " " << region_index_y << "\n";
+
+    tile.setGridPosition({grid_x, grid_y});
+
+    if (!regions[region_index_x][region_index_y])
     {
-        unsigned int tile_chunk_x = x % CHUNK_SIZE.x;
-        unsigned int tile_chunk_y = y % CHUNK_SIZE.x;
-
-        // std::cout << "tile_chunk_x: " << tile_chunk_x << " tile_chunk_y: " << tile_chunk_y << "\n";
-
-        tile.setGridPosition(
-            sf::Vector2u(tile_chunk_x + (chunk_index_x * CHUNK_SIZE.x), tile_chunk_y + (chunk_index_y * CHUNK_SIZE.y)));
-
-        if (chunks[chunk_index_x][chunk_index_y])
-        {
-            chunks[chunk_index_x][chunk_index_y]->tiles[tile_chunk_x][tile_chunk_y][z] =
-                std::make_unique<TileBase>(tile);
-        }
-        else
-        {
-            chunks[chunk_index_x][chunk_index_y] =
-                std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
-
-            chunks[chunk_index_x][chunk_index_y]->tiles[tile_chunk_x][tile_chunk_y][z] =
-                std::make_unique<TileBase>(tile);
-        }
+        regions[region_index_x][region_index_y] =
+            std::make_unique<Region>(sf::Vector2u(region_index_x, region_index_y), gridSize, scale);
     }
+
+    if (!regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y])
+    {
+        regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y] =
+            std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
+    }
+
+    regions[region_index_x][region_index_y]
+        ->chunks[chunk_index_x][chunk_index_y]
+        ->tiles[tile_index_x][tile_index_y][grid_z] = std::make_unique<TileBase>(tile);
 }
 
 void Map::saveToFile(std::filesystem::path path)
@@ -231,54 +208,6 @@ void Map::saveToFile(std::filesystem::path path)
 
     if (!out.is_open())
         throw std::runtime_error("[ Map::saveToFile ] -> ERROR: Unable to write to file: " + path.string() + "\n");
-
-    /* MAP HEADER */
-
-    // Creation data timestamp
-
-    // Chunks Amount X, Chunks Amount Y
-    out << amountOfChunks.x << " " << amountOfChunks.y << "\n";
-
-    // Spawnpoint X, y
-    out << spawnPoint.x << " " << spawnPoint.y << "\n";
-
-    /* MAP DATA */
-    for (auto &x : chunks)
-    {
-        for (auto &chunk : x)
-        {
-            if (chunk)
-            {
-                out << chunk->chunkIndex.x << " " << chunk->chunkIndex.y << "\n";
-
-                for (unsigned int x = 0; x < CHUNK_SIZE.x; x++)
-                {
-                    for (unsigned int y = 0; y < CHUNK_SIZE.y; y++)
-                    {
-                        for (unsigned int z = 0; z < CHUNK_SIZE.z; z++)
-                        {
-                            if (chunk->tiles[x][y][z])
-                            {
-                                out << x << " " << y << " " << z << " " << chunk->tiles[x][y][z]->getId() << " ";
-
-                                if (chunk->tiles[x][y][z]->getId() == TileId::GrassTop)
-                                    out << static_cast<unsigned>(chunk->tiles[x][y][z]->getColor().r) << " "
-                                        << static_cast<unsigned>(chunk->tiles[x][y][z]->getColor().g) << " "
-                                        << static_cast<unsigned>(chunk->tiles[x][y][z]->getColor().b) << " "
-                                        << static_cast<unsigned>(chunk->tiles[x][y][z]->getColor().a) << " ";
-
-                                out << "\n";
-                            }
-                            else
-                            {
-                                out << "0 0 0 0" << "\n";
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     std::cout << "[ Map::saveToFile ] -> Map saved to: " << path.string() << "\n";
 
@@ -291,51 +220,6 @@ void Map::loadFromFile(std::filesystem::path path)
 
     if (!in.is_open())
         throw std::runtime_error("[ Map::loadFromFile ] -> ERROR: Unable to load from file: " + path.string() + "\n");
-
-    /* MAP HEADER */
-
-    // Creation data timestamp
-
-    // Chunks Amount X, Chunks Amount Y
-    in >> amountOfChunks.x >> amountOfChunks.y;
-    resize(amountOfChunks);
-
-    // Spawnpoint X, Y
-    in >> spawnPoint.x >> spawnPoint.y;
-
-    unsigned int chunk_index_x;
-    unsigned int chunk_index_y;
-
-    /* MAP DATA */
-    while (in >> chunk_index_x >> chunk_index_y)
-    {
-        chunks[chunk_index_x][chunk_index_y] =
-            std::make_unique<Chunk>(sf::Vector2u(chunk_index_x, chunk_index_y), gridSize, scale);
-        unsigned int x, y, z;
-        std::int32_t tile_id;
-        sf::Color tile_color;
-
-        for (unsigned int i = 0; i < (CHUNK_SIZE.x * CHUNK_SIZE.y * CHUNK_SIZE.z); i++)
-        {
-            in >> x >> y >> z >> tile_id; // x, y and z relative to chunk
-
-            if (x + y + z + tile_id == 0)
-                continue;
-
-            TileData t_data = tileData.at(tile_id);
-
-            chunks[chunk_index_x][chunk_index_y]->tiles[x][y][z] = std::make_unique<Tile>(
-                t_data.name, t_data.id, texturePack, t_data.textureRect, gridSize,
-                sf::Vector2u(x + (chunk_index_x * CHUNK_SIZE.x), y + (chunk_index_y * CHUNK_SIZE.y)), scale);
-
-            if (tile_id == TileId::GrassTop)
-            {
-                in >> tile_color.r >> tile_color.g >> tile_color.b >> tile_color.a;
-
-                chunks[chunk_index_x][chunk_index_y]->tiles[x][y][z]->setColor(tile_color);
-            }
-        }
-    }
 
     std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path.string() << "\n";
 

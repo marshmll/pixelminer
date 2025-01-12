@@ -1,10 +1,23 @@
 #include "States/GameState.hxx"
 #include "stdafx.hxx"
 
+void GameState::initServer()
+{
+    try
+    {
+        // server.listen(55000);
+        client.connect(sf::IpAddress(192, 168, 100, 178), 55000);
+    }
+    catch (std::runtime_error e)
+    {
+        std::cout << e.what();
+    }
+}
+
 void GameState::initMap()
 {
-    map = std::make_unique<Map>(sf::Vector2u(3, 3), *data.tileData, data.textures->at("TexturePack"), data.gridSize,
-                                data.scale, 56465456464654);
+    map = std::make_unique<Map>(*data.tileData, data.textures->at("TexturePack"), data.gridSize, data.scale,
+                                56465456464654);
 }
 
 void GameState::initThisPlayer()
@@ -19,19 +32,6 @@ void GameState::initPlayerCamera()
 {
     playerCamera.setSize(sf::Vector2f(data.vm->size));
     playerCamera.setCenter(thisPlayer->getCenter());
-}
-
-void GameState::initServer()
-{
-    try
-    {
-        // server.listen(55000);
-        client.connect(sf::IpAddress(192, 168, 100, 178), 55000);
-    }
-    catch (std::runtime_error e)
-    {
-        std::cout << e.what();
-    }
 }
 
 void GameState::initDebugging()
@@ -116,7 +116,7 @@ void GameState::render(sf::RenderTarget &target)
 {
     target.setView(playerCamera);
 
-    map->render(target);
+    map->render(target, true);
 
     for (auto &[name, player] : players)
         player->render(target);
