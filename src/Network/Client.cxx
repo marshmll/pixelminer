@@ -64,7 +64,6 @@ void Client::listenerThread()
         {
             if (socketSelector.isReady(socket))
             {
-                pktBuf.clear();
                 std::optional<sf::IpAddress> ip;
 
                 if (socket.receive(pktBuf, ip, portBuf) == sf::Socket::Status::Done)
@@ -75,35 +74,37 @@ void Client::listenerThread()
                     std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
                     packetQueue.push(packet);
 
+                    pktBuf.clear();
+
                     handler();
                 }
             }
+        }
+        else
+        {
+            disconnect();
+            logger.logInfo("Connection with server " + serverIp.toString() + " timed out after 10 seconds.");
         }
     }
 }
 
 void Client::handler()
 {
-    while (connected)
+    for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
     {
-        std::lock_guard<std::mutex> lock(mutex);
+        auto &[pkt_addr, pkt] = opt.value();
 
-        for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
+        std::string header;
+        pkt >> header;
+
+        if (header == "KIL")
         {
-            auto &[pkt_addr, pkt] = opt.value();
-
-            std::string header;
-            pkt >> header;
-
-            if (header == "KIL")
-            {
-                disconnect();
-                break;
-            }
-            else if (header == "FILE")
-            {
-                receiveFile("Assets/Client/");
-            }
+            disconnect();
+            break;
+        }
+        else if (header == "FILE")
+        {
+            receiveFile("Assets/Client/");
         }
     }
 }
