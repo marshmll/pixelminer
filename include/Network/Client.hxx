@@ -38,6 +38,8 @@ class Client
 
     void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
 
+    void handleServerRCN(const sf::IpAddress &ip, const unsigned short &port);
+
     void handleServerRFS(const sf::IpAddress &ip, const unsigned short &port);
 
     void handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port);

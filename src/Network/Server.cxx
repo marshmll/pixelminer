@@ -108,6 +108,9 @@ void Server::handleAsk(const sf::IpAddress &ip, const unsigned short &port)
                     conn.port = port;
                     conn.active = true;
                     conn.timeoutClock.restart();
+                    logger.logInfo("Client with IP reconnected: " + ip.toString());
+                    pktBuf << "RCN" << uid;
+                    send(pktBuf, conn.ip, conn.port);
                     return;
                 }
                 else

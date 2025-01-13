@@ -34,6 +34,11 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                     pktBuf >> myUid;
                     handleServerACKUID(ipBuffer.value(), portBuf);
                 }
+                else if (header == "RCN")
+                {
+                    pktBuf >> myUid;
+                    handleServerRCN(ipBuffer.value(), portBuf);
+                }
                 else if (header == "RFS")
                 {
                     handleServerRFS(ipBuffer.value(), portBuf);
@@ -111,12 +116,25 @@ void Client::handler()
 
 void Client::handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logInfo("Connected to server: " + ip.toString() + ":" + std::to_string(port) + "");
+    logger.logInfo("Connected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
 
     pktBuf.clear();
     pktBuf << "UID+ACK" << myUid;
+
+    send(pktBuf);
+    setReady(true);
+    setConnected(true);
+
+    std::thread(&Client::listenerThread, this).detach();
+}
+
+void Client::handleServerRCN(const sf::IpAddress &ip, const unsigned short &port)
+{
+    logger.logInfo("Reconnected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
+    serverIp = ip;
+    serverPort = port;
 
     send(pktBuf);
     setReady(true);
