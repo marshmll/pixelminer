@@ -1,9 +1,9 @@
 {
     "framerateLimit": 60,
-    "fullscreen": false,
+    "fullscreen": true,
     "resolution": {
-        "height": 468,
-        "width": 846
+        "height": 768,
+        "width": 1366
     },
     "vsync": false
 }

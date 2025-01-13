@@ -5,12 +5,13 @@
 #include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
+#include "Tools/Logger.hxx"
 
 class Engine
 {
   private:
     /* ATTRIBUTES */
-
+    Logger logger;
     GraphicsSettings gfx;
 
     sf::VideoMode vm;

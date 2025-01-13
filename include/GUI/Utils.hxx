@@ -1,6 +1,6 @@
 #pragma once
 
-namespace GUI
+namespace gui
 {
 static float percent(float value, float percent)
 {
@@ -11,4 +11,4 @@ static unsigned int charSize(sf::VideoMode &vm, unsigned int divisor = 60)
 {
     return static_cast<unsigned int>((vm.size.x + vm.size.y) / divisor);
 }
-} // namespace GUI
+} // namespace gui

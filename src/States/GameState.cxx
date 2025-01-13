@@ -36,9 +36,9 @@ void GameState::initServer()
 
 void GameState::initDebugging()
 {
-    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", GUI::charSize(*data.vm, 130));
+    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", gui::charSize(*data.vm, 130));
     debugText->setPosition(
-        sf::Vector2f((int)GUI::percent(data.vm->size.x, 1.f), (int)GUI::percent(data.vm->size.y, 1.f)));
+        sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
 GameState::GameState(StateData &data) : State(data)

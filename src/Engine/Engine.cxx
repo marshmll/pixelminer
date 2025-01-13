@@ -16,14 +16,18 @@ void Engine::initGraphicsSettings()
 
         if (!vm.isValid() && gfx.fullscreen)
         {
-            std::cout << "[ Engine ] -> Invalid resolution for fullscreen. Using windowed mode." << "\n";
+            logger.logInfo("Invalid resolution for fullscreen. Using windowed mode.");
             gfx.fullscreen = false;
         }
 
         if (gfx.fullscreen)
             window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
         else
+        {
             window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+            window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x / 2 - window.getSize().x / 2,
+                                            sf::VideoMode::getDesktopMode().size.y / 2 - window.getSize().y / 2));
+        }
 
         window.setFramerateLimit(gfx.framerateLimit);
 
@@ -31,7 +35,7 @@ void Engine::initGraphicsSettings()
     }
     else
     {
-        std::cout << "[ Engine ] -> Using default graphics settings." << "\n";
+        logger.logInfo("Using default graphics settings.");
 
         vm = sf::VideoMode::getDesktopMode();
         window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
@@ -65,25 +69,28 @@ void Engine::initTileData()
 void Engine::initFonts()
 {
     if (!fonts["MinecraftRegular"].openFromFile("Assets/Fonts/MinecraftRegular.otf"))
-        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftRegular\"\n");
+        logger.logError("ERROR: COULD NOT LOAD FONT \"MinecraftRegular\".");
 
     if (!fonts["MinecraftItalic"].openFromFile("Assets/Fonts/MinecraftItalic.otf"))
-        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftItalic\"\n");
+        logger.logError("ERROR: COULD NOT LOAD FONT \"MinecraftItalic\".");
 
     if (!fonts["MinecraftBold"].openFromFile("Assets/Fonts/MinecraftBold.otf"))
-        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBold\"\n");
+        logger.logError("ERROR: COULD NOT LOAD FONT \"MinecraftBold\".");
 
     if (!fonts["MinecraftBoldItalic"].openFromFile("Assets/Fonts/MinecraftBoldItalic.otf"))
-        throw std::runtime_error("[ Engine::initFonts ] -> ERROR: COULD NOT LOAD FONT \"MinecraftBoldItalic\"\n");
+        logger.logError("ERROR: COULD NOT LOAD FONT \"MinecraftBoldItalic\".");
 }
 
 void Engine::initTextures()
 {
+    if (!textures["Stone"].loadFromFile("Assets/Images/Backgrounds/stone.png"))
+        logger.logError("ERROR: COULD NOT LOAD TEXTURE \"Stone\".;");
+
     if (!textures["TexturePack"].loadFromFile("Assets/Images/Textures/texture_pack.png"))
-        throw std::runtime_error("[ Engine::initTextures ] -> ERROR: COULD NOT LOAD TEXTURE \"TexturePack\"\n");
+        logger.logError("ERROR: COULD NOT LOAD TEXTURE \"TexturePack\".");
 
     if (!textures["Player1"].loadFromFile("Assets/Images/Sprites/Player/player_1.png"))
-        throw std::runtime_error("[ Engine::initTextures ] -> ERROR: COULD NOT LOAD TEXTURE \"Player1\"\n");
+        logger.logError("ERROR: COULD NOT LOAD TEXTURE \"Player1\".");
 }
 
 void Engine::initStateData()
@@ -119,7 +126,7 @@ void Engine::updateDeltaTime()
 
 /* CONSTRUCTOR / DESTRUCTOR */
 
-Engine::Engine()
+Engine::Engine() : logger("Engine")
 {
     seedRandom();
     initGraphicsSettings();

@@ -2,12 +2,13 @@
 
 #include "GUI/Button.hxx"
 
-namespace GUI
+namespace gui
 {
 class TextButton : public Button
 {
   private:
     std::unique_ptr<sf::Text> text;
+    std::unique_ptr<sf::Text> textShadow;
     sf::Color textColor;
 
   public:
@@ -21,4 +22,4 @@ class TextButton : public Button
 
     void render(sf::RenderTarget &target);
 };
-} // namespace GUI
+} // namespace gui

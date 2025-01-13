@@ -2,19 +2,23 @@
 
 #include "GUI/Utils.hxx"
 
-namespace GUI
+namespace gui
 {
 enum ButtonState
 {
     Idle = 0,
     Hover,
     Active,
+    Disabled,
 };
 
 class Button
 {
   protected:
     sf::RectangleShape body;
+    sf::RectangleShape brightShadow;
+    sf::RectangleShape darkShadow;
+
     sf::Color fillColor;
     sf::Color outlineColor;
     ButtonState state;
@@ -34,5 +38,7 @@ class Button
     const sf::Vector2f getPosition() const;
 
     const sf::Vector2f getSize() const;
+
+    void setState(const ButtonState &state);
 };
-} // namespace GUI
+} // namespace gui

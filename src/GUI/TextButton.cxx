@@ -1,7 +1,7 @@
 #include "GUI/TextButton.hxx"
 #include "stdafx.hxx"
 
-using namespace GUI;
+using namespace gui;
 
 TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, const sf::Color fill_color,
                        const std::string str, const sf::Font &font, const unsigned int char_size,
@@ -10,11 +10,17 @@ TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, con
 {
     text = std::make_unique<sf::Text>(font, str, char_size);
     text->setFillColor(text_color);
-    text->setOutlineColor(sf::Color(50, 50, 50, 200));
-    text->setOutlineThickness(1.f);
     text->setPosition(sf::Vector2f(
         static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f),
-        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f)));
+        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f -
+                         char_size / 6.f)));
+
+    textShadow = std::make_unique<sf::Text>(font, str, char_size);
+    textShadow->setFillColor(sf::Color(0, 0, 0, 170));
+    textShadow->setPosition(sf::Vector2f(
+        static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f - 2.f),
+        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f -
+                         char_size / 6.f - 2.f)));
 }
 
 TextButton::~TextButton()
@@ -23,6 +29,18 @@ TextButton::~TextButton()
 
 void TextButton::update(const sf::Vector2f &mouse_pos)
 {
+    if (state == ButtonState::Disabled)
+    {
+        body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 50.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 50.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 50.f)), fillColor.a});
+
+        text->setFillColor({static_cast<uint8_t>(percent(textColor.r, 50.f)),
+                            static_cast<uint8_t>(percent(textColor.r, 50.f)),
+                            static_cast<uint8_t>(percent(textColor.r, 50.f)), textColor.a});
+        return;
+    }
+
     state = ButtonState::Idle;
     body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 80.f)),
                        static_cast<uint8_t>(percent(fillColor.r, 80.f)),
@@ -54,6 +72,11 @@ void TextButton::update(const sf::Vector2f &mouse_pos)
 
 void TextButton::render(sf::RenderTarget &target)
 {
+    if (state != ButtonState::Disabled)
+        target.draw(darkShadow);
     target.draw(body);
+    if (state != ButtonState::Disabled)
+        target.draw(brightShadow);
+    target.draw(*textShadow);
     target.draw(*text);
 }

@@ -2,6 +2,7 @@
 
 #include "GUI/GUI.hxx"
 #include "States/GameState.hxx"
+#include "States/MultiplayerState.hxx"
 
 class MainMenuState : public State
 {
@@ -10,7 +11,7 @@ class MainMenuState : public State
     sf::RectangleShape bgShape;
     std::unique_ptr<sf::Text> title;
 
-    std::map<std::string, std::unique_ptr<GUI::Button>> buttons;
+    std::map<std::string, std::unique_ptr<gui::Button>> buttons;
 
     void initGUI();
 
