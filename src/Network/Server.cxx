@@ -5,6 +5,9 @@
 
 void Server::listenerThread()
 {
+    logger.logInfo("[ Server::listenerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+                   std::to_string(socket.getLocalPort()) + ") online.");
+
     while (online)
     {
         std::lock_guard<std::mutex> lock(mutex);
@@ -22,13 +25,21 @@ void Server::listenerThread()
 
                 std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
                 packetQueue.push(packet);
+
+                std::cout << pktBuf.getDataSize() << "\n";
             }
         }
     }
+
+    logger.logInfo("[ Server::listenerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+                   std::to_string(socket.getLocalPort()) + ") offline.");
 }
 
 void Server::handlerThread()
 {
+    logger.logInfo("[ Server::handlerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+                   std::to_string(socket.getLocalPort()) + ") handling active.");
+
     while (online)
     {
         std::lock_guard<std::mutex> lock(mutex);
@@ -40,8 +51,6 @@ void Server::handlerThread()
             std::string header;
             ConnectionUID uid;
             pkt >> header >> uid;
-
-            std::cout << "server: " << header << "\n";
 
             if (header == "ASK")
             {
@@ -65,6 +74,9 @@ void Server::handlerThread()
             }
         }
     }
+
+    logger.logInfo("[ Server::handlerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+                   std::to_string(socket.getLocalPort()) + ") handling inactive.");
 }
 
 /* HANDLERS ================================================================================================= */
@@ -75,6 +87,9 @@ void Server::handleTimedOutConnections()
 
     for (auto &[uid, conn] : connections)
     {
+        if (!conn.active)
+            continue;
+
         if (conn.timeoutClock.getElapsedTime().asSeconds() >= conn.timeout)
         {
             logger.logInfo("Connection with client " + conn.ip.toString() + " timed out after " +
@@ -106,6 +121,14 @@ void Server::handleAsk(const sf::IpAddress &ip, const unsigned short &port)
 
 void Server::handleUidAck(const ConnectionUID &uid)
 {
+    try
+    {
+        connections.at(uid).active = true;
+    }
+    catch (std::exception &)
+    {
+        logger.logError("Invalid UID confirmation received (" + std::to_string(uid) + "). Connection not accepted.");
+    }
 }
 
 const ConnectionUID Server::generateConnectionUID()
@@ -118,10 +141,16 @@ const ConnectionUID Server::generateConnectionUID()
     return uid;
 }
 
+void Server::setOnline(const bool &online)
+{
+    this->online = online;
+}
+
 /* CONSTRUCTOR ============================================================================================== */
 
 Server::Server() : logger("Server"), online(false), ipBuf(0, 0, 0, 0)
 {
+    socket.setBlocking(false);
 }
 
 Server::~Server()
@@ -132,20 +161,14 @@ Server::~Server()
 
 void Server::listen(const unsigned short port)
 {
-    socket.setBlocking(false);
-
     if (socket.bind(port) != sf::Socket::Status::Done)
         logger.logError("Could not bind to port " + std::to_string(port));
 
     socketSelector.add(socket);
-
-    online = true;
+    setOnline(true);
 
     std::thread(&Server::listenerThread, this).detach();
     std::thread(&Server::handlerThread, this).detach();
-
-    logger.logInfo("[ Server::listen ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
-                   std::to_string(socket.getLocalPort()) + ") online");
 }
 
 const bool Server::createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid)

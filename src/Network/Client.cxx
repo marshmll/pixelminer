@@ -18,26 +18,29 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
         return;
     }
 
-    if (socketSelector.wait(sf::seconds(timeout)) && socketSelector.isReady(socket))
+    if (socketSelector.wait(sf::seconds(timeout)))
     {
-        if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
+        if (socketSelector.isReady(socket))
         {
-            setReady(true);
-            std::string header;
-            pktBuf >> header;
+            if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
+            {
+                setReady(true);
+                std::string header;
+                pktBuf >> header;
 
-            if (header == "ACK+UID")
-            {
-                pktBuf >> myUid;
-                handleServerACKUID(ipBuffer.value(), portBuf);
-            }
-            else if (header == "RFS")
-            {
-                handleServerRFS(ipBuffer.value(), portBuf);
-            }
-            else
-            {
-                handleServerBadResponse(ipBuffer.value(), portBuf);
+                if (header == "ACK+UID")
+                {
+                    pktBuf >> myUid;
+                    handleServerACKUID(ipBuffer.value(), portBuf);
+                }
+                else if (header == "RFS")
+                {
+                    handleServerRFS(ipBuffer.value(), portBuf);
+                }
+                else
+                {
+                    handleServerBadResponse(ipBuffer.value(), portBuf);
+                }
             }
         }
     }

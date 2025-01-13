@@ -46,6 +46,8 @@ class Server
 
     const ConnectionUID generateConnectionUID();
 
+    void setOnline(const bool &online);
+
   public:
     Server();
 
