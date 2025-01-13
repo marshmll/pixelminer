@@ -45,6 +45,8 @@ void Server::handler()
         ConnectionUID uid;
         pkt >> header >> uid;
 
+        // std::cout << header << "\n";
+
         if (header == "ASK")
         {
             handleAsk(pkt_addr.ip, pkt_addr.port);
@@ -59,7 +61,7 @@ void Server::handler()
         }
         else if (header == "KIL")
         {
-            disconnectClient(pkt_addr.ip);
+            disconnectClient(uid);
         }
         else if (header == "FILE")
         {
@@ -72,7 +74,7 @@ void Server::handler()
 
 void Server::handleTimedOutConnections()
 {
-    std::vector<sf::IpAddress> timed_out_connections;
+    std::vector<ConnectionUID> timed_out_connections;
 
     for (auto &[uid, conn] : connections)
     {
@@ -82,8 +84,10 @@ void Server::handleTimedOutConnections()
         if (conn.timeoutClock.getElapsedTime().asSeconds() >= conn.timeout)
         {
             logger.logInfo("Connection with client " + conn.ip.toString() + " timed out after " +
-                           std::to_string(conn.timeoutClock.getElapsedTime().asSeconds()) + " seconds.");
-            timed_out_connections.push_back(conn.ip);
+                           std::to_string(conn.timeout) + " seconds.");
+
+            conn.active = false;
+            timed_out_connections.push_back(uid);
         }
     }
 
@@ -93,6 +97,28 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAsk(const sf::IpAddress &ip, const unsigned short &port)
 {
+    if (isClientConnected(ip, port))
+    {
+        for (auto &[uid, conn] : connections)
+        {
+            if (conn.ip == ip)
+            {
+                if (conn.active == false)
+                {
+                    conn.port = port;
+                    conn.active = true;
+                    conn.timeoutClock.restart();
+                    return;
+                }
+                else
+                {
+                    logger.logError("Client with IP is already connected: " + ip.toString(), false);
+                    return;
+                }
+            }
+        }
+    }
+
     const ConnectionUID uid = generateConnectionUID();
 
     if (!createConnection(ip, port, uid))
@@ -166,7 +192,7 @@ const bool Server::createConnection(const sf::IpAddress &ip, const unsigned shor
     {
         if (conn.ip == ip)
         {
-            logger.logError("Client with IP is already connected: " + ip.toString());
+            logger.logError("Client with IP is already connected: " + ip.toString(), false);
             return false;
         }
     }
@@ -176,21 +202,13 @@ const bool Server::createConnection(const sf::IpAddress &ip, const unsigned shor
     return true;
 }
 
-void Server::disconnectClient(const sf::IpAddress &ip)
+void Server::disconnectClient(const ConnectionUID &uid)
 {
-    auto it =
-        std::find_if(connections.begin(), connections.end(), [&](const auto &pair) { return pair.second.ip == ip; });
+    if (connections.count(uid) == 0)
+        logger.logError("Client with UID " + std::to_string(uid) + " is not connected.", false);
 
-    if (it != connections.end())
-    {
-        sendControlMessage("KIL", it->second.ip, it->second.port);
-        connections.erase(it);
-        logger.logInfo("Client with IP " + ip.toString() + " is now disconnected.");
-    }
-    else
-    {
-        logger.logError("Client with IP is not connected: " + ip.toString());
-    }
+    sendControlMessage("KIL", connections.at(uid).ip, connections.at(uid).port);
+    logger.logInfo("Client with IP " + connections.at(uid).ip.toString() + " is now disconnected.");
 }
 
 const bool Server::isClientConnected(const sf::IpAddress &ip, const unsigned short &port)

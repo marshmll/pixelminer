@@ -27,6 +27,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 setReady(true);
                 std::string header;
                 pktBuf >> header;
+                std::cout << header << "\n";
 
                 if (header == "ACK+UID")
                 {
@@ -59,20 +60,23 @@ void Client::listenerThread()
     while (connected)
     {
         std::lock_guard<std::mutex> lock(mutex);
-        if (socketSelector.wait(sf::seconds(10.f)) && socketSelector.isReady(socket))
+        if (socketSelector.wait(sf::seconds(10.f)))
         {
-            pktBuf.clear();
-            std::optional<sf::IpAddress> ip;
-
-            if (socket.receive(pktBuf, ip, portBuf) == sf::Socket::Status::Done && ip)
+            if (socketSelector.isReady(socket))
             {
-                if (ip.value() != serverIp || portBuf != serverPort)
-                    continue;
+                pktBuf.clear();
+                std::optional<sf::IpAddress> ip;
 
-                std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
-                packetQueue.push(packet);
+                if (socket.receive(pktBuf, ip, portBuf) == sf::Socket::Status::Done)
+                {
+                    if (ip.value() != serverIp || portBuf != serverPort)
+                        continue;
 
-                handler();
+                    std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
+                    packetQueue.push(packet);
+
+                    handler();
+                }
             }
         }
     }
@@ -173,7 +177,7 @@ void Client::disconnect()
     }
 
     pktBuf.clear();
-    pktBuf << "KIL";
+    pktBuf << "KIL" << myUid;
 
     if (!send(pktBuf))
         logger.logError("Failed to communicate with server. Disconnecting anyway.");

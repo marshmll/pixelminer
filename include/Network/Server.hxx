@@ -57,7 +57,7 @@ class Server
 
     const bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid);
 
-    void disconnectClient(const sf::IpAddress &ip);
+    void disconnectClient(const ConnectionUID &uid);
 
     const bool isClientConnected(const sf::IpAddress &ip, const unsigned short &port);
 
