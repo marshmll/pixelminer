@@ -34,7 +34,7 @@ class Client
 
     void listenerThread();
 
-    void handlerThread();
+    void handler();
 
     void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
 

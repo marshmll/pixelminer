@@ -36,7 +36,7 @@ class Server
 
     void listenerThread();
 
-    void handlerThread();
+    void handler();
 
     void handleTimedOutConnections();
 

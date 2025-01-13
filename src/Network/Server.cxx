@@ -26,7 +26,7 @@ void Server::listenerThread()
                 std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
                 packetQueue.push(packet);
 
-                std::cout << pktBuf.getDataSize() << "\n";
+                handler();
             }
         }
     }
@@ -35,48 +35,37 @@ void Server::listenerThread()
                    std::to_string(socket.getLocalPort()) + ") offline.");
 }
 
-void Server::handlerThread()
+void Server::handler()
 {
-    logger.logInfo("[ Server::handlerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
-                   std::to_string(socket.getLocalPort()) + ") handling active.");
-
-    while (online)
+    for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
     {
-        std::lock_guard<std::mutex> lock(mutex);
+        auto &[pkt_addr, pkt] = opt.value();
 
-        for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
+        std::string header;
+        ConnectionUID uid;
+        pkt >> header >> uid;
+
+        if (header == "ASK")
         {
-            auto &[pkt_addr, pkt] = opt.value();
-
-            std::string header;
-            ConnectionUID uid;
-            pkt >> header >> uid;
-
-            if (header == "ASK")
-            {
-                handleAsk(pkt_addr.ip, pkt_addr.port);
-            }
-            else if (header == "UID+ACK")
-            {
-                handleUidAck(uid);
-            }
-            else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
-            {
-                continue;
-            }
-            else if (header == "KIL")
-            {
-                disconnectClient(pkt_addr.ip);
-            }
-            else if (header == "FILE")
-            {
-                receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server");
-            }
+            handleAsk(pkt_addr.ip, pkt_addr.port);
+        }
+        else if (header == "UID+ACK")
+        {
+            handleUidAck(uid);
+        }
+        else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
+        {
+            continue;
+        }
+        else if (header == "KIL")
+        {
+            disconnectClient(pkt_addr.ip);
+        }
+        else if (header == "FILE")
+        {
+            receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server");
         }
     }
-
-    logger.logInfo("[ Server::handlerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
-                   std::to_string(socket.getLocalPort()) + ") handling inactive.");
 }
 
 /* HANDLERS ================================================================================================= */
@@ -150,7 +139,7 @@ void Server::setOnline(const bool &online)
 
 Server::Server() : logger("Server"), online(false), ipBuf(0, 0, 0, 0)
 {
-    socket.setBlocking(false);
+    socket.setBlocking(true);
 }
 
 Server::~Server()
@@ -168,7 +157,7 @@ void Server::listen(const unsigned short port)
     setOnline(true);
 
     std::thread(&Server::listenerThread, this).detach();
-    std::thread(&Server::handlerThread, this).detach();
+    // std::thread(&Server::handlerThread, this).detach();
 }
 
 const bool Server::createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid)

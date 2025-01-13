@@ -71,12 +71,14 @@ void Client::listenerThread()
 
                 std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
                 packetQueue.push(packet);
+
+                handler();
             }
         }
     }
 }
 
-void Client::handlerThread()
+void Client::handler()
 {
     while (connected)
     {
@@ -116,7 +118,6 @@ void Client::handleServerACKUID(const sf::IpAddress &ip, const unsigned short &p
     setConnected(true);
 
     std::thread(&Client::listenerThread, this).detach();
-    std::thread(&Client::handlerThread, this).detach();
 }
 
 void Client::handleServerRFS(const sf::IpAddress &ip, const unsigned short &port)
