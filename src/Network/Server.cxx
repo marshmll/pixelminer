@@ -109,6 +109,7 @@ void Server::handleAsk(const sf::IpAddress &ip, const unsigned short &port)
                     conn.active = true;
                     conn.timeoutClock.restart();
                     logger.logInfo("Client with IP reconnected: " + ip.toString());
+                    pktBuf.clear();
                     pktBuf << "RCN" << uid;
                     send(pktBuf, conn.ip, conn.port);
                     return;
@@ -209,6 +210,8 @@ void Server::disconnectClient(const ConnectionUID &uid)
 {
     if (connections.count(uid) == 0)
         logger.logError("Client with UID " + std::to_string(uid) + " is not connected.", false);
+
+    connections.at(uid).active = false;
 
     sendControlMessage("KIL", connections.at(uid).ip, connections.at(uid).port);
     logger.logInfo("Client with IP " + connections.at(uid).ip.toString() + " is now disconnected.");
