@@ -2,7 +2,8 @@
 
 enum BiomeType
 {
-    Desert = 0,
+    UnknownBiome = 0,
+    Desert,
     Forest,
     Grassland,
     Jungle,

@@ -60,10 +60,12 @@ void Engine::initTileData()
     tileData[Stone] = {"Stone", Stone, sf::IntRect({16, 0}, texture_size)};
     tileData[GrassSide] = {"Grass Side", GrassSide, sf::IntRect({32, 0}, texture_size)};
     tileData[Cobblestone] = {"Cobblestone", Cobblestone, sf::IntRect({48, 0}, texture_size)};
-    tileData[GrassTop] = {"Grass Top", GrassTop, sf::IntRect({64, 0}, texture_size)};
+    tileData[GrassTop] = {"Grass Top", GrassTop, sf::IntRect({0, 16}, texture_size)};
     tileData[Sand] = {"Sand", Sand, sf::IntRect({80, 0}, texture_size)};
     tileData[Snow] = {"Snow", Snow, sf::IntRect({96, 0}, texture_size)};
     tileData[Water] = {"Water", Water, sf::IntRect({112, 0}, texture_size)};
+    tileData[GrassTopFront] = {"Grass", GrassTopFront, sf::IntRect({48, 16}, texture_size)};
+    tileData[GrassFront] = {"Grass", GrassFront, sf::IntRect({48, 32}, texture_size)};
 }
 
 void Engine::initFonts()

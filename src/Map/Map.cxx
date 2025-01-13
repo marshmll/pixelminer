@@ -138,11 +138,14 @@ void Map::generate()
                 biome_color = sf::Color(216, 242, 230, 255);
                 tile_data = tileData.at(TileId::Snow);
                 break;
+            default:
+                break;
             };
 
             image.setPixel({x, y}, biome_color);
 
             Tile tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale);
+            biomeMap[x][y] = (BiomeData){biome_type, biome_color};
 
             if (tile_data.id == TileId::GrassTop)
                 tile.setColor(biome_color);
@@ -152,6 +155,60 @@ void Map::generate()
     }
 
     (void)image.saveToFile("Assets/map.png");
+
+    // Grass curves
+    for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
+    {
+        for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
+        {
+            std::optional<TileBase> tile = getTile(x, y, 0);
+            if (!tile)
+                continue;
+
+            BiomeData biome_data = biomeMap[x][y];
+
+            if (biome_data.type == Forest || biome_data.type == Grassland || biome_data.type == Jungle ||
+                biome_data.type == Tundra)
+            {
+                std::array<std::array<BiomeData, 3>, 3> surround_biomes;
+
+                for (int i = -1; i <= 1; i++)
+                {
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        if (x + i >= 0 && x + i <= MAX_WORLD_GRID_SIZE.x && y + j >= 0 &&
+                            y + j <= MAX_WORLD_GRID_SIZE.y)
+                            surround_biomes[i + 1][j + 1] = biomeMap[x + i][y + j];
+                        else
+                            surround_biomes[i + 1][j + 1] = (BiomeData){UnknownBiome, sf::Color::Black};
+                    }
+                }
+
+                TileData t;
+                sf::Color c;
+
+                if (surround_biomes[1][0].type != surround_biomes[1][1].type &&
+                    surround_biomes[2][1].type != surround_biomes[1][1].type &&
+                    surround_biomes[1][2].type == surround_biomes[1][1].type &&
+                    surround_biomes[0][1].type == surround_biomes[1][1].type)
+                {
+                    t = tileData.at(GrassTopFront);
+                    c = surround_biomes[2][0].color;
+                }
+                else if (surround_biomes[2][0].type != surround_biomes[1][1].type &&
+                         surround_biomes[2][1].type != surround_biomes[1][1].type &&
+                         surround_biomes[2][2].type != surround_biomes[1][1].type)
+                {
+                    t = tileData.at(GrassFront);
+                    c = surround_biomes[2][1].color;
+                }
+
+                Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
+                tile.setColor(c);
+                putTile(tile, x, y, 1);
+            }
+        }
+    }
 }
 
 void Map::update(const float &dt)
@@ -206,6 +263,39 @@ void Map::putTile(TileBase tile, const unsigned int &grid_x, const unsigned int 
         ->tiles[tile_index_x][tile_index_y][grid_z] = std::make_unique<TileBase>(tile);
 }
 
+std::optional<TileBase> Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
+{
+    if (grid_x < 0 || grid_y < 0 || grid_z < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y >= MAX_WORLD_GRID_SIZE.y ||
+        grid_z > CHUNK_SIZE_IN_TILES.z)
+        return std::nullopt;
+
+    const unsigned int region_index_x = grid_x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
+    const unsigned int region_index_y = grid_y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
+
+    const unsigned int chunk_index_x =
+        ((grid_x - (region_index_x * REGION_SIZE_IN_CHUNKS.x)) / CHUNK_SIZE_IN_TILES.x) % REGION_SIZE_IN_CHUNKS.x;
+    const unsigned int chunk_index_y =
+        ((grid_y - (region_index_y * REGION_SIZE_IN_CHUNKS.y)) / CHUNK_SIZE_IN_TILES.y) % REGION_SIZE_IN_CHUNKS.y;
+
+    const unsigned int tile_index_x = (grid_x - (chunk_index_x * CHUNK_SIZE_IN_TILES.x)) % CHUNK_SIZE_IN_TILES.x;
+    const unsigned int tile_index_y = (grid_y - (chunk_index_y * CHUNK_SIZE_IN_TILES.y)) % CHUNK_SIZE_IN_TILES.y;
+
+    if (!regions[region_index_x][region_index_y])
+        return std::nullopt;
+
+    if (!regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y])
+        return std::nullopt;
+
+    if (regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y]->tiles[tile_index_x][tile_index_y]
+                                                                                            [grid_z])
+    {
+        return *regions[region_index_x][region_index_y]
+                    ->chunks[chunk_index_x][chunk_index_y]
+                    ->tiles[tile_index_x][tile_index_y][grid_z];
+    }
+
+    return std::nullopt;
+}
 void Map::saveToFile(std::filesystem::path path)
 {
     std::string path_str = path.string();

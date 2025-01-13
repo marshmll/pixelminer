@@ -3,7 +3,7 @@
 #include "Engine/Configuration.hxx"
 #include "Tiles/TileBase.hxx"
 
-static constexpr sf::Vector3<unsigned int> CHUNK_SIZE_IN_TILES = {16, 16, 2};
+static constexpr sf::Vector3<unsigned int> CHUNK_SIZE_IN_TILES = {16, 16, 5};
 
 class Chunk
 {
