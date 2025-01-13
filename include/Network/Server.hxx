@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Network/File.hxx"
+#include "Network/PacketAddress.hxx"
 #include "Tools/Logger.hxx"
 
 struct Connection
@@ -25,7 +26,7 @@ class Server
     sf::UdpSocket socket;
 
     std::map<ConnectionUID, Connection> connections;
-    std::queue<sf::Packet> packetQueue;
+    std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     bool online;
 
@@ -34,6 +35,8 @@ class Server
     unsigned short portBuf;
 
     void listenerThread();
+
+    void handlerThread();
 
     void handleTimedOutConnections();
 
@@ -67,5 +70,5 @@ class Server
 
     void shutdown();
 
-    std::optional<sf::Packet> consumePacket();
+    std::optional<std::pair<PacketAddress, sf::Packet>> consumePacket();
 };

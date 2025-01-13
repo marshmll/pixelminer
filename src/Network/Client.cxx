@@ -1,8 +1,5 @@
 #include "Network/Client.hxx"
 #include "stdafx.hxx"
-#include <filesystem>
-#include <fstream>
-#include <optional>
 
 void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {
@@ -10,10 +7,10 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     socket.setBlocking(true); // Blocking mode for connection
     setReady(false);
 
-    packetBuffer.clear();
-    packetBuffer << "ASK";
+    pktBuf.clear();
+    pktBuf << "ASK";
 
-    if (!send(packetBuffer, ip, port))
+    if (!send(pktBuf, ip, port))
     {
         logger.logError("Could not connect to " + ip.toString() + ":" + std::to_string(port) + "");
         setReady(true);
@@ -23,30 +20,30 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
 
     if (socketSelector.wait(sf::seconds(timeout)) && socketSelector.isReady(socket))
     {
-        if (socket.receive(packetBuffer, ipBuffer, portBuffer) == sf::Socket::Status::Done)
+        if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
         {
             setReady(true);
             std::string header;
-            packetBuffer >> header;
+            pktBuf >> header;
 
             if (header == "ACK+UID")
             {
-                packetBuffer >> myUid;
-                handleServerACKUID(ipBuffer.value(), portBuffer);
+                pktBuf >> myUid;
+                handleServerACKUID(ipBuffer.value(), portBuf);
             }
             else if (header == "RFS")
             {
-                handleServerRFS(ipBuffer.value(), portBuffer);
+                handleServerRFS(ipBuffer.value(), portBuf);
             }
             else
             {
-                handleServerBadResponse(ipBuffer.value(), portBuffer);
+                handleServerBadResponse(ipBuffer.value(), portBuf);
             }
         }
     }
     else
     {
-        logger.logError("Connection timeout: " + ip.toString() + ":" + std::to_string(port));
+        logger.logError("Connection timeout: " + ip.toString() + ":" + std::to_string(port), false);
         setReady(true);
         setConnected(false);
     }
@@ -61,26 +58,42 @@ void Client::listenerThread()
         std::lock_guard<std::mutex> lock(mutex);
         if (socketSelector.wait(sf::seconds(10.f)) && socketSelector.isReady(socket))
         {
-            packetBuffer.clear();
+            pktBuf.clear();
             std::optional<sf::IpAddress> ip;
 
-            if (socket.receive(packetBuffer, ip, portBuffer) == sf::Socket::Status::Done)
+            if (socket.receive(pktBuf, ip, portBuf) == sf::Socket::Status::Done && ip)
             {
-                if (ip != serverIp || portBuffer != serverPort)
+                if (ip.value() != serverIp || portBuf != serverPort)
                     continue;
 
-                std::string header;
-                packetBuffer >> header;
+                std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
+                packetQueue.push(packet);
+            }
+        }
+    }
+}
 
-                if (header == "KIL")
-                {
-                    disconnect();
-                    break;
-                }
-                else if (header == "FILE")
-                {
-                    receiveFile("Assets/Client/");
-                }
+void Client::handlerThread()
+{
+    while (connected)
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+
+        for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
+        {
+            auto &[pkt_addr, pkt] = opt.value();
+
+            std::string header;
+            pkt >> header;
+
+            if (header == "KIL")
+            {
+                disconnect();
+                break;
+            }
+            else if (header == "FILE")
+            {
+                receiveFile("Assets/Client/");
             }
         }
     }
@@ -92,14 +105,15 @@ void Client::handleServerACKUID(const sf::IpAddress &ip, const unsigned short &p
     serverIp = ip;
     serverPort = port;
 
-    packetBuffer.clear();
-    packetBuffer << "UID+ACK" << myUid;
+    pktBuf.clear();
+    pktBuf << "UID+ACK" << myUid;
 
-    send(packetBuffer);
+    send(pktBuf);
     setReady(true);
     setConnected(true);
 
     std::thread(&Client::listenerThread, this).detach();
+    std::thread(&Client::handlerThread, this).detach();
 }
 
 void Client::handleServerRFS(const sf::IpAddress &ip, const unsigned short &port)
@@ -154,10 +168,10 @@ void Client::disconnect()
         return;
     }
 
-    packetBuffer.clear();
-    packetBuffer << "KIL";
+    pktBuf.clear();
+    pktBuf << "KIL";
 
-    if (!send(packetBuffer))
+    if (!send(pktBuf))
         logger.logError("Failed to communicate with server. Disconnecting anyway.");
 
     setConnected(false);
@@ -216,16 +230,16 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
     if (fd.filesize > sf::UdpSocket::MaxDatagramSize)
         logger.logError("File \"" + path.string() + "\" too large (" + std::to_string(fd.filesize) + " bytes).");
 
-    packetBuffer.clear();
-    packetBuffer << "FILE" << myUid << fd;
+    pktBuf.clear();
+    pktBuf << "FILE" << myUid << fd;
 
     char c;
     while (file.get(c))
-        packetBuffer << c;
+        pktBuf << c;
 
     file.close();
 
-    if (send(packetBuffer))
+    if (send(pktBuf))
         logger.logInfo("Sent file \"" + path.string() + "\" (" + std::to_string(fd.filesize) + " bytes) to " +
                        serverIp.toString());
 }
@@ -236,17 +250,27 @@ void Client::receiveFile(const std::filesystem::path &folder)
         std::filesystem::create_directory(folder);
 
     File::FileDescriptor fd;
-    packetBuffer >> fd;
+    pktBuf >> fd;
 
     std::ofstream file(folder / fd.filename, static_cast<std::ios::openmode>(fd.mode));
     if (!file.is_open())
         logger.logError("Could not write file \"" + (folder / fd.filename).string() + "\"");
 
     std::uint8_t c;
-    while (packetBuffer >> c)
+    while (pktBuf >> c)
         file.put(c);
 
     file.close();
     logger.logInfo("Received file \"" + (folder / fd.filename).string() + "\" (" + std::to_string(fd.filesize) +
                    " bytes).");
+}
+
+std::optional<std::pair<PacketAddress, sf::Packet>> Client::consumePacket()
+{
+    if (packetQueue.empty())
+        return std::nullopt;
+
+    auto packet = packetQueue.front();
+    packetQueue.pop();
+    return packet;
 }

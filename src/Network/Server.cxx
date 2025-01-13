@@ -1,6 +1,8 @@
 #include "Network/Server.hxx"
 #include "stdafx.hxx"
 
+/* THREADS ================================================================================================== */
+
 void Server::listenerThread()
 {
     while (online)
@@ -18,38 +20,54 @@ void Server::listenerThread()
             {
                 ipBuf = ip.value();
 
-                std::string header;
-                ConnectionUID uid;
-                pktBuf >> header >> uid;
-
-                if (header == "ASK")
-                {
-                    handleAsk(ipBuf, portBuf);
-                }
-                else if (header == "UID+ACK")
-                {
-                    handleUidAck(uid);
-                }
-                else if (!isClientConnected(ipBuf, portBuf))
-                {
-                    continue;
-                }
-                else if (header == "KIL")
-                {
-                    disconnectClient(ipBuf);
-                }
-                else if (header == "FILE")
-                {
-                    receiveFile(ipBuf, portBuf, "Assets/Server");
-                }
-                else
-                {
-                    packetQueue.push(pktBuf);
-                }
+                std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
+                packetQueue.push(packet);
             }
         }
     }
 }
+
+void Server::handlerThread()
+{
+    while (online)
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+
+        for (auto opt = consumePacket(); opt.has_value(); opt = consumePacket())
+        {
+            auto &[pkt_addr, pkt] = opt.value();
+
+            std::string header;
+            ConnectionUID uid;
+            pkt >> header >> uid;
+
+            std::cout << "server: " << header << "\n";
+
+            if (header == "ASK")
+            {
+                handleAsk(pkt_addr.ip, pkt_addr.port);
+            }
+            else if (header == "UID+ACK")
+            {
+                handleUidAck(uid);
+            }
+            else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
+            {
+                continue;
+            }
+            else if (header == "KIL")
+            {
+                disconnectClient(pkt_addr.ip);
+            }
+            else if (header == "FILE")
+            {
+                receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server");
+            }
+        }
+    }
+}
+
+/* HANDLERS ================================================================================================= */
 
 void Server::handleTimedOutConnections()
 {
@@ -100,6 +118,8 @@ const ConnectionUID Server::generateConnectionUID()
     return uid;
 }
 
+/* CONSTRUCTOR ============================================================================================== */
+
 Server::Server() : logger("Server"), online(false), ipBuf(0, 0, 0, 0)
 {
 }
@@ -107,6 +127,8 @@ Server::Server() : logger("Server"), online(false), ipBuf(0, 0, 0, 0)
 Server::~Server()
 {
 }
+
+/* PUBLIC METHODS =========================================================================================== */
 
 void Server::listen(const unsigned short port)
 {
@@ -117,9 +139,10 @@ void Server::listen(const unsigned short port)
 
     socketSelector.add(socket);
 
-    std::thread(&Server::listenerThread, this).detach();
-
     online = true;
+
+    std::thread(&Server::listenerThread, this).detach();
+    std::thread(&Server::handlerThread, this).detach();
 
     logger.logInfo("[ Server::listen ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
                    std::to_string(socket.getLocalPort()) + ") online");
@@ -282,7 +305,7 @@ void Server::shutdown()
     logger.logInfo("Server is down");
 }
 
-std::optional<sf::Packet> Server::consumePacket()
+std::optional<std::pair<PacketAddress, sf::Packet>> Server::consumePacket()
 {
     if (packetQueue.empty())
         return std::nullopt;

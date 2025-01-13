@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Network/File.hxx"
+#include "Network/PacketAddress.hxx"
 #include "Tools/Logger.hxx"
 
 using ConnectionUID = std::uint32_t;
@@ -19,19 +20,21 @@ class Client
     unsigned short serverPort;
     ConnectionUID myUid;
 
-    std::queue<sf::Packet> packetQueue;
+    std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     bool ready;
     bool connected;
 
-    sf::Packet packetBuffer;
+    sf::Packet pktBuf;
 
     std::optional<sf::IpAddress> ipBuffer;
-    unsigned short portBuffer;
+    unsigned short portBuf;
 
     void connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout);
 
     void listenerThread();
+
+    void handlerThread();
 
     void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
 
@@ -62,4 +65,6 @@ class Client
     void sendFile(const std::filesystem::path &path, std::ios::openmode &mode);
 
     void receiveFile(const std::filesystem::path &folder);
+
+    std::optional<std::pair<PacketAddress, sf::Packet>> consumePacket();
 };
