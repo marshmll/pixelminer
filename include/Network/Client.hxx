@@ -2,6 +2,8 @@
 
 #include "Network/File.hxx"
 
+using ConnectionUID = std::uint32_t;
+
 class Client
 {
   private:
@@ -12,6 +14,7 @@ class Client
 
     sf::IpAddress serverIp;
     unsigned short serverPort;
+    ConnectionUID myUid;
 
     std::queue<sf::Packet> packetQueue;
 
@@ -25,7 +28,7 @@ class Client
 
     void connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout);
 
-    void handleServerACK(const sf::IpAddress &ip, const unsigned short &port);
+    void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
 
     void handleServerRFS(const sf::IpAddress &ip, const unsigned short &port);
 
@@ -44,6 +47,10 @@ class Client
     const bool isReady() const;
 
     const bool isConnected() const;
+
+    const bool send(sf::Packet &packet);
+
+    const bool send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port);
 
     void sendFile(std::filesystem::path path, std::ios::openmode mode);
 

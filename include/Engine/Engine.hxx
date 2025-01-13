@@ -32,6 +32,8 @@ class Engine
 
     /* PRIVATE METHODS */
 
+    void seedRandom();
+
     void initGraphicsSettings();
 
     void initVariables();

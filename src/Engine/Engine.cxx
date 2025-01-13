@@ -3,6 +3,11 @@
 
 /* PRIVATE METHODS */
 
+void Engine::seedRandom()
+{
+    std::srand(std::time(0));
+}
+
 void Engine::initGraphicsSettings()
 {
     if (gfx.loadFromFile("Assets/Settings/graphics.json"))
@@ -116,6 +121,7 @@ void Engine::updateDeltaTime()
 
 Engine::Engine()
 {
+    seedRandom();
     initGraphicsSettings();
     initVariables();
     initTileData();

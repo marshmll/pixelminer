@@ -18,37 +18,51 @@ void Server::listenerThread()
                     ipBuffer = ip.value();
 
                     std::string header;
-                    packetBuffer >> header;
+                    ConnectionUID uid;
+                    packetBuffer >> header >> uid;
 
-                    if (header == "CON") // Handle player connection
+                    if (header == "ASK") // Handle player connection
                     {
-                        if (!connectClient(ipBuffer, portBuffer))
+                        uid = generateConnectionUID();
+
+                        if (!createConnection(ipBuffer, portBuffer, uid))
                             sendControlMessage("RFS", ipBuffer, portBuffer);
                         else
                         {
-                            sendControlMessage("ACK", ipBuffer, portBuffer);
-                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.0.0.region", std::ios::binary);
-                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.0.1.region", std::ios::binary);
-                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.1.0.region", std::ios::binary);
-                            sendFile(ipBuffer, "Assets/Maps/myworld/regions/r.1.1.region", std::ios::binary);
+                            packetBuffer.clear();
+                            packetBuffer << "ACK+UID" << uid;
+
+                            if (!send(packetBuffer, ipBuffer, portBuffer))
+                                std::cerr << "[ Server ] -> Could not send UID to new client: " + ipBuffer.toString()
+                                          << ".\n";
                         }
                     }
-                    else if (clients.count(ipBuffer) == 0)
+                    else if (header == "UID+ACK")
                     {
-                        std::cerr << "[ Server::listenerThread ] -> Client with IP " << ipBuffer.toString()
-                                  << " is not connected."
-                                  << "\n";
-
+                        try
+                        {
+                            connections.at(uid).active = true;
+                            std::cout << "[ Server ] -> Client with UID " << uid << " has now an active connection."
+                                      << "\n";
+                        }
+                        catch (std::exception &)
+                        {
+                            std::cerr << "[ Server ] -> Unknown host trying to confirm connection: "
+                                      << ipBuffer.toString() << ":" << portBuffer << ".\n";
+                        }
+                    }
+                    else if (!isClientConnected(ipBuffer, portBuffer))
+                    {
                         mutex.unlock();
-                        continue; // Ignore clients that did not ask to connect
+                        continue;
                     }
                     else if (header == "KIL") // Handle player disconnection
                     {
                         disconnectClient(ipBuffer);
                     }
-                    else if (header == "FIL")
+                    else if (header == "FILE")
                     {
-                        receiveFile(ipBuffer, "Assets/Server");
+                        receiveFile(ipBuffer, portBuffer, "Assets/Server");
                     }
                     else
                     {
@@ -59,6 +73,16 @@ void Server::listenerThread()
         }
         mutex.unlock();
     }
+}
+
+const ConnectionUID Server::generateConnectionUID()
+{
+    ConnectionUID uid = std::rand() % 0xFFFFFFFF;
+
+    while (uid == 0 || connections.count(uid) != 0)
+        uid = std::rand() % 0xFFFFFFFF;
+
+    return uid;
 }
 
 Server::Server() : online(false), ipBuffer(0, 0, 0, 0)
@@ -86,64 +110,98 @@ void Server::listen(const unsigned short port)
               << std::to_string(socket.getLocalPort()) << ") online" << "\n";
 }
 
-const bool Server::connectClient(const sf::IpAddress &ip, const unsigned short &port)
+const bool Server::createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid)
 {
-    if (clients.count(ip) != 0)
+    Connection connection{ip, port};
+    connection.timeoutClock.restart();
+    connection.active = false;
+
+    for (auto &[uid, conn] : connections)
     {
-        std::cerr << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is already connected."
-                  << "\n";
-        return false;
+        if (conn.ip.toInteger() == connection.ip.toInteger())
+        {
+            std::cerr << "[ Server::createConnection ] -> Client with IP " << ip.toString() << " is already connected."
+                      << "\n";
+
+            return false;
+        }
     }
-    else
-    {
-        clients[ip] = port; // Link IP and Port
-        std::cout << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now connected."
-                  << "\n";
-        return true;
-    }
+
+    connections[uid] = connection; // Link IP and Port
+
+    std::cout << "[ Server::createConnection ] -> Client with IP " << ip.toString() << " is now connected."
+              << "\n";
+
+    return true;
 }
 
 void Server::disconnectClient(const sf::IpAddress &ip)
 {
-    try
+    ConnectionUID conn_uid = 0;
+
+    for (auto &[uid, conn] : connections)
     {
-        clients.erase(ip);
-        std::cout << "[ Server::subscribeClient ] -> Client with IP " << ip.toString() << " is now disconnected."
+        if (conn.ip == ip)
+        {
+            conn_uid = uid;
+            break;
+        }
+    }
+
+    if (conn_uid != 0)
+    {
+        connections.erase(conn_uid);
+        std::cout << "[ Server::disconnectClient ] -> Client with IP " << ip.toString() << " is now disconnected."
                   << "\n";
     }
-    catch (std::exception e)
+    else
     {
-        std::cerr << "[ Server::unsubscribeClient ] -> Client with IP " << ip.toString() << " is not connected."
+        std::cerr << "[ Server::disconnectClient ] -> Client with IP " << ip.toString() << " is not connected."
                   << "\n";
     }
+}
+
+const bool Server::isClientConnected(const sf::IpAddress &ip, const unsigned short &port)
+{
+    for (auto &[uid, connection] : connections)
+    {
+        if (connection.ip == ip)
+            return true;
+    }
+
+    return false;
+}
+
+const bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port)
+{
+    if (socket.send(packet, ip, port) != sf::Socket::Status::Done)
+    {
+        std::cerr << "[ Server::send ] -> Could not send packet to " << ipBuffer.toString() << ":"
+                  << std::to_string(portBuffer) << "\n";
+
+        packetBuffer.clear();
+        return false;
+    }
+
+    packetBuffer.clear();
+    return true;
 }
 
 void Server::sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port)
 {
-    try
-    {
-        packetBuffer.clear();
-        packetBuffer << header;
+    packetBuffer.clear();
+    packetBuffer << header;
 
-        if (socket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
-        {
-            std::cerr << "[ Server::sendControlMessage ] -> Could not send control message to " << ipBuffer.toString()
-                      << ":" << std::to_string(portBuffer) << "\n";
-        }
-
-        packetBuffer.clear();
-    }
-    catch (std::exception e)
-    {
+    if (!send(packetBuffer, ip, port))
         std::cerr << "[ Server::sendControlMessage ] -> Error while sending control message to " << ip.toString()
-                  << ": " << e.what() << "\n";
-    }
+                  << ".\n";
 }
 
-void Server::sendFile(const sf::IpAddress client, std::filesystem::path path, std::ios::openmode mode)
+void Server::sendFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path path,
+                      std::ios::openmode mode)
 {
-    if (clients.count(client) == 0)
-        throw std::runtime_error("[ Server::sendFile ] -> Client " + client.toString() = " is not connected.\n");
+    if (!isClientConnected(ip, port))
+        throw std::runtime_error("[ Server::sendFile ] -> Client " + ip.toString() = " is not connected.\n");
 
     if (!std::filesystem::exists(path))
         throw std::runtime_error("[ Server::sendFile ] -> File \"" + path.string() = "\" does not exist.\n");
@@ -166,7 +224,7 @@ void Server::sendFile(const sf::IpAddress client, std::filesystem::path path, st
                                      "\" too big (" + std::to_string(f_desc.filesize) + " bytes)\n");
 
     packetBuffer.clear();
-    packetBuffer << "FIL";
+    packetBuffer << "FILE";
     packetBuffer << f_desc;
 
     if (mode == std::ios::binary)
@@ -187,19 +245,18 @@ void Server::sendFile(const sf::IpAddress client, std::filesystem::path path, st
 
     file.close();
 
-    if (socket.send(packetBuffer, client, clients.at(client)) != sf::Socket::Status::Done)
-        throw std::runtime_error("[ Server::sendFile ] -> Error sending file \"" + path.string() = "\"\n");
-
-    packetBuffer.clear();
-
-    std::cout << "[ Server::sendFile ] -> Sent file \"" << f_desc.filename << "\" (" << f_desc.filesize << " bytes) to "
-              << client.toString() << ":" << clients.at(client) << "\n";
+    if (!send(packetBuffer, ip, port))
+        std::cerr << "[ Server::sendFile ] -> Error sending file \"" << f_desc.filename << "\" to " << ip.toString()
+                  << ":" << port << "\n";
+    else
+        std::cout << "[ Server::sendFile ] -> Sent file \"" << f_desc.filename << "\" (" << f_desc.filesize
+                  << " bytes) to " << ip.toString() << ":" << port << "\n";
 }
 
-void Server::receiveFile(const sf::IpAddress client, std::filesystem::path folder)
+void Server::receiveFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path folder)
 {
-    if (clients.count(client) == 0)
-        throw std::runtime_error("[ Server::sendFile ] -> Client " + client.toString() = " is not connected.\n");
+    if (!isClientConnected(ip, port))
+        throw std::runtime_error("[ Server::sendFile ] -> Client " + ip.toString() = " is not connected.\n");
 
     if (!std::filesystem::exists(folder))
         std::filesystem::create_directory(folder);
@@ -215,7 +272,7 @@ void Server::receiveFile(const sf::IpAddress client, std::filesystem::path folde
 
     if (!file.is_open())
         throw std::runtime_error("[ Server::receiveFile ] -> Could not write file \"" + path_str + f_desc.filename +
-                                 "\"\n");
+                                 "\".\n");
 
     if (static_cast<std::ios::openmode>(f_desc.mode) == std::ios::binary)
     {
@@ -236,32 +293,28 @@ void Server::receiveFile(const sf::IpAddress client, std::filesystem::path folde
     file.close();
 
     std::cout << "[ Server::receiveFile ] -> Received file \"" << path_str + f_desc.filename << "\" ("
-              << f_desc.filesize << " bytes) to " << client.toString() << ":" << clients.at(client) << "\n";
+              << f_desc.filesize << " bytes) to " << ip.toString() << ":" << port << ".\n";
 }
 
 void Server::shutdown()
 {
     if (!online)
     {
-        std::cerr << "[ Server::shutdown ] -> Server is not online" << "\n";
+        std::cerr << "[ Server::shutdown ] -> Server is not online." << "\n";
         return;
     }
 
     unsigned short port = socket.getLocalPort();
 
-    for (auto &[ip, port] : clients)
-    {
-        std::cout << "[ Server::shutdown ] -> Killing connection with " << ip.toString() << ":" << std::to_string(port)
-                  << "\n";
-        sendControlMessage("KIL", ip, port);
-    }
+    for (auto &[uid, conn] : connections)
+        sendControlMessage("KIL", conn.ip, conn.port);
 
     online = false;
     socket.unbind();
     socketSelector.clear();
 
     std::cout << "[ Server::shutdown ] -> Server (" << sf::IpAddress::getLocalAddress()->toString() << ":"
-              << std::to_string(port) << ") offline" << "\n";
+              << std::to_string(port) << ") is down." << "\n";
 }
 
 std::optional<sf::Packet> Server::consumePacket()

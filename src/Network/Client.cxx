@@ -8,21 +8,17 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     ready = false;
 
     packetBuffer.clear();
-    packetBuffer << "CON";
+    packetBuffer << "ASK";
 
-    if (socket.send(packetBuffer, ip, port) != sf::Socket::Status::Done)
+    if (!send(packetBuffer, ip, port))
     {
         std::cerr << "[ Client::connectorThread ] -> Could not ask for a connection with " << ip.toString() << ":"
                   << std::to_string(port) << "\n";
+
         ready = true;
         connected = false;
-
-        mutex.unlock();
-
-        return;
     }
-
-    if (socketSelector.wait(sf::seconds(timeout)))
+    else if (socketSelector.wait(sf::seconds(timeout)))
     {
         if (socketSelector.isReady(socket))
         {
@@ -33,9 +29,10 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 std::string header;
                 packetBuffer >> header;
 
-                if (header == "ACK")
+                if (header == "ACK+UID")
                 {
-                    handleServerACK(ipBuffer.value(), portBuffer);
+                    packetBuffer >> myUid;
+                    handleServerACKUID(ipBuffer.value(), portBuffer);
                 }
                 else if (header == "RFS")
                 {
@@ -50,7 +47,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     }
     else
     {
-        std::cerr << ("[ Client::connectorThread ] -> Connection timeout with " + ip.toString() + ":" +
+        std::cerr << ("[ Client::connectorThread ] -> Connection timeout: " + ip.toString() + ":" +
                       std::to_string(port) + "\n");
         ready = true;
         connected = false;
@@ -60,14 +57,21 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     mutex.unlock();
 }
 
-void Client::handleServerACK(const sf::IpAddress &ip, const unsigned short &port)
+void Client::handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port)
 {
     std::cout << "[ Client::connectorThread ] -> Connected to server: " << ip.toString() << ":" << std::to_string(port)
               << "\n";
 
+    serverIp = ipBuffer.value();
+    serverPort = portBuffer;
+
+    packetBuffer.clear();
+    packetBuffer << "UID+ACK" << myUid;
+
+    send(packetBuffer);
+
+    ready = true;
     connected = true;
-    serverIp = ip;
-    serverPort = port;
 
     std::thread(&Client::listenerThread, this).detach();
 }
@@ -119,7 +123,7 @@ void Client::listenerThread()
                         mutex.unlock();
                         continue;
                     }
-                    else if (header == "FIL")
+                    else if (header == "FILE")
                     {
                         receiveFile("Assets/Client/");
                     }
@@ -130,7 +134,7 @@ void Client::listenerThread()
     }
 }
 
-Client::Client() : serverIp(0, 0, 0, 0), serverPort(0), ready(true), connected(false)
+Client::Client() : serverIp(0, 0, 0, 0), serverPort(0), myUid(0), ready(true), connected(false)
 {
     socket.setBlocking(false);
 
@@ -157,25 +161,20 @@ void Client::disconnect()
 {
     if (!connected)
     {
-        std::cerr << "[ Client::disconnect ] -> Not connected to any server" << "\n";
+        std::cerr << "[ Client::disconnect ] -> Not connected to any server." << "\n";
         return;
     }
 
     packetBuffer.clear();
     packetBuffer << "KIL";
 
-    if (socket.send(packetBuffer, serverIp, serverPort) != sf::Socket::Status::Done)
-    {
-        std::cerr << "[ Client::disconnect ] -> Could not communicate disconnection with server " << serverIp.toString()
-                  << ":" << serverPort << ". Disconnecting anyways.\n";
-    }
-
-    packetBuffer.clear();
+    if (!send(packetBuffer))
+        std::cerr << "[ Client::disconnect ] -> Could not communicate with server. Disconnecting anyways." << "\n";
 
     connected = false;
 
     std::cout << "[ Client::disconnect ] -> Disconnected from server " << serverIp.toString() << ":" << serverPort
-              << "\n";
+              << ".\n";
 
     serverIp = sf::IpAddress(0, 0, 0, 0);
     serverPort = 0;
@@ -189,6 +188,34 @@ const bool Client::isReady() const
 const bool Client::isConnected() const
 {
     return connected;
+}
+
+const bool Client::send(sf::Packet &packet)
+{
+    if (socket.send(packet, serverIp, serverPort) != sf::Socket::Status::Done)
+    {
+        std::cerr << "[ Client::send ] -> Error sending packet to " << serverIp.toString() << ":"
+                  << std::to_string(serverPort) << "\n";
+
+        return false;
+    }
+
+    packet.clear();
+
+    return true;
+}
+
+const bool Client::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port)
+{
+    if (socket.send(packet, ip, port) != sf::Socket::Status::Done)
+    {
+        std::cerr << "[ Client::send ] -> Error sending packet to " << serverIp.toString() << ":"
+                  << std::to_string(serverPort) << "\n";
+
+        return false;
+    }
+
+    return true;
 }
 
 void Client::sendFile(std::filesystem::path path, std::ios::openmode mode)
@@ -214,7 +241,7 @@ void Client::sendFile(std::filesystem::path path, std::ios::openmode mode)
                                      "\" too big (" + std::to_string(f_desc.filesize) + " bytes)\n");
 
     packetBuffer.clear();
-    packetBuffer << "FIL";
+    packetBuffer << "FILE" << myUid;
     packetBuffer << f_desc;
 
     if (mode == std::ios::binary)
@@ -235,13 +262,9 @@ void Client::sendFile(std::filesystem::path path, std::ios::openmode mode)
 
     file.close();
 
-    if (socket.send(packetBuffer, serverIp, serverPort) != sf::Socket::Status::Done)
-        throw std::runtime_error("[ Client::sendFile ] -> Error sending file \"" + path.string() = "\"\n");
-
-    packetBuffer.clear();
-
-    std::cout << "[ Client::sendFile ] -> Sent file \"" << path.string() << "\" (" << f_desc.filesize << " bytes)"
-              << " to " << serverIp.toString() << ":" << serverPort << "\n";
+    if (send(packetBuffer))
+        std::cout << "[ Client::sendFile ] -> Sent file \"" << path.string() << "\" (" << f_desc.filesize << " bytes)"
+                  << " to " << serverIp.toString() << ":" << serverPort << "\n";
 }
 
 void Client::receiveFile(std::filesystem::path folder)

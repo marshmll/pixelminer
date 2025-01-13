@@ -2,6 +2,16 @@
 
 #include "Network/File.hxx"
 
+struct Connection
+{
+    sf::IpAddress ip = sf::IpAddress(0, 0, 0, 0);
+    unsigned short port = 0;
+    sf::Clock timeoutClock;
+    bool active = true;
+};
+
+using ConnectionUID = std::uint32_t;
+
 class Server
 {
   private:
@@ -10,7 +20,7 @@ class Server
     sf::SocketSelector socketSelector;
     sf::UdpSocket socket;
 
-    std::map<sf::IpAddress, unsigned short> clients;
+    std::map<ConnectionUID, Connection> connections;
     std::queue<sf::Packet> packetQueue;
 
     bool online;
@@ -21,6 +31,8 @@ class Server
 
     void listenerThread();
 
+    const ConnectionUID generateConnectionUID();
+
   public:
     Server();
 
@@ -28,15 +40,20 @@ class Server
 
     void listen(const unsigned short port);
 
-    const bool connectClient(const sf::IpAddress &ip, const unsigned short &port);
+    const bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid);
 
     void disconnectClient(const sf::IpAddress &ip);
 
+    const bool isClientConnected(const sf::IpAddress &ip, const unsigned short &port);
+
+    const bool send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port);
+
     void sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port);
 
-    void sendFile(const sf::IpAddress client, std::filesystem::path path, std::ios::openmode mode);
+    void sendFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path path,
+                  std::ios::openmode mode);
 
-    void receiveFile(const sf::IpAddress client, std::filesystem::path folder);
+    void receiveFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path folder);
 
     void shutdown();
 
