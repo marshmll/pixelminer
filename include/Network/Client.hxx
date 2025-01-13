@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Network/File.hxx"
+#include "Tools/Logger.hxx"
 
 using ConnectionUID = std::uint32_t;
 
 class Client
 {
   private:
+    Logger logger;
+
     std::mutex mutex;
 
     sf::SocketSelector socketSelector;
@@ -28,13 +31,17 @@ class Client
 
     void connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout);
 
+    void listenerThread();
+
     void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
 
     void handleServerRFS(const sf::IpAddress &ip, const unsigned short &port);
 
     void handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port);
 
-    void listenerThread();
+    void setConnected(const bool &connected);
+
+    void setReady(const bool &ready);
 
   public:
     Client();
@@ -52,7 +59,7 @@ class Client
 
     const bool send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port);
 
-    void sendFile(std::filesystem::path path, std::ios::openmode mode);
+    void sendFile(const std::filesystem::path &path, std::ios::openmode &mode);
 
-    void receiveFile(std::filesystem::path folder);
+    void receiveFile(const std::filesystem::path &folder);
 };

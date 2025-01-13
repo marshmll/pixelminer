@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Network/File.hxx"
+#include "Tools/Logger.hxx"
 
 struct Connection
 {
     sf::IpAddress ip = sf::IpAddress(0, 0, 0, 0);
     unsigned short port = 0;
+    float timeout = 10.f;
     sf::Clock timeoutClock;
     bool active = true;
 };
@@ -15,6 +17,8 @@ using ConnectionUID = std::uint32_t;
 class Server
 {
   private:
+    Logger logger;
+
     std::mutex mutex;
 
     sf::SocketSelector socketSelector;
@@ -25,11 +29,17 @@ class Server
 
     bool online;
 
-    sf::Packet packetBuffer;
-    sf::IpAddress ipBuffer;
-    unsigned short portBuffer;
+    sf::Packet pktBuf;
+    sf::IpAddress ipBuf;
+    unsigned short portBuf;
 
     void listenerThread();
+
+    void handleTimedOutConnections();
+
+    void handleAsk(const sf::IpAddress &ip, const unsigned short &port);
+
+    void handleUidAck(const ConnectionUID &uid);
 
     const ConnectionUID generateConnectionUID();
 
