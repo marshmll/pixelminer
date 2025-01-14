@@ -14,9 +14,12 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
     try
     {
         JSONObject obj = JSON::parse(path).get<JSONObject>();
+        JSONObject resolutionObj = obj.at("resolution").get<JSONObject>();
 
-        screenWidth = obj.at("resolution").get<JSONObject>().at("width").get<long long int>();
-        screenHeight = obj.at("resolution").get<JSONObject>().at("height").get<long long int>();
+        screenWidth = resolutionObj.size() == 2 ? resolutionObj.at("width").get<long long int>()
+                                                : sf::VideoMode::getDesktopMode().size.x;
+        screenHeight = resolutionObj.size() == 2 ? resolutionObj.at("height").get<long long int>()
+                                                 : sf::VideoMode::getDesktopMode().size.y;
         framerateLimit = obj.at("framerateLimit").get<long long int>();
         fullscreen = obj.at("fullscreen").get<bool>();
         vsync = obj.at("vsync").get<bool>();

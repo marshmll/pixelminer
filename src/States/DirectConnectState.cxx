@@ -9,11 +9,27 @@ void DirectConnectState::initGUI()
     background.setFillColor(sf::Color(255, 255, 255, 100));
 
     addrInput = std::make_unique<gui::Input>(
-        sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f),
-                     background.getGeometricCenter().y - gui::percent(data.vm->size.y, 8.f)),
+        sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
+                     gui::percent(data.vm->size.y, 35.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 8.f)), sf::Color(0, 0, 0, 180),
         data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), gui::percent(data.vm->size.y, 3.f), 2.f,
-        sf::Color(200, 200, 200, 255));
+        sf::Color(200, 200, 200, 255), "Server Address");
+
+    buttons["JoinServer"] = std::make_unique<gui::TextButton>(
+        sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
+                     gui::percent(data.vm->size.y, 50.f)),
+        sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 6.f)),
+        sf::Color(200, 200, 200, 200), "Join Server", data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95),
+        sf::Color::White, 2.f, sf::Color::Black);
+
+    buttons["Cancel"] = std::make_unique<gui::TextButton>(
+        sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
+                     gui::percent(data.vm->size.y, 58.f)),
+        sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 6.f)),
+        sf::Color(200, 200, 200, 200), "Cancel", data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95),
+        sf::Color::White, 2.f, sf::Color::Black);
+
+    buttons.at("JoinServer")->setState(gui::ButtonState::Disabled);
 }
 
 DirectConnectState::DirectConnectState(StateData &data) : State(data)
@@ -29,10 +45,19 @@ void DirectConnectState::update(const float &dt)
 {
     updateMousePositions();
     addrInput->update(dt, mousePosView, *data.event);
+
+    for (auto &[key, button] : buttons)
+        button->update(mousePosView);
+
+    if (buttons.at("Cancel")->isPressed())
+        killState();
 }
 
 void DirectConnectState::render(sf::RenderTarget &target)
 {
     target.draw(background);
     addrInput->render(target);
+
+    for (auto &[key, button] : buttons)
+        button->render(target);
 }

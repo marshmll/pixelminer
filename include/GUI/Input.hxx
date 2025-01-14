@@ -26,7 +26,8 @@ class Input
   private:
     sf::RectangleShape body;
 
-    std::unique_ptr<sf::Text> text;
+    std::unique_ptr<sf::Text> label;
+    std::unique_ptr<sf::Text> value;
 
     unsigned int charSize;
     float padding;
@@ -47,14 +48,18 @@ class Input
 
     void handleBackspace();
 
+    void handleTab();
+
   public:
     Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &body_color, sf::Font &font,
           const unsigned int &char_size, const float &padding, const float &outline_thickness,
-          const sf::Color outline_color);
+          const sf::Color outline_color, const std::string label = "");
     ~Input();
 
     void update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Event> &event);
 
     void render(sf::RenderTarget &target);
+
+    const std::string getValue() const;
 };
 } // namespace gui
