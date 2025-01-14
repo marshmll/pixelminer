@@ -23,15 +23,15 @@ void GameState::initPlayerCamera()
 
 void GameState::initServer()
 {
-    try
-    {
-        server.listen(55000);
-        // client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
-    }
-    catch (std::runtime_error e)
-    {
-        std::cout << e.what();
-    }
+    // try
+    // {
+    //     server.listen(55000);
+    //     // client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
+    // }
+    // catch (std::runtime_error e)
+    // {
+    //     std::cout << e.what();
+    // }
 }
 
 void GameState::initDebugging()
@@ -131,7 +131,7 @@ void GameState::render(sf::RenderTarget &target)
 {
     target.setView(playerCamera);
 
-    map->render(target, false);
+    map->render(target, thisPlayer->getGridPosition());
 
     for (auto &[name, player] : players)
         player->render(target);

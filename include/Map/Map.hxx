@@ -74,6 +74,8 @@ class Map
 
     void render(sf::RenderTarget &target, const bool show_regions_and_chunks = false);
 
+    void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid);
+
     void putTile(TileBase tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
 
     std::optional<TileBase> getTile(const int &grid_x, const int &grid_y, const int &grid_z);

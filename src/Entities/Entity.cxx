@@ -57,10 +57,22 @@ const sf::Vector2f Entity::getPosition() const
     return sprite.getPosition();
 }
 
+const sf::Vector2i Entity::getGridPosition() const
+{
+    return sf::Vector2i(static_cast<int>(sprite.getPosition().x / (GRID_SIZE * sprite.getScale().x)),
+                        static_cast<int>(sprite.getPosition().y / (GRID_SIZE * sprite.getScale().y)));
+}
+
 const sf::Vector2f Entity::getCenter() const
 {
     return sf::Vector2f(sprite.getPosition().x + sprite.getGlobalBounds().size.x / 2.f,
                         sprite.getPosition().y + sprite.getGlobalBounds().size.y / 2.f);
+}
+
+const sf::Vector2i Entity::getCenterGridPosition() const
+{
+    return sf::Vector2i(static_cast<int>(getCenter().x / (GRID_SIZE * sprite.getScale().x)),
+                        static_cast<int>(getCenter().y / (GRID_SIZE * sprite.getScale().y)));
 }
 
 void Entity::setPosition(const sf::Vector2f &position)

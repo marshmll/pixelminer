@@ -1,9 +1,6 @@
 {
     "dataVersion": "1.0.0",
-    "gameVersion": {
-        "id": 1,
-        "name": "alpha 0.0.1"
-    },
+    "gameVersion": "alpha 0.0.1",
     "dataPacks:": {
         "enabled": [
             "vanilla"
@@ -15,7 +12,6 @@
     "seed": 123456789,
     "generatorName": "default",
     "generatorVersion": "1.0.0",
-    "chunksBaseXY": 3,
     "creationTime": 1736510125,
     "lastPlayed": 1736510125,
     "raining": false,

@@ -110,7 +110,7 @@ void Map::generate()
                 break;
 
             case Forest:
-                biome_color = sf::Color(29 * std::pow(3.f, (1.f - moisture + heat)), 143, 27, 255);
+                biome_color = sf::Color(26 * std::pow(3.f, (1.f - moisture + heat)), 135, 22, 255);
                 tile_data = tileData.at(TileId::GrassTop);
                 break;
 
@@ -156,59 +156,61 @@ void Map::generate()
 
     (void)image.saveToFile("Assets/map.png");
 
-    // Grass curves
-    for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
-    {
-        for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
-        {
-            std::optional<TileBase> tile = getTile(x, y, 0);
-            if (!tile)
-                continue;
+    // // Grass curves
+    // for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
+    // {
+    //     for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
+    //     {
+    //         std::optional<TileBase> tile = getTile(x, y, 0);
+    //         if (!tile)
+    //             continue;
 
-            BiomeData biome_data = biomeMap[x][y];
+    //         BiomeData biome_data = biomeMap[x][y];
 
-            if (biome_data.type == Forest || biome_data.type == Grassland || biome_data.type == Jungle ||
-                biome_data.type == Tundra)
-            {
-                std::array<std::array<BiomeData, 3>, 3> surround_biomes;
+    //         if (biome_data.type == Forest || biome_data.type == Grassland || biome_data.type == Jungle ||
+    //             biome_data.type == Tundra)
+    //         {
+    //             std::array<std::array<BiomeData, 3>, 3> surround_biomes;
 
-                for (int i = -1; i <= 1; i++)
-                {
-                    for (int j = -1; j <= 1; j++)
-                    {
-                        if (x + i >= 0 && x + i <= MAX_WORLD_GRID_SIZE.x && y + j >= 0 &&
-                            y + j <= MAX_WORLD_GRID_SIZE.y)
-                            surround_biomes[i + 1][j + 1] = biomeMap[x + i][y + j];
-                        else
-                            surround_biomes[i + 1][j + 1] = (BiomeData){UnknownBiome, sf::Color::Black};
-                    }
-                }
+    //             for (int i = -1; i <= 1; i++)
+    //             {
+    //                 for (int j = -1; j <= 1; j++)
+    //                 {
+    //                     if (x + i >= 0 && x + i <= MAX_WORLD_GRID_SIZE.x && y + j >= 0 &&
+    //                         y + j <= MAX_WORLD_GRID_SIZE.y)
+    //                         surround_biomes[i + 1][j + 1] = biomeMap[x + i][y + j];
+    //                     else
+    //                         surround_biomes[i + 1][j + 1] = (BiomeData){UnknownBiome, sf::Color::Black};
+    //                 }
+    //             }
 
-                TileData t;
-                sf::Color c;
+    //             TileData t;
+    //             sf::Color c;
 
-                if (surround_biomes[1][0].type != surround_biomes[1][1].type &&
-                    surround_biomes[2][1].type != surround_biomes[1][1].type &&
-                    surround_biomes[1][2].type == surround_biomes[1][1].type &&
-                    surround_biomes[0][1].type == surround_biomes[1][1].type)
-                {
-                    t = tileData.at(GrassTopFront);
-                    c = surround_biomes[2][0].color;
-                }
-                else if (surround_biomes[2][0].type != surround_biomes[1][1].type &&
-                         surround_biomes[2][1].type != surround_biomes[1][1].type &&
-                         surround_biomes[2][2].type != surround_biomes[1][1].type)
-                {
-                    t = tileData.at(GrassFront);
-                    c = surround_biomes[2][1].color;
-                }
-
-                Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
-                tile.setColor(c);
-                putTile(tile, x, y, 1);
-            }
-        }
-    }
+    //             if (surround_biomes[1][0].type != surround_biomes[1][1].type &&
+    //                 surround_biomes[2][1].type != surround_biomes[1][1].type &&
+    //                 surround_biomes[1][2].type == surround_biomes[1][1].type &&
+    //                 surround_biomes[0][1].type == surround_biomes[1][1].type)
+    //             {
+    //                 t = tileData.at(GrassTopFront);
+    //                 c = surround_biomes[2][0].color;
+    //                 Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
+    //                 tile.setColor(c);
+    //                 putTile(tile, x, y, 1);
+    //             }
+    //             else if (surround_biomes[2][0].type != surround_biomes[1][1].type &&
+    //                      surround_biomes[2][1].type != surround_biomes[1][1].type &&
+    //                      surround_biomes[2][2].type != surround_biomes[1][1].type)
+    //             {
+    //                 t = tileData.at(GrassFront);
+    //                 c = surround_biomes[2][1].color;
+    //                 Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
+    //                 tile.setColor(c);
+    //                 putTile(tile, x, y, 1);
+    //             }
+    //         }
+    //     }
+    // }
 }
 
 void Map::update(const float &dt)
@@ -225,6 +227,29 @@ void Map::render(sf::RenderTarget &target, const bool show_regions_and_chunks)
                 region->render(target, show_regions_and_chunks);
         }
     }
+}
+
+void Map::render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid)
+{
+    if (entity_pos_grid.x < 0 || entity_pos_grid.y < 0 || entity_pos_grid.x > MAX_WORLD_GRID_SIZE.x ||
+        entity_pos_grid.y > MAX_WORLD_GRID_SIZE.y)
+        return;
+
+    const unsigned int region_index_x = entity_pos_grid.x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
+    const unsigned int region_index_y = entity_pos_grid.y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
+
+    const unsigned int chunk_index_x =
+        ((entity_pos_grid.x - (region_index_x * REGION_SIZE_IN_CHUNKS.x)) / CHUNK_SIZE_IN_TILES.x) %
+        REGION_SIZE_IN_CHUNKS.x;
+    const unsigned int chunk_index_y =
+        ((entity_pos_grid.y - (region_index_y * REGION_SIZE_IN_CHUNKS.y)) / CHUNK_SIZE_IN_TILES.y) %
+        REGION_SIZE_IN_CHUNKS.y;
+
+    // std::cout << chunk_index_x << " " << chunk_index_y << "\n";
+
+    if (regions[region_index_x][region_index_y])
+        if (regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y])
+            regions[region_index_x][region_index_y]->chunks[chunk_index_x][chunk_index_y]->render(target, true);
 }
 
 void Map::putTile(TileBase tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z)

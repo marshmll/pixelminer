@@ -56,6 +56,7 @@ void Engine::initTileData()
 {
     sf::Vector2i texture_size(GRID_SIZE, GRID_SIZE);
 
+    tileData[Unknown] = {"Unknown", Unknown, sf::IntRect({240, 240}, texture_size)};
     tileData[Dirt] = {"Dirt", Dirt, sf::IntRect({0, 0}, texture_size)};
     tileData[Stone] = {"Stone", Stone, sf::IntRect({16, 0}, texture_size)};
     tileData[GrassSide] = {"Grass Side", GrassSide, sf::IntRect({32, 0}, texture_size)};

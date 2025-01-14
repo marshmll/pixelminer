@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Entities/Functionalities/AnimationFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
 
@@ -35,7 +36,11 @@ class Entity
 
     const sf::Vector2f getPosition() const;
 
+    const sf::Vector2i getGridPosition() const;
+
     const sf::Vector2f getCenter() const;
+
+    const sf::Vector2i getCenterGridPosition() const;
 
     void setPosition(const sf::Vector2f &position);
 };
