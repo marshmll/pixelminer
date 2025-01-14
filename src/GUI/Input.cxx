@@ -22,7 +22,7 @@ Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::C
 
     value = std::make_unique<sf::Text>(font, "", char_size);
     value->setPosition(sf::Vector2f(static_cast<int>(body.getPosition().x + padding),
-                                    static_cast<int>(body.getPosition().y + padding - char_size / 5.f)));
+                                    static_cast<int>(body.getPosition().y + padding - char_size / 3.f)));
     value->setFillColor(sf::Color::White);
 
     blinkerCursor.setSize(sf::Vector2f(char_size / 2.f, value->getLetterSpacing()));
@@ -135,7 +135,7 @@ void Input::handleBackspace()
 void Input::handleTab()
 {
     std::string currStr = value->getString();
-    currStr.append("    ");
+    currStr.append("\t");
     value->setString(currStr);
 }
 
