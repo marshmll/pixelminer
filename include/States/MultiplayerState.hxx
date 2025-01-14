@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUI/GUI.hxx"
+#include "States/DirectConnectState.hxx"
 #include "States/State.hxx"
 
 class MultiplayerState : public State

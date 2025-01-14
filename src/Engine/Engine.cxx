@@ -105,6 +105,7 @@ void Engine::initStateData()
     stateData.tileData = &tileData;
     stateData.window = &window;
     stateData.vm = &vm;
+    stateData.event = &event;
 }
 
 void Engine::initMainMenuState()

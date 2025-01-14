@@ -14,6 +14,7 @@ typedef struct
     std::map<std::uint32_t, TileData> *tileData;
     sf::RenderWindow *window;
     sf::VideoMode *vm;
+    std::optional<sf::Event> *event;
 } StateData;
 
 class State
