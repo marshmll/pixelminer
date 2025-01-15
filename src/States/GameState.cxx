@@ -26,22 +26,11 @@ void GameState::initPauseMenu()
     pauseMenu = std::make_unique<gui::PauseMenu>(data, *map);
 }
 
-void GameState::initServer()
-{
-    // try
-    // {
-    //     server.listen(55000);
-    //     // client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
-    // }
-    // catch (std::runtime_error e)
-    // {
-    //     std::cout << e.what();
-    // }
-}
-
 void GameState::initDebugging()
 {
-    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftRegular"), "0", gui::charSize(*data.vm, 130));
+    debugChunks = debugInfo = false;
+
+    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftItalic"), "0", gui::charSize(*data.vm, 130));
     debugText->setPosition(
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
@@ -52,7 +41,6 @@ GameState::GameState(EngineData &data) : State(data)
     initThisPlayer();
     initPlayerCamera();
     initPauseMenu();
-    initServer();
     initDebugging();
 }
 
@@ -71,7 +59,19 @@ void GameState::update(const float &dt)
     updateMap(dt);
     updatePlayers(dt);
     updatePlayerCamera();
-    updateDebugText(dt);
+
+    if (debugInfo)
+        updateDebugText(dt);
+
+    // Debug
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) &&
+        sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift))
+    {
+        if (keyPressedWithin(250, sf::Keyboard::Key::F1))
+            debugChunks = !debugChunks;
+    }
+    else if (keyPressedWithin(250, sf::Keyboard::Key::F3))
+        debugInfo = !debugInfo;
 }
 
 void GameState::updatePauseMenu(const float &dt)
@@ -148,14 +148,14 @@ void GameState::render(sf::RenderTarget &target)
 {
     renderTexture.setView(playerCamera);
 
-    map->render(renderTexture, thisPlayer->getCenterGridPosition(), true);
+    map->render(renderTexture, thisPlayer->getCenterGridPosition(), debugChunks);
 
     for (auto &[name, player] : players)
         player->render(renderTexture);
 
     renderTexture.setView(renderTexture.getDefaultView());
 
-    if (!pauseMenu->isActive())
+    if (!pauseMenu->isActive() && debugInfo)
         renderTexture.draw(*debugText);
 
     pauseMenu->render(renderTexture);

@@ -19,6 +19,9 @@ class GameState : public State
 
     std::unique_ptr<sf::Text> debugText;
 
+    bool debugInfo;
+    bool debugChunks;
+
     void initMap();
 
     void initThisPlayer();
@@ -26,8 +29,6 @@ class GameState : public State
     void initPlayerCamera();
 
     void initPauseMenu();
-
-    void initServer();
 
     void initDebugging();
 

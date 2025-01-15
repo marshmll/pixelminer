@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Map/Biome.hxx"
 #include "Map/Chunk.hxx"
 #include "Map/PerlinNoise.hxx"
 #include "Tiles/Tile.hxx"
+#include "Tools/JSON.hxx"
 
 static constexpr sf::Vector2u MAX_REGIONS = {4, 4}; // TEMP
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
@@ -23,7 +25,7 @@ struct BiomeData
 class Map
 {
   private:
-    std::filesystem::path path;
+    std::string name;
 
     std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
@@ -63,7 +65,7 @@ class Map
     Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
         const float &scale, const long int &seed);
 
-    Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
+    Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
         const unsigned int &grid_size, const float &scale);
 
     ~Map();
@@ -82,11 +84,11 @@ class Map
 
     std::optional<Tile> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
-    void saveToFile(std::filesystem::path path);
+    void save(const std::string &name);
 
     void save();
 
-    void loadFromFile(std::filesystem::path path);
+    void load(const std::string &name);
 
     const sf::Vector2f &getSpawnPoint() const;
 };

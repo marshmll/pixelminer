@@ -49,15 +49,15 @@ Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack
     generate();
     randomizeSpawnPoint();
 
-    saveToFile("Assets/Maps/myworld");
-    loadFromFile("Assets/Maps/myworld");
+    save("myworld");
+    load("myworld");
 }
 
-Map::Map(const std::filesystem::path path, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
+Map::Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
          const unsigned int &grid_size, const float &scale)
     : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale)
 {
-    loadFromFile(path);
+    load(name);
 }
 
 Map::~Map()
@@ -281,15 +281,45 @@ std::optional<Tile> Map::getTile(const int &grid_x, const int &grid_y, const int
     return *chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z];
 }
 
-void Map::saveToFile(std::filesystem::path path)
+void Map::save(const std::string &name)
 {
-    std::string path_str = path.string();
+    std::string path_str = MAPS_FOLDER + name;
 
     if (path_str.back() != '/')
         path_str.push_back('/');
 
     if (!std::filesystem::exists(path_str))
         std::filesystem::create_directory(path_str);
+
+    /* WORLD METADATA +++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    JSONObject metadataObj{{"dataVersion", DATA_VERSION},
+                           {"gameVersion", GAME_VERSION},
+                           {"dataPacks",
+                            JSONObject{
+                                {"enabled", JSONArray({"vanilla"})},
+                                {"disabled", JSONArray()},
+                            }},
+                           {"dayTime", 0},
+                           {"name", "myworld"},
+                           {"difficulty", "normal"},
+                           {"seed", 56465456464654},
+                           {"generatorName", "default"},
+                           {"creationTime", 1736510125},
+                           {"lastPlayed", 0},
+                           {"spawnX", 100.0},
+                           {"spawnY", 100.0},
+                           {"timePlayed", 0}};
+
+    std::ofstream metadataFile(path_str + "metadata.json");
+
+    if (!metadataFile.is_open())
+        throw std::runtime_error("[ Map::saveToFile ] -> Could not write region file: " + path_str + "metadata.json\n");
+
+    metadataFile << JSON::stringify(metadataObj);
+    metadataFile.close();
+
+    /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     if (!std::filesystem::exists(path_str + "regions"))
         std::filesystem::create_directory(path_str + "regions");
@@ -370,34 +400,33 @@ void Map::saveToFile(std::filesystem::path path)
             }
 
             if (!region_file.is_open())
-                throw std::runtime_error("[ Map::saveToFile ] -> ERROR: Unable to write to file: " + path.string() +
-                                         "\n");
+                throw std::runtime_error("[ Map::saveToFile ] -> ERROR: Unable to write to file: " + path_str + "\n");
 
             region_file.close();
         }
     }
 
-    std::cout << "[ Map::saveToFile ] -> Map saved to: " << path.string() << "\n";
+    std::cout << "[ Map::saveToFile ] -> Map saved to: " << path_str << "\n";
 }
 
 void Map::save()
 {
-    if (std::filesystem::exists(path))
-        saveToFile(this->path);
+    if (std::filesystem::exists(MAPS_FOLDER + name))
+        save(name);
 }
 
-void Map::loadFromFile(std::filesystem::path path)
+void Map::load(const std::string &name)
 {
-    std::string path_str = path.string();
+    std::string path_str = MAPS_FOLDER + name;
 
     if (path_str.back() != '/')
         path_str.push_back('/');
 
     if (!std::filesystem::exists(path_str))
-        throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path.string() + "\n");
+        throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path_str + "\n");
 
     if (!std::filesystem::exists(path_str + "regions/"))
-        throw std::runtime_error("[ Map::loadFromFile ] -> Invalid world: " + path.string() + "\n");
+        throw std::runtime_error("[ Map::loadFromFile ] -> Invalid world: " + path_str + "\n");
 
     std::stringstream fname;
 
@@ -464,8 +493,8 @@ void Map::loadFromFile(std::filesystem::path path)
         }
     }
 
-    this->path = path;
-    std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path.string() << "\n";
+    this->name = name;
+    std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path_str << "\n";
 }
 
 const sf::Vector2f &Map::getSpawnPoint() const

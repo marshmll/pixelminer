@@ -3,6 +3,7 @@
 #include "GUI/GUI.hxx"
 #include "States/GameState.hxx"
 #include "States/MultiplayerState.hxx"
+#include "States/SingleplayerState.hxx"
 
 class MainMenuState : public State
 {
