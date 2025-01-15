@@ -16,7 +16,7 @@ class MainMenuState : public State
     void initGUI();
 
   public:
-    MainMenuState(StateData &data);
+    MainMenuState(EngineData &data);
 
     ~MainMenuState();
 

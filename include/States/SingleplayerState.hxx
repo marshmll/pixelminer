@@ -5,7 +5,7 @@
 class SingleplayerState : public State
 {
   public:
-    SingleplayerState(StateData &data);
+    SingleplayerState(EngineData &data);
 
     ~SingleplayerState();
 };

@@ -18,7 +18,7 @@ class MultiplayerState : public State
     void initGUI();
 
   public:
-    MultiplayerState(StateData &data);
+    MultiplayerState(EngineData &data);
 
     ~MultiplayerState();
 

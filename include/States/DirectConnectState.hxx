@@ -13,7 +13,7 @@ class DirectConnectState : public State
     void initGUI();
 
   public:
-    DirectConnectState(StateData &data);
+    DirectConnectState(EngineData &data);
     ~DirectConnectState();
 
     void update(const float &dt);

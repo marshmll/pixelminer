@@ -23,13 +23,14 @@ class Engine
     unsigned int gridSize;
     float scale;
 
-    StateData stateData;
+    EngineData engineData;
     std::stack<std::unique_ptr<State>> states;
 
     // Assets
     std::map<std::string, sf::Font> fonts;
     std::map<std::string, sf::Texture> textures;
     std::map<std::uint32_t, TileData> tileData;
+    std::map<std::string, sf::Shader> shaders;
 
     /* PRIVATE METHODS */
 
@@ -45,7 +46,9 @@ class Engine
 
     void initTextures();
 
-    void initStateData();
+    void initShaders();
+
+    void initEngineData();
 
     void initMainMenuState();
 

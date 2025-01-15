@@ -300,7 +300,7 @@ void Map::saveToFile(std::filesystem::path path)
         {
             std::string fname = "r." + std::to_string(region_x) + "." + std::to_string(region_y) + ".region";
 
-            std::cout << path_str + "regions/" + fname << "\n";
+            // std::cout << path_str + "regions/" + fname << "\n";
 
             std::ofstream region_file(path_str + "regions/" + fname, std::ios::binary);
 
@@ -378,6 +378,12 @@ void Map::saveToFile(std::filesystem::path path)
     }
 
     std::cout << "[ Map::saveToFile ] -> Map saved to: " << path.string() << "\n";
+}
+
+void Map::save()
+{
+    if (std::filesystem::exists(path))
+        saveToFile(this->path);
 }
 
 void Map::loadFromFile(std::filesystem::path path)
@@ -458,6 +464,7 @@ void Map::loadFromFile(std::filesystem::path path)
         }
     }
 
+    this->path = path;
     std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path.string() << "\n";
 }
 

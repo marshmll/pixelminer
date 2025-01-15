@@ -96,22 +96,30 @@ void Engine::initTextures()
         logger.logError("ERROR: COULD NOT LOAD TEXTURE \"Player1\".");
 }
 
-void Engine::initStateData()
+void Engine::initShaders()
 {
-    stateData.gridSize = gridSize;
-    stateData.scale = scale;
-    stateData.states = &states;
-    stateData.fonts = &fonts;
-    stateData.textures = &textures;
-    stateData.tileData = &tileData;
-    stateData.window = &window;
-    stateData.vm = &vm;
-    stateData.event = &event;
+    if (!shaders["GaussianBlur"].loadFromFile("Assets/Shaders/Gaussian Blur/fragment_shader.frag",
+                                           sf::Shader::Type::Fragment))
+        logger.logError("ERROR: COULD NOT LOAD SHADER \"GaussianBlur\".");
+}
+
+void Engine::initEngineData()
+{
+    engineData.gridSize = gridSize;
+    engineData.scale = scale;
+    engineData.states = &states;
+    engineData.fonts = &fonts;
+    engineData.textures = &textures;
+    engineData.shaders = &shaders;
+    engineData.tileData = &tileData;
+    engineData.window = &window;
+    engineData.vm = &vm;
+    engineData.event = &event;
 }
 
 void Engine::initMainMenuState()
 {
-    states.push(std::make_unique<MainMenuState>(stateData));
+    states.push(std::make_unique<MainMenuState>(engineData));
 }
 
 void Engine::pollWindowEvents()
@@ -138,7 +146,8 @@ Engine::Engine() : logger("Engine")
     initTileData();
     initFonts();
     initTextures();
-    initStateData();
+    initShaders();
+    initEngineData();
     initMainMenuState();
 }
 

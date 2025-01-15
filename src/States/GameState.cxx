@@ -21,6 +21,11 @@ void GameState::initPlayerCamera()
     playerCamera.setCenter(thisPlayer->getCenter());
 }
 
+void GameState::initPauseMenu()
+{
+    pauseMenu = std::make_unique<gui::PauseMenu>(data, *map);
+}
+
 void GameState::initServer()
 {
     // try
@@ -41,11 +46,12 @@ void GameState::initDebugging()
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
-GameState::GameState(StateData &data) : State(data)
+GameState::GameState(EngineData &data) : State(data)
 {
     initMap();
     initThisPlayer();
     initPlayerCamera();
+    initPauseMenu();
     initServer();
     initDebugging();
 }
@@ -56,13 +62,24 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
+    updateMousePositions();
+    updatePauseMenu(dt);
+
+    if (pauseMenu->isActive())
+        return;
+
     updateMap(dt);
     updatePlayers(dt);
     updatePlayerCamera();
     updateDebugText(dt);
+}
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        client.disconnect();
+void GameState::updatePauseMenu(const float &dt)
+{
+    if (keyPressedWithin(250, sf::Keyboard::Key::Escape))
+        pauseMenu->toggleActive();
+
+    pauseMenu->update(dt, mousePosView);
 }
 
 void GameState::updateMap(const float &dt)
@@ -129,13 +146,22 @@ void GameState::updateDebugText(const float &dt)
 
 void GameState::render(sf::RenderTarget &target)
 {
-    target.setView(playerCamera);
+    renderTexture.setView(playerCamera);
 
-    map->render(target, thisPlayer->getCenterGridPosition(), true);
+    map->render(renderTexture, thisPlayer->getCenterGridPosition(), true);
 
     for (auto &[name, player] : players)
-        player->render(target);
+        player->render(renderTexture);
 
-    target.setView(target.getDefaultView());
-    target.draw(*debugText);
+    renderTexture.setView(renderTexture.getDefaultView());
+
+    if (!pauseMenu->isActive())
+        renderTexture.draw(*debugText);
+
+    pauseMenu->render(renderTexture);
+
+    renderTexture.display();
+    renderSprite.setTexture(renderTexture.getTexture());
+
+    target.draw(renderSprite);
 }

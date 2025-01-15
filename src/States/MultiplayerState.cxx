@@ -74,7 +74,7 @@ void MultiplayerState::initGUI()
     buttons.at("Delete")->setState(gui::ButtonState::Disabled);
 }
 
-MultiplayerState::MultiplayerState(StateData &data) : State(data)
+MultiplayerState::MultiplayerState(EngineData &data) : State(data)
 {
     initGUI();
 }

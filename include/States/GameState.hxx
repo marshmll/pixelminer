@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entities/Playable/Player.hxx"
-#include "GUI/Utils.hxx"
+#include "GUI/GUI.hxx"
 #include "Map/Map.hxx"
 #include "Network/Client.hxx"
 #include "Network/Server.hxx"
@@ -10,15 +10,12 @@
 class GameState : public State
 {
   private:
+    std::unique_ptr<gui::PauseMenu> pauseMenu;
+
     std::map<std::pair<sf::IpAddress, unsigned short>, std::shared_ptr<Player>> players;
     std::shared_ptr<Player> thisPlayer;
-
     sf::View playerCamera;
-
     std::unique_ptr<Map> map;
-
-    Server server;
-    Client client;
 
     std::unique_ptr<sf::Text> debugText;
 
@@ -28,16 +25,20 @@ class GameState : public State
 
     void initPlayerCamera();
 
+    void initPauseMenu();
+
     void initServer();
 
     void initDebugging();
 
   public:
-    GameState(StateData &data);
+    GameState(EngineData &data);
 
     ~GameState();
 
     void update(const float &dt);
+
+    void updatePauseMenu(const float &dt);
 
     void updateMap(const float &dt);
 

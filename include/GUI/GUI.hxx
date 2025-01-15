@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GUI/Utils.hxx"
 #include "GUI/Button.hxx"
-#include "GUI/TextButton.hxx"
 #include "GUI/Input.hxx"
+#include "GUI/PauseMenu.hxx"
+#include "GUI/TextButton.hxx"
+#include "GUI/Utils.hxx"

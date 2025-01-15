@@ -52,7 +52,7 @@ void MainMenuState::initGUI()
         sf::Color::White, 2.f, sf::Color::Black);
 }
 
-MainMenuState::MainMenuState(StateData &data) : State(data)
+MainMenuState::MainMenuState(EngineData &data) : State(data)
 {
     initGUI();
 }

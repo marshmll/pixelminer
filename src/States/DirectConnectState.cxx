@@ -32,7 +32,7 @@ void DirectConnectState::initGUI()
     buttons.at("JoinServer")->setState(gui::ButtonState::Disabled);
 }
 
-DirectConnectState::DirectConnectState(StateData &data) : State(data)
+DirectConnectState::DirectConnectState(EngineData &data) : State(data)
 {
     initGUI();
 }

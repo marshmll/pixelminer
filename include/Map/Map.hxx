@@ -23,6 +23,8 @@ struct BiomeData
 class Map
 {
   private:
+    std::filesystem::path path;
+
     std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
 
@@ -81,6 +83,8 @@ class Map
     std::optional<Tile> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
     void saveToFile(std::filesystem::path path);
+
+    void save();
 
     void loadFromFile(std::filesystem::path path);
 
