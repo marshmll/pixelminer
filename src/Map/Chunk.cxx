@@ -4,7 +4,8 @@
 Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale)
     : chunkIndex(chunk_index), gridSize(grid_size), scale(scale)
 {
-    chunkBorders.setSize(sf::Vector2f(CHUNK_SIZE_IN_TILES.x * grid_size * scale, CHUNK_SIZE_IN_TILES.y * grid_size * scale));
+    chunkBorders.setSize(
+        sf::Vector2f(CHUNK_SIZE_IN_TILES.x * grid_size * scale, CHUNK_SIZE_IN_TILES.y * grid_size * scale));
     chunkBorders.setPosition(sf::Vector2f(chunk_index.x * CHUNK_SIZE_IN_TILES.x * grid_size * scale,
                                           chunk_index.y * CHUNK_SIZE_IN_TILES.y * grid_size * scale));
     chunkBorders.setFillColor(sf::Color::Transparent);
@@ -20,7 +21,7 @@ void Chunk::update(const float &dt)
 {
 }
 
-void Chunk::render(sf::RenderTarget &target, const bool show_chunk_borders)
+void Chunk::render(sf::RenderTarget &target, const bool &debug)
 {
     for (auto &x : tiles)
     {
@@ -34,6 +35,6 @@ void Chunk::render(sf::RenderTarget &target, const bool show_chunk_borders)
         }
     }
 
-    if (show_chunk_borders)
+    if (debug)
         target.draw(chunkBorders);
 }

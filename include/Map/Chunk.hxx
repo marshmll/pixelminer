@@ -3,6 +3,7 @@
 #include "Engine/Configuration.hxx"
 #include "Tiles/Tile.hxx"
 
+static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {4, 4};
 static constexpr sf::Vector3<unsigned int> CHUNK_SIZE_IN_TILES = {16, 16, 5};
 
 class Chunk
@@ -21,5 +22,5 @@ class Chunk
 
     void update(const float &dt);
 
-    void render(sf::RenderTarget &target, const bool show_chunk_borders = false);
+    void render(sf::RenderTarget &target, const bool &debug = false);
 };

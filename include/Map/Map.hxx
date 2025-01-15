@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Map/Biome.hxx"
+#include "Map/Chunk.hxx"
 #include "Map/PerlinNoise.hxx"
-#include "Map/Region.hxx"
 #include "Tiles/Tile.hxx"
 
-static constexpr sf::Vector2u MAX_REGIONS = {2, 2}; // TEMP
+static constexpr sf::Vector2u MAX_REGIONS = {4, 4}; // TEMP
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
                                             MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
 
@@ -74,7 +74,7 @@ class Map
 
     void render(sf::RenderTarget &target, const bool &debug = false);
 
-    void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid);
+    void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, const bool &debug);
 
     void putTile(Tile &tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
 

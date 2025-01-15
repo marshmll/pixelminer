@@ -27,6 +27,12 @@ const sf::Vector2f TileBase::getPosition() const
     return sprite.getPosition();
 }
 
+const sf::Vector2u TileBase::getGridPosition() const
+{
+    return sf::Vector2u(static_cast<unsigned>(sprite.getPosition().x / (GRID_SIZE * sprite.getScale().x)),
+                        static_cast<unsigned>(sprite.getPosition().y / (GRID_SIZE * sprite.getScale().y)));
+}
+
 sf::Color TileBase::getColor() const
 {
     return sprite.getColor();

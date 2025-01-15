@@ -131,7 +131,7 @@ void GameState::render(sf::RenderTarget &target)
 {
     target.setView(playerCamera);
 
-    map->render(target, thisPlayer->getGridPosition());
+    map->render(target, thisPlayer->getCenterGridPosition(), true);
 
     for (auto &[name, player] : players)
         player->render(target);
