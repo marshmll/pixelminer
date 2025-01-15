@@ -29,7 +29,7 @@ class Map
     unsigned int gridSize;
     float scale;
 
-    std::vector<std::vector<std::unique_ptr<Region>>> regions;
+    std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y> chunks;
     std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x> biomeMap;
 
     sf::Vector2f spawnPoint;
@@ -72,13 +72,13 @@ class Map
 
     void update(const float &dt);
 
-    void render(sf::RenderTarget &target, const bool show_regions_and_chunks = false);
+    void render(sf::RenderTarget &target, const bool &debug = false);
 
     void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid);
 
-    void putTile(TileBase tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
+    void putTile(Tile &tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
 
-    std::optional<TileBase> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
+    std::optional<Tile> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
     void saveToFile(std::filesystem::path path);
 
