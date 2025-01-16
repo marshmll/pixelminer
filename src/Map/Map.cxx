@@ -46,11 +46,11 @@ Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
-    generate();
+    // generate();
     randomizeSpawnPoint();
 
-    save("myworld");
     load("myworld");
+    // save("myworld");
 }
 
 Map::Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
@@ -151,62 +151,6 @@ void Map::generate()
     }
 
     (void)image.saveToFile("Assets/map.png");
-
-    // // Grass curves
-    // // for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
-    // // {
-    // //     for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
-    // //     {
-    // //         std::optional<TileBase> tile = getTile(x, y, 0);
-    // //         if (!tile)
-    // //             continue;
-
-    //         BiomeData biome_data = biomeMap[x][y];
-
-    //         if (biome_data.type == Forest || biome_data.type == Grassland || biome_data.type == Jungle ||
-    //             biome_data.type == Tundra)
-    //         {
-    //             std::array<std::array<BiomeData, 3>, 3> surround_biomes;
-
-    //             for (int i = -1; i <= 1; i++)
-    //             {
-    //                 for (int j = -1; j <= 1; j++)
-    //                 {
-    //                     if (x + i >= 0 && x + i <= MAX_WORLD_GRID_SIZE.x && y + j >= 0 &&
-    //                         y + j <= MAX_WORLD_GRID_SIZE.y)
-    //                         surround_biomes[i + 1][j + 1] = biomeMap[x + i][y + j];
-    //                     else
-    //                         surround_biomes[i + 1][j + 1] = (BiomeData){UnknownBiome, sf::Color::Black};
-    //                 }
-    //             }
-
-    //             TileData t;
-    //             sf::Color c;
-
-    // //             if (surround_biomes[1][0].type != surround_biomes[1][1].type &&
-    // //                 surround_biomes[2][1].type != surround_biomes[1][1].type &&
-    // //                 surround_biomes[1][2].type == surround_biomes[1][1].type &&
-    // //                 surround_biomes[0][1].type == surround_biomes[1][1].type)
-    // //             {
-    // //                 t = tileData.at(GrassTopFront);
-    // //                 c = surround_biomes[2][0].color;
-    // //                 Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
-    // //                 tile.setColor(c);
-    //                 putTile(tile, x, y, 1);
-    //             }
-    //             else if (surround_biomes[2][0].type != surround_biomes[1][1].type &&
-    // //                      surround_biomes[2][1].type != surround_biomes[1][1].type &&
-    // //                      surround_biomes[2][2].type != surround_biomes[1][1].type)
-    // //             {
-    // //                 t = tileData.at(GrassFront);
-    // //                 c = surround_biomes[2][1].color;
-    // //     //             Tile tile(t.name, t.id, texturePack, t.textureRect, gridSize, {}, scale);
-    //     //             tile.setColor(c);
-    //     //             putTile(tile, x, y, 1);
-    //     //         }
-    //     //     }
-    // //     }
-    // }
 }
 
 void Map::update(const float &dt)
@@ -293,23 +237,10 @@ void Map::save(const std::string &name)
 
     /* WORLD METADATA +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    JSONObject metadataObj{{"dataVersion", DATA_VERSION},
-                           {"gameVersion", GAME_VERSION},
-                           {"dataPacks",
-                            JSONObject{
-                                {"enabled", JSONArray({"vanilla"})},
-                                {"disabled", JSONArray()},
-                            }},
-                           {"dayTime", 0},
-                           {"name", "myworld"},
-                           {"difficulty", "normal"},
-                           {"seed", 56465456464654},
-                           {"generatorName", "default"},
-                           {"creationTime", 1736510125},
-                           {"lastPlayed", 0},
-                           {"spawnX", 100.0},
-                           {"spawnY", 100.0},
-                           {"timePlayed", 0}};
+    JSONObject metadataObj;
+    metadataObj << metadata;
+
+    // std::cout << JSON::stringify(metadataObj) << "\n";
 
     std::ofstream metadataFile(path_str + "metadata.json");
 
@@ -411,8 +342,8 @@ void Map::save(const std::string &name)
 
 void Map::save()
 {
-    if (std::filesystem::exists(MAPS_FOLDER + name))
-        save(name);
+    if (std::filesystem::exists(MAPS_FOLDER + mapName))
+        save(mapName);
 }
 
 void Map::load(const std::string &name)
@@ -425,16 +356,34 @@ void Map::load(const std::string &name)
     if (!std::filesystem::exists(path_str))
         throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path_str + "\n");
 
+    /* METADATA +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    if (!std::filesystem::exists(path_str + "metadata.json"))
+        throw std::runtime_error("[ Map::loadFromFile ] -> No world metadata found: " + path_str + "\n");
+
+    std::ifstream metadataFile(path_str + "metadata.json");
+
+    if (!metadataFile.is_open())
+        throw std::runtime_error("[ Map::loadFromFile ] -> Failed to open file: " + path_str + "metadata.json" + "\n");
+
+    std::stringstream ss;
+    ss << metadataFile.rdbuf();
+
+    JSONObject metadataObj = JSON::parse(ss.str()).get<JSONObject>();
+    metadataObj >> metadata;
+
+    // std::cout << JSON::stringify(metadataObj) << "\n";
+
+    /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
     if (!std::filesystem::exists(path_str + "regions/"))
         throw std::runtime_error("[ Map::loadFromFile ] -> Invalid world: " + path_str + "\n");
-
-    std::stringstream fname;
 
     for (unsigned int i = 0; i < MAX_REGIONS.x; i++)
     {
         for (unsigned int j = 0; j < MAX_REGIONS.y; j++)
         {
-            fname.clear();
+            std::stringstream fname;
             fname << "r." << i << "." << j << ".region";
 
             if (!std::filesystem::exists(path_str + "regions/" + fname.str())) // Check if region exists
@@ -493,8 +442,8 @@ void Map::load(const std::string &name)
         }
     }
 
-    this->name = name;
-    std::cout << "[ Map::saveToFile ] -> Map loaded from: " << path_str << "\n";
+    mapName = name;
+    std::cout << "[ Map::loadFromFile ] -> Map loaded from: " << path_str << "\n";
 }
 
 const sf::Vector2f &Map::getSpawnPoint() const

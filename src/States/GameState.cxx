@@ -146,6 +146,8 @@ void GameState::updateDebugText(const float &dt)
 
 void GameState::render(sf::RenderTarget &target)
 {
+    renderTexture.clear();
+
     renderTexture.setView(playerCamera);
 
     map->render(renderTexture, thisPlayer->getCenterGridPosition(), debugChunks);
