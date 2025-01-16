@@ -92,8 +92,6 @@ class Map
   private:
     Metadata metadata;
 
-    std::string mapName;
-
     std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
 
@@ -103,9 +101,6 @@ class Map
     std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y> chunks;
     std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x> biomeMap;
 
-    sf::Vector2f spawnPoint;
-
-    long long int seed;
     std::unique_ptr<PerlinNoise> noise;
 
     std::vector<Wave> height_waves;
@@ -117,8 +112,6 @@ class Map
     NoiseMap heat_map;
 
     std::vector<Biome> biomes;
-
-    void resize();
 
     void initPerlinWaves();
 
@@ -157,5 +150,5 @@ class Map
 
     void load(const std::string &name);
 
-    const sf::Vector2f &getSpawnPoint() const;
+    const sf::Vector2f getSpawnPoint() const;
 };

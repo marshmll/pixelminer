@@ -1,10 +1,6 @@
 #include "Map/Map.hxx"
 #include "stdafx.hxx"
 
-void Map::resize()
-{
-}
-
 void Map::initPerlinWaves()
 {
     height_waves = {{120.f, .009f, 4.f}, {300.f, .2f, 1.5f}, {500.f, .018f, 8.f}};
@@ -32,25 +28,26 @@ void Map::initBiomes()
 
 void Map::randomizeSpawnPoint()
 {
-    spawnPoint.x = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.x) * gridSize);
-    spawnPoint.y = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.y) * gridSize);
+    metadata.spawnX = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.x) * gridSize);
+    metadata.spawnY = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.y) * gridSize);
 }
 
 Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale, const long int &seed)
 
-    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), seed(seed),
+    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale),
       noise(std::make_unique<PerlinNoise>(seed))
 {
-    resize();
+    metadata.seed = seed;
+
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
     // generate();
-    randomizeSpawnPoint();
+    // randomizeSpawnPoint();
 
-    load("myworld");
     // save("myworld");
+    load("myworld");
 }
 
 Map::Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
@@ -342,8 +339,11 @@ void Map::save(const std::string &name)
 
 void Map::save()
 {
-    if (std::filesystem::exists(MAPS_FOLDER + mapName))
-        save(mapName);
+    // If no name provided, generate a random one.
+    if (metadata.name.empty())
+        metadata.name = std::to_string(std::rand());
+
+    save(metadata.name);
 }
 
 void Map::load(const std::string &name)
@@ -442,11 +442,10 @@ void Map::load(const std::string &name)
         }
     }
 
-    mapName = name;
     std::cout << "[ Map::loadFromFile ] -> Map loaded from: " << path_str << "\n";
 }
 
-const sf::Vector2f &Map::getSpawnPoint() const
+const sf::Vector2f Map::getSpawnPoint() const
 {
-    return spawnPoint;
+    return sf::Vector2f(metadata.spawnX, metadata.spawnY);
 }
