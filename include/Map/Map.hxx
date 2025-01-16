@@ -70,7 +70,7 @@ class Map
 
     void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, const bool &debug);
 
-    void putTile(Tile &tile, const unsigned int &grid_x, const unsigned int &grid_y, const unsigned int &grid_z);
+    void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
 
     std::optional<Tile> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 

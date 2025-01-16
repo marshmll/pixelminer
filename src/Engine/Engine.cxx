@@ -89,11 +89,18 @@ void Engine::initTileData()
     tileData[Stone] = {"Stone", Stone, sf::IntRect({16, 0}, texture_size)};
     tileData[GrassSide] = {"Grass Side", GrassSide, sf::IntRect({32, 0}, texture_size)};
     tileData[Cobblestone] = {"Cobblestone", Cobblestone, sf::IntRect({48, 0}, texture_size)};
-    tileData[GrassTop] = {"Grass Top", GrassTop, sf::IntRect({0, 16}, texture_size)};
+    tileData[Grass] = {"Grass", Grass, sf::IntRect({0, 16}, texture_size)};
     tileData[Sand] = {"Sand", Sand, sf::IntRect({80, 0}, texture_size)};
     tileData[Snow] = {"Snow", Snow, sf::IntRect({96, 0}, texture_size)};
     tileData[Water] = {"Water", Water, sf::IntRect({112, 0}, texture_size)};
     tileData[GrassTopFront] = {"Grass", GrassTopFront, sf::IntRect({48, 16}, texture_size)};
+    tileData[GrassBottomFront] = {"Grass", GrassBottomFront, sf::IntRect({48, 48}, texture_size)};
+    tileData[GrassBottomBack] = {"Grass", GrassBottomBack, sf::IntRect({16, 64}, texture_size)};
+    tileData[GrassCurveTopFront] = {"Grass", GrassCurveTopFront, sf::IntRect({64, 32}, texture_size)};
+    tileData[GrassCurveBottomFront] = {"Grass", GrassCurveBottomFront, sf::IntRect({64, 16}, texture_size)};
+    tileData[GrassCurveBottomBack] = {"Grass", GrassCurveBottomBack, sf::IntRect({80, 16}, texture_size)};
+    tileData[GrassTop] = {"Grass", GrassTop, sf::IntRect({32, 16}, texture_size)};
+    tileData[GrassBottom] = {"Grass", GrassBottom, sf::IntRect({32, 48}, texture_size)};
     tileData[GrassFront] = {"Grass", GrassFront, sf::IntRect({48, 32}, texture_size)};
 }
 

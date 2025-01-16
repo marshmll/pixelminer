@@ -22,6 +22,8 @@ class TileBase
 
     const std::uint32_t &getId() const;
 
+    const std::string &getName() const;
+
     const sf::Vector2f getPosition() const;
 
     const sf::Vector2u getGridPosition() const;
