@@ -4,11 +4,11 @@
 #include "Network/PacketAddress.hxx"
 #include "Tools/Logger.hxx"
 
-using ConnectionUID = std::uint32_t;
-
 class Client
 {
   private:
+    std::string myUuid;
+
     Logger logger;
 
     std::mutex mutex;
@@ -18,7 +18,6 @@ class Client
 
     sf::IpAddress serverIp;
     unsigned short serverPort;
-    ConnectionUID myUid;
 
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
@@ -36,11 +35,11 @@ class Client
 
     void handler();
 
-    void handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port);
+    void handleServerAck(const sf::IpAddress &ip, const unsigned short &port);
 
-    void handleServerRCN(const sf::IpAddress &ip, const unsigned short &port);
+    void handleServerRcn(const sf::IpAddress &ip, const unsigned short &port);
 
-    void handleServerRFS(const sf::IpAddress &ip, const unsigned short &port);
+    void handleServerRfs(const sf::IpAddress &ip, const unsigned short &port);
 
     void handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port);
 
@@ -49,7 +48,7 @@ class Client
     void setReady(const bool &ready);
 
   public:
-    Client();
+    Client(const std::string &uuid);
     ~Client();
 
     void connect(const sf::IpAddress &ip, const unsigned short &port, const float &timeout = 10.f);

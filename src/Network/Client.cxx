@@ -8,7 +8,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     setReady(false);
 
     pktBuf.clear();
-    pktBuf << "ASK";
+    pktBuf << "ASK+UUID" << myUuid;
 
     if (!send(pktBuf, ip, port))
     {
@@ -27,21 +27,19 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 setReady(true);
                 std::string header;
                 pktBuf >> header;
-                std::cout << header << "\n";
+                // std::cout << header << "\n";
 
-                if (header == "ACK+UID")
+                if (header == "ACK")
                 {
-                    pktBuf >> myUid;
-                    handleServerACKUID(ipBuffer.value(), portBuf);
+                    handleServerAck(ipBuffer.value(), portBuf);
                 }
                 else if (header == "RCN")
                 {
-                    pktBuf >> myUid;
-                    handleServerRCN(ipBuffer.value(), portBuf);
+                    handleServerRcn(ipBuffer.value(), portBuf);
                 }
                 else if (header == "RFS")
                 {
-                    handleServerRFS(ipBuffer.value(), portBuf);
+                    handleServerRfs(ipBuffer.value(), portBuf);
                 }
                 else
                 {
@@ -87,8 +85,8 @@ void Client::listenerThread()
         }
         else
         {
-            disconnect();
             logger.logInfo("Connection with server " + serverIp.toString() + " timed out after 10 seconds.");
+            disconnect();
         }
     }
 }
@@ -114,36 +112,31 @@ void Client::handler()
     }
 }
 
-void Client::handleServerACKUID(const sf::IpAddress &ip, const unsigned short &port)
+void Client::handleServerAck(const sf::IpAddress &ip, const unsigned short &port)
 {
     logger.logInfo("Connected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
 
-    pktBuf.clear();
-    pktBuf << "UID+ACK" << myUid;
-
-    send(pktBuf);
     setReady(true);
     setConnected(true);
 
     std::thread(&Client::listenerThread, this).detach();
 }
 
-void Client::handleServerRCN(const sf::IpAddress &ip, const unsigned short &port)
+void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port)
 {
     logger.logInfo("Reconnected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
 
-    send(pktBuf);
     setReady(true);
     setConnected(true);
 
     std::thread(&Client::listenerThread, this).detach();
 }
 
-void Client::handleServerRFS(const sf::IpAddress &ip, const unsigned short &port)
+void Client::handleServerRfs(const sf::IpAddress &ip, const unsigned short &port)
 {
     logger.logError("Connection refused by server " + ip.toString() + ":" + std::to_string(port) + ".", false);
     setConnected(false);
@@ -165,7 +158,8 @@ void Client::setReady(const bool &ready)
     this->ready = ready;
 }
 
-Client::Client() : logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), myUid(0), ready(true), connected(false)
+Client::Client(const std::string &uuid)
+    : myUuid(uuid), logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), ready(true), connected(false)
 {
     socket.setBlocking(false);
 
@@ -196,7 +190,7 @@ void Client::disconnect()
     }
 
     pktBuf.clear();
-    pktBuf << "KIL" << myUid;
+    pktBuf << "KIL" << myUuid;
 
     if (!send(pktBuf))
         logger.logError("Failed to communicate with server. Disconnecting anyway.");
@@ -258,7 +252,7 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
         logger.logError("File \"" + path.string() + "\" too large (" + std::to_string(fd.filesize) + " bytes).");
 
     pktBuf.clear();
-    pktBuf << "FILE" << myUid << fd;
+    pktBuf << "FILE" << myUuid << fd;
 
     char c;
     while (file.get(c))

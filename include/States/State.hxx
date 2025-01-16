@@ -6,6 +6,7 @@ class State;
 
 struct EngineData
 {
+    std::string uuid;
     unsigned int gridSize;
     float scale;
     std::stack<std::unique_ptr<State>> *states;

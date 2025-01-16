@@ -12,6 +12,12 @@ enum BiomeType
     Tundra,
 };
 
+struct BiomeData
+{
+    BiomeType type;
+    sf::Color color;
+};
+
 class Biome
 {
   private:

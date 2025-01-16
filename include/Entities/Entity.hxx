@@ -4,6 +4,14 @@
 #include "Entities/Functionalities/AnimationFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
 
+struct EntityData
+{
+    std::string name;
+    std::uint64_t id;
+    sf::Vector2f current_position;
+    sf::Vector2f spawn_position;
+};
+
 class Entity
 {
   protected:

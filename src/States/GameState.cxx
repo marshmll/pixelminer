@@ -9,10 +9,8 @@ void GameState::initMap()
 
 void GameState::initThisPlayer()
 {
-    players[std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542)] =
-        std::make_shared<Player>(map->getSpawnPoint(), data.textures->at("Player1"), data.scale);
-
-    thisPlayer = players.at(std::pair<sf::IpAddress, unsigned short>(sf::IpAddress::getLocalAddress().value(), 47542));
+    players[data.uuid] = std::make_shared<Player>(map->getSpawnPoint(), data.textures->at("Player1"), data.scale);
+    thisPlayer = players.at(data.uuid);
 }
 
 void GameState::initPlayerCamera()
@@ -35,13 +33,23 @@ void GameState::initDebugging()
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
-GameState::GameState(EngineData &data) : State(data)
+GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(data.uuid)
 {
     initMap();
     initThisPlayer();
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
+
+    try
+    {
+        server.listen(55000);
+        client.connect({127, 0, 0, 1}, 55000);
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << e.what();
+    }
 }
 
 GameState::~GameState()

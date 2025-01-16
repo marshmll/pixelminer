@@ -6,13 +6,14 @@
 #include "Network/Client.hxx"
 #include "Network/Server.hxx"
 #include "States/State.hxx"
+#include "Tools/UUID.hxx"
 
 class GameState : public State
 {
   private:
     std::unique_ptr<gui::PauseMenu> pauseMenu;
 
-    std::map<std::pair<sf::IpAddress, unsigned short>, std::shared_ptr<Player>> players;
+    std::map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
     sf::View playerCamera;
     std::unique_ptr<Map> map;
@@ -21,6 +22,9 @@ class GameState : public State
 
     bool debugInfo;
     bool debugChunks;
+
+    Client client;
+    Server server;
 
     void initMap();
 

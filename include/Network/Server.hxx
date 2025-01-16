@@ -13,11 +13,11 @@ struct Connection
     bool active = true;
 };
 
-using ConnectionUID = std::uint32_t;
-
 class Server
 {
   private:
+    std::string myUuid;
+
     Logger logger;
 
     std::mutex mutex;
@@ -25,7 +25,7 @@ class Server
     sf::SocketSelector socketSelector;
     sf::UdpSocket socket;
 
-    std::map<ConnectionUID, Connection> connections;
+    std::map<std::string, Connection> connections;
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     bool online;
@@ -40,24 +40,20 @@ class Server
 
     void handleTimedOutConnections();
 
-    void handleAsk(const sf::IpAddress &ip, const unsigned short &port);
-
-    void handleUidAck(const ConnectionUID &uid);
-
-    const ConnectionUID generateConnectionUID();
+    void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port);
 
     void setOnline(const bool &online);
 
   public:
-    Server();
+    Server(const std::string &uuid);
 
     ~Server();
 
     void listen(const unsigned short port);
 
-    const bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const ConnectionUID &uid);
+    const bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const std::string &uuid);
 
-    void disconnectClient(const ConnectionUID &uid);
+    void disconnectClient(const std::string &uuid);
 
     const bool isClientConnected(const sf::IpAddress &ip, const unsigned short &port);
 

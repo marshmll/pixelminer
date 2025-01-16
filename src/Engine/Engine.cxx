@@ -133,6 +133,7 @@ void Engine::initShaders()
 
 void Engine::initEngineData()
 {
+    engineData.uuid = myUuid;
     engineData.gridSize = gridSize;
     engineData.scale = scale;
     engineData.states = &states;

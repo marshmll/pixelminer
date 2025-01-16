@@ -2,6 +2,11 @@
 
 #include "Entities/Entity.hxx"
 
+struct PlayerData : EntityData
+{
+    std::string uuid;
+};
+
 class Player : public Entity
 {
   private:
