@@ -6,6 +6,7 @@ target_sources(pixelminer PRIVATE
 ./Tools/JSON.cxx
 ./Tools/LinearCongruentialGenerator.cxx
 ./Tools/Logger.cxx
+./Tools/UUID.cxx
 ./States/SingleplayerState.cxx
 ./States/GameState.cxx
 ./States/MainMenuState.cxx

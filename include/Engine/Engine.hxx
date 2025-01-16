@@ -6,11 +6,13 @@
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
+#include "Tools/UUID.hxx"
 
 class Engine
 {
   private:
     /* ATTRIBUTES */
+    std::string myUuid;
     Logger logger;
     GraphicsSettings gfx;
 
@@ -35,6 +37,8 @@ class Engine
     /* PRIVATE METHODS */
 
     void seedRandom();
+
+    void identificateSelf();
 
     void initGraphicsSettings();
 

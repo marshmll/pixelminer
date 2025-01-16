@@ -8,6 +8,34 @@ void Engine::seedRandom()
     std::srand(std::time(0));
 }
 
+void Engine::identificateSelf()
+{
+    if (std::filesystem::exists("Assets/Settings/uuid.bin"))
+    {
+        std::ifstream fUuid("Assets/Settings/uuid.bin", std::ios::binary);
+        if (!fUuid.is_open())
+            logger.logError("Could not identificate self.");
+
+        char uuid[37];
+        fUuid.read(uuid, sizeof(uuid));
+        myUuid.append(uuid);
+
+        fUuid.close();
+    }
+    else
+    {
+        std::ofstream fUuid("Assets/Settings/uuid.bin", std::ios::binary);
+        if (!fUuid.is_open())
+            logger.logError("Could not identificate self.");
+
+        myUuid = UUID::generate();
+        char *uuid = myUuid.data();
+
+        fUuid.write(uuid, sizeof(char) * 37);
+        fUuid.close();
+    }
+}
+
 void Engine::initGraphicsSettings()
 {
     if (gfx.loadFromFile("Assets/Settings/graphics.json"))
@@ -99,7 +127,7 @@ void Engine::initTextures()
 void Engine::initShaders()
 {
     if (!shaders["GaussianBlur"].loadFromFile("Assets/Shaders/Gaussian Blur/fragment_shader.frag",
-                                           sf::Shader::Type::Fragment))
+                                              sf::Shader::Type::Fragment))
         logger.logError("ERROR: COULD NOT LOAD SHADER \"GaussianBlur\".");
 }
 
@@ -141,6 +169,7 @@ void Engine::updateDeltaTime()
 Engine::Engine() : logger("Engine")
 {
     seedRandom();
+    identificateSelf();
     initGraphicsSettings();
     initVariables();
     initTileData();
