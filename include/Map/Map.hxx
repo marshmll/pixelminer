@@ -7,6 +7,7 @@
 #include "Map/PerlinNoise.hxx"
 #include "Tiles/Tile.hxx"
 #include "Tools/JSON.hxx"
+#include "Tools/LinearCongruentialGenerator.hxx"
 
 static constexpr sf::Vector2u MAX_REGIONS = {4, 4}; // TEMP
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
@@ -43,6 +44,8 @@ class Map
 
     std::vector<Biome> biomes;
 
+    Random rng;
+
     void initPerlinWaves();
 
     void initNoiseMaps();
@@ -72,7 +75,7 @@ class Map
 
     void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
 
-    std::optional<Tile> getTile(const int &grid_x, const int &grid_y, const int &grid_z);
+    Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
     void save(const std::string &name);
 

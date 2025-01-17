@@ -1,4 +1,7 @@
 #include "Map/Map.hxx"
+#include "Map/Chunk.hxx"
+#include "Tiles/TileData.hxx"
+#include "Tools/LinearCongruentialGenerator.hxx"
 #include "stdafx.hxx"
 
 void Map::initPerlinWaves()
@@ -36,22 +39,22 @@ Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack
          const float &scale, const long int &seed)
 
     : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale),
-      noise(std::make_unique<PerlinNoise>(seed))
+      noise(std::make_unique<PerlinNoise>(seed)), rng(seed)
 {
     metadata.seed = seed;
 
-    initPerlinWaves();
-    initNoiseMaps();
-    initBiomes();
+    // initPerlinWaves();
+    // initNoiseMaps();
+    // initBiomes();
+    // generate();
     // randomizeSpawnPoint();
 
-    // load("myworld");
-    generate();
+    load("1989380570");
 }
 
 Map::Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
          const unsigned int &grid_size, const float &scale)
-    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale)
+    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
 {
     load(name);
 }
@@ -67,7 +70,7 @@ const sf::Vector2f Map::getRealDimensions() const
 
 void Map::generate()
 {
-    sf::Image image({MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y});
+    sf::Image image({MAX_WORLD_GRID_SIZE.x / 2, MAX_WORLD_GRID_SIZE.y / 2});
 
     // Smooth biome transitions
     for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
@@ -102,18 +105,18 @@ void Map::generate()
                 break;
 
             case Forest:
-                biome_color = sf::Color(26 * std::pow(3.f, (1.f - moisture + heat)), 135, 22, 255);
-                tile_data = tileData.at(TileId::Grass);
+                biome_color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
+                tile_data = tileData.at(TileId::GrassTile);
                 break;
 
             case Grassland:
                 biome_color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
-                tile_data = tileData.at(TileId::Grass);
+                tile_data = tileData.at(TileId::GrassTile);
                 break;
 
             case Jungle:
                 biome_color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
-                tile_data = tileData.at(TileId::Grass);
+                tile_data = tileData.at(TileId::GrassTile);
                 break;
 
             case Mountains:
@@ -134,212 +137,82 @@ void Map::generate()
                 break;
             };
 
-            image.setPixel({x, y}, biome_color);
+            image.setPixel({static_cast<unsigned>(x / 2), static_cast<unsigned>(y / 2)}, biome_color);
 
-            Tile tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale);
             biomeMap[x][y] = (BiomeData){biome_type, biome_color};
+            if (tile_data.id == TileId::GrassTile)
+            {
+                putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale,
+                             biome_color),
+                        x, y, 0);
 
-            if (tile_data.id == TileId::Grass)
-                tile.setColor(biome_color);
-
-            putTile(tile, x, y, 0);
+                if (!rng.nextInt(0, 100))
+                {
+                    TileData td = tileData.at(Grass1);
+                    putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biome_color), x, y,
+                            1);
+                }
+                else if (!rng.nextInt(0, 3))
+                {
+                    TileData td = tileData.at(Grass2);
+                    putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biome_color), x, y,
+                            1);
+                }
+            }
+            else
+            {
+                putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale), x,
+                        y, 0);
+            }
         }
     }
 
     (void)image.saveToFile("Assets/map.png");
 
-    for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
+    // Gaussian blur
+
+    float kernel[3][3] = {
+        {1.f / 16.f, 1.f / 8.f, 1.f / 16.f},
+        {1.f / 8.f, 1.f / 4.f, 1.f / 8.f},
+        {1.f / 16.f, 1.f / 8.f, 1.f / 16.f},
+    };
+
+    for (int it = 0; it < 5; it++)
     {
-        for (int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
+        for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; x++)
         {
-            std::optional<Tile> tile = getTile(x, y, 0);
-            if (!tile)
-                return;
-
-            BiomeData biomesAround[3][3];
-
-            for (int i = -1; i <= 1; i++)
+            for (int y = 0; y < MAX_WORLD_GRID_SIZE.y; y++)
             {
-                for (int j = -1; j <= 1; j++)
+                Tile *tile = getTile(x, y, 0);
+                if (!tile)
+                    continue;
+                if (tile->getId() != TileId::GrassTile)
+                    continue;
+
+                float r, g, b;
+                r = g = b = 0.f;
+
+                for (int i = -1; i <= 1; i++)
                 {
-                    if (x + i >= 0 && x + i < MAX_WORLD_GRID_SIZE.x && y + j >= 0 && y + j < MAX_WORLD_GRID_SIZE.y)
+                    for (int j = -1; j <= 1; j++)
                     {
-                        biomesAround[i + 1][j + 1] = biomeMap[x + i][y + j];
-                    }
-                    else
-                    {
-                        biomesAround[i + 1][j + 1] = (BiomeData){BiomeType::UnknownBiome, sf::Color::Red};
+                        if (x + i >= 0 && x + i < MAX_WORLD_GRID_SIZE.x && y + j >= 0 && y + j < MAX_WORLD_GRID_SIZE.y)
+                        {
+                            r += getTile(x + i, y + j, 0)->getColor().r * kernel[i + 1][j + 1];
+                            g += getTile(x + i, y + j, 0)->getColor().g * kernel[i + 1][j + 1];
+                            b += getTile(x + i, y + j, 0)->getColor().b * kernel[i + 1][j + 1];
+                        }
+                        else
+                        {
+                            r += getTile(x, y, 0)->getColor().r * kernel[i + 1][j + 1];
+                            g += getTile(x, y, 0)->getColor().g * kernel[i + 1][j + 1];
+                            b += getTile(x, y, 0)->getColor().b * kernel[i + 1][j + 1];
+                        }
                     }
                 }
-            }
 
-            BiomeData currentBiome = biomesAround[1][1];
-            TileData td;
-
-            if (biomesAround[0][0].type == currentBiome.type && biomesAround[1][0].type == currentBiome.type &&
-                biomesAround[2][0].type == currentBiome.type && biomesAround[0][1].type == currentBiome.type &&
-                biomesAround[2][1].type != currentBiome.type && biomesAround[2][2].type != currentBiome.type &&
-                biomesAround[0][2].type != currentBiome.type && biomesAround[1][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottom);
-                putTile(
-                    Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biomesAround[2][2].color),
-                    x - 1, y, 1);
-
-                td = tileData.at(GrassBottomFront);
-                putTile(
-                    Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biomesAround[2][2].color), x,
-                    y, 1);
-
-                td = tileData.at(GrassCurveBottomFront);
-                putTile(
-                    Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biomesAround[2][2].color), x,
-                    y - 1, 1);
-                putTile(
-                    Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biomesAround[2][2].color),
-                    x - 2, y, 1);
-            }
-
-            if (biomesAround[0][2].type == currentBiome.type && biomesAround[2][0].type == currentBiome.type &&
-                biomesAround[2][1].type == currentBiome.type && biomesAround[2][2].type == currentBiome.type &&
-                biomesAround[1][2].type == currentBiome.type && biomesAround[0][0].type != currentBiome.type &&
-                biomesAround[0][1].type != currentBiome.type && biomesAround[1][0].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y - 1, 1);
-
-                td = tileData.at(GrassCurveBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-            }
-
-            if (biomesAround[1][2].type == currentBiome.type && biomesAround[2][2].type == currentBiome.type &&
-                biomesAround[2][1].type == currentBiome.type && biomesAround[2][0].type == currentBiome.type &&
-                biomesAround[0][2].type != currentBiome.type && biomesAround[0][1].type != currentBiome.type &&
-                biomesAround[0][0].type != currentBiome.type && biomesAround[1][0].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y - 1, 1);
-
-                td = tileData.at(GrassFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-
-                td = tileData.at(GrassCurveBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-            }
-
-            if (biomesAround[1][0].type == currentBiome.type && biomesAround[2][0].type == currentBiome.type &&
-                biomesAround[2][1].type == currentBiome.type && biomesAround[2][2].type == currentBiome.type &&
-                biomesAround[1][2].type == currentBiome.type & biomesAround[0][0].type != currentBiome.type &&
-                biomesAround[0][1].type != currentBiome.type && biomesAround[0][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y + 1, 1);
-            }
-
-            if (biomesAround[1][0].type == currentBiome.type && biomesAround[2][0].type == currentBiome.type &&
-                biomesAround[2][1].type == currentBiome.type && biomesAround[2][2].type == currentBiome.type &&
-                biomesAround[0][0].type != currentBiome.type && biomesAround[0][1].type != currentBiome.type &&
-                biomesAround[0][2].type != currentBiome.type && biomesAround[1][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-
-                td = tileData.at(GrassCurveTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y + 1, 1);
-
-                td = tileData.at(GrassTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y + 1, 1);
-            }
-
-            if (biomesAround[2][0].type == currentBiome.type && biomesAround[2][1].type == currentBiome.type &&
-                biomesAround[2][2].type == currentBiome.type && biomesAround[0][0].type != currentBiome.type &&
-                biomesAround[0][1].type != currentBiome.type && biomesAround[0][2].type != currentBiome.type &&
-                biomesAround[1][0].type != currentBiome.type && biomesAround[1][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y - 1, 1);
-
-                td = tileData.at(GrassTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y + 1, 1);
-
-                td = tileData.at(GrassCurveBottomFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-
-                td = tileData.at(GrassCurveTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y + 1, 1);
-
-                td = tileData.at(GrassFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-            }
-
-            if (biomesAround[0][0].type == currentBiome.type && biomesAround[1][0].type == currentBiome.type &&
-                biomesAround[2][0].type == currentBiome.type && biomesAround[2][1].type == currentBiome.type &&
-                biomesAround[2][2].type == currentBiome.type && biomesAround[0][1].type != currentBiome.type &&
-                biomesAround[0][2].type != currentBiome.type && biomesAround[1][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y + 1, 1);
-
-                td = tileData.at(GrassCurveTopFront);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y + 1, 1);
-            }
-
-            if (biomesAround[0][1].type == currentBiome.type && biomesAround[2][1].type == currentBiome.type &&
-                biomesAround[0][2].type == currentBiome.type && biomesAround[1][2].type == currentBiome.type &&
-                biomesAround[2][2].type == currentBiome.type && biomesAround[0][0].type != currentBiome.type &&
-                biomesAround[1][0].type != currentBiome.type && biomesAround[2][0].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottom);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x - 1, y - 1, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y - 1, 1);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x + 1, y - 1, 1);
-            }
-
-            if (biomesAround[0][1].type == currentBiome.type && biomesAround[0][2].type == currentBiome.type &&
-                biomesAround[1][2].type == currentBiome.type && biomesAround[2][2].type == currentBiome.type &&
-                biomesAround[0][0].type != currentBiome.type && biomesAround[0][1].type != currentBiome.type &&
-                biomesAround[0][2].type != currentBiome.type && biomesAround[1][2].type != currentBiome.type)
-            {
-                td = tileData.at(GrassBottom);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color), x,
-                        y - 1, 1);
-
-                td = tileData.at(GrassCurveBottomBack);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x + 1, y - 1, 1);
-
-                td = tileData.at(GrassBottomBack);
-                putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, currentBiome.color),
-                        x + 1, y, 1);
+                tile->setColor(sf::Color(static_cast<std::uint8_t>(r), static_cast<std::uint8_t>(g),
+                                         static_cast<std::uint8_t>(b), 255));
             }
         }
     }
@@ -400,11 +273,11 @@ void Map::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &gr
         chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z] = std::make_unique<Tile>(tile);
 }
 
-std::optional<Tile> Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
+Tile *Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
 {
     if (grid_x < 0 || grid_y < 0 || grid_z < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y >= MAX_WORLD_GRID_SIZE.y ||
         grid_z > CHUNK_SIZE_IN_TILES.z)
-        return std::nullopt;
+        return nullptr;
 
     const unsigned int chunk_x = grid_x / CHUNK_SIZE_IN_TILES.x;
     const unsigned int chunk_y = grid_y / CHUNK_SIZE_IN_TILES.y;
@@ -413,12 +286,12 @@ std::optional<Tile> Map::getTile(const int &grid_x, const int &grid_y, const int
     const unsigned int tile_y = grid_y - (chunk_y * CHUNK_SIZE_IN_TILES.y);
 
     if (!chunks[chunk_x][chunk_y])
-        return std::nullopt;
+        return nullptr;
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
-        return std::nullopt;
+        return nullptr;
 
-    return *chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z];
+    return chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].get();
 }
 
 void Map::save(const std::string &name)
@@ -477,29 +350,29 @@ void Map::save(const std::string &name)
                     Chunk *chunk = chunks[chunk_x][chunk_y].get();
                     unsigned int tile_amount = 0;
 
-                    for (auto &row : chunk->tiles)
+                    for (int x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
                     {
-                        for (auto &col : row)
+                        for (int y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
                         {
-                            for (auto &tile : col)
+                            for (int z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
                             {
-                                if (tile.get())
+                                if (chunk->tiles[x][y][z].get())
                                     tile_amount++;
                             }
                         }
                     }
 
-                    // std::cout << tile_amount << "\n";
+                    std::cout << tile_amount << "\n";
 
                     region_file.write(reinterpret_cast<char *>(&chunk_x), sizeof(unsigned short));
                     region_file.write(reinterpret_cast<char *>(&chunk_y), sizeof(unsigned short));
                     region_file.write(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned int));
 
-                    for (unsigned short x = 0; x < chunk->tiles.max_size(); x++)
+                    for (unsigned short x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
                     {
-                        for (unsigned short y = 0; y < chunk->tiles[x].max_size(); y++)
+                        for (unsigned short y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
                         {
-                            for (unsigned short z = 0; z < chunk->tiles[x][y].max_size(); z++)
+                            for (unsigned short z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
                             {
                                 if (!chunk->tiles[x][y][z].get())
                                     continue;
@@ -513,7 +386,7 @@ void Map::save(const std::string &name)
                                 region_file.write(reinterpret_cast<char *>(&id), sizeof(std::uint32_t));
 
                                 // Terrain grass colors
-                                if (id == TileId::Grass)
+                                if (id == TileId::GrassTile)
                                 {
                                     sf::Color color = tile->getColor();
                                     region_file.write(reinterpret_cast<char *>(&color.r), sizeof(std::uint8_t));
@@ -605,6 +478,8 @@ void Map::load(const std::string &name)
 
                 Chunk *new_chunk = chunks[chunk_x][chunk_y].get();
 
+                std::cout << tile_amount << "\n";
+
                 for (int l = 0; l < tile_amount; l++)
                 {
                     unsigned short x = 0, y = 0, z = 0;
@@ -627,7 +502,7 @@ void Map::load(const std::string &name)
                     new_chunk->tiles[x][y][z] = std::make_unique<Tile>(data.name, data.id, texturePack,
                                                                        data.textureRect, gridSize, grid_pos, scale);
 
-                    if (id == TileId::Grass)
+                    if (id == TileId::GrassTile)
                     {
                         sf::Color color;
                         region_file.read(reinterpret_cast<char *>(&color.r), sizeof(std::uint8_t));

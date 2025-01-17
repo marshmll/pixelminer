@@ -23,14 +23,14 @@ void Chunk::update(const float &dt)
 
 void Chunk::render(sf::RenderTarget &target, const bool &debug)
 {
-    for (auto &x : tiles)
+    for (int x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
     {
-        for (auto &y : x)
+        for (int y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
         {
-            for (auto &tile : y)
+            for (int z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
             {
-                if (tile)
-                    tile->render(target);
+                if (tiles[x][y][z].get())
+                    tiles[x][y][z]->render(target);
             }
         }
     }
