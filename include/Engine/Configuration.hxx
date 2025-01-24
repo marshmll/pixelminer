@@ -4,12 +4,12 @@
 #define GAME_VERSION "alpha 0.0.1"
 #endif
 
-#ifndef DATA_VERSION
-#define DATA_VERSION "1.0.0"
+#ifndef METADATA_VERSION
+#define METADATA_VERSION "1.0.0"
 #endif
 
-#ifndef GENERATOR_VERSION
-#define GENERATOR_VERSION "1.0.0"
+#ifndef TERRAIN_GENERATOR_VERSION
+#define TERRAIN_GENERATOR_VERSION "1.0.0"
 #endif
 
 #ifndef MAPS_FOLDER

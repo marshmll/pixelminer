@@ -3,6 +3,7 @@ target_sources(pixelminer PRIVATE
 ./Map/PerlinNoise.cxx
 ./Map/Map.cxx
 ./Map/Chunk.cxx
+./Map/TerrainGenerator.cxx
 ./Tools/JSON.cxx
 ./Tools/LinearCongruentialGenerator.cxx
 ./Tools/Logger.cxx
@@ -12,6 +13,7 @@ target_sources(pixelminer PRIVATE
 ./States/MainMenuState.cxx
 ./States/DirectConnectState.cxx
 ./States/State.cxx
+./States/WorldMenuState.cxx
 ./States/MultiplayerState.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx

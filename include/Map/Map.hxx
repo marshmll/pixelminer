@@ -1,27 +1,18 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
-#include "Map/Biome.hxx"
-#include "Map/Chunk.hxx"
 #include "Map/Metadata.hxx"
-#include "Map/PerlinNoise.hxx"
+#include "Map/TerrainGenerator.hxx"
 #include "Tiles/Tile.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/LinearCongruentialGenerator.hxx"
-
-static constexpr sf::Vector2u MAX_REGIONS = {4, 4}; // TEMP
-static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
-                                            MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
-
-static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
-    MAX_CHUNKS.x * CHUNK_SIZE_IN_TILES.x,
-    MAX_CHUNKS.y *CHUNK_SIZE_IN_TILES.y,
-};
 
 class Map
 {
   private:
     Metadata metadata;
+
+    std::unique_ptr<TerrainGenerator> terrainGenerator;
 
     std::map<std::uint32_t, TileData> &tileData;
     sf::Texture &texturePack;
@@ -29,43 +20,28 @@ class Map
     unsigned int gridSize;
     float scale;
 
-    std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y> chunks;
-    std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x> biomeMap;
-
-    std::unique_ptr<PerlinNoise> noise;
-
-    std::vector<Wave> height_waves;
-    std::vector<Wave> moisture_waves;
-    std::vector<Wave> heat_waves;
-
-    NoiseMap height_map;
-    NoiseMap moisture_map;
-    NoiseMap heat_map;
-
-    std::vector<Biome> biomes;
+    ChunkMatrix chunks;
 
     Random rng;
 
-    void initPerlinWaves();
+    void initMetadata(const std::string &name, const long int &seed);
 
-    void initNoiseMaps();
-
-    void initBiomes();
-
-    void randomizeSpawnPoint();
+    void initTerrainGenerator(const long int &seed);
 
   public:
-    Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
-        const float &scale, const long int &seed);
+    /**
+     * @brief Generates a new world with the given name and seed.
+     */
+    Map(const std::string &name, const long int &seed, std::map<std::uint32_t, TileData> &tile_data,
+        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
 
-    Map(const std::string &name, std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack,
-        const unsigned int &grid_size, const float &scale);
+    /**
+     * @brief Generates a empty world.
+     */
+    Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
+        const float &scale);
 
     ~Map();
-
-    const sf::Vector2f getRealDimensions() const;
-
-    void generate();
 
     void update(const float &dt);
 
@@ -73,15 +49,19 @@ class Map
 
     void render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, const bool &debug);
 
-    void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
-
-    Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
-
     void save(const std::string &name);
 
     void save();
 
     void load(const std::string &name);
 
+    void loadRegion(const sf::Vector2u &region_index);
+
+    void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
+
+    Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
+
     const sf::Vector2f getSpawnPoint() const;
+
+    const sf::Vector2f getRealDimensions() const;
 };

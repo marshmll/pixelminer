@@ -1,7 +1,7 @@
 #include "Map/Chunk.hxx"
 #include "stdafx.hxx"
 
-Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale)
+Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale, uint8_t flags)
     : chunkIndex(chunk_index), gridSize(grid_size), scale(scale)
 {
     chunkBorders.setSize(

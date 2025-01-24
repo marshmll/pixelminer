@@ -3,13 +3,13 @@
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>(*data.tileData, data.textures->at("TexturePack"), data.gridSize, data.scale,
-                                56465456464654);
+    map = std::make_unique<Map>("My New World", 56465456464654, *data.tileData, data.textures->at("TexturePack"),
+                                data.gridSize, data.scale);
 }
 
 void GameState::initThisPlayer()
 {
-    players[data.uuid] = std::make_shared<Player>(map->getSpawnPoint(), data.textures->at("Player1"), data.scale);
+    players[data.uuid] = std::make_shared<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
     thisPlayer = players.at(data.uuid);
 }
 

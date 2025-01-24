@@ -25,6 +25,7 @@ class PerlinNoise
 
   public:
     PerlinNoise(const unsigned int &seed);
+
     ~PerlinNoise();
 
     const NoiseMap generateNoiseMap(const unsigned int width, const unsigned int height, const float scale,

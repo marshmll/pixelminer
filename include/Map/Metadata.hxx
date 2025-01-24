@@ -10,7 +10,7 @@ struct Metadata
         JSONArray disabled;
     };
 
-    std::string dataVersion;
+    std::string metadataVersion;
     std::string gameVersion;
     long long creationTime;
     DataPacks dataPacks;
@@ -27,7 +27,7 @@ struct Metadata
 
 inline JSONObject &operator<<(JSONObject &obj, Metadata &metadata)
 {
-    obj = JSONObject{{"dataVersion", metadata.dataVersion},
+    obj = JSONObject{{"metadataVersion", metadata.metadataVersion},
                      {"gameVersion", metadata.gameVersion},
                      {"dataPacks",
                       JSONObject{
@@ -50,7 +50,7 @@ inline JSONObject &operator<<(JSONObject &obj, Metadata &metadata)
 
 inline JSONObject &operator>>(JSONObject &obj, Metadata &metadata)
 {
-    metadata.dataVersion = obj.at("dataVersion").get<std::string>();
+    metadata.metadataVersion = obj.at("metadataVersion").get<std::string>();
     metadata.gameVersion = obj.at("gameVersion").get<std::string>();
     metadata.creationTime = obj.at("creationTime").get<long long>();
     metadata.dataPacks.enabled = obj.at("dataPacks").get<JSONObject>().at("enabled").get<JSONArray>();
