@@ -1,6 +1,17 @@
 #include "Map/Map.hxx"
 #include "stdafx.hxx"
 
+void Map::initRegionStatusArray()
+{
+    for (int x = 0; x < MAX_REGIONS.x; x++)
+    {
+        for (int y = 0; y < MAX_REGIONS.y; y++)
+        {
+            loadedRegions[x][y] = false;
+        }
+    }
+}
+
 void Map::initMetadata(const std::string &name, const long int &seed)
 {
     metadata.metadataVersion = METADATA_VERSION;
@@ -29,6 +40,7 @@ Map::Map(const std::string &name, const long int &seed, std::map<std::uint32_t, 
 
     : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
 {
+    initRegionStatusArray();
     initMetadata(name, seed);
     initTerrainGenerator(seed);
 }
@@ -103,93 +115,6 @@ void Map::save(const std::string &name)
     metadataFile.close();
 
     /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    if (!std::filesystem::exists(path_str + "regions"))
-        std::filesystem::create_directory(path_str + "regions");
-
-    for (unsigned short region_x = 0; region_x < MAX_REGIONS.x; region_x++)
-    {
-        for (unsigned short region_y = 0; region_y < MAX_REGIONS.y; region_y++)
-        {
-            std::string fname = "r." + std::to_string(region_x) + "." + std::to_string(region_y) + ".region";
-
-            std::cout << path_str + "regions/" + fname << "\n";
-
-            std::ofstream region_file(path_str + "regions/" + fname, std::ios::binary);
-
-            if (!region_file.is_open())
-                throw std::runtime_error("[ Map::saveToFile ] -> Could not write region file: " + path_str +
-                                         "regions/" + fname + "\n");
-
-            for (unsigned short chunk_x = region_x * REGION_SIZE_IN_CHUNKS.x;
-                 chunk_x < (region_x * REGION_SIZE_IN_CHUNKS.x) + REGION_SIZE_IN_CHUNKS.x; chunk_x++)
-            {
-                for (unsigned short chunk_y = region_y * REGION_SIZE_IN_CHUNKS.y;
-                     chunk_y < (region_y * REGION_SIZE_IN_CHUNKS.y) + REGION_SIZE_IN_CHUNKS.y; chunk_y++)
-                {
-                    if (!chunks[chunk_x][chunk_y])
-                        continue;
-
-                    Chunk *chunk = chunks[chunk_x][chunk_y].get();
-                    unsigned int tile_amount = 0;
-
-                    for (int x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
-                    {
-                        for (int y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
-                        {
-                            for (int z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
-                            {
-                                if (chunk->tiles[x][y][z].get())
-                                    tile_amount++;
-                            }
-                        }
-                    }
-
-                    // std::cout << chunk_x << " " << chunk_y << "\n";
-
-                    region_file.write(reinterpret_cast<char *>(&chunk_x), sizeof(unsigned short));
-                    region_file.write(reinterpret_cast<char *>(&chunk_y), sizeof(unsigned short));
-                    region_file.write(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned int));
-                    region_file.write(reinterpret_cast<char *>(&chunk->flags), sizeof(uint8_t));
-
-                    for (unsigned short x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
-                    {
-                        for (unsigned short y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
-                        {
-                            for (unsigned short z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
-                            {
-                                if (!chunk->tiles[x][y][z].get())
-                                    continue;
-
-                                Tile *tile = chunk->tiles[x][y][z].get();
-                                std::uint32_t id = tile->getId();
-
-                                region_file.write(reinterpret_cast<char *>(&x), sizeof(unsigned short));
-                                region_file.write(reinterpret_cast<char *>(&y), sizeof(unsigned short));
-                                region_file.write(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-                                region_file.write(reinterpret_cast<char *>(&id), sizeof(std::uint32_t));
-
-                                // Terrain grass colors
-                                if (id == TileId::GrassTile)
-                                {
-                                    sf::Color color = tile->getColor();
-                                    region_file.write(reinterpret_cast<char *>(&color.r), sizeof(std::uint8_t));
-                                    region_file.write(reinterpret_cast<char *>(&color.g), sizeof(std::uint8_t));
-                                    region_file.write(reinterpret_cast<char *>(&color.b), sizeof(std::uint8_t));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            region_file.close();
-
-            if (std::filesystem::file_size(path_str + "regions/" + fname) == 0)
-                std::remove(std::string(path_str + "regions/" + fname).c_str());
-        }
-    }
-
-    std::cout << "[ Map::saveToFile ] -> Map saved to: " << path_str << "\n";
 }
 
 void Map::save()
@@ -203,68 +128,86 @@ void Map::save()
 
 void Map::saveRegion(const sf::Vector2u &region_index)
 {
-    std::stringstream path_sstream;
+    // Calculate chunk indexes.
+    const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
+    const int CHUNK_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y;
+    const int CHUNK_END_X = (CHUNK_START_X + REGION_SIZE_IN_CHUNKS.x) - 1;
+    const int CHUNK_END_Y = (CHUNK_START_Y + REGION_SIZE_IN_CHUNKS.y) - 1;
 
-    path_sstream << MAPS_FOLDER << metadata.name << "/regions/" << "r." << region_index.x << "." << region_index.y
-                 << ".region";
+    // Check if region folder exists.
+    if (!std::filesystem::exists(MAPS_FOLDER + metadata.name + "/regions/"))
+    {
+        std::cout << "Creating new directory: " << MAPS_FOLDER << metadata.name << "/regions/" << "\n";
+        std::filesystem::create_directory(MAPS_FOLDER + metadata.name + "/regions/");
+    }
 
-    std::ofstream region_file(path_sstream.str());
+    // Open file.
+    std::string path;
+    path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
+           std::to_string(region_index.y) + ".region";
+
+    std::ofstream region_file(path, std::ios::binary);
 
     if (!region_file.is_open())
-        throw std::runtime_error("Failed to save region: " + path_sstream.str());
+        throw std::runtime_error("Failed to write region file: " + path);
 
-    for (unsigned short chunk_x = 0; chunk_x < REGION_SIZE_IN_CHUNKS.x; chunk_x++)
+    unsigned long int total_tiles = 0;
+
+    for (unsigned short c_x = CHUNK_START_X; c_x <= CHUNK_END_X; c_x++)
     {
-        for (unsigned short chunk_y = 0; chunk_y < REGION_SIZE_IN_CHUNKS.x; chunk_y++)
+        for (unsigned short c_y = CHUNK_START_Y; c_y <= CHUNK_END_Y; c_y++)
         {
-            if (!chunks[chunk_x][chunk_y])
+            if (!chunks[c_x][c_y]) // Skip not-allocated chunks
                 continue;
 
-            Chunk *chunk = chunks[chunk_x][chunk_y].get();
+            // Count tiles in chunk
             unsigned short tile_amount = 0;
-
-            for (int x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
+            for (auto &x : chunks[c_x][c_y]->tiles)
             {
-                for (int y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
+                for (auto &y : x)
                 {
-                    for (int z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
+                    for (auto &tile : y)
                     {
-                        if (chunk->tiles[x][y][z].get())
+                        if (tile)
                             tile_amount++;
                     }
                 }
             }
 
-            region_file.write(reinterpret_cast<char *>(&chunk_x), sizeof(unsigned short));
-            region_file.write(reinterpret_cast<char *>(&chunk_y), sizeof(unsigned short));
-            region_file.write(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short));
-            region_file.write(reinterpret_cast<char *>(&chunk->flags), sizeof(uint8_t));
+            total_tiles += tile_amount;
 
+            region_file.write(reinterpret_cast<char *>(&c_x), sizeof(unsigned short));
+            region_file.write(reinterpret_cast<char *>(&c_y), sizeof(unsigned short));
+            region_file.write(reinterpret_cast<char *>(&chunks[c_x][c_y]->flags), sizeof(chunks[c_x][c_y]->flags));
+            region_file.write(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short));
+
+            // std::cout << "Writing chunk_x: " << c_x << ", chunk_y: " << c_y
+            //           << ", flags: " << static_cast<int>(chunks[c_x][c_y]->flags) << ", tile_amount: " << tile_amount
+            //           << "\n";
+
+            // Write tile data.
             for (unsigned short x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
             {
                 for (unsigned short y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
                 {
                     for (unsigned short z = 0; z < CHUNK_SIZE_IN_TILES.z; z++)
                     {
-                        Tile *tile = getTile(x, y, z);
-
-                        if (!tile)
+                        if (!chunks[c_x][c_y]->tiles[x][y][z])
                             continue;
 
-                        uint32_t id = tile->getId();
+                        uint32_t tile_id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
 
                         region_file.write(reinterpret_cast<char *>(&x), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&y), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-                        region_file.write(reinterpret_cast<char *>(&id), sizeof(uint32_t));
+                        region_file.write(reinterpret_cast<char *>(&tile_id), sizeof(uint32_t));
 
-                        // Terrain grass colors
-                        if (id == TileId::GrassTile || id == TileId::Grass1 || id == TileId::Grass2)
+                        if (tile_id == TileId::GrassTile || tile_id == TileId::Grass1 || tile_id == TileId::Grass2)
                         {
-                            sf::Color color = tile->getColor();
-                            region_file.write(reinterpret_cast<char *>(&color.r), sizeof(std::uint8_t));
-                            region_file.write(reinterpret_cast<char *>(&color.g), sizeof(std::uint8_t));
-                            region_file.write(reinterpret_cast<char *>(&color.b), sizeof(std::uint8_t));
+                            sf::Color color = chunks[c_x][c_y]->tiles[x][y][z]->getColor();
+                            region_file.write(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));
+                            region_file.write(reinterpret_cast<char *>(&color.g), sizeof(uint8_t));
+                            region_file.write(reinterpret_cast<char *>(&color.b), sizeof(uint8_t));
                         }
                     }
                 }
@@ -273,6 +216,8 @@ void Map::saveRegion(const sf::Vector2u &region_index)
     }
 
     region_file.close();
+
+    std::cout << "Written " << total_tiles << " tiles to region: " << path << "\n";
 }
 
 void Map::load(const std::string &name)
@@ -304,90 +249,94 @@ void Map::load(const std::string &name)
     /* TERRAIN GENERATOR ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     // Reconfigure terraing generator.
-    if (terrainGenerator.get())
-    {
-        terrainGenerator.reset();
-        initTerrainGenerator(metadata.seed);
-    }
+    initTerrainGenerator(metadata.seed);
 
     /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-    if (!std::filesystem::exists(path_str + "regions/"))
-        throw std::runtime_error("[ Map::loadFromFile ] -> Invalid world: " + path_str + "\n");
-
-    std::cout << "[ Map::loadFromFile ] -> Map loaded from: " << path_str << "\n";
 }
 
 void Map::loadRegion(const sf::Vector2u &region_index)
 {
-    std::string filename = "r." + std::to_string(region_index.x) + "." + std::to_string(region_index.y) + ".region";
-    std::stringstream path_sstream;
-    path_sstream << MAPS_FOLDER + metadata.name << "/regions/" << filename;
+    if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
+        throw std::runtime_error("Cannot load region (" + std::to_string(region_index.x) + " " +
+                                 std::to_string(region_index.y) + "): Region out of bounds.");
 
-    // std::cout << path_sstream.str() << "\n";
+    std::string path;
+    path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
+           std::to_string(region_index.y) + ".region";
 
-    if (!std::filesystem::exists(path_sstream.str()))
+    if (!isRegionLoaded(region_index) && !std::filesystem::exists(path))
     {
         terrainGenerator->generateRegion(region_index);
-        std::cout << "Generating region " << region_index.x << " " << region_index.y << "\n";
         return;
     }
 
-    std::ifstream region_file(path_sstream.str(), std::ios::binary);
-
+    std::ifstream region_file(path, std::ios::binary);
     if (!region_file.is_open())
-        throw std::runtime_error("Failed to open region file: " + filename);
+        throw std::runtime_error("Failed to read region file: " + path);
 
-    unsigned short chunk_x = 0, chunk_y = 0;
-    unsigned short tile_amount = 0;
-    uint8_t flags = 0;
+    unsigned long total_tiles = 0;
+
+    unsigned short chunk_x = 0, chunk_y = 0, tile_amount = 0;
+    uint8_t flags;
 
     while (region_file.read(reinterpret_cast<char *>(&chunk_x), sizeof(unsigned short)) &&
            region_file.read(reinterpret_cast<char *>(&chunk_y), sizeof(unsigned short)) &&
-           region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)) &&
-           region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)))
+           region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)) &&
+           region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)))
     {
-        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+        // std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
+        //           << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
 
-        Chunk *new_chunk = chunks[chunk_x][chunk_y].get();
+        if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
+            throw std::runtime_error("Corrupted region file: Chunk index out of bounds");
 
-        for (unsigned short l = 0; l < tile_amount; l++)
+        if (!chunks[chunk_x][chunk_y])
+            chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+
+        for (int i = 0; i < tile_amount; i++)
         {
-            unsigned short x = 0, y = 0, z = 0;
-            std::uint32_t id;
+            unsigned short x = 0, y = 0, z = 0; // Positions relative to chunk
+            uint32_t tile_id;
+            TileData td;
 
             region_file.read(reinterpret_cast<char *>(&x), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&y), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-            region_file.read(reinterpret_cast<char *>(&id), sizeof(std::uint32_t));
+            region_file.read(reinterpret_cast<char *>(&tile_id), sizeof(uint32_t));
 
-            std::cout << x << " " << y << " " << z << "\n";
+            if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
+                throw std::runtime_error("Corrupted region file: Tile nº" + std::to_string(i) +
+                                         "out of bounds in Chunk[" + std::to_string(chunk_x) + "][" +
+                                         std::to_string(chunk_y) + "]");
 
-            TileData data;
-            sf::Vector2u grid_pos =
-                sf::Vector2u(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
+            td = tileData.at(tile_id);
 
-            if (tileData.count(id) == 0)
-                data = tileData.at(TileId::Unknown);
-            else
-                data = tileData.at(id);
+            Tile tile(td.name, tile_id, texturePack, td.textureRect, gridSize,
+                      sf::Vector2u(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y)),
+                      scale);
 
-            new_chunk->tiles[x][y][z] =
-                std::make_unique<Tile>(data.name, data.id, texturePack, data.textureRect, gridSize, grid_pos, scale);
+            // std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
+            //           << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << "\n";
 
-            if (data.id == TileId::GrassTile || data.id == TileId::Grass1 || data.id == TileId::Grass2)
+            if (tile_id == TileId::GrassTile || tile_id == TileId::Grass1 || tile_id == TileId::Grass2)
             {
                 sf::Color color;
-                region_file.read(reinterpret_cast<char *>(&color.r), sizeof(std::uint8_t));
-                region_file.read(reinterpret_cast<char *>(&color.g), sizeof(std::uint8_t));
-                region_file.read(reinterpret_cast<char *>(&color.b), sizeof(std::uint8_t));
-
-                new_chunk->tiles[x][y][z]->setColor(color);
+                region_file.read(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));
+                region_file.read(reinterpret_cast<char *>(&color.g), sizeof(uint8_t));
+                region_file.read(reinterpret_cast<char *>(&color.b), sizeof(uint8_t));
+                tile.setColor(color);
             }
+
+            chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
         }
+        
+        total_tiles += tile_amount;
     }
 
     region_file.close();
+
+    loadedRegions[region_index.x][region_index.y] = true;
+    std::cout << "Read " << total_tiles << " tiles from region: " << path << "\n";
 }
 
 void Map::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z)
@@ -440,4 +389,13 @@ const sf::Vector2f Map::getSpawnPoint() const
 const sf::Vector2f Map::getRealDimensions() const
 {
     return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
+}
+
+const bool Map::isRegionLoaded(const sf::Vector2u &region_index) const
+{
+    if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
+        throw std::runtime_error("Region (" + std::to_string(region_index.x) + " " + std::to_string(region_index.y) +
+                                 ") out of bounds.");
+
+    return loadedRegions[region_index.x][region_index.y];
 }

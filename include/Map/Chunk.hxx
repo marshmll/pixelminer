@@ -30,8 +30,7 @@ class Chunk
 
     uint8_t flags;
 
-    Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale,
-          uint8_t flags = ChunkFlags::None);
+    Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale, uint8_t flags = ChunkFlags::None);
 
     ~Chunk();
 

@@ -2,7 +2,7 @@
 #include "stdafx.hxx"
 
 Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale, uint8_t flags)
-    : chunkIndex(chunk_index), gridSize(grid_size), scale(scale)
+    : chunkIndex(chunk_index), gridSize(grid_size), scale(scale), flags(flags)
 {
     chunkBorders.setSize(
         sf::Vector2f(CHUNK_SIZE_IN_TILES.x * grid_size * scale, CHUNK_SIZE_IN_TILES.y * grid_size * scale));

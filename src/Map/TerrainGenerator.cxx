@@ -42,7 +42,8 @@ void TerrainGenerator::putTile(Tile tile, const int &grid_x, const int &grid_y, 
     tile.setGridPosition(sf::Vector2u(grid_x, grid_y));
 
     if (!chunks[chunk_x][chunk_y])
-        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale);
+        chunks[chunk_x][chunk_y] =
+            std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, ChunkFlags::None);
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
         chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z] = std::make_unique<Tile>(tile);
@@ -94,7 +95,6 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
     }
 
     Random rng(seed); // Same RNG for all generations.
-    // sf::Image image({MAX_WORLD_GRID_SIZE.x / 2, MAX_WORLD_GRID_SIZE.y / 2});
 
     const int REGION_GRID_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x;
     const int REGION_GRID_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y;
@@ -170,8 +170,6 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
                 break;
             };
 
-            // image.setPixel({static_cast<unsigned>(x / 2), static_cast<unsigned>(y / 2)}, biome_color);
-
             if (tile_data.id == TileId::GrassTile)
             {
                 putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale,
@@ -198,6 +196,4 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
             }
         }
     }
-
-    // (void)image.saveToFile("Assets/map.png");
 }

@@ -15,7 +15,7 @@ static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
     MAX_CHUNKS.y *CHUNK_SIZE_IN_TILES.y,
 };
 
-using ChunkMatrix = std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
+using ChunkMatrix = std::array<std::array<std::shared_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
 
 class TerrainGenerator
 {

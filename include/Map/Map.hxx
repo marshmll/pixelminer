@@ -21,8 +21,11 @@ class Map
     float scale;
 
     ChunkMatrix chunks;
+    bool loadedRegions[MAX_REGIONS.x][MAX_REGIONS.y];
 
     Random rng;
+
+    void initRegionStatusArray();
 
     void initMetadata(const std::string &name, const long int &seed);
 
@@ -66,4 +69,6 @@ class Map
     const sf::Vector2f getSpawnPoint() const;
 
     const sf::Vector2f getRealDimensions() const;
+
+    const bool isRegionLoaded(const sf::Vector2u &region_index) const;
 };
