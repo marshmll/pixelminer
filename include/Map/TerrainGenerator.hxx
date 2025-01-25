@@ -6,7 +6,7 @@
 #include "Tiles/TileData.hxx"
 #include "Tools/Logger.hxx"
 
-static constexpr sf::Vector2u MAX_REGIONS = {8, 8};
+static constexpr sf::Vector2u MAX_REGIONS = {16, 16};
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
                                             MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
 
@@ -15,7 +15,7 @@ static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
     MAX_CHUNKS.y *CHUNK_SIZE_IN_TILES.y,
 };
 
-using ChunkMatrix = std::array<std::array<std::shared_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
+using ChunkMatrix = std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
 
 class TerrainGenerator
 {
