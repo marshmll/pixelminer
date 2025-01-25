@@ -94,7 +94,7 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
     }
 
     Random rng(seed); // Same RNG for all generations.
-    sf::Image image({MAX_WORLD_GRID_SIZE.x / 2, MAX_WORLD_GRID_SIZE.y / 2});
+    // sf::Image image({MAX_WORLD_GRID_SIZE.x / 2, MAX_WORLD_GRID_SIZE.y / 2});
 
     const int REGION_GRID_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x;
     const int REGION_GRID_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y;
@@ -170,7 +170,7 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
                 break;
             };
 
-            image.setPixel({static_cast<unsigned>(x / 2), static_cast<unsigned>(y / 2)}, biome_color);
+            // image.setPixel({static_cast<unsigned>(x / 2), static_cast<unsigned>(y / 2)}, biome_color);
 
             if (tile_data.id == TileId::GrassTile)
             {
@@ -199,5 +199,5 @@ void TerrainGenerator::generateRegion(const sf::Vector2u &region_index)
         }
     }
 
-    (void)image.saveToFile("Assets/map.png");
+    // (void)image.saveToFile("Assets/map.png");
 }

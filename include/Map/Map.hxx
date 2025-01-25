@@ -53,6 +53,8 @@ class Map
 
     void save();
 
+    void saveRegion(const sf::Vector2u &region_index);
+
     void load(const std::string &name);
 
     void loadRegion(const sf::Vector2u &region_index);

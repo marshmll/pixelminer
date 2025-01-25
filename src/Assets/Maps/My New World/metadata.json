@@ -1,5 +1,5 @@
 {
-    "creationTime": 1737745329,
+    "creationTime": 1737754399,
     "dataPacks": {
         "disabled": [
 
@@ -16,7 +16,7 @@
     "metadataVersion": "1.0.0",
     "name": "My New World",
     "seed": 56465456464654,
-    "spawnX": 6928,
-    "spawnY": 9088,
+    "spawnX": 9552,
+    "spawnY": 5952,
     "timePlayed": 0
 }

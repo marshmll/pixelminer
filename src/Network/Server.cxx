@@ -303,7 +303,7 @@ void Server::shutdown()
 {
     if (!online)
     {
-        logger.logError("Server is not online");
+        logger.logError("Server is not online", false);
         return;
     }
 

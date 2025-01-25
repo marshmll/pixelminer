@@ -28,7 +28,7 @@ class Server
     std::map<std::string, Connection> connections;
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
-    bool online;
+    std::atomic_bool online;
 
     sf::Packet pktBuf;
     sf::IpAddress ipBuf;

@@ -23,9 +23,6 @@ class GameState : public State
     bool debugInfo;
     bool debugChunks;
 
-    Client client;
-    Server server;
-
     void initMap();
 
     void initThisPlayer();

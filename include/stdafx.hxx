@@ -3,6 +3,7 @@
 /* C++ LIBS */
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstring>
 #include <filesystem>

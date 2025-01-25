@@ -5,6 +5,7 @@ void GameState::initMap()
 {
     map = std::make_unique<Map>("My New World", 56465456464654, *data.tileData, data.textures->at("TexturePack"),
                                 data.gridSize, data.scale);
+    map->loadRegion({0, 0});
 }
 
 void GameState::initThisPlayer()
@@ -33,23 +34,13 @@ void GameState::initDebugging()
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
-GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(data.uuid)
+GameState::GameState(EngineData &data) : State(data)
 {
     initMap();
     initThisPlayer();
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
-
-    try
-    {
-        server.listen(55000);
-        client.connect({127, 0, 0, 1}, 55000);
-    }
-    catch (std::runtime_error &e)
-    {
-        std::cout << e.what();
-    }
 }
 
 GameState::~GameState()
