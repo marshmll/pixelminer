@@ -69,46 +69,74 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 
     // Load the region the player is in.
     if (!isRegionLoaded({REGION_X, REGION_Y}))
-        loadRegion({REGION_X, REGION_Y});
+        std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
 
     // If player is 1 chunk away from next chunk in the X axis
-    if ((player_pos_grid.x + CHUNK_SIZE_IN_TILES.x) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) > REGION_X)
+    if ((player_pos_grid.x + (CHUNK_SIZE_IN_TILES.x * 2)) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) >
+        REGION_X)
     {
         if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
-            loadRegion({REGION_X + 1, REGION_Y});
+        {
+            if (!isRegionLoaded({REGION_X + 1, REGION_Y}))
+                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X + 1, REGION_Y)).detach();
+        }
 
         if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
-            unloadRegion({REGION_X - 1, REGION_Y});
+        {
+            if (isRegionLoaded({REGION_X - 1, REGION_Y}))
+                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X - 1, REGION_Y)).detach();
+        }
     }
 
     // If player is 1 chunk away from previous chunk in the X axis
-    if ((player_pos_grid.x - CHUNK_SIZE_IN_TILES.x) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) < REGION_X)
+    if ((player_pos_grid.x - (CHUNK_SIZE_IN_TILES.x * 2)) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) <
+        REGION_X)
     {
         if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
-            loadRegion({REGION_X - 1, REGION_Y});
+        {
+            if (!isRegionLoaded({REGION_X - 1, REGION_Y}))
+                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X - 1, REGION_Y)).detach();
+        }
 
         if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
-            unloadRegion({REGION_X + 1, REGION_Y});
+        {
+            if (isRegionLoaded({REGION_X + 1, REGION_Y}))
+                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X + 1, REGION_Y)).detach();
+        }
     }
 
     // If player is 1 chunk away from next chunk in the Y axis
-    if ((player_pos_grid.y + CHUNK_SIZE_IN_TILES.y) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) > REGION_Y)
+    if ((player_pos_grid.y + (CHUNK_SIZE_IN_TILES.y * 2)) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) >
+        REGION_Y)
     {
         if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
-            loadRegion({REGION_X, REGION_Y + 1});
+        {
+            if (!isRegionLoaded({REGION_X, REGION_Y + 1}))
+                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y + 1)).detach();
+        }
 
         if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
-            unloadRegion({REGION_X, REGION_Y - 1});
+        {
+            if (isRegionLoaded({REGION_X, REGION_Y - 1}))
+                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X, REGION_Y - 1)).detach();
+        }
     }
 
     // If player is 1 chunk away from previous chunk in the Y axis
-    if ((player_pos_grid.y - CHUNK_SIZE_IN_TILES.y) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) < REGION_Y)
+    if ((player_pos_grid.y - (CHUNK_SIZE_IN_TILES.y * 2)) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) <
+        REGION_Y)
     {
         if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
-            loadRegion({REGION_X, REGION_Y - 1});
+        {
+            if (!isRegionLoaded({REGION_X, REGION_Y - 1}))
+                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y - 1)).detach();
+        }
 
         if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
-            unloadRegion({REGION_X, REGION_Y + 1});
+        {
+            if (isRegionLoaded({REGION_X, REGION_Y + 1}))
+                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X, REGION_Y + 1)).detach();
+        }
     }
 }
 
@@ -322,6 +350,8 @@ void Map::load(const std::string &name)
 
 void Map::loadRegion(const sf::Vector2i &region_index)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
         std::cout << "Cannot load region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
 
@@ -413,6 +443,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
 void Map::unloadRegion(const sf::Vector2i &region_index)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (!isRegionLoaded(region_index))
         return;
 

@@ -9,6 +9,8 @@
 class Map
 {
   private:
+    std::mutex mutex;
+
     Metadata metadata;
 
     std::unique_ptr<TerrainGenerator> terrainGenerator;
@@ -20,7 +22,7 @@ class Map
     float scale;
 
     ChunkMatrix chunks;
-    bool loadedRegions[MAX_REGIONS.x][MAX_REGIONS.y];
+    std::atomic_bool loadedRegions[MAX_REGIONS.x][MAX_REGIONS.y];
 
     Random rng;
 
