@@ -5,12 +5,11 @@ void GameState::initMap()
 {
     map = std::make_unique<Map>("My New World", 56465456464654, *data.tileData, data.textures->at("TexturePack"),
                                 data.gridSize, data.scale);
-    map->loadRegion({0, 0});
 }
 
 void GameState::initThisPlayer()
 {
-    players[data.uuid] = std::make_shared<Player>(sf::Vector2f(100.f, 100.f), data.textures->at("Player1"), data.scale);
+    players[data.uuid] = std::make_shared<Player>(map->getSpawnPoint(), data.textures->at("Player1"), data.scale);
     thisPlayer = players.at(data.uuid);
 }
 
@@ -83,7 +82,7 @@ void GameState::updatePauseMenu(const float &dt)
 
 void GameState::updateMap(const float &dt)
 {
-    map->update(dt);
+    map->update(dt, thisPlayer->getCenterGridPosition());
 }
 
 void GameState::updatePlayers(const float &dt)

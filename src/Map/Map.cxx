@@ -25,14 +25,15 @@ void Map::initMetadata(const std::string &name, const long int &seed)
     metadata.lastPlayed = -1;
     metadata.name = name;
     metadata.seed = seed;
-    metadata.spawnX = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.x) * gridSize);
-    metadata.spawnY = static_cast<float>((std::rand() % MAX_WORLD_GRID_SIZE.y) * gridSize);
+    metadata.spawnX = static_cast<float>((rng.nextInt(0, INT32_MAX) % MAX_WORLD_GRID_SIZE.x) * gridSize);
+    metadata.spawnY = static_cast<float>((rng.nextInt(0, INT32_MAX) % MAX_WORLD_GRID_SIZE.y) * gridSize);
     metadata.timePlayed = 0;
 }
 
 void Map::initTerrainGenerator(const long int &seed)
 {
-    terrainGenerator = std::make_unique<TerrainGenerator>(chunks, seed, texturePack, tileData, gridSize, scale);
+    terrainGenerator =
+        std::make_unique<TerrainGenerator>(metadata, chunks, seed, texturePack, tileData, gridSize, scale);
 }
 
 Map::Map(const std::string &name, const long int &seed, std::map<std::uint32_t, TileData> &tile_data,
@@ -55,8 +56,60 @@ Map::~Map()
 {
 }
 
-void Map::update(const float &dt)
+void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 {
+    if (player_pos_grid.x < 0 || player_pos_grid.x > MAX_WORLD_GRID_SIZE.x || player_pos_grid.y < 0 ||
+        player_pos_grid.y > MAX_WORLD_GRID_SIZE.y)
+        return;
+
+    const int REGION_X = player_pos_grid.x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
+    const int REGION_Y = player_pos_grid.y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
+    const int CHUNK_X = player_pos_grid.x / (CHUNK_SIZE_IN_TILES.x);
+    const int CHUNK_Y = player_pos_grid.x / (CHUNK_SIZE_IN_TILES.x);
+
+    // Load the region the player is in.
+    if (!isRegionLoaded({REGION_X, REGION_Y}))
+        loadRegion({REGION_X, REGION_Y});
+
+    // If player is 1 chunk away from next chunk in the X axis
+    if ((player_pos_grid.x + CHUNK_SIZE_IN_TILES.x) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) > REGION_X)
+    {
+        if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
+            loadRegion({REGION_X + 1, REGION_Y});
+
+        if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
+            unloadRegion({REGION_X - 1, REGION_Y});
+    }
+
+    // If player is 1 chunk away from previous chunk in the X axis
+    if ((player_pos_grid.x - CHUNK_SIZE_IN_TILES.x) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) < REGION_X)
+    {
+        if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
+            loadRegion({REGION_X - 1, REGION_Y});
+
+        if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
+            unloadRegion({REGION_X + 1, REGION_Y});
+    }
+
+    // If player is 1 chunk away from next chunk in the Y axis
+    if ((player_pos_grid.y + CHUNK_SIZE_IN_TILES.y) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) > REGION_Y)
+    {
+        if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
+            loadRegion({REGION_X, REGION_Y + 1});
+
+        if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
+            unloadRegion({REGION_X, REGION_Y - 1});
+    }
+
+    // If player is 1 chunk away from previous chunk in the Y axis
+    if ((player_pos_grid.y - CHUNK_SIZE_IN_TILES.y) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) < REGION_Y)
+    {
+        if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
+            loadRegion({REGION_X, REGION_Y - 1});
+
+        if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
+            unloadRegion({REGION_X, REGION_Y + 1});
+    }
 }
 
 void Map::render(sf::RenderTarget &target, const bool &debug)
@@ -115,6 +168,17 @@ void Map::save(const std::string &name)
     metadataFile.close();
 
     /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    for (int i = 0; i < MAX_REGIONS.x; i++)
+    {
+        for (int j = 0; j < MAX_REGIONS.y; j++)
+        {
+            if (isRegionLoaded({i, j}))
+            {
+                saveRegion({i, j});
+            }
+        }
+    }
 }
 
 void Map::save()
@@ -126,8 +190,14 @@ void Map::save()
     save(metadata.name);
 }
 
-void Map::saveRegion(const sf::Vector2u &region_index)
+void Map::saveRegion(const sf::Vector2i &region_index)
 {
+    if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
+        std::cout << "Cannot save region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
+
+    if (!isRegionLoaded(region_index))
+        return;
+
     // Calculate chunk indexes.
     const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
     const int CHUNK_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y;
@@ -246,19 +316,17 @@ void Map::load(const std::string &name)
     JSONObject metadataObj = JSON::parse(ss.str()).get<JSONObject>();
     metadataObj >> metadata;
 
-    /* TERRAIN GENERATOR ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
     // Reconfigure terraing generator.
     initTerrainGenerator(metadata.seed);
-
-    /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 }
 
-void Map::loadRegion(const sf::Vector2u &region_index)
+void Map::loadRegion(const sf::Vector2i &region_index)
 {
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
-        throw std::runtime_error("Cannot load region (" + std::to_string(region_index.x) + " " +
-                                 std::to_string(region_index.y) + "): Region out of bounds.");
+        std::cout << "Cannot load region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
+
+    if (isRegionLoaded(region_index))
+        return;
 
     std::string path;
     path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
@@ -266,7 +334,9 @@ void Map::loadRegion(const sf::Vector2u &region_index)
 
     if (!isRegionLoaded(region_index) && !std::filesystem::exists(path))
     {
+        std::cout << "Generating region (" << region_index.x << ", " << region_index.y << ")..." << "\n";
         terrainGenerator->generateRegion(region_index);
+        loadedRegions[region_index.x][region_index.y] = true;
         return;
     }
 
@@ -290,8 +360,10 @@ void Map::loadRegion(const sf::Vector2u &region_index)
         if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
             throw std::runtime_error("Corrupted region file: Chunk index out of bounds");
 
-        if (!chunks[chunk_x][chunk_y])
-            chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+        if (chunks[chunk_x][chunk_y]) // Do not change loaded chunks
+            continue;
+
+        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
 
         for (int i = 0; i < tile_amount; i++)
         {
@@ -329,7 +401,7 @@ void Map::loadRegion(const sf::Vector2u &region_index)
 
             chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
         }
-        
+
         total_tiles += tile_amount;
     }
 
@@ -337,6 +409,36 @@ void Map::loadRegion(const sf::Vector2u &region_index)
 
     loadedRegions[region_index.x][region_index.y] = true;
     std::cout << "Read " << total_tiles << " tiles from region: " << path << "\n";
+}
+
+void Map::unloadRegion(const sf::Vector2i &region_index)
+{
+    if (!isRegionLoaded(region_index))
+        return;
+
+    // Calculate chunk indexes.
+    const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
+    const int CHUNK_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y;
+    const int CHUNK_END_X = (CHUNK_START_X + REGION_SIZE_IN_CHUNKS.x) - 1;
+    const int CHUNK_END_Y = (CHUNK_START_Y + REGION_SIZE_IN_CHUNKS.y) - 1;
+
+    for (unsigned short c_x = CHUNK_START_X; c_x <= CHUNK_END_X; c_x++)
+    {
+        for (unsigned short c_y = CHUNK_START_Y; c_y <= CHUNK_END_Y; c_y++)
+        {
+            if (chunks[c_x][c_y])
+            {
+                if ((chunks[c_x][c_y]->flags & ChunkFlags::KeepLoaded) ||
+                    (chunks[c_x][c_y]->flags & ChunkFlags::Modified))
+                    continue;
+
+                chunks[c_x][c_y].reset();
+            }
+        }
+    }
+
+    loadedRegions[region_index.x][region_index.y] = false;
+    std::cout << "Region \"r." << region_index.x << "." << region_index.y << ".region\" unloaded from memory." << "\n";
 }
 
 void Map::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z)
@@ -391,11 +493,11 @@ const sf::Vector2f Map::getRealDimensions() const
     return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
 }
 
-const bool Map::isRegionLoaded(const sf::Vector2u &region_index) const
+const bool Map::isRegionLoaded(const sf::Vector2i &region_index) const
 {
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
-        throw std::runtime_error("Region (" + std::to_string(region_index.x) + " " + std::to_string(region_index.y) +
-                                 ") out of bounds.");
+        throw std::runtime_error("Cannot check if region is loaded: region out of bounds (" +
+                                 std::to_string(region_index.x) + ", " + std::to_string(region_index.y) + ")");
 
     return loadedRegions[region_index.x][region_index.y];
 }

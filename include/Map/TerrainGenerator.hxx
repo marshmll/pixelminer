@@ -2,6 +2,7 @@
 
 #include "Map/Biome.hxx"
 #include "Map/Chunk.hxx"
+#include "Map/Metadata.hxx"
 #include "Map/PerlinNoise.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/Logger.hxx"
@@ -22,6 +23,7 @@ class TerrainGenerator
   private:
     Logger logger;
 
+    Metadata &metadata;
     ChunkMatrix &chunks;
 
     long int seed;
@@ -45,6 +47,7 @@ class TerrainGenerator
     NoiseMap heatMap;
 
     std::vector<Biome> biomes;
+    std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x> biomeMap;
 
     void initPerlinWaves();
 
@@ -57,10 +60,10 @@ class TerrainGenerator
     Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
   public:
-    TerrainGenerator(ChunkMatrix &chunks, const long int seed, sf::Texture &texture_pack,
+    TerrainGenerator(Metadata &metadata, ChunkMatrix &chunks, const long int seed, sf::Texture &texture_pack,
                      std::map<std::uint32_t, TileData> &tile_data, const unsigned int &grid_size, const float &scale);
 
     ~TerrainGenerator();
 
-    void generateRegion(const sf::Vector2u &region_index);
+    void generateRegion(const sf::Vector2i &region_index);
 };

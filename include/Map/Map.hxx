@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
-#include "Map/Metadata.hxx"
 #include "Map/TerrainGenerator.hxx"
 #include "Tiles/Tile.hxx"
 #include "Tools/JSON.hxx"
@@ -46,7 +45,7 @@ class Map
 
     ~Map();
 
-    void update(const float &dt);
+    void update(const float &dt, const sf::Vector2i &player_pos_grid);
 
     void render(sf::RenderTarget &target, const bool &debug = false);
 
@@ -56,11 +55,13 @@ class Map
 
     void save();
 
-    void saveRegion(const sf::Vector2u &region_index);
+    void saveRegion(const sf::Vector2i &region_index);
 
     void load(const std::string &name);
 
-    void loadRegion(const sf::Vector2u &region_index);
+    void loadRegion(const sf::Vector2i &region_index);
+
+    void unloadRegion(const sf::Vector2i &region_index);
 
     void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
 
@@ -70,5 +71,5 @@ class Map
 
     const sf::Vector2f getRealDimensions() const;
 
-    const bool isRegionLoaded(const sf::Vector2u &region_index) const;
+    const bool isRegionLoaded(const sf::Vector2i &region_index) const;
 };

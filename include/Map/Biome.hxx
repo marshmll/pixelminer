@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Tiles/TileData.hxx"
+
 enum BiomeType
 {
     UnknownBiome = 0,
@@ -14,8 +16,9 @@ enum BiomeType
 
 struct BiomeData
 {
-    BiomeType type;
-    sf::Color color;
+    BiomeType type = BiomeType::UnknownBiome;
+    sf::Color color = sf::Color::Transparent;
+    uint32_t baseTileId = TileId::Unknown;
 };
 
 class Biome

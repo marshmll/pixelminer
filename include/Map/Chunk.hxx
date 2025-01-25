@@ -6,8 +6,8 @@
 enum ChunkFlags : uint8_t
 {
     None = 0x0,       // No flags
-    Modified = 0x1,   // The chunk is different from default generation
-    KeepLoaded = 0x2, // Do not unload from memory
+    Modified = 0x1,   // Means that the chunk is different from default generation
+    KeepLoaded = 0x2, // Means that the chunk should not be unloaded from memory.
 };
 
 static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {6, 6};
@@ -30,7 +30,8 @@ class Chunk
 
     uint8_t flags;
 
-    Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale, uint8_t flags = ChunkFlags::None);
+    Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale,
+          uint8_t flags = ChunkFlags::None);
 
     ~Chunk();
 

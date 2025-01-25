@@ -1,4 +1,4 @@
-#pragma onnce
+#pragma once
 
 #include "Tools/JSON.hxx"
 
