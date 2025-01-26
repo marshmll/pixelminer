@@ -1,14 +1,14 @@
 #include "Tools/JSON.hxx"
 #include "stdafx.hxx"
 
-std::string JSON::stringify(const JSONValue &value)
+std::string JSON::stringify(const JValue &value)
 {
     std::ostringstream oss;
     stringifyHelper(value, oss, 1);
     return oss.str();
 }
 
-void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int indentLevel)
+void JSON::stringifyHelper(const JValue &value, std::ostringstream &oss, int indentLevel)
 {
     const std::string indent(indentLevel * 4, ' ');
     const std::string newLine = "\n";
@@ -36,7 +36,7 @@ void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int 
     else if (value.isArray())
     {
         oss << "[" << newLine;
-        const auto &array = std::get<JSONArray>(value);
+        const auto &array = std::get<JArray>(value);
         for (size_t i = 0; i < array.size(); ++i)
         {
             if (i > 0)
@@ -49,7 +49,7 @@ void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int 
     else if (value.isObject())
     {
         oss << "{" << newLine;
-        const auto &object = std::get<JSONObject>(value);
+        const auto &object = std::get<JObject>(value);
         bool first = true;
         for (const auto &[key, val] : object)
         {
@@ -63,14 +63,14 @@ void JSON::stringifyHelper(const JSONValue &value, std::ostringstream &oss, int 
     }
 }
 
-JSONValue JSON::parse(const std::string &json)
+JValue JSON::parse(const std::string &json)
 {
     size_t index = 0;
     skipWhitespace(json, index);
     return parseValue(json, index);
 }
 
-JSONValue JSON::parse(const std::filesystem::path path)
+JValue JSON::parse(const std::filesystem::path path)
 {
     std::ifstream file(path);
 
@@ -84,7 +84,7 @@ JSONValue JSON::parse(const std::filesystem::path path)
     return parse(oss.str());
 }
 
-JSONValue JSON::parseValue(const std::string &json, size_t &pos)
+JValue JSON::parseValue(const std::string &json, size_t &pos)
 {
     skipWhitespace(json, pos);
 
@@ -96,21 +96,21 @@ JSONValue JSON::parseValue(const std::string &json, size_t &pos)
     if (json[pos] == 'n')
     {
         expect(json, pos, "null");
-        return JSONValue(nullptr);
+        return JValue(nullptr);
     }
     else if (json[pos] == 't')
     {
         expect(json, pos, "true");
-        return JSONValue(true);
+        return JValue(true);
     }
     else if (json[pos] == 'f')
     {
         expect(json, pos, "false");
-        return JSONValue(false);
+        return JValue(false);
     }
     else if (json[pos] == '"')
     {
-        return JSONValue(parseString(json, pos));
+        return JValue(parseString(json, pos));
     }
     else if (json[pos] == '[')
     {
@@ -186,7 +186,7 @@ std::string JSON::parseString(const std::string &json, size_t &pos)
     return result;
 }
 
-JSONValue JSON::parseNumber(const std::string &json, size_t &pos)
+JValue JSON::parseNumber(const std::string &json, size_t &pos)
 {
     size_t start = pos;
 
@@ -236,7 +236,7 @@ JSONValue JSON::parseNumber(const std::string &json, size_t &pos)
         try
         {
             long long value = std::stoll(numberStr); // Parse as long long
-            return JSONValue(value);
+            return JValue(value);
         }
         catch (const std::out_of_range &)
         {
@@ -248,7 +248,7 @@ JSONValue JSON::parseNumber(const std::string &json, size_t &pos)
         try
         {
             double value = std::stod(numberStr); // Parse as double
-            return JSONValue(value);
+            return JValue(value);
         }
         catch (const std::out_of_range &)
         {
@@ -282,19 +282,19 @@ std::nullptr_t JSON::parseNull(const std::string &json, size_t &index)
     throw std::runtime_error("[ JSON ] -> Invalid null value");
 }
 
-JSONValue JSON::parseObject(const std::string &json, size_t &pos)
+JValue JSON::parseObject(const std::string &json, size_t &pos)
 {
     skipWhitespace(json, pos);
     if (json[pos] != '{')
         throw std::runtime_error("[ JSON ] -> Expected '{' at position " + std::to_string(pos));
     ++pos;
 
-    JSONObject object;
+    JObject object;
     skipWhitespace(json, pos);
     if (json[pos] == '}')
     {
         ++pos;
-        return JSONValue(object);
+        return JValue(object);
     }
 
     while (true)
@@ -315,7 +315,7 @@ JSONValue JSON::parseObject(const std::string &json, size_t &pos)
         if (json[pos] == '}')
         {
             ++pos;
-            return JSONValue(object);
+            return JValue(object);
         }
         else if (json[pos] == ',')
         {
@@ -328,19 +328,19 @@ JSONValue JSON::parseObject(const std::string &json, size_t &pos)
     }
 }
 
-JSONValue JSON::parseArray(const std::string &json, size_t &pos)
+JValue JSON::parseArray(const std::string &json, size_t &pos)
 {
     skipWhitespace(json, pos);
     if (json[pos] != '[')
         throw std::runtime_error("[ JSON ] -> Expected '[' at position " + std::to_string(pos));
     ++pos;
 
-    JSONArray array;
+    JArray array;
     skipWhitespace(json, pos);
     if (json[pos] == ']')
     {
         ++pos;
-        return JSONValue(array);
+        return JValue(array);
     }
 
     while (true)
@@ -351,7 +351,7 @@ JSONValue JSON::parseArray(const std::string &json, size_t &pos)
         if (json[pos] == ']')
         {
             ++pos;
-            return JSONValue(array);
+            return JValue(array);
         }
         else if (json[pos] == ',')
         {

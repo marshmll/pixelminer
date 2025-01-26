@@ -29,7 +29,7 @@ class TerrainGenerator
     long int seed;
 
     sf::Texture &texturePack;
-    std::map<std::uint32_t, TileData> &tileData;
+    std::map<std::string, TileData> &tileData;
 
     unsigned int gridSize;
     float scale;
@@ -61,7 +61,7 @@ class TerrainGenerator
 
   public:
     TerrainGenerator(Metadata &metadata, ChunkMatrix &chunks, const long int seed, sf::Texture &texture_pack,
-                     std::map<std::uint32_t, TileData> &tile_data, const unsigned int &grid_size, const float &scale);
+                     std::map<std::string, TileData> &tile_data, const unsigned int &grid_size, const float &scale);
 
     ~TerrainGenerator();
 

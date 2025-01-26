@@ -3,13 +3,16 @@
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>("My New World", 56465456464654, *data.tileData, data.textures->at("TexturePack"),
-                                data.gridSize, data.scale);
+    map = std::make_unique<Map>("My New World", 56465456464654, data.activeResourcePack->tileDB,
+                                data.activeResourcePack->textures.at("TileSheet"), data.gridSize, data.scale);
+
+    // map->loadRegion({6, 4});
 }
 
 void GameState::initThisPlayer()
 {
-    players[data.uuid] = std::make_shared<Player>(map->getSpawnPoint(), data.textures->at("Player1"), data.scale);
+    players[data.uuid] =
+        std::make_shared<Player>(map->getSpawnPoint(), data.activeResourcePack->textures.at("Player1"), data.scale);
     thisPlayer = players.at(data.uuid);
 }
 
@@ -28,7 +31,8 @@ void GameState::initDebugging()
 {
     debugChunks = debugInfo = false;
 
-    debugText = std::make_unique<sf::Text>(data.fonts->at("MinecraftItalic"), "0", gui::charSize(*data.vm, 130));
+    debugText =
+        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Italic"), "0", gui::charSize(*data.vm, 130));
     debugText->setPosition(
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }

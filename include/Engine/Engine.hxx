@@ -2,6 +2,7 @@
 
 #include "Engine/Configuration.hxx"
 #include "Engine/GraphicsSettings.hxx"
+#include "Engine/ResourcePack.hxx"
 #include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
@@ -11,7 +12,8 @@
 class Engine
 {
   private:
-    /* ATTRIBUTES */
+    /* ATTRIBUTES +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
     std::string myUuid;
     Logger logger;
     GraphicsSettings gfx;
@@ -28,13 +30,10 @@ class Engine
     EngineData engineData;
     std::stack<std::unique_ptr<State>> states;
 
-    // Assets
-    std::map<std::string, sf::Font> fonts;
-    std::map<std::string, sf::Texture> textures;
-    std::map<std::uint32_t, TileData> tileData;
-    std::map<std::string, sf::Shader> shaders;
+    std::map<std::string, ResourcePack> resourcePacks;
+    std::shared_ptr<ResourcePack> activeResourcePack;
 
-    /* PRIVATE METHODS */
+    /* PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     void seedRandom();
 
@@ -44,13 +43,7 @@ class Engine
 
     void initVariables();
 
-    void initTileData();
-
-    void initFonts();
-
-    void initTextures();
-
-    void initShaders();
+    void initResourcePacks();
 
     void initEngineData();
 
@@ -60,15 +53,16 @@ class Engine
 
     void updateDeltaTime();
 
-  public:
-    Engine();
-    virtual ~Engine();
-
-    /* PUBLIC METHODS */
-
-    void run();
-
     void update();
 
     void render();
+
+  public:
+    Engine();
+
+    virtual ~Engine();
+
+    /* PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    void run();
 };

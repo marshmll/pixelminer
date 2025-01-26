@@ -1,0 +1,72 @@
+[
+    {
+        "id": "unknown",
+        "name": "Unknown",
+        "rectX": 15,
+        "rectY": 15,
+        "size": 16
+    },
+    {
+        "id": "dirt",
+        "name": "Dirt",
+        "rectX": 0,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "stone",
+        "name": "Stone",
+        "rectX": 1,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "cobblestone",
+        "name": "Cobblestone",
+        "rectX": 3,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "grass_tile",
+        "name": "Grass",
+        "rectX": 0,
+        "rectY": 1,
+        "size": 16
+    },
+    {
+        "id": "grass_var_1",
+        "name": "Grass",
+        "rectX": 0,
+        "rectY": 3,
+        "size": 16
+    },
+    {
+        "id": "grass_var_2",
+        "name": "Grass",
+        "rectX": 0,
+        "rectY": 2,
+        "size": 16
+    },
+    {
+        "id": "sand",
+        "name": "Sand",
+        "rectX": 5,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "snow_tile",
+        "name": "Snow",
+        "rectX": 6,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "water_tile",
+        "name": "Water",
+        "rectX": 7,
+        "rectY": 0,
+        "size": 16
+    }
+]

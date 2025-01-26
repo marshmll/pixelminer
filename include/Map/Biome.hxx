@@ -18,7 +18,7 @@ struct BiomeData
 {
     BiomeType type = BiomeType::UnknownBiome;
     sf::Color color = sf::Color::Transparent;
-    uint32_t baseTileId = TileId::Unknown;
+    std::string baseTileId = "unknown";
 };
 
 class Biome

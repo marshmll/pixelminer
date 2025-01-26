@@ -8,7 +8,6 @@
 class MainMenuState : public State
 {
   private:
-    sf::Texture bgTexture;
     sf::RectangleShape bgShape;
     std::unique_ptr<sf::Text> title;
 

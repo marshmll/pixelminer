@@ -17,8 +17,8 @@ void Map::initMetadata(const std::string &name, const long int &seed)
     metadata.metadataVersion = METADATA_VERSION;
     metadata.gameVersion = GAME_VERSION;
     metadata.creationTime = std::time(0);
-    metadata.dataPacks.enabled = JSONArray({"vanilla"});
-    metadata.dataPacks.disabled = JSONArray({});
+    metadata.dataPacks.enabled = JArray({"vanilla"});
+    metadata.dataPacks.disabled = JArray({});
     metadata.dayTime = 300000;
     metadata.difficulty = "normal";
     metadata.generatorName = "default";
@@ -32,23 +32,22 @@ void Map::initMetadata(const std::string &name, const long int &seed)
 
 void Map::initTerrainGenerator(const long int &seed)
 {
-    terrainGenerator =
-        std::make_unique<TerrainGenerator>(metadata, chunks, seed, texturePack, tileData, gridSize, scale);
+    terrainGenerator = std::make_unique<TerrainGenerator>(metadata, chunks, seed, texturePack, tileDB, gridSize, scale);
 }
 
-Map::Map(const std::string &name, const long int &seed, std::map<std::uint32_t, TileData> &tile_data,
+Map::Map(const std::string &name, const long int &seed, std::map<std::string, TileData> &tile_db,
          sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
 
-    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
+    : tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
 {
     initRegionStatusArray();
     initMetadata(name, seed);
     initTerrainGenerator(seed);
 }
 
-Map::Map(std::map<std::uint32_t, TileData> &tile_data, sf::Texture &texture_pack, const unsigned int &grid_size,
+Map::Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale)
-    : tileData(tile_data), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
+    : tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
 {
 }
 
@@ -69,75 +68,8 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 
     // Load the region the player is in.
     if (!isRegionLoaded({REGION_X, REGION_Y}))
-        std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
-
-    // If player is 1 chunk away from next chunk in the X axis
-    if ((player_pos_grid.x + (CHUNK_SIZE_IN_TILES.x * 2)) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) >
-        REGION_X)
-    {
-        if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
-        {
-            if (!isRegionLoaded({REGION_X + 1, REGION_Y}))
-                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X + 1, REGION_Y)).detach();
-        }
-
-        if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
-        {
-            if (isRegionLoaded({REGION_X - 1, REGION_Y}))
-                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X - 1, REGION_Y)).detach();
-        }
-    }
-
-    // If player is 1 chunk away from previous chunk in the X axis
-    if ((player_pos_grid.x - (CHUNK_SIZE_IN_TILES.x * 2)) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) <
-        REGION_X)
-    {
-        if (REGION_X - 1 > 0 && REGION_X - 1 < MAX_REGIONS.x)
-        {
-            if (!isRegionLoaded({REGION_X - 1, REGION_Y}))
-                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X - 1, REGION_Y)).detach();
-        }
-
-        if (REGION_X + 1 > 0 && REGION_X + 1 < MAX_REGIONS.x)
-        {
-            if (isRegionLoaded({REGION_X + 1, REGION_Y}))
-                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X + 1, REGION_Y)).detach();
-        }
-    }
-
-    // If player is 1 chunk away from next chunk in the Y axis
-    if ((player_pos_grid.y + (CHUNK_SIZE_IN_TILES.y * 2)) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) >
-        REGION_Y)
-    {
-        if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
-        {
-            if (!isRegionLoaded({REGION_X, REGION_Y + 1}))
-                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y + 1)).detach();
-        }
-
-        if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
-        {
-            if (isRegionLoaded({REGION_X, REGION_Y - 1}))
-                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X, REGION_Y - 1)).detach();
-        }
-    }
-
-    // If player is 1 chunk away from previous chunk in the Y axis
-    if ((player_pos_grid.y - (CHUNK_SIZE_IN_TILES.y * 2)) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) <
-        REGION_Y)
-    {
-        if (REGION_Y - 1 > 0 && REGION_Y - 1 < MAX_REGIONS.y)
-        {
-            if (!isRegionLoaded({REGION_X, REGION_Y - 1}))
-                std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y - 1)).detach();
-        }
-
-        if (REGION_Y + 1 > 0 && REGION_Y + 1 < MAX_REGIONS.y)
-        {
-            if (isRegionLoaded({REGION_X, REGION_Y + 1}))
-                std::thread(&Map::unloadRegion, this, sf::Vector2i(REGION_X, REGION_Y + 1)).detach();
-        }
-    }
+        loadRegion({REGION_X, REGION_Y});
+    // std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
 }
 
 void Map::render(sf::RenderTarget &target, const bool &debug)
@@ -182,7 +114,8 @@ void Map::save(const std::string &name)
 
     /* WORLD METADATA +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    JSONObject metadataObj;
+    metadata.lastPlayed = std::time(0);
+    JObject metadataObj;
     metadataObj << metadata;
 
     // std::cout << JSON::stringify(metadataObj) << "\n";
@@ -293,14 +226,14 @@ void Map::saveRegion(const sf::Vector2i &region_index)
                         if (!chunks[c_x][c_y]->tiles[x][y][z])
                             continue;
 
-                        uint32_t tile_id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
+                        std::string id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
 
                         region_file.write(reinterpret_cast<char *>(&x), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&y), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-                        region_file.write(reinterpret_cast<char *>(&tile_id), sizeof(uint32_t));
+                        region_file.write(id.data(), id.size() + 1);
 
-                        if (tile_id == TileId::GrassTile || tile_id == TileId::Grass1 || tile_id == TileId::Grass2)
+                        if (id == "grass_tile" || id == "grass_var_1" || id == "grass_var_2")
                         {
                             sf::Color color = chunks[c_x][c_y]->tiles[x][y][z]->getColor();
                             region_file.write(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));
@@ -341,7 +274,7 @@ void Map::load(const std::string &name)
     std::stringstream ss;
     ss << metadataFile.rdbuf();
 
-    JSONObject metadataObj = JSON::parse(ss.str()).get<JSONObject>();
+    JObject metadataObj = JSON::parse(ss.str()).getAs<JObject>();
     metadataObj >> metadata;
 
     // Reconfigure terraing generator.
@@ -384,8 +317,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
            region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)) &&
            region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)))
     {
-        // std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
-        //           << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
+        std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
+                  << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
 
         if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
             throw std::runtime_error("Corrupted region file: Chunk index out of bounds");
@@ -398,29 +331,34 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         for (int i = 0; i < tile_amount; i++)
         {
             unsigned short x = 0, y = 0, z = 0; // Positions relative to chunk
-            uint32_t tile_id;
+            std::string id;
             TileData td;
 
             region_file.read(reinterpret_cast<char *>(&x), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&y), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-            region_file.read(reinterpret_cast<char *>(&tile_id), sizeof(uint32_t));
+
+            char c = -1;
+            while (c != '\0')
+            {
+                region_file.read(&c, sizeof(char));
+                id.push_back(c);
+            }
+
+            std::cout << id << "\n";
 
             if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
-                throw std::runtime_error("Corrupted region file: Tile nº" + std::to_string(i) +
+                throw std::runtime_error("Corrupted region file: Tile nº " + std::to_string(i) +
                                          "out of bounds in Chunk[" + std::to_string(chunk_x) + "][" +
                                          std::to_string(chunk_y) + "]");
 
-            td = tileData.at(tile_id);
-
-            Tile tile(td.name, tile_id, texturePack, td.textureRect, gridSize,
+            Tile tile(td.name, id, texturePack, td.rect, gridSize,
                       sf::Vector2u(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y)),
                       scale);
 
-            // std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
-            //           << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << "\n";
+            // std::cout << "Tile placed at (" << x << ", " << y << ")\n";
 
-            if (tile_id == TileId::GrassTile || tile_id == TileId::Grass1 || tile_id == TileId::Grass2)
+            if (id == "grass_tile" || "grass_var_1" || id == "grass_var_2")
             {
                 sf::Color color;
                 region_file.read(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));

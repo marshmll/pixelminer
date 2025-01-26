@@ -5,29 +5,29 @@ void DirectConnectState::initGUI()
 {
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
-    background.setTexture(&data.textures->at("Stone"));
+    background.setTexture(&data.activeResourcePack->textures.at("Background"));
     background.setFillColor(sf::Color(255, 255, 255, 100));
 
     addrInput = std::make_unique<gui::Input>(
         sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
                      gui::percent(data.vm->size.y, 35.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 8.f)), sf::Color(0, 0, 0, 180),
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), gui::percent(data.vm->size.y, 3.f), 2.f,
-        sf::Color(200, 200, 200, 255), "Server Address");
+        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), gui::percent(data.vm->size.y, 3.f),
+        2.f, sf::Color(200, 200, 200, 255), "Server Address");
 
     buttons["JoinServer"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
                      gui::percent(data.vm->size.y, 50.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Join Server", data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95),
-        sf::Color::White, 2.f, sf::Color::Black);
+        sf::Color(200, 200, 200, 200), "Join Server", data.activeResourcePack->fonts.at("Regular"),
+        gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Cancel"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,
                      gui::percent(data.vm->size.y, 58.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Cancel", data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95),
-        sf::Color::White, 2.f, sf::Color::Black);
+        sf::Color(200, 200, 200, 200), "Cancel", data.activeResourcePack->fonts.at("Regular"),
+        gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons.at("JoinServer")->setState(gui::ButtonState::Disabled);
 }

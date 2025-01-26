@@ -1,7 +1,7 @@
 #include "Tiles/Tile.hxx"
 #include "stdafx.hxx"
 
-Tile::Tile(const std::string name, const std::uint32_t id, sf::Texture &texture, const sf::IntRect &texture_rect,
+Tile::Tile(const std::string name, const std::string &id, sf::Texture &texture, const sf::IntRect &texture_rect,
            const unsigned int &grid_size, const sf::Vector2u &grid_position, const float &scale, const sf::Color &color)
     : TileBase(name, id, texture, texture_rect)
 {

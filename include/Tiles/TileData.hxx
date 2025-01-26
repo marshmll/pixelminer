@@ -3,33 +3,10 @@
 #include "Engine/Configuration.hxx"
 #include "stdafx.hxx"
 
-enum TileId : std::uint32_t
-{
-    Unknown = 0,
-    Dirt,
-    Stone,
-    GrassTile,
-    Grass1,
-    Grass2,
-    GrassSide,
-    Cobblestone,
-    Sand,
-    Snow,
-    Water,
-    GrassTopFront,
-    GrassBottomFront,
-    GrassBottomBack,
-    GrassCurveTopFront,
-    GrassCurveBottomFront,
-    GrassCurveBottomBack,
-    GrassTop,
-    GrassBottom,
-    GrassFront,
-};
-
 typedef struct
 {
+    std::string id;
     std::string name;
-    std::uint32_t id;
-    sf::IntRect textureRect;
+    sf::IntRect rect;
+    int size;
 } TileData;

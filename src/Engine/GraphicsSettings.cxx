@@ -13,16 +13,22 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
 {
     try
     {
-        JSONObject obj = JSON::parse(path).get<JSONObject>();
-        JSONObject resolutionObj = obj.at("resolution").get<JSONObject>();
+        JObject obj = JSON::parse(path).getAs<JObject>();
+        JObject resolutionObj = obj.at("resolution").getAs<JObject>();
 
-        screenWidth = resolutionObj.size() == 2 ? resolutionObj.at("width").get<long long int>()
+        screenWidth = resolutionObj.size() == 2 ? resolutionObj.at("width").getAs<long long int>()
                                                 : sf::VideoMode::getDesktopMode().size.x;
-        screenHeight = resolutionObj.size() == 2 ? resolutionObj.at("height").get<long long int>()
+
+        screenHeight = resolutionObj.size() == 2 ? resolutionObj.at("height").getAs<long long int>()
                                                  : sf::VideoMode::getDesktopMode().size.y;
-        framerateLimit = obj.at("framerateLimit").get<long long int>();
-        fullscreen = obj.at("fullscreen").get<bool>();
-        vsync = obj.at("vsync").get<bool>();
+
+        framerateLimit = obj.at("framerateLimit").getAs<long long int>();
+
+        fullscreen = obj.at("fullscreen").getAs<bool>();
+
+        vsync = obj.at("vsync").getAs<bool>();
+
+        resourcePack = obj.at("resourcePack").getAs<std::string>();
 
         std::cout << "[ GraphicsSettings ] -> Loaded settings from file: " << path.string() << "\n";
         return true;
@@ -45,11 +51,12 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
         return false;
     }
 
-    JSONObject obj;
-    obj["resolution"] = JSONObject{{"width", screenWidth}, {"height", screenHeight}};
+    JObject obj;
+    obj["resolution"] = JObject{{"width", screenWidth}, {"height", screenHeight}};
     obj["framerateLimit"] = framerateLimit;
     obj["fullscreen"] = fullscreen;
     obj["vsync"] = vsync;
+    obj["resourcePack"] = resourcePack;
 
     try
     {

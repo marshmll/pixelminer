@@ -6,8 +6,8 @@ struct Metadata
 {
     struct DataPacks
     {
-        JSONArray enabled;
-        JSONArray disabled;
+        JArray enabled;
+        JArray disabled;
     };
 
     std::string metadataVersion;
@@ -25,12 +25,12 @@ struct Metadata
     long long timePlayed;
 };
 
-inline JSONObject &operator<<(JSONObject &obj, Metadata &metadata)
+inline JObject &operator<<(JObject &obj, Metadata &metadata)
 {
-    obj = JSONObject{{"metadataVersion", metadata.metadataVersion},
+    obj = JObject{{"metadataVersion", metadata.metadataVersion},
                      {"gameVersion", metadata.gameVersion},
                      {"dataPacks",
-                      JSONObject{
+                      JObject{
                           {"enabled", metadata.dataPacks.enabled},
                           {"disabled", metadata.dataPacks.disabled},
                       }},
@@ -48,21 +48,21 @@ inline JSONObject &operator<<(JSONObject &obj, Metadata &metadata)
     return obj;
 }
 
-inline JSONObject &operator>>(JSONObject &obj, Metadata &metadata)
+inline JObject &operator>>(JObject &obj, Metadata &metadata)
 {
-    metadata.metadataVersion = obj.at("metadataVersion").get<std::string>();
-    metadata.gameVersion = obj.at("gameVersion").get<std::string>();
-    metadata.creationTime = obj.at("creationTime").get<long long>();
-    metadata.dataPacks.enabled = obj.at("dataPacks").get<JSONObject>().at("enabled").get<JSONArray>();
-    metadata.dataPacks.disabled = obj.at("dataPacks").get<JSONObject>().at("disabled").get<JSONArray>();
-    metadata.dayTime = obj.at("dayTime").get<long long>();
-    metadata.difficulty = obj.at("difficulty").get<std::string>();
-    metadata.generatorName = obj.at("generatorName").get<std::string>();
-    metadata.lastPlayed = obj.at("lastPlayed").get<long long>();
-    metadata.name = obj.at("name").get<std::string>();
-    metadata.seed = obj.at("seed").get<long long>();
-    metadata.spawnX = obj.at("spawnX").get<long long>();
-    metadata.spawnY = obj.at("spawnY").get<long long>();
+    metadata.metadataVersion = obj.at("metadataVersion").getAs<std::string>();
+    metadata.gameVersion = obj.at("gameVersion").getAs<std::string>();
+    metadata.creationTime = obj.at("creationTime").getAs<long long>();
+    metadata.dataPacks.enabled = obj.at("dataPacks").getAs<JObject>().at("enabled").getAs<JArray>();
+    metadata.dataPacks.disabled = obj.at("dataPacks").getAs<JObject>().at("disabled").getAs<JArray>();
+    metadata.dayTime = obj.at("dayTime").getAs<long long>();
+    metadata.difficulty = obj.at("difficulty").getAs<std::string>();
+    metadata.generatorName = obj.at("generatorName").getAs<std::string>();
+    metadata.lastPlayed = obj.at("lastPlayed").getAs<long long>();
+    metadata.name = obj.at("name").getAs<std::string>();
+    metadata.seed = obj.at("seed").getAs<long long>();
+    metadata.spawnX = obj.at("spawnX").getAs<long long>();
+    metadata.spawnY = obj.at("spawnY").getAs<long long>();
 
     return obj;
 }

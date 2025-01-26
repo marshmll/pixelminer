@@ -16,4 +16,8 @@
 #define MAPS_FOLDER "Assets/Maps/"
 #endif
 
+#ifndef RESOURCES_FOLDER
+#define RESOURCES_FOLDER "Assets/ResourcePacks/"
+#endif
+
 static constexpr unsigned int GRID_SIZE = 16;

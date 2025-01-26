@@ -23,35 +23,40 @@ PauseMenu::PauseMenu(EngineData &data, Map &map) : active(false), data(data), ma
 
     buttons["BackToGame"] = std::make_unique<gui::TextButton>(
         buttonContainer.getPosition(), sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200),
-        "Back to Game", data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
+        "Back to Game", data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
+        2.f, sf::Color::Black);
 
     buttons["Achievements"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + btn_height + gap),
         sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Achievements",
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Color::Black);
 
-    buttons["Statistics"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
-                     buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Statistics",
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+    buttons["Statistics"] =
+        std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
+                                                       buttonContainer.getPosition().y + btn_height + gap),
+                                          sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200),
+                                          "Statistics", data.activeResourcePack->fonts.at("Regular"),
+                                          gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Options"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 3),
         sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Options",
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Color::Black);
 
-    buttons["OpenToLAN"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
-                     buttonContainer.getPosition().y + (btn_height + gap) * 3),
-        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Open to LAN",
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+    buttons["OpenToLAN"] =
+        std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
+                                                       buttonContainer.getPosition().y + (btn_height + gap) * 3),
+                                          sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200),
+                                          "Open to LAN", data.activeResourcePack->fonts.at("Regular"),
+                                          gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["SaveAndQuit"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 4),
         sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save and Quit",
-        data.fonts->at("MinecraftRegular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Color::Black);
 }
 
 PauseMenu::~PauseMenu()

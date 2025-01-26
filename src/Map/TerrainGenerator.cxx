@@ -51,37 +51,37 @@ void TerrainGenerator::initBiomes()
             {
             case Desert:
                 biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
-                biomeMap[x][y].baseTileId = TileId::Sand;
+                biomeMap[x][y].baseTileId = "sand";
                 break;
 
             case Forest:
                 biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
-                biomeMap[x][y].baseTileId = TileId::GrassTile;
+                biomeMap[x][y].baseTileId = "grass_tile";
                 break;
 
             case Grassland:
                 biomeMap[x][y].color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
-                biomeMap[x][y].baseTileId = TileId::GrassTile;
+                biomeMap[x][y].baseTileId = "grass_tile";
                 break;
 
             case Jungle:
                 biomeMap[x][y].color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
-                biomeMap[x][y].baseTileId = TileId::GrassTile;
+                biomeMap[x][y].baseTileId = "grass_tile";
                 break;
 
             case Mountains:
                 biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
-                biomeMap[x][y].baseTileId = TileId::Stone;
+                biomeMap[x][y].baseTileId = "stone";
                 break;
 
             case Ocean:
                 biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                biomeMap[x][y].baseTileId = TileId::Water;
+                biomeMap[x][y].baseTileId = "water_tile";
                 break;
 
             case Tundra:
                 biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
-                biomeMap[x][y].baseTileId = TileId::GrassTile;
+                biomeMap[x][y].baseTileId = "grass_tile";
                 break;
             default:
                 break;
@@ -134,7 +134,7 @@ Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int 
 }
 
 TerrainGenerator::TerrainGenerator(Metadata &metadata, ChunkMatrix &chunks, const long int seed,
-                                   sf::Texture &texture_pack, std::map<std::uint32_t, TileData> &tile_data,
+                                   sf::Texture &texture_pack, std::map<std::string, TileData> &tile_data,
                                    const unsigned int &grid_size, const float &scale)
     : logger("TerrainGenerator"), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
       tileData(tile_data), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
@@ -175,13 +175,13 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
             TileData tile_data = tileData.at(biomeMap[x][y].baseTileId);
             sf::Color biome_color = biomeMap[x][y].color;
 
-            if (tile_data.id == TileId::GrassTile)
+            if (tile_data.id == "grass_tile")
             {
                 // All these if's are a trick to keep the world generation the same every time.
                 if (x >= REGION_GRID_START_X && y >= REGION_GRID_START_Y && x <= REGION_GRID_END_X &&
                     y <= REGION_GRID_END_Y)
                 {
-                    putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale,
+                    putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
                                  biome_color),
                             x, y, 0);
                 }
@@ -191,28 +191,25 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                     if (x >= REGION_GRID_START_X && y >= REGION_GRID_START_Y && x <= REGION_GRID_END_X &&
                         y <= REGION_GRID_END_Y)
                     {
-                        TileData td = tileData.at(Grass1);
-                        putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biome_color), x,
-                                y, 1);
+                        TileData td = tileData.at("grass_var_1");
+                        putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome_color), x, y, 1);
                     }
                 }
                 else if (!rng.nextInt(0, 3))
                 {
-                    TileData td = tileData.at(Grass2);
+                    TileData td = tileData.at("grass_var_2");
 
                     if (x >= REGION_GRID_START_X && y >= REGION_GRID_START_Y && x <= REGION_GRID_END_X &&
                         y <= REGION_GRID_END_Y)
                     {
-                        putTile(Tile(td.name, td.id, texturePack, td.textureRect, gridSize, {}, scale, biome_color), x,
-                                y, 1);
+                        putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome_color), x, y, 1);
                     }
                 }
             }
             else if (x >= REGION_GRID_START_X && y >= REGION_GRID_START_Y && x <= REGION_GRID_END_X &&
                      y <= REGION_GRID_END_Y)
             {
-                putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.textureRect, gridSize, {}, scale), x,
-                        y, 0);
+                putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale), x, y, 0);
             }
         }
     }
