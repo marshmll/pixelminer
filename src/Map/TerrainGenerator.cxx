@@ -3,6 +3,8 @@
 
 void TerrainGenerator::initPerlinWaves()
 {
+    logger.logInfo("Initializing perlin waves.");
+
     heightWaves = {{120.f, .009f, 4.f}, {300.f, .2f, 1.5f}, {500.f, .018f, 8.f}};
     moistureWaves = {{622.f, .04f, 5.f}, {200.f, .08f, 2.f}, {400.f, .2f, .8f}};
     heatWaves = {{318.6f, .05f, 5.f}, {329.7f, .5f, 1.f}};
@@ -10,6 +12,8 @@ void TerrainGenerator::initPerlinWaves()
 
 void TerrainGenerator::initNoiseMaps()
 {
+    logger.logInfo("Initializing noise maps.");
+
     heightMap =
         perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heightWaves, {0.f, 0.f});
     moistureMap =
@@ -19,6 +23,8 @@ void TerrainGenerator::initNoiseMaps()
 
 void TerrainGenerator::initBiomes()
 {
+    logger.logInfo("Initializing biomes.");
+
     biomes = {
         {BiomeType::Desert, .35f, 0.1f, .8f},  {BiomeType::Forest, .4f, .6f, .4f},
         {BiomeType::Grassland, .3f, .5f, .5f}, {BiomeType::Jungle, .45f, .8f, .7f},

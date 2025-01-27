@@ -76,8 +76,8 @@ void Engine::initVariables()
     dt = 0.f;
     dtClock.restart();
 
-    gridSize = GRID_SIZE;                                                    // 16x16 pixels tile textures.
-    scale = static_cast<float>(std::round((vm.size.x + vm.size.y) / 693.f)); // Dynamic scaling
+    gridSize = GRID_SIZE;                                                           // 16x16 pixels tile textures.
+    scale = static_cast<unsigned int>(std::round((vm.size.x + vm.size.y) / 693.f)); // Dynamic scaling
 }
 
 void Engine::initResourcePacks()

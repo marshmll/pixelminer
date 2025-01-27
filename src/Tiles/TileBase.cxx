@@ -60,8 +60,8 @@ void TileBase::setPosition(const sf::Vector2f &position)
 
 void TileBase::setGridPosition(const sf::Vector2u &position)
 {
-    sprite.setPosition(
-        sf::Vector2f(position.x * GRID_SIZE * sprite.getScale().x, position.y * GRID_SIZE * sprite.getScale().y));
+    sprite.setPosition(sf::Vector2f(std::floor(position.x * GRID_SIZE * sprite.getScale().x),
+                                    std::floor(position.y * GRID_SIZE * sprite.getScale().y)));
 }
 
 void TileBase::setColor(const sf::Color &color)

@@ -57,19 +57,77 @@ Map::~Map()
 
 void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 {
+    // Validate player position within world boundaries
     if (player_pos_grid.x < 0 || player_pos_grid.x > MAX_WORLD_GRID_SIZE.x || player_pos_grid.y < 0 ||
         player_pos_grid.y > MAX_WORLD_GRID_SIZE.y)
         return;
 
+    // Compute region and chunk indices
     const int REGION_X = player_pos_grid.x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
     const int REGION_Y = player_pos_grid.y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
-    const int CHUNK_X = player_pos_grid.x / (CHUNK_SIZE_IN_TILES.x);
-    const int CHUNK_Y = player_pos_grid.x / (CHUNK_SIZE_IN_TILES.x);
 
-    // Load the region the player is in.
+    // Load the region the player is in
     if (!isRegionLoaded({REGION_X, REGION_Y}))
-        loadRegion({REGION_X, REGION_Y});
-    // std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
+    {
+        std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
+    }
+
+    // Helper lambda to load and unload neighboring regions
+    auto manageRegions = [&](int load_offset_x, int load_offset_y, int unload_offset_x, int unload_offset_y) {
+        sf::Vector2i load_region(REGION_X + load_offset_x, REGION_Y + load_offset_y);
+        sf::Vector2i unload_region(REGION_X + unload_offset_x, REGION_Y + unload_offset_y);
+
+        // Load region if not already loaded
+        if (load_region.x >= 0 && load_region.x < MAX_REGIONS.x && load_region.y >= 0 && load_region.y < MAX_REGIONS.y)
+        {
+            if (!isRegionLoaded(load_region))
+            {
+                std::thread(&Map::loadRegion, this, load_region).detach();
+            }
+        }
+
+        // Unload region if loaded
+        if (unload_region.x >= 0 && unload_region.x < MAX_REGIONS.x && unload_region.y >= 0 &&
+            unload_region.y < MAX_REGIONS.y)
+        {
+            if (isRegionLoaded(unload_region))
+            {
+                std::thread(&Map::unloadRegion, this, unload_region).detach();
+            }
+        }
+    };
+
+    // Check and manage regions based on player position
+    const int X_OFFSET = CHUNK_SIZE_IN_TILES.x;
+    const int Y_OFFSET = CHUNK_SIZE_IN_TILES.y;
+
+    if ((player_pos_grid.x + X_OFFSET) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) == REGION_X + 1)
+    {
+        manageRegions(1, -1, -2, -1);
+        manageRegions(1, 0, -2, 0);
+        manageRegions(1, 1, -2, 1);
+    }
+
+    if ((player_pos_grid.x - X_OFFSET) / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) == REGION_X - 1)
+    {
+        manageRegions(-1, -1, 2, -1);
+        manageRegions(-1, 0, 2, 0);
+        manageRegions(-1, 1, 2, 1);
+    }
+
+    if ((player_pos_grid.y + Y_OFFSET) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) == REGION_Y + 1)
+    {
+        manageRegions(-1, 1, -1, -2);
+        manageRegions(0, 1, 0, -2);
+        manageRegions(1, 1, 1, -2);
+    }
+
+    if ((player_pos_grid.y - Y_OFFSET) / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) == REGION_Y - 1)
+    {
+        manageRegions(-1, -1, -1, 2);
+        manageRegions(0, -1, 0, 2);
+        manageRegions(1, -1, 1, 2);
+    }
 }
 
 void Map::render(sf::RenderTarget &target, const bool &debug)
@@ -311,8 +369,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
            region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)) &&
            region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)))
     {
-        std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
-                  << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
+        // std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
+        //           << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
 
         if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
             throw std::runtime_error("Corrupted region file: Chunk index out of bounds");
@@ -337,7 +395,7 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
             id = std::string(buf, id_size);
 
-            std::cout << id << " " << static_cast<int>(id_size) << "\n";
+            // std::cout << id << " " << static_cast<int>(id_size) << "\n";
 
             if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
                 throw std::runtime_error("Corrupted region file: Tile[" + std::to_string(x) + "][" + std::to_string(y) +
@@ -361,8 +419,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
             Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
 
-            std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
-                      << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << ")\n";
+            // std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
+            //           << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << ")\n";
 
             chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
         }

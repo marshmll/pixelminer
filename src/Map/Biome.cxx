@@ -26,6 +26,9 @@ void Biome::setBiomeName()
     case Tundra:
         name = "Tundra";
         break;
+    default:
+        name = "Unknown";
+        break;
     }
 }
 

@@ -82,45 +82,44 @@ const NoiseMap PerlinNoise::generateNoiseMap(const unsigned int width, const uns
     // Initialize the noise map with the correct dimensions
     noise_map.resize(width, std::vector<float>(height, 0.0f));
 
-    // sf::Image image({width, height});
+    // Precompute wave contributions
+    std::vector<std::vector<float>> wave_contributions(waves.size(), std::vector<float>(width * height, 0.0f));
 
+    for (size_t i = 0; i < waves.size(); ++i)
+    {
+        const auto &wave = waves[i];
+        for (unsigned int y = 0; y < height; y++)
+        {
+            for (unsigned int x = 0; x < width; x++)
+            {
+                float sample_pos_x = static_cast<float>(x) * scale + offset.x;
+                float sample_pos_y = static_cast<float>(y) * scale + offset.y;
+                wave_contributions[i][y * width + x] =
+                    wave.amplitude *
+                    noise(sample_pos_x * wave.frequency + wave.seed, sample_pos_y * wave.frequency + wave.seed);
+            }
+        }
+    }
+
+    // Combine the precomputed contributions into the final noise map
     for (unsigned int y = 0; y < height; y++)
     {
         for (unsigned int x = 0; x < width; x++)
         {
-            float sample_pos_x = static_cast<float>(x) * scale + offset.x;
-            float sample_pos_y = static_cast<float>(y) * scale + offset.y;
+            float normalization = 0.0f;
 
-            float normalization = 0.f;
-
-            for (auto &wave : waves)
+            for (size_t i = 0; i < waves.size(); ++i)
             {
-                noise_map[x][y] += wave.amplitude * noise(sample_pos_x * wave.frequency + wave.seed,
-                                                          sample_pos_y * wave.frequency + wave.seed);
-                normalization += wave.amplitude;
+                noise_map[x][y] += wave_contributions[i][y * width + x];
+                normalization += waves[i].amplitude;
             }
 
-            if (normalization == 0)
-                normalization = 1.f; // Prevent division by zero
+            if (normalization == 0.0f)
+                normalization = 1.0f; // Prevent division by zero
 
-            // Normalize the noise value
             noise_map[x][y] /= normalization;
-
-            // Convert normalized value to grayscale color (0-255)
-            // std::uint8_t color_value = static_cast<std::uint8_t>(noise_map[x][y] * 255);
-
-            // if (noise_map[x][y] < 0.40)
-            //     image.setPixel({x, y}, sf::Color::Blue);
-            // else if (noise_map[x][y] < 0.61)
-            //     image.setPixel({x, y}, sf::Color::Green);
-            // else
-            //     image.setPixel({x, y}, sf::Color::White);
-            // else
-            //     image.setPixel({x, y}, sf::Color(color_value, color_value, color_value, 255));
         }
     }
-
-    // (void)image.saveToFile("Assets/noise.png");
 
     return noise_map;
 }

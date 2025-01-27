@@ -6,7 +6,8 @@ Tile::Tile(const std::string name, const std::string &id, sf::Texture &texture, 
     : TileBase(name, id, texture, texture_rect)
 {
     sprite.setScale({scale, scale});
-    sprite.setPosition(sf::Vector2f(grid_position.x * grid_size * scale, grid_position.y * grid_size * scale));
+    sprite.setPosition(
+        sf::Vector2f(std::floor(grid_position.x * grid_size * scale), std::floor(grid_position.y * grid_size * scale)));
     sprite.setColor(color);
 }
 

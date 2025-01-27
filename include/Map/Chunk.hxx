@@ -10,7 +10,7 @@ enum ChunkFlags : uint8_t
     KeepLoaded = 0x2, // Means that the chunk should not be unloaded from memory.
 };
 
-static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {6, 6};
+static constexpr sf::Vector2u REGION_SIZE_IN_CHUNKS = {8, 8};
 static constexpr sf::Vector3<unsigned int> CHUNK_SIZE_IN_TILES = {16, 16, 5};
 
 using TileMatrix =

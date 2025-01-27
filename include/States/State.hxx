@@ -8,7 +8,7 @@ struct EngineData
 {
     std::string uuid;
     unsigned int gridSize;
-    float scale;
+    unsigned int scale;
     std::stack<std::unique_ptr<State>> *states;
     std::map<std::string, ResourcePack> *resourcePacks;
     std::shared_ptr<ResourcePack> activeResourcePack;

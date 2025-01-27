@@ -1,10 +1,7 @@
 {
-    "framerateLimit": 120,
-    "fullscreen": false,
-    "resolution": {
-        "width": 846,
-        "height": 484
-    },
+    "framerateLimit": 30,
+    "fullscreen": true,
+    "resolution": {},
     "vsync": false,
     "resourcePack": "Vanilla"
 }

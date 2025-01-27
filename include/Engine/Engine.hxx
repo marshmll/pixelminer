@@ -25,7 +25,7 @@ class Engine
     sf::Clock dtClock;
     float dt; // Delta time
     unsigned int gridSize;
-    float scale;
+    unsigned int scale;
 
     EngineData engineData;
     std::stack<std::unique_ptr<State>> states;
