@@ -24,6 +24,8 @@ class TerrainGenerator
   private:
     Logger logger;
 
+    std::string &msg;
+
     Metadata &metadata;
     ChunkMatrix &chunks;
 
@@ -61,8 +63,9 @@ class TerrainGenerator
     Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
   public:
-    TerrainGenerator(Metadata &metadata, ChunkMatrix &chunks, const long int seed, sf::Texture &texture_pack,
-                     std::map<std::string, TileData> &tile_data, const unsigned int &grid_size, const float &scale);
+    TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, const long int seed,
+                     sf::Texture &texture_pack, std::map<std::string, TileData> &tile_data,
+                     const unsigned int &grid_size, const float &scale);
 
     ~TerrainGenerator();
 

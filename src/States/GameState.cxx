@@ -1,6 +1,28 @@
 #include "States/GameState.hxx"
 #include "stdafx.hxx"
 
+void GameState::initLoadingScreen()
+{
+    loadingBg.setSize(sf::Vector2f(data.vm->size));
+    loadingBg.setPosition({0, 0});
+    loadingBg.setTexture(&data.activeResourcePack->textures.at("Background"));
+    loadingBg.setFillColor(sf::Color(255, 255, 255, 80));
+
+    loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
+                                             gui::charSize(*data.vm, 80));
+
+    loadingText->setPosition(
+        sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingText->getGlobalBounds().size.x / 2.f),
+                     gui::percent(data.vm->size.y, 45.f)));
+
+    loadingMsg =
+        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "", gui::charSize(*data.vm, 80));
+
+    loadingMsg->setPosition(
+        sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
+                     gui::percent(data.vm->size.y, 50.f)));
+}
+
 void GameState::initMap()
 {
     map = std::make_unique<Map>("My New World", 56465456464654, data.activeResourcePack->tileDB,
@@ -37,6 +59,7 @@ void GameState::initDebugging()
 
 GameState::GameState(EngineData &data) : State(data)
 {
+    initLoadingScreen();
     initMap();
     initThisPlayer();
     initPlayerCamera();
@@ -50,6 +73,15 @@ GameState::~GameState()
 
 void GameState::update(const float &dt)
 {
+    if (!map->isReady())
+    {
+        loadingMsg->setString(map->getMessage());
+        loadingMsg->setPosition(
+            sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
+                         gui::percent(data.vm->size.y, 50.f)));
+        return;
+    }
+
     updateMousePositions();
     updatePauseMenu(dt);
 
@@ -147,6 +179,14 @@ void GameState::updateDebugText(const float &dt)
 void GameState::render(sf::RenderTarget &target)
 {
     renderTexture.clear();
+
+    if (!map->isReady())
+    {
+        target.draw(loadingBg);
+        target.draw(*loadingText);
+        target.draw(*loadingMsg);
+        return;
+    }
 
     renderTexture.setView(playerCamera);
 

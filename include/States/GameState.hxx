@@ -16,12 +16,19 @@ class GameState : public State
     std::map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
     sf::View playerCamera;
+
     std::unique_ptr<Map> map;
+
+    sf::RectangleShape loadingBg;
+    std::unique_ptr<sf::Text> loadingText;
+    std::unique_ptr<sf::Text> loadingMsg;
 
     std::unique_ptr<sf::Text> debugText;
 
     bool debugInfo;
     bool debugChunks;
+
+    void initLoadingScreen();
 
     void initMap();
 

@@ -3,6 +3,8 @@
 
 void Map::initRegionStatusArray()
 {
+    msg = "Initializing region status...";
+
     for (int x = 0; x < MAX_REGIONS.x; x++)
     {
         for (int y = 0; y < MAX_REGIONS.y; y++)
@@ -14,6 +16,8 @@ void Map::initRegionStatusArray()
 
 void Map::initMetadata(const std::string &name, const long int &seed)
 {
+    msg = "Generating world metadata...";
+
     metadata.metadataVersion = METADATA_VERSION;
     metadata.gameVersion = GAME_VERSION;
     metadata.creationTime = std::time(0);
@@ -32,22 +36,33 @@ void Map::initMetadata(const std::string &name, const long int &seed)
 
 void Map::initTerrainGenerator(const long int &seed)
 {
-    terrainGenerator = std::make_unique<TerrainGenerator>(metadata, chunks, seed, texturePack, tileDB, gridSize, scale);
+    std::lock_guard<std::mutex> lock(mutex);
+    terrainGenerator =
+        std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDB, gridSize, scale);
+    setReady(true);
+}
+
+void Map::setReady(const bool ready)
+{
+    this->ready = ready;
 }
 
 Map::Map(const std::string &name, const long int &seed, std::map<std::string, TileData> &tile_db,
          sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
 
-    : tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
+    : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
+      scale(scale), rng(seed)
 {
     initRegionStatusArray();
     initMetadata(name, seed);
-    initTerrainGenerator(seed);
+
+    std::thread(&Map::initTerrainGenerator, this, seed).detach();
 }
 
 Map::Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale)
-    : tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
+    : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
+      scale(scale), rng(0)
 {
 }
 
@@ -57,6 +72,9 @@ Map::~Map()
 
 void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 {
+    if (!isReady())
+        return;
+
     // Validate player position within world boundaries
     if (player_pos_grid.x < 0 || player_pos_grid.x > MAX_WORLD_GRID_SIZE.x || player_pos_grid.y < 0 ||
         player_pos_grid.y > MAX_WORLD_GRID_SIZE.y)
@@ -132,6 +150,9 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 
 void Map::render(sf::RenderTarget &target, const bool &debug)
 {
+    if (!isReady())
+        return;
+
     for (auto &row : chunks)
     {
         for (auto &chunk : row)
@@ -144,6 +165,9 @@ void Map::render(sf::RenderTarget &target, const bool &debug)
 
 void Map::render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, const bool &debug)
 {
+    if (!isReady())
+        return;
+
     const int chunk_x = entity_pos_grid.x / CHUNK_SIZE_IN_TILES.x;
     const int chunk_y = entity_pos_grid.y / CHUNK_SIZE_IN_TILES.y;
 
@@ -162,6 +186,9 @@ void Map::render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, 
 
 void Map::save(const std::string &name)
 {
+    if (!isReady())
+        return;
+
     std::string path_str = MAPS_FOLDER + name;
 
     if (path_str.back() != '/')
@@ -202,6 +229,9 @@ void Map::save(const std::string &name)
 
 void Map::save()
 {
+    if (!isReady())
+        return;
+
     // If no name provided, generate a random one.
     if (metadata.name.empty())
         metadata.name = std::to_string(std::rand());
@@ -211,6 +241,9 @@ void Map::save()
 
 void Map::saveRegion(const sf::Vector2i &region_index)
 {
+    if (!isReady())
+        return;
+
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
         std::cout << "Cannot save region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
 
@@ -305,6 +338,9 @@ void Map::saveRegion(const sf::Vector2i &region_index)
 
 void Map::load(const std::string &name)
 {
+    if (!isReady())
+        return;
+
     std::string path_str = MAPS_FOLDER + name;
 
     if (path_str.back() != '/')
@@ -337,6 +373,9 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 {
     std::lock_guard<std::mutex> lock(mutex);
 
+    if (!isReady())
+        return;
+
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
         std::cout << "Cannot load region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
 
@@ -349,7 +388,7 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
     if (!isRegionLoaded(region_index) && !std::filesystem::exists(path))
     {
-        std::cout << "Generating region (" << region_index.x << ", " << region_index.y << ")..." << "\n";
+        std::cout << "Generating region (" << region_index.x << ", " << region_index.y << ")" << "\n";
         terrainGenerator->generateRegion(region_index);
         loadedRegions[region_index.x][region_index.y] = true;
         return;
@@ -438,6 +477,9 @@ void Map::unloadRegion(const sf::Vector2i &region_index)
 {
     std::lock_guard<std::mutex> lock(mutex);
 
+    if (!isReady())
+        return;
+
     if (!isRegionLoaded(region_index))
         return;
 
@@ -516,6 +558,16 @@ const sf::Vector2f Map::getSpawnPoint() const
 const sf::Vector2f Map::getRealDimensions() const
 {
     return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
+}
+
+const bool Map::isReady() const
+{
+    return ready;
+}
+
+const std::string &Map::getMessage() const
+{
+    return msg;
 }
 
 const bool Map::isRegionLoaded(const sf::Vector2i &region_index) const

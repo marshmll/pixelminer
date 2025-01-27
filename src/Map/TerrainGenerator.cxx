@@ -4,6 +4,7 @@
 void TerrainGenerator::initPerlinWaves()
 {
     logger.logInfo("Initializing perlin waves.");
+    msg = "Initializing perlin waves...";
 
     heightWaves = {{120.f, .009f, 4.f}, {300.f, .2f, 1.5f}, {500.f, .018f, 8.f}};
     moistureWaves = {{622.f, .04f, 5.f}, {200.f, .08f, 2.f}, {400.f, .2f, .8f}};
@@ -12,7 +13,8 @@ void TerrainGenerator::initPerlinWaves()
 
 void TerrainGenerator::initNoiseMaps()
 {
-    logger.logInfo("Initializing noise maps.");
+    logger.logInfo("Loading noise maps.");
+    msg = "Generating noise maps...";
 
     heightMap =
         perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heightWaves, {0.f, 0.f});
@@ -24,6 +26,7 @@ void TerrainGenerator::initNoiseMaps()
 void TerrainGenerator::initBiomes()
 {
     logger.logInfo("Initializing biomes.");
+    msg = "Precomputing biomes...";
 
     biomes = {
         {BiomeType::Desert, .35f, 0.1f, .8f},  {BiomeType::Forest, .4f, .6f, .4f},
@@ -139,15 +142,20 @@ Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int 
     return chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].get();
 }
 
-TerrainGenerator::TerrainGenerator(Metadata &metadata, ChunkMatrix &chunks, const long int seed,
+TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, const long int seed,
                                    sf::Texture &texture_pack, std::map<std::string, TileData> &tile_data,
                                    const unsigned int &grid_size, const float &scale)
-    : logger("TerrainGenerator"), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
+    : logger("TerrainGenerator"), msg(msg), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
       tileData(tile_data), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
 {
+    using namespace std::chrono_literals;
+
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
+
+    msg = "Done!";
+    std::this_thread::sleep_for(200ms);
 }
 
 TerrainGenerator::~TerrainGenerator()

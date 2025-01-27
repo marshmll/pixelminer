@@ -11,6 +11,9 @@ class Map
   private:
     std::mutex mutex;
 
+    bool ready;      // Flag for loading status.
+    std::string msg; // User feedback
+
     Metadata metadata;
 
     std::unique_ptr<TerrainGenerator> terrainGenerator;
@@ -26,11 +29,15 @@ class Map
 
     Random rng;
 
+    void initLoadingScreen();
+
     void initRegionStatusArray();
 
     void initMetadata(const std::string &name, const long int &seed);
 
     void initTerrainGenerator(const long int &seed);
+
+    void setReady(const bool ready);
 
   public:
     /**
@@ -72,6 +79,10 @@ class Map
     const sf::Vector2f getSpawnPoint() const;
 
     const sf::Vector2f getRealDimensions() const;
+
+    const bool isReady() const;
+
+    const std::string &getMessage() const;
 
     const bool isRegionLoaded(const sf::Vector2i &region_index) const;
 };
