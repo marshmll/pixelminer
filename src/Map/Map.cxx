@@ -227,19 +227,13 @@ void Map::saveRegion(const sf::Vector2i &region_index)
                             continue;
 
                         std::string id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
+                        uint8_t id_size = id.size();
 
+                        region_file.write(reinterpret_cast<char *>(&id_size), sizeof(uint8_t));
+                        region_file.write(id.data(), id.size());
                         region_file.write(reinterpret_cast<char *>(&x), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&y), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-                        region_file.write(id.data(), id.size() + 1);
-
-                        if (id == "grass_tile" || id == "grass_var_1" || id == "grass_var_2")
-                        {
-                            sf::Color color = chunks[c_x][c_y]->tiles[x][y][z]->getColor();
-                            region_file.write(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));
-                            region_file.write(reinterpret_cast<char *>(&color.g), sizeof(uint8_t));
-                            region_file.write(reinterpret_cast<char *>(&color.b), sizeof(uint8_t));
-                        }
                     }
                 }
             }
@@ -332,40 +326,43 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         {
             unsigned short x = 0, y = 0, z = 0; // Positions relative to chunk
             std::string id;
-            TileData td;
+            uint8_t id_size;
+            char buf[256];
 
+            region_file.read(reinterpret_cast<char *>(&id_size), sizeof(uint8_t));
+            region_file.read(buf, id_size);
             region_file.read(reinterpret_cast<char *>(&x), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&y), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&z), sizeof(unsigned short));
 
-            char c = -1;
-            while (c != '\0')
-            {
-                region_file.read(&c, sizeof(char));
-                id.push_back(c);
-            }
+            id = std::string(buf, id_size);
 
-            std::cout << id << "\n";
+            std::cout << id << " " << static_cast<int>(id_size) << "\n";
 
             if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
-                throw std::runtime_error("Corrupted region file: Tile nº " + std::to_string(i) +
-                                         "out of bounds in Chunk[" + std::to_string(chunk_x) + "][" +
-                                         std::to_string(chunk_y) + "]");
+                throw std::runtime_error("Corrupted region file: Tile[" + std::to_string(x) + "][" + std::to_string(y) +
+                                         "][" + std::to_string(z) + "] out of bounds in Chunk[" +
+                                         std::to_string(chunk_x) + "][" + std::to_string(chunk_y) + "]");
 
-            Tile tile(td.name, id, texturePack, td.rect, gridSize,
-                      sf::Vector2u(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y)),
-                      scale);
-
-            // std::cout << "Tile placed at (" << x << ", " << y << ")\n";
-
-            if (id == "grass_tile" || "grass_var_1" || id == "grass_var_2")
+            TileData td;
+            try
             {
-                sf::Color color;
-                region_file.read(reinterpret_cast<char *>(&color.r), sizeof(uint8_t));
-                region_file.read(reinterpret_cast<char *>(&color.g), sizeof(uint8_t));
-                region_file.read(reinterpret_cast<char *>(&color.b), sizeof(uint8_t));
-                tile.setColor(color);
+                td = tileDB.at(id);
             }
+            catch (std::out_of_range &)
+            {
+                throw std::runtime_error("Invalid tile ID: " + id + " Tile[" + std::to_string(x) + "][" +
+                                         std::to_string(y) + "][" + std::to_string(z) + "] out of bounds in Chunk[" +
+                                         std::to_string(chunk_x) + "][" + std::to_string(chunk_y) + "]");
+            }
+
+            sf::Vector2u grid_pos(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
+            BiomeData biome_data = terrainGenerator->getBiomeData(grid_pos);
+
+            Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
+
+            std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
+                      << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << ")\n";
 
             chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
         }

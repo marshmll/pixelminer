@@ -1,5 +1,5 @@
 {
-    "framerateLimit": 30,
+    "framerateLimit": 120,
     "fullscreen": false,
     "resolution": {
         "width": 846,

@@ -17,6 +17,7 @@ static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
 };
 
 using ChunkMatrix = std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
+using BiomeMap = std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x>;
 
 class TerrainGenerator
 {
@@ -47,7 +48,7 @@ class TerrainGenerator
     NoiseMap heatMap;
 
     std::vector<Biome> biomes;
-    std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x> biomeMap;
+    BiomeMap biomeMap;
 
     void initPerlinWaves();
 
@@ -66,4 +67,6 @@ class TerrainGenerator
     ~TerrainGenerator();
 
     void generateRegion(const sf::Vector2i &region_index);
+
+    const BiomeData &getBiomeData(const sf::Vector2u &grid_pos) const;
 };

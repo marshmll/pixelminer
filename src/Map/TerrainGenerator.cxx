@@ -214,3 +214,8 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
         }
     }
 }
+
+const BiomeData &TerrainGenerator::getBiomeData(const sf::Vector2u &grid_pos) const
+{
+    return biomeMap[grid_pos.x][grid_pos.y];
+}
