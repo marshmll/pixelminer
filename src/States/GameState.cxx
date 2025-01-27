@@ -36,6 +36,11 @@ void GameState::initThisPlayer()
     thisPlayer = players.at(data.uuid);
 }
 
+void GameState::initPlayerGUI()
+{
+    playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, data.scale);
+}
+
 void GameState::initPlayerCamera()
 {
     playerCamera.setSize(sf::Vector2f(data.vm->size));
@@ -62,6 +67,7 @@ GameState::GameState(EngineData &data) : State(data)
     initLoadingScreen();
     initMap();
     initThisPlayer();
+    initPlayerGUI();
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
@@ -196,6 +202,8 @@ void GameState::render(sf::RenderTarget &target)
         player->render(renderTexture);
 
     renderTexture.setView(renderTexture.getDefaultView());
+
+    playerGUI->render(renderTexture);
 
     if (!pauseMenu->isActive() && debugInfo)
         renderTexture.draw(*debugText);

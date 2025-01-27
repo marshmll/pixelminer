@@ -5,6 +5,7 @@
 #include "Map/Map.hxx"
 #include "Network/Client.hxx"
 #include "Network/Server.hxx"
+#include "Player/PlayerGUI.hxx"
 #include "States/State.hxx"
 #include "Tools/UUID.hxx"
 
@@ -16,6 +17,7 @@ class GameState : public State
     std::map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
     sf::View playerCamera;
+    std::unique_ptr<PlayerGUI> playerGUI;
 
     std::unique_ptr<Map> map;
 
@@ -33,6 +35,8 @@ class GameState : public State
     void initMap();
 
     void initThisPlayer();
+
+    void initPlayerGUI();
 
     void initPlayerCamera();
 

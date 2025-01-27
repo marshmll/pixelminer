@@ -11,6 +11,11 @@ void Entity::createAnimationFunctionality()
     animationFunctionality.emplace(name, id, sprite, spriteSheet);
 }
 
+void Entity::createAttributeFunctionality(const uint8_t &max_health, const uint8_t &max_hunger)
+{
+    attributeFunctionality.emplace(max_health, max_hunger);
+}
+
 Entity::Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
 
     : name(name), spawnPosition(spawn_position), id(reinterpret_cast<std::uint64_t>(this)), spriteSheet(sprite_sheet),
@@ -73,6 +78,15 @@ const sf::Vector2i Entity::getCenterGridPosition() const
 {
     return sf::Vector2i(static_cast<int>(getCenter().x / (GRID_SIZE * sprite.getScale().x)),
                         static_cast<int>(getCenter().y / (GRID_SIZE * sprite.getScale().y)));
+}
+
+AttributeFunctionality &Entity::getAttributeFunctionality()
+{
+    if (!attributeFunctionality.has_value())
+        throw std::runtime_error("Entity " + name + " ID: " + std::to_string(id) +
+                                 " accessed non-initialized AttributeFunctionality.");
+
+    return *attributeFunctionality;
 }
 
 void Entity::setPosition(const sf::Vector2f &position)

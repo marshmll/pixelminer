@@ -11,8 +11,8 @@ class Map
   private:
     std::mutex mutex;
 
-    bool ready;      // Flag for loading status.
-    std::string msg; // User feedback
+    std::atomic_bool ready; // Flag for loading status.
+    std::string msg;        // User feedback
 
     Metadata metadata;
 

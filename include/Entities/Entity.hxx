@@ -2,6 +2,7 @@
 
 #include "Engine/Configuration.hxx"
 #include "Entities/Functionalities/AnimationFunctionality.hxx"
+#include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
 
 struct EntityData
@@ -25,10 +26,13 @@ class Entity
 
     std::optional<MovementFunctionality> movementFunctionality;
     std::optional<AnimationFunctionality> animationFunctionality;
+    std::optional<AttributeFunctionality> attributeFunctionality;
 
     void createMovementFunctionality(const float &max_velocity, const std::uint8_t &movement_flags);
 
     void createAnimationFunctionality();
+
+    void createAttributeFunctionality(const uint8_t &max_health, const uint8_t &max_hunger);
 
   public:
     Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale);
@@ -49,6 +53,8 @@ class Entity
     const sf::Vector2f getCenter() const;
 
     const sf::Vector2i getCenterGridPosition() const;
+
+    AttributeFunctionality &getAttributeFunctionality();
 
     void setPosition(const sf::Vector2f &position);
 };

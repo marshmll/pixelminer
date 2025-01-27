@@ -23,4 +23,6 @@ class ResourcePack
     std::map<std::string, TileData> tileDB;
 
     void load(const std::string &name);
+
+    sf::Texture &getTexture(const std::string &key);
 };

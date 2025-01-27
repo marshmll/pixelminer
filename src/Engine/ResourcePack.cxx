@@ -60,6 +60,24 @@ void ResourcePack::load(const std::string &name)
     if (!textures["TileSheet"].loadFromFile(root_path / "Images/Tiles/tile_sheet.png"))
         logger.logError("Missing texture \"tile_sheet.png\" in resource pack: " + name);
 
+    if (!textures["HeartEmpty"].loadFromFile(root_path / "Images/Icons/heart_empty.png"))
+        logger.logError("Missing texture \"heart_empty.png\" in resource pack: " + name);
+
+    if (!textures["HeartHalf"].loadFromFile(root_path / "Images/Icons/heart_half.png"))
+        logger.logError("Missing texture \"heart_half.png\" in resource pack: " + name);
+
+    if (!textures["HeartFull"].loadFromFile(root_path / "Images/Icons/heart_full.png"))
+        logger.logError("Missing texture \"heart_full.png\" in resource pack: " + name);
+
+    if (!textures["BreadEmpty"].loadFromFile(root_path / "Images/Icons/bread_empty.png"))
+        logger.logError("Missing texture \"bread_empty.png\" in resource pack: " + name);
+
+    if (!textures["BreadHalf"].loadFromFile(root_path / "Images/Icons/bread_half.png"))
+        logger.logError("Missing texture \"bread_half.png\" in resource pack: " + name);
+
+    if (!textures["BreadFull"].loadFromFile(root_path / "Images/Icons/bread_full.png"))
+        logger.logError("Missing texture \"bread_full.png\" in resource pack: " + name);
+
     /* Tile Data ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     std::ifstream tileDataFile(root_path / "tiledata.json");
@@ -90,5 +108,20 @@ void ResourcePack::load(const std::string &name)
         this->tileDB[id] = TileData{id, name, sf::IntRect({rect_x * size, rect_y * size}, {size, size}), size};
     }
 
-    logger.logInfo("Resource pack \"" + name + "\" sucessfully loaded.");
+    logger.logInfo("Resource pack \"" + name + "\" sucessfully loaded: " + std::to_string(textures.size()) +
+                   " textures loaded.");
+}
+
+sf::Texture &ResourcePack::getTexture(const std::string &key)
+{
+    try
+    {
+        return textures.at(key);
+    }
+    catch (std::out_of_range &)
+    {
+        logger.logError("Inexistent texture \"" + key + "\" in resource pack" + name);
+    }
+
+    return textures.at(key); // SHOULD NEVER REACH HERE!
 }

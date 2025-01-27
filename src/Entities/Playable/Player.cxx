@@ -20,6 +20,7 @@ Player::Player(const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, con
 {
     createMovementFunctionality(100.f, Movement::AllowAll);
     createAnimationFunctionality();
+    createAttributeFunctionality(20, 20);
 
     initPlayerAnimations();
 
