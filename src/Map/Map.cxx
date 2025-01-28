@@ -18,7 +18,7 @@ void Map::initMetadata(const std::string &name, const long int &seed)
 
     metadata.metadataVersion = METADATA_VERSION;
     metadata.gameVersion = GAME_VERSION;
-    metadata.creationTime = std::time(0);
+    metadata.creationDate = std::time(0);
     metadata.dataPacks.enabled = JArray({"vanilla"});
     metadata.dataPacks.disabled = JArray({});
     metadata.dayTime = 300000;

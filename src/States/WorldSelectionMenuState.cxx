@@ -5,7 +5,7 @@ void WorldSelectionMenuState::initGUI()
 {
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
-    background.setTexture(&data.activeResourcePack->textures.at("Background"));
+    background.setTexture(&data.activeResourcePack->getTexture("Background"));
     background.setFillColor(sf::Color(255, 255, 255, 100));
 
     header.setSize(sf::Vector2f(data.vm->size.x, gui::percent(data.vm->size.y, 15.f)));
@@ -76,14 +76,39 @@ void WorldSelectionMenuState::initGUI()
 
 void WorldSelectionMenuState::initWorldSelectors()
 {
-    WorldMetadata metadata{"My New World",
-                           "My New World",
-                           static_cast<unsigned long long>(std::time(0)),
-                           static_cast<unsigned long long>(std::time(0)),
-                           GAME_VERSION,
-                           "Normal"};
+    worldSelectorsList = std::make_unique<gui::ScrollList>(
+        *data.vm, sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 61.f)),
+        sf::Vector2f(data.vm->size.x / 2.f - gui::percent(data.vm->size.x, 60.f) / 2.f,
+                     header.getPosition().y + header.getSize().y),
+        gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
 
-    worldSelectors.emplace_back(data, metadata, 200.f);
+    int i = 0;
+    for (auto const &entry : std::filesystem::directory_iterator(MAPS_FOLDER))
+    {
+        WorldMetadata metadata;
+        std::ifstream metadataFile(entry.path() / "metadata.json");
+
+        if (!metadataFile.is_open())
+            continue;
+
+        std::stringstream ss;
+        ss << metadataFile.rdbuf();
+
+        JObject metadataObj = JSON::parse(ss.str()).getAs<JObject>();
+
+        metadata.worldName = metadataObj.at("name").getAs<std::string>();
+        metadata.folderName = entry.path().filename().string();
+        metadata.creationDate = metadataObj.at("creationDate").getAs<long long>();
+        metadata.lastPlayed = metadataObj.at("lastPlayed").getAs<long long>();
+        metadata.gameVersion = metadataObj.at("gameVersion").getAs<std::string>();
+        metadata.difficulty = metadataObj.at("difficulty").getAs<std::string>();
+
+        if (worldSelectors.empty())
+            worldSelectors.emplace_back(data, metadata, worldSelectorsList->getPosition().y);
+        else
+            worldSelectors.emplace_back(data, metadata,
+                                        worldSelectors.back().getPosition().y + gui::percent(data.vm->size.y, 2.f));
+    }
 }
 
 WorldSelectionMenuState::WorldSelectionMenuState(EngineData &data) : State(data)
@@ -115,8 +140,12 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
     if (buttons.at("Cancel")->isPressed())
         killState();
 
+    worldSelectorsList->update(dt, mousePosView);
+
+    updateMousePositions(worldSelectorsList->getView());
     for (auto &selector : worldSelectors)
         selector.update(dt, mousePosView);
+    updateMousePositions();
 }
 
 void WorldSelectionMenuState::renderGUI(sf::RenderTarget &target)
@@ -128,6 +157,12 @@ void WorldSelectionMenuState::renderGUI(sf::RenderTarget &target)
     for (auto &[_, button] : buttons)
         button->render(target);
 
+    target.setView(worldSelectorsList->getView());
+
     for (auto &selector : worldSelectors)
         selector.render(target);
+
+    target.setView(target.getDefaultView());
+
+    worldSelectorsList->render(target);
 }

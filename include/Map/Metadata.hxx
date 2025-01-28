@@ -12,7 +12,7 @@ struct Metadata
 
     std::string metadataVersion;
     std::string gameVersion;
-    long long creationTime;
+    long long creationDate;
     DataPacks dataPacks;
     long long dayTime;
     std::string difficulty;
@@ -39,7 +39,7 @@ inline JObject &operator<<(JObject &obj, Metadata &metadata)
                   {"difficulty", metadata.difficulty},
                   {"seed", metadata.seed},
                   {"generatorName", metadata.generatorName},
-                  {"creationTime", metadata.creationTime},
+                  {"creationDate", metadata.creationDate},
                   {"lastPlayed", metadata.lastPlayed},
                   {"spawnX", metadata.spawnX},
                   {"spawnY", metadata.spawnY},
@@ -52,7 +52,7 @@ inline JObject &operator>>(JObject &obj, Metadata &metadata)
 {
     metadata.metadataVersion = obj.at("metadataVersion").getAs<std::string>();
     metadata.gameVersion = obj.at("gameVersion").getAs<std::string>();
-    metadata.creationTime = obj.at("creationTime").getAs<long long>();
+    metadata.creationDate = obj.at("creationDate").getAs<long long>();
     metadata.dataPacks.enabled = obj.at("dataPacks").getAs<JObject>().at("enabled").getAs<JArray>();
     metadata.dataPacks.disabled = obj.at("dataPacks").getAs<JObject>().at("disabled").getAs<JArray>();
     metadata.dayTime = obj.at("dayTime").getAs<long long>();

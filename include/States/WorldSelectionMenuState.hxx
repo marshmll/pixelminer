@@ -106,7 +106,10 @@ class WorldSelectionMenuState : public State
     sf::RectangleShape buttonContainer;
 
     std::map<std::string, std::unique_ptr<gui::TextButton>> buttons;
+
     std::vector<WorldSelector> worldSelectors;
+    std::unique_ptr<gui::ScrollList> worldSelectorsList;
+
 
     void initGUI();
 

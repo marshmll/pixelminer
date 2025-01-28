@@ -21,6 +21,7 @@ target_sources(pixelminer PRIVATE
 ./Entities/Functionalities/MovementFunctionality.cxx
 ./Entities/Functionalities/AnimationFunctionalitiy.cxx
 ./GUI/PauseMenu.cxx
+./GUI/ScrollList.cxx
 ./GUI/TextButton.cxx
 ./GUI/Input.cxx
 ./GUI/Button.cxx
