@@ -11,6 +11,8 @@ class Map
   private:
     std::mutex mutex;
 
+    sf::Clock clock;
+
     std::atomic_bool ready; // Flag for loading status.
     std::string msg;        // User feedback
 

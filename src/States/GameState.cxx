@@ -25,8 +25,10 @@ void GameState::initLoadingScreen()
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>("My New World", 56465456464654, data.activeResourcePack->tileDB,
-                                data.activeResourcePack->textures.at("TileSheet"), data.gridSize, data.scale);
+    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
+                                data.gridSize, data.scale);
+
+    map->load("My New World");
 }
 
 void GameState::initThisPlayer()

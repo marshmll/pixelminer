@@ -60,7 +60,6 @@ Hotbar::Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<Resour
     : playerAttributes(player_attributes), resourcePack(resorce_pack), vm(vm), scale(scale)
 {
     initGUI();
-    player_attributes.setHunger(15);
 }
 
 Hotbar::~Hotbar()

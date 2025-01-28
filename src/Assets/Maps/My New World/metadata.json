@@ -1,5 +1,5 @@
 {
-    "creationTime": 1738071445,
+    "creationTime": 1738071674,
     "dataPacks": {
         "disabled": [
 
@@ -12,11 +12,11 @@
     "difficulty": "normal",
     "gameVersion": "alpha 0.0.1",
     "generatorName": "default",
-    "lastPlayed": 1738071583,
+    "lastPlayed": 1738082655,
     "metadataVersion": "1.0.0",
     "name": "My New World",
     "seed": 56465456464654,
     "spawnX": 1888,
     "spawnY": 21632,
-    "timePlayed": 0
+    "timePlayed": 28.9379
 }

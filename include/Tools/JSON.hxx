@@ -18,7 +18,7 @@ struct JValue : public std::variant<std::nullptr_t, bool, double, long long, std
         if (std::holds_alternative<T>(*this))
             return std::get<T>(*this);
 
-        throw std::runtime_error("[ JSONValue ] -> Variant type mismatch.");
+        throw std::runtime_error("[ JSONValue ] -> Tried to convert value from file to a invalid type.");
     }
 
     bool isNull() const

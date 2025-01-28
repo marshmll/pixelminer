@@ -22,28 +22,28 @@ struct Metadata
     long long seed;
     long long spawnX;
     long long spawnY;
-    long long timePlayed;
+    double timePlayed;
 };
 
 inline JObject &operator<<(JObject &obj, Metadata &metadata)
 {
     obj = JObject{{"metadataVersion", metadata.metadataVersion},
-                     {"gameVersion", metadata.gameVersion},
-                     {"dataPacks",
-                      JObject{
-                          {"enabled", metadata.dataPacks.enabled},
-                          {"disabled", metadata.dataPacks.disabled},
-                      }},
-                     {"dayTime", metadata.dayTime},
-                     {"name", metadata.name},
-                     {"difficulty", metadata.difficulty},
-                     {"seed", metadata.seed},
-                     {"generatorName", metadata.generatorName},
-                     {"creationTime", metadata.creationTime},
-                     {"lastPlayed", metadata.lastPlayed},
-                     {"spawnX", metadata.spawnX},
-                     {"spawnY", metadata.spawnY},
-                     {"timePlayed", metadata.timePlayed}};
+                  {"gameVersion", metadata.gameVersion},
+                  {"dataPacks",
+                   JObject{
+                       {"enabled", metadata.dataPacks.enabled},
+                       {"disabled", metadata.dataPacks.disabled},
+                   }},
+                  {"dayTime", metadata.dayTime},
+                  {"name", metadata.name},
+                  {"difficulty", metadata.difficulty},
+                  {"seed", metadata.seed},
+                  {"generatorName", metadata.generatorName},
+                  {"creationTime", metadata.creationTime},
+                  {"lastPlayed", metadata.lastPlayed},
+                  {"spawnX", metadata.spawnX},
+                  {"spawnY", metadata.spawnY},
+                  {"timePlayed", metadata.timePlayed}};
 
     return obj;
 }
@@ -63,6 +63,7 @@ inline JObject &operator>>(JObject &obj, Metadata &metadata)
     metadata.seed = obj.at("seed").getAs<long long>();
     metadata.spawnX = obj.at("spawnX").getAs<long long>();
     metadata.spawnY = obj.at("spawnY").getAs<long long>();
+    metadata.timePlayed = obj.at("timePlayed").getAs<double>();
 
     return obj;
 }

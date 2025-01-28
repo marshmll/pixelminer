@@ -3,8 +3,6 @@
 
 void Map::initRegionStatusArray()
 {
-    msg = "Initializing region status...";
-
     for (int x = 0; x < MAX_REGIONS.x; x++)
     {
         for (int y = 0; y < MAX_REGIONS.y; y++)
@@ -40,6 +38,7 @@ void Map::initTerrainGenerator(const long int &seed)
     terrainGenerator =
         std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDB, gridSize, scale);
     setReady(true);
+    clock.restart();
 }
 
 void Map::setReady(const bool ready)
@@ -64,6 +63,7 @@ Map::Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, co
     : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
       scale(scale), rng(0)
 {
+    initRegionStatusArray();
 }
 
 Map::~Map()
@@ -200,6 +200,8 @@ void Map::save(const std::string &name)
     /* WORLD METADATA +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     metadata.lastPlayed = std::time(0);
+    metadata.timePlayed += clock.getElapsedTime().asSeconds();
+
     JObject metadataObj;
     metadataObj << metadata;
 
@@ -338,7 +340,7 @@ void Map::saveRegion(const sf::Vector2i &region_index)
 
 void Map::load(const std::string &name)
 {
-    if (!isReady())
+    if (isReady())
         return;
 
     std::string path_str = MAPS_FOLDER + name;
@@ -350,6 +352,8 @@ void Map::load(const std::string &name)
         throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path_str + "\n");
 
     /* METADATA +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    msg = "Loading world metadata...";
 
     if (!std::filesystem::exists(path_str + "metadata.json"))
         throw std::runtime_error("[ Map::loadFromFile ] -> No world metadata found: " + path_str + "\n");
@@ -365,8 +369,10 @@ void Map::load(const std::string &name)
     JObject metadataObj = JSON::parse(ss.str()).getAs<JObject>();
     metadataObj >> metadata;
 
+    msg = "Initializing terrain generator...";
+
     // Reconfigure terraing generator.
-    initTerrainGenerator(metadata.seed);
+    std::thread(&Map::initTerrainGenerator, this, metadata.seed).detach();
 }
 
 void Map::loadRegion(const sf::Vector2i &region_index)
