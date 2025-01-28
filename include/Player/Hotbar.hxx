@@ -8,8 +8,10 @@ class Hotbar
 {
   private:
     AttributeFunctionality &playerAttributes;
-    std::shared_ptr<ResourcePack> &resorcePack;
-    std::map<std::string, std::unique_ptr<sf::Sprite>> sprites;
+    std::shared_ptr<ResourcePack> &resourcePack;
+    sf::VideoMode &vm;
+
+    sf::RectangleShape hotbarContainer;
 
     uint8_t maxCols;
 
@@ -18,16 +20,26 @@ class Hotbar
 
     unsigned int scale;
 
-    void initSprites();
+    std::vector<sf::Sprite> healthBar;
+    std::vector<sf::Sprite> hungerBar;
+
+    void initGUI();
 
   public:
-    Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<ResourcePack> &resorce_pack,
+    Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<ResourcePack> &resorce_pack, sf::VideoMode &vm,
            const unsigned int &scale);
+
     ~Hotbar();
 
     void update(const float &dt);
 
     void render(sf::RenderTarget &target);
 
+    void updateHealthBar();
+
+    void updateHungerBar();
+
     void renderHealthBar(sf::RenderTarget &target);
+
+    void renderHungerBar(sf::RenderTarget &target);
 };

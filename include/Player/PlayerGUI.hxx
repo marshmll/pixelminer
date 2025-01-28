@@ -10,12 +10,14 @@ class PlayerGUI
     Player &player;
     std::unique_ptr<Hotbar> hotbar;
     std::shared_ptr<ResourcePack> &resourcePack;
+    sf::VideoMode &vm;
     unsigned int scale;
 
     void initGUI();
 
   public:
-    PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pack, const unsigned int &scale);
+    PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pack, sf::VideoMode &vm,
+              const unsigned int &scale);
 
     ~PlayerGUI();
 

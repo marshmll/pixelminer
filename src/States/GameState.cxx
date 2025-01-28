@@ -38,7 +38,7 @@ void GameState::initThisPlayer()
 
 void GameState::initPlayerGUI()
 {
-    playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, data.scale);
+    playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, *data.vm, data.scale);
 }
 
 void GameState::initPlayerCamera()
@@ -97,6 +97,8 @@ void GameState::update(const float &dt)
     updateMap(dt);
     updatePlayers(dt);
     updatePlayerCamera();
+
+    playerGUI->update(dt);
 
     if (debugInfo)
         updateDebugText(dt);

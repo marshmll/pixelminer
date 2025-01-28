@@ -36,12 +36,14 @@ const uint8_t AttributeFunctionality::getMaxHunger() const
 
 void AttributeFunctionality::setHealth(const uint8_t health)
 {
-    this->health = health;
+    if (health <= this->health)
+        this->health = health;
 }
 
 void AttributeFunctionality::setHunger(const uint8_t hunger)
 {
-    this->hunger = hunger;
+    if (hunger <= this->hunger)
+        this->hunger = hunger;
 }
 
 void AttributeFunctionality::setMaxHealth(const uint8_t max_health)
