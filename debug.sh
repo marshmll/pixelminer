@@ -4,7 +4,7 @@ if [ ! -d "Debug/" ]
 then
     mkdir Debug
     cd Debug/
-    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 ..
     cd ../
 fi
 
@@ -14,7 +14,7 @@ Debug/bin/Assets/
 cp -r src/Assets/ Debug/bin/
 
 cd Debug/ &&
-make &&
+ninja -j10 &&
 cd bin/ &&
 clear &&
 ./pixelminer &&

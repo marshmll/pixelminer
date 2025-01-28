@@ -66,7 +66,7 @@ void MainMenuState::update(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Singleplayer")->isPressed())
-        data.states->push(std::make_unique<GameState>(data));
+        data.states->push(std::make_unique<WorldSelectionMenuState>(data));
 
     else if (buttons.at("Multiplayer")->isPressed())
         data.states->push(std::make_unique<MultiplayerState>(data));

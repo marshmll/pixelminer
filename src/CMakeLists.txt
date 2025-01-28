@@ -6,15 +6,15 @@ target_sources(pixelminer PRIVATE
 ./Map/TerrainGenerator.cxx
 ./Tools/JSON.cxx
 ./Tools/LinearCongruentialGenerator.cxx
+./Tools/Date.cxx
 ./Tools/Logger.cxx
 ./Tools/UUID.cxx
-./States/SingleplayerState.cxx
 ./States/GameState.cxx
 ./States/MainMenuState.cxx
 ./States/DirectConnectState.cxx
 ./States/State.cxx
-./States/WorldMenuState.cxx
 ./States/MultiplayerState.cxx
+./States/WorldSelectionMenuState.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx
 ./Entities/Functionalities/AttributeFunctionality.cxx

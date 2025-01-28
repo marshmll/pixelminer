@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef GAME_VERSION
-#define GAME_VERSION "alpha 0.0.1"
+#define GAME_VERSION "Alpha 0.0.2"
 #endif
 
 #ifndef METADATA_VERSION

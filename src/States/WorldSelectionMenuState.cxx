@@ -1,7 +1,7 @@
-#include "States/SingleplayerState.hxx"
+#include "States/WorldSelectionMenuState.hxx"
 #include "stdafx.hxx"
 
-void SingleplayerState::initGUI()
+void WorldSelectionMenuState::initGUI()
 {
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
@@ -74,42 +74,60 @@ void SingleplayerState::initGUI()
     buttons.at("ReCreate")->setState(gui::ButtonState::Disabled);
 }
 
-SingleplayerState::SingleplayerState(EngineData &data) : State(data)
+void WorldSelectionMenuState::initWorldSelectors()
+{
+    WorldMetadata metadata{"My New World",
+                           "My New World",
+                           static_cast<unsigned long long>(std::time(0)),
+                           static_cast<unsigned long long>(std::time(0)),
+                           GAME_VERSION,
+                           "Normal"};
+
+    worldSelectors.emplace_back(data, metadata, 200.f);
+}
+
+WorldSelectionMenuState::WorldSelectionMenuState(EngineData &data) : State(data)
 {
     initGUI();
+    initWorldSelectors();
 }
 
-SingleplayerState::~SingleplayerState()
+WorldSelectionMenuState::~WorldSelectionMenuState()
 {
 }
 
-void SingleplayerState::update(const float &dt)
+void WorldSelectionMenuState::update(const float &dt)
 {
     updateMousePositions();
     updateGUI(dt);
 }
 
-void SingleplayerState::render(sf::RenderTarget &target)
+void WorldSelectionMenuState::render(sf::RenderTarget &target)
 {
     renderGUI(target);
 }
 
-void SingleplayerState::updateGUI(const float &dt)
+void WorldSelectionMenuState::updateGUI(const float &dt)
 {
     for (auto &[_, button] : buttons)
         button->update(mousePosView);
 
     if (buttons.at("Cancel")->isPressed())
         killState();
+
+    for (auto &selector : worldSelectors)
+        selector.update(dt, mousePosView);
 }
 
-void SingleplayerState::renderGUI(sf::RenderTarget &target)
+void WorldSelectionMenuState::renderGUI(sf::RenderTarget &target)
 {
     target.draw(background);
     target.draw(header);
     target.draw(footer);
-    // target.draw(buttonContainer);
 
     for (auto &[_, button] : buttons)
         button->render(target);
+
+    for (auto &selector : worldSelectors)
+        selector.render(target);
 }
