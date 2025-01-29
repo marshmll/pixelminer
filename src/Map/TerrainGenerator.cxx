@@ -109,6 +109,20 @@ void TerrainGenerator::initBiomes()
     }
 }
 
+void TerrainGenerator::initRandomGrid()
+{
+    randomGrid.resize(MAX_WORLD_GRID_SIZE.x, std::vector<float>(MAX_WORLD_GRID_SIZE.y, 0.0f));
+
+    for (unsigned int x = 0; x < MAX_WORLD_GRID_SIZE.x; ++x)
+    {
+        for (unsigned int y = 0; y < MAX_WORLD_GRID_SIZE.y; ++y)
+        {
+            // Generate a random value between 0 and 1 for each grid cell
+            randomGrid[x][y] = rng.nextFloat();
+        }
+    }
+}
+
 void TerrainGenerator::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z)
 {
     if (grid_x < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y < 0 || grid_y >= MAX_WORLD_GRID_SIZE.y || grid_z < 0 ||
@@ -163,6 +177,7 @@ TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMa
     initPerlinWaves();
     initNoiseMaps();
     initBiomes();
+    initRandomGrid();
 
     msg = "Done!";
     std::this_thread::sleep_for(200ms);
@@ -209,14 +224,17 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                                      biome.color),
                                 x, y, 0);
 
-                        if (!rng.nextInt(0, 100))
-                        {
+                        // Use precomputed random value for structure placement
+                        float randomValue = randomGrid[x][y];
+
+                        if (randomValue < 0.01f)
+                        { // 1% chance for grass_var_1
                             TileData td = tileData.at("grass_var_1");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }
-                        else if (!rng.nextInt(0, 3))
-                        {
+                        else if (randomValue < 0.04f)
+                        { // 3% chance for grass_var_2
                             TileData td = tileData.at("grass_var_2");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);

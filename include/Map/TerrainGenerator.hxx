@@ -51,12 +51,15 @@ class TerrainGenerator
 
     std::vector<Biome> biomes;
     BiomeMap biomeMap;
+    std::vector<std::vector<float>> randomGrid; // Precomputed random values for the entire world
 
     void initPerlinWaves();
 
     void initNoiseMaps();
 
     void initBiomes();
+
+    void initRandomGrid();
 
     void putTile(Tile tile, const int &grid_x, const int &grid_y, const int &grid_z);
 
