@@ -147,8 +147,8 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
 
     if (buttons.at("Cancel")->isPressed())
         killSelf();
-    if (buttons.at("PlaySelectedWorld")->isPressed())
-        replaceSelf(std::make_shared<GameState>(data));
+    if (buttons.at("PlaySelectedWorld")->isPressed() && selectedWorld.has_value())
+        replaceSelf(std::make_shared<GameState>(data, selectedWorld.value()->metadata.folderName));
 
     worldSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
 

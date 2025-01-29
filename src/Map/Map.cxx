@@ -340,9 +340,6 @@ void Map::saveRegion(const sf::Vector2i &region_index)
 
 void Map::load(const std::string &name)
 {
-    if (isReady())
-        return;
-
     std::string path_str = MAPS_FOLDER + name;
 
     if (path_str.back() != '/')

@@ -27,8 +27,16 @@ void GameState::initMap()
 {
     map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
                                 data.gridSize, data.scale);
+}
 
-    map->load("My New World");
+void GameState::initMap(const std::string &map_folder_name)
+{
+    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
+                                data.gridSize, data.scale);
+
+    std::cout << map_folder_name << "\n";
+
+    map->load(map_folder_name);
 }
 
 void GameState::initThisPlayer()
@@ -68,6 +76,17 @@ GameState::GameState(EngineData &data) : State(data)
 {
     initLoadingScreen();
     initMap();
+    initThisPlayer();
+    initPlayerGUI();
+    initPlayerCamera();
+    initPauseMenu();
+    initDebugging();
+}
+
+GameState::GameState(EngineData &data, const std::string &map_folder_name) : State(data)
+{
+    initLoadingScreen();
+    initMap(map_folder_name);
     initThisPlayer();
     initPlayerGUI();
     initPlayerCamera();

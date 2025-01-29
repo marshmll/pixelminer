@@ -34,6 +34,8 @@ class GameState : public State
 
     void initMap();
 
+    void initMap(const std::string &map_folder_name);
+
     void initThisPlayer();
 
     void initPlayerGUI();
@@ -46,6 +48,8 @@ class GameState : public State
 
   public:
     GameState(EngineData &data);
+
+    GameState(EngineData &data, const std::string &map_folder_name);
 
     ~GameState();
 
