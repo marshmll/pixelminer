@@ -76,11 +76,11 @@ void WorldSelectionMenuState::initGUI()
 
 void WorldSelectionMenuState::initWorldSelectors()
 {
-    worldSelectorsList = std::make_unique<gui::ScrollList>(
+    worldSelectorsList = std::make_unique<gui::ScrollableContainer>(
         *data.vm, sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 61.f)),
         sf::Vector2f(data.vm->size.x / 2.f - gui::percent(data.vm->size.x, 60.f) / 2.f,
                      header.getPosition().y + header.getSize().y),
-        gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
+        80.f, gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
 
     int i = 0;
     for (auto const &entry : std::filesystem::directory_iterator(MAPS_FOLDER))
@@ -104,11 +104,19 @@ void WorldSelectionMenuState::initWorldSelectors()
         metadata.difficulty = metadataObj.at("difficulty").getAs<std::string>();
 
         if (worldSelectors.empty())
-            worldSelectors.emplace_back(data, metadata, worldSelectorsList->getPosition().y);
+            worldSelectors.push_back(
+                std::make_unique<WorldSelector>(data, metadata, worldSelectorsList->getPosition().y));
         else
-            worldSelectors.emplace_back(data, metadata,
-                                        worldSelectors.back().getPosition().y + gui::percent(data.vm->size.y, 2.f));
+            worldSelectors.push_back(std::make_unique<WorldSelector>(data, metadata,
+                                                                     worldSelectors.back()->getPosition().y +
+                                                                         worldSelectors.back()->getSize().y +
+                                                                         gui::percent(data.vm->size.y, 2.f)));
+
+        metadataFile.close();
     }
+
+    worldSelectorsList->setMaxScrollDelta(worldSelectors.back()->getPosition().y + worldSelectors.back()->getSize().y,
+                                          10.f);
 }
 
 WorldSelectionMenuState::WorldSelectionMenuState(EngineData &data) : State(data)
@@ -144,7 +152,7 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
 
     updateMousePositions(worldSelectorsList->getView());
     for (auto &selector : worldSelectors)
-        selector.update(dt, mousePosView);
+        selector->update(dt, mousePosView);
     updateMousePositions();
 }
 
@@ -160,7 +168,7 @@ void WorldSelectionMenuState::renderGUI(sf::RenderTarget &target)
     target.setView(worldSelectorsList->getView());
 
     for (auto &selector : worldSelectors)
-        selector.render(target);
+        selector->render(target);
 
     target.setView(target.getDefaultView());
 

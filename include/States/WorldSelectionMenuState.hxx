@@ -40,11 +40,11 @@ class WorldSelectionMenuState : public State
             container.setFillColor(sf::Color(0, 0, 0, 80));
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))
-                iconTexture = data.activeResourcePack->getTexture("Background");
+                std::cerr << "Error while loading image: " << MAPS_FOLDER + metadata.folderName + "/icon.png" << "\n";
 
-            icon.setTexture(&iconTexture);
             icon.setSize(sf::Vector2f(sf::Vector2f(container.getSize().y, container.getSize().y)));
             icon.setPosition(container.getPosition());
+            icon.setTexture(&iconTexture);
 
             name = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), metadata.worldName,
                                               gui::charSize(*data.vm, 100));
@@ -95,6 +95,11 @@ class WorldSelectionMenuState : public State
             return container.getPosition();
         }
 
+        inline const sf::Vector2f getSize() const
+        {
+            return container.getSize();
+        }
+
         inline const bool isSelected() const
         {
             return selected;
@@ -109,8 +114,8 @@ class WorldSelectionMenuState : public State
 
     std::map<std::string, std::unique_ptr<gui::TextButton>> buttons;
 
-    std::vector<WorldSelector> worldSelectors;
-    std::unique_ptr<gui::ScrollList> worldSelectorsList;
+    std::vector<std::unique_ptr<WorldSelector>> worldSelectors;
+    std::unique_ptr<gui::ScrollableContainer> worldSelectorsList;
 
     void initGUI();
 
