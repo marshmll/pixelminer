@@ -54,7 +54,7 @@ PauseMenu::PauseMenu(EngineData &data, Map &map) : active(false), data(data), ma
 
     buttons["SaveAndQuit"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 4),
-        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save and Quit",
+        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save and Quit to Main Menu",
         data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 }
@@ -71,7 +71,11 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
     for (auto &[key, button] : buttons)
         button->update(mouse_pos);
 
-    if (buttons.at("SaveAndQuit")->isPressed())
+    if (buttons.at("BackToGame")->isPressed())
+    {
+        setActive(false);
+    }
+    else if (buttons.at("SaveAndQuit")->isPressed())
     {
         map.save();
         data.states->top()->killSelf();

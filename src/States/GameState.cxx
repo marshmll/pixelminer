@@ -34,8 +34,6 @@ void GameState::initMap(const std::string &map_folder_name)
     map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
                                 data.gridSize, data.scale);
 
-    std::cout << map_folder_name << "\n";
-
     map->load(map_folder_name);
 }
 
