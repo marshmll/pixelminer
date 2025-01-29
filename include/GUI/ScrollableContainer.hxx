@@ -2,7 +2,7 @@
 
 namespace gui
 {
-class ScrollList
+class ScrollableContainer
 {
   private:
     sf::RectangleShape container;
@@ -10,10 +10,10 @@ class ScrollList
     sf::View scrollView;
 
   public:
-    ScrollList(const sf::VideoMode &vm, const sf::Vector2f &size, const sf::Vector2f &position,
+    ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size, const sf::Vector2f &position,
                const float &scrollbar_width, const sf::Color &scrollbar_color = sf::Color::White);
 
-    ~ScrollList();
+    ~ScrollableContainer();
 
     void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
                 sf::Event::MouseWheelScrolled &mouse_data);

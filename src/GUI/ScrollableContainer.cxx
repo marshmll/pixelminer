@@ -1,10 +1,11 @@
-#include "GUI/ScrollList.hxx"
+#include "GUI/ScrollableContainer.hxx"
 #include "stdafx.hxx"
 
 using namespace gui;
 
-ScrollList::ScrollList(const sf::VideoMode &vm, const sf::Vector2f &size, const sf::Vector2f &position,
-                       const float &scrollbar_width, const sf::Color &scrollbar_color)
+ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size,
+                                         const sf::Vector2f &position, const float &scrollbar_width,
+                                         const sf::Color &scrollbar_color)
 {
     // Container
     container.setSize(size);
@@ -30,12 +31,12 @@ ScrollList::ScrollList(const sf::VideoMode &vm, const sf::Vector2f &size, const 
                                           container.getSize().y / static_cast<float>(vm.size.y)}));
 }
 
-ScrollList::~ScrollList()
+ScrollableContainer::~ScrollableContainer()
 {
 }
 
-void ScrollList::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
-                        sf::Event::MouseWheelScrolled &mouse_data)
+void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
+                                 sf::Event::MouseWheelScrolled &mouse_data)
 {
     if (event->is<sf::Event::MouseWheelScrolled>())
     {
@@ -43,22 +44,22 @@ void ScrollList::update(const float &dt, const sf::Vector2f &mouse_pos, std::opt
     }
 }
 
-void ScrollList::render(sf::RenderTarget &target)
+void ScrollableContainer::render(sf::RenderTarget &target)
 {
     target.draw(scrollBar);
 }
 
-const sf::Vector2f ScrollList::getSize() const
+const sf::Vector2f ScrollableContainer::getSize() const
 {
     return container.getSize();
 }
 
-const sf::Vector2f ScrollList::getPosition() const
+const sf::Vector2f ScrollableContainer::getPosition() const
 {
     return container.getPosition();
 }
 
-sf::View &ScrollList::getView()
+sf::View &ScrollableContainer::getView()
 {
     return scrollView;
 }
