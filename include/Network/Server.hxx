@@ -25,14 +25,12 @@ class Server
     sf::SocketSelector socketSelector;
     sf::UdpSocket socket;
 
-    std::map<std::string, Connection> connections;
+    std::unordered_map<std::string, Connection> connections;
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     std::atomic_bool online;
 
     sf::Packet pktBuf;
-    sf::IpAddress ipBuf;
-    unsigned short portBuf;
 
     void listenerThread();
 
@@ -40,31 +38,31 @@ class Server
 
     void handleTimedOutConnections();
 
-    void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port);
+    void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, unsigned short port);
 
-    void setOnline(const bool &online);
+    void setOnline(bool online);
 
   public:
     Server(const std::string &uuid);
 
     ~Server();
 
-    void listen(const unsigned short port);
+    void listen(unsigned short port);
 
-    const bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const std::string &uuid);
+    bool createConnection(const sf::IpAddress &ip, unsigned short port, const std::string &uuid);
 
     void disconnectClient(const std::string &uuid);
 
-    const bool isClientConnected(const sf::IpAddress &ip, const unsigned short &port);
+    bool isClientConnected(const sf::IpAddress &ip, unsigned short port) const;
 
-    const bool send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port);
+    bool send(sf::Packet &packet, const sf::IpAddress &ip, unsigned short port);
 
-    void sendControlMessage(const std::string header, const sf::IpAddress &ip, const unsigned short &port);
+    void sendControlMessage(const std::string &header, const sf::IpAddress &ip, unsigned short port);
 
-    void sendFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path path,
+    void sendFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &path,
                   std::ios::openmode mode);
 
-    void receiveFile(const sf::IpAddress &ip, const unsigned short &port, std::filesystem::path folder);
+    void receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder);
 
     void shutdown();
 

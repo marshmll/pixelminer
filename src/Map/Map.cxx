@@ -3,11 +3,11 @@
 
 void Map::initRegionStatusArray()
 {
-    for (int x = 0; x < MAX_REGIONS.x; x++)
+    for (auto &row : loadedRegions)
     {
-        for (int y = 0; y < MAX_REGIONS.y; y++)
+        for (auto &region : row)
         {
-            loadedRegions[x][y] = false;
+            region = false;
         }
     }
 }
@@ -48,13 +48,11 @@ void Map::setReady(const bool ready)
 
 Map::Map(const std::string &name, const long int &seed, std::map<std::string, TileData> &tile_db,
          sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
-
     : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
       scale(scale), rng(seed)
 {
     initRegionStatusArray();
     initMetadata(name, seed);
-
     std::thread(&Map::initTerrainGenerator, this, seed).detach();
 }
 
@@ -66,36 +64,29 @@ Map::Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, co
     initRegionStatusArray();
 }
 
-Map::~Map()
-{
-}
+Map::~Map() = default;
 
 void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 {
     if (!isReady())
         return;
 
-    // Validate player position within world boundaries
     if (player_pos_grid.x < 0 || player_pos_grid.x > MAX_WORLD_GRID_SIZE.x || player_pos_grid.y < 0 ||
         player_pos_grid.y > MAX_WORLD_GRID_SIZE.y)
         return;
 
-    // Compute region and chunk indices
     const int REGION_X = player_pos_grid.x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
     const int REGION_Y = player_pos_grid.y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
 
-    // Load the region the player is in
     if (!isRegionLoaded({REGION_X, REGION_Y}))
     {
         std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
     }
 
-    // Helper lambda to load and unload neighboring regions
     auto manageRegions = [&](int load_offset_x, int load_offset_y, int unload_offset_x, int unload_offset_y) {
         sf::Vector2i load_region(REGION_X + load_offset_x, REGION_Y + load_offset_y);
         sf::Vector2i unload_region(REGION_X + unload_offset_x, REGION_Y + unload_offset_y);
 
-        // Load region if not already loaded
         if (load_region.x >= 0 && load_region.x < MAX_REGIONS.x && load_region.y >= 0 && load_region.y < MAX_REGIONS.y)
         {
             if (!isRegionLoaded(load_region))
@@ -104,7 +95,6 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
             }
         }
 
-        // Unload region if loaded
         if (unload_region.x >= 0 && unload_region.x < MAX_REGIONS.x && unload_region.y >= 0 &&
             unload_region.y < MAX_REGIONS.y)
         {
@@ -115,7 +105,6 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
         }
     };
 
-    // Check and manage regions based on player position
     const int X_OFFSET = CHUNK_SIZE_IN_TILES.x;
     const int Y_OFFSET = CHUNK_SIZE_IN_TILES.y;
 
@@ -177,7 +166,6 @@ void Map::render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, 
         {
             if (chunk_x + i < 0 || chunk_y + j < 0 || chunk_x + i >= MAX_CHUNKS.x || chunk_y + j >= MAX_CHUNKS.y)
                 continue;
-
             if (chunks[chunk_x + i][chunk_y + j])
                 chunks[chunk_x + i][chunk_y + j]->render(target, debug);
         }
@@ -190,14 +178,11 @@ void Map::save(const std::string &name)
         return;
 
     std::string path_str = MAPS_FOLDER + name;
-
     if (path_str.back() != '/')
         path_str.push_back('/');
 
     if (!std::filesystem::exists(path_str))
         std::filesystem::create_directory(path_str);
-
-    /* WORLD METADATA +++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     metadata.lastPlayed = std::time(0);
     metadata.timePlayed += clock.getElapsedTime().asSeconds();
@@ -205,26 +190,19 @@ void Map::save(const std::string &name)
     JObject metadataObj;
     metadataObj << metadata;
 
-    // std::cout << JSON::stringify(metadataObj) << "\n";
-
     std::ofstream metadataFile(path_str + "metadata.json");
-
     if (!metadataFile.is_open())
         throw std::runtime_error("[ Map::saveToFile ] -> Could not write region file: " + path_str + "metadata.json\n");
 
     metadataFile << JSON::stringify(metadataObj);
     metadataFile.close();
 
-    /* REGIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
     for (int i = 0; i < MAX_REGIONS.x; i++)
     {
         for (int j = 0; j < MAX_REGIONS.y; j++)
         {
             if (isRegionLoaded({i, j}))
-            {
                 saveRegion({i, j});
-            }
         }
     }
 }
@@ -234,44 +212,33 @@ void Map::save()
     if (!isReady())
         return;
 
-    // If no name provided, generate a random one.
     if (metadata.name.empty())
         metadata.name = std::to_string(std::rand());
-
     save(metadata.name);
 }
 
 void Map::saveRegion(const sf::Vector2i &region_index)
 {
-    if (!isReady())
+    if (!isReady() || region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 ||
+        region_index.y >= MAX_REGIONS.y)
         return;
-
-    if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
-        std::cout << "Cannot save region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
 
     if (!isRegionLoaded(region_index))
         return;
 
-    // Calculate chunk indexes.
     const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
     const int CHUNK_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y;
     const int CHUNK_END_X = (CHUNK_START_X + REGION_SIZE_IN_CHUNKS.x) - 1;
     const int CHUNK_END_Y = (CHUNK_START_Y + REGION_SIZE_IN_CHUNKS.y) - 1;
 
-    // Check if region folder exists.
     if (!std::filesystem::exists(MAPS_FOLDER + metadata.name + "/regions/"))
     {
-        std::cout << "Creating new directory: " << MAPS_FOLDER << metadata.name << "/regions/" << "\n";
         std::filesystem::create_directory(MAPS_FOLDER + metadata.name + "/regions/");
     }
 
-    // Open file.
-    std::string path;
-    path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
-           std::to_string(region_index.y) + ".region";
-
+    std::string path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
+                       std::to_string(region_index.y) + ".region";
     std::ofstream region_file(path, std::ios::binary);
-
     if (!region_file.is_open())
         throw std::runtime_error("Failed to write region file: " + path);
 
@@ -281,10 +248,9 @@ void Map::saveRegion(const sf::Vector2i &region_index)
     {
         for (unsigned short c_y = CHUNK_START_Y; c_y <= CHUNK_END_Y; c_y++)
         {
-            if (!chunks[c_x][c_y]) // Skip not-allocated chunks
+            if (!chunks[c_x][c_y])
                 continue;
 
-            // Count tiles in chunk
             unsigned short tile_amount = 0;
             for (auto &x : chunks[c_x][c_y]->tiles)
             {
@@ -305,11 +271,6 @@ void Map::saveRegion(const sf::Vector2i &region_index)
             region_file.write(reinterpret_cast<char *>(&chunks[c_x][c_y]->flags), sizeof(chunks[c_x][c_y]->flags));
             region_file.write(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short));
 
-            // std::cout << "Writing chunk_x: " << c_x << ", chunk_y: " << c_y
-            //           << ", flags: " << static_cast<int>(chunks[c_x][c_y]->flags) << ", tile_amount: " << tile_amount
-            //           << "\n";
-
-            // Write tile data.
             for (unsigned short x = 0; x < CHUNK_SIZE_IN_TILES.x; x++)
             {
                 for (unsigned short y = 0; y < CHUNK_SIZE_IN_TILES.y; y++)
@@ -334,21 +295,17 @@ void Map::saveRegion(const sf::Vector2i &region_index)
     }
 
     region_file.close();
-
     std::cout << "Written " << total_tiles << " tiles to region: " << path << "\n";
 }
 
 void Map::load(const std::string &name)
 {
     std::string path_str = MAPS_FOLDER + name;
-
     if (path_str.back() != '/')
         path_str.push_back('/');
 
     if (!std::filesystem::exists(path_str))
         throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path_str + "\n");
-
-    /* METADATA +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     msg = "Loading world metadata...";
 
@@ -356,7 +313,6 @@ void Map::load(const std::string &name)
         throw std::runtime_error("[ Map::loadFromFile ] -> No world metadata found: " + path_str + "\n");
 
     std::ifstream metadataFile(path_str + "metadata.json");
-
     if (!metadataFile.is_open())
         throw std::runtime_error("[ Map::loadFromFile ] -> Failed to open file: " + path_str + "metadata.json" + "\n");
 
@@ -367,8 +323,6 @@ void Map::load(const std::string &name)
     metadataObj >> metadata;
 
     msg = "Initializing terrain generator...";
-
-    // Reconfigure terraing generator.
     std::thread(&Map::initTerrainGenerator, this, metadata.seed).detach();
 }
 
@@ -376,22 +330,18 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 {
     std::lock_guard<std::mutex> lock(mutex);
 
-    if (!isReady())
+    if (!isReady() || region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 ||
+        region_index.y >= MAX_REGIONS.y)
         return;
-
-    if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
-        std::cout << "Cannot load region (" << region_index.x << " " << region_index.y << "): Region out of bounds.";
 
     if (isRegionLoaded(region_index))
         return;
 
-    std::string path;
-    path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
-           std::to_string(region_index.y) + ".region";
+    std::string path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
+                       std::to_string(region_index.y) + ".region";
 
     if (!isRegionLoaded(region_index) && !std::filesystem::exists(path))
     {
-        std::cout << "Generating region (" << region_index.x << ", " << region_index.y << ")" << "\n";
         terrainGenerator->generateRegion(region_index);
         loadedRegions[region_index.x][region_index.y] = true;
         return;
@@ -402,7 +352,6 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         throw std::runtime_error("Failed to read region file: " + path);
 
     unsigned long total_tiles = 0;
-
     unsigned short chunk_x = 0, chunk_y = 0, tile_amount = 0;
     uint8_t flags;
 
@@ -411,20 +360,18 @@ void Map::loadRegion(const sf::Vector2i &region_index)
            region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)) &&
            region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)))
     {
-        // std::cout << "Reading chunk_x: " << chunk_x << ", chunk_y: " << chunk_y
-        //           << ", flags: " << static_cast<int>(flags) << ", tile_amount: " << tile_amount << "\n";
 
         if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
             throw std::runtime_error("Corrupted region file: Chunk index out of bounds");
 
-        if (chunks[chunk_x][chunk_y]) // Do not change loaded chunks
-            continue;
-
-        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+        if (!chunks[chunk_x][chunk_y])
+        {
+            chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+        }
 
         for (int i = 0; i < tile_amount; i++)
         {
-            unsigned short x = 0, y = 0, z = 0; // Positions relative to chunk
+            unsigned short x = 0, y = 0, z = 0;
             std::string id;
             uint8_t id_size;
             char buf[256];
@@ -436,8 +383,6 @@ void Map::loadRegion(const sf::Vector2i &region_index)
             region_file.read(reinterpret_cast<char *>(&z), sizeof(unsigned short));
 
             id = std::string(buf, id_size);
-
-            // std::cout << id << " " << static_cast<int>(id_size) << "\n";
 
             if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
                 throw std::runtime_error("Corrupted region file: Tile[" + std::to_string(x) + "][" + std::to_string(y) +
@@ -460,10 +405,6 @@ void Map::loadRegion(const sf::Vector2i &region_index)
             BiomeData biome_data = terrainGenerator->getBiomeData(grid_pos);
 
             Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
-
-            // std::cout << "Tile placed at (" << x + (chunk_x * CHUNK_SIZE_IN_TILES.x) << ", "
-            //           << y + (chunk_y * CHUNK_SIZE_IN_TILES.y) << ")\n";
-
             chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
         }
 
@@ -471,7 +412,6 @@ void Map::loadRegion(const sf::Vector2i &region_index)
     }
 
     region_file.close();
-
     loadedRegions[region_index.x][region_index.y] = true;
     std::cout << "Read " << total_tiles << " tiles from region: " << path << "\n";
 }
@@ -480,13 +420,9 @@ void Map::unloadRegion(const sf::Vector2i &region_index)
 {
     std::lock_guard<std::mutex> lock(mutex);
 
-    if (!isReady())
+    if (!isReady() || !isRegionLoaded(region_index))
         return;
 
-    if (!isRegionLoaded(region_index))
-        return;
-
-    // Calculate chunk indexes.
     const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
     const int CHUNK_START_Y = region_index.y * REGION_SIZE_IN_CHUNKS.y;
     const int CHUNK_END_X = (CHUNK_START_X + REGION_SIZE_IN_CHUNKS.x) - 1;
@@ -496,12 +432,9 @@ void Map::unloadRegion(const sf::Vector2i &region_index)
     {
         for (unsigned short c_y = CHUNK_START_Y; c_y <= CHUNK_END_Y; c_y++)
         {
-            if (chunks[c_x][c_y])
+            if (chunks[c_x][c_y] && !(chunks[c_x][c_y]->flags & ChunkFlags::KeepLoaded) &&
+                !(chunks[c_x][c_y]->flags & ChunkFlags::Modified))
             {
-                if ((chunks[c_x][c_y]->flags & ChunkFlags::KeepLoaded) ||
-                    (chunks[c_x][c_y]->flags & ChunkFlags::Modified))
-                    continue;
-
                 chunks[c_x][c_y].reset();
             }
         }
@@ -544,10 +477,7 @@ Tile *Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
     const unsigned int tile_x = grid_x - (chunk_x * CHUNK_SIZE_IN_TILES.x);
     const unsigned int tile_y = grid_y - (chunk_y * CHUNK_SIZE_IN_TILES.y);
 
-    if (!chunks[chunk_x][chunk_y])
-        return nullptr;
-
-    if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
+    if (!chunks[chunk_x][chunk_y] || !chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
         return nullptr;
 
     return chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].get();
@@ -576,8 +506,10 @@ const std::string &Map::getMessage() const
 const bool Map::isRegionLoaded(const sf::Vector2i &region_index) const
 {
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
+    {
         throw std::runtime_error("Cannot check if region is loaded: region out of bounds (" +
                                  std::to_string(region_index.x) + ", " + std::to_string(region_index.y) + ")");
+    }
 
     return loadedRegions[region_index.x][region_index.y];
 }

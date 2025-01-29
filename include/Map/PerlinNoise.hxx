@@ -2,6 +2,8 @@
 
 #include "Tools/LinearCongruentialGenerator.hxx"
 
+constexpr int PERMUTATION_SIZE = 256;
+
 typedef struct
 {
     float seed;
@@ -14,8 +16,7 @@ using NoiseMap = std::vector<std::vector<float>>;
 class PerlinNoise
 {
   private:
-    static const int PERMUTATION_SIZE = 256;
-    std::vector<int> permutation;
+    std::array<int, PERMUTATION_SIZE> permutation;
 
     float fade(float t);
     float lerp(float a, float b, float t);
@@ -28,6 +29,6 @@ class PerlinNoise
 
     ~PerlinNoise();
 
-    const NoiseMap generateNoiseMap(const unsigned int width, const unsigned int height, const float scale,
-                                    std::vector<Wave> waves, sf::Vector2f offset);
+    const NoiseMap generateNoiseMap(const unsigned int &width, const unsigned int &height, const float &scale,
+                                    const std::vector<Wave> &waves, const sf::Vector2f &offset);
 };

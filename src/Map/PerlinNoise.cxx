@@ -55,7 +55,7 @@ PerlinNoise::PerlinNoise(const unsigned int &seed)
     Random rng(seed);
 
     // Initialize permutation vector with values 0-255
-    permutation.resize(PERMUTATION_SIZE, 0);
+    permutation.fill(0);
     for (int i = 0; i < PERMUTATION_SIZE; i++)
         permutation[i] = i;
 
@@ -67,44 +67,58 @@ PerlinNoise::PerlinNoise(const unsigned int &seed)
     }
 
     // Duplicate the permutation vector
-    permutation.insert(permutation.end(), permutation.begin(), permutation.end());
+    for (int i = 0; i < PERMUTATION_SIZE; i++)
+        permutation[i + PERMUTATION_SIZE] = permutation[i];
 }
 
-PerlinNoise::~PerlinNoise()
+PerlinNoise::~PerlinNoise() = default;
+
+const NoiseMap PerlinNoise::generateNoiseMap(const unsigned int &width, const unsigned int &height, const float &scale,
+                                             const std::vector<Wave> &waves, const sf::Vector2f &offset)
 {
-}
+    NoiseMap noise_map(width, std::vector<float>(height, 0.0f));
 
-const NoiseMap PerlinNoise::generateNoiseMap(const unsigned int width, const unsigned int height, const float scale,
-                                             std::vector<Wave> waves, sf::Vector2f offset)
-{
-    NoiseMap noise_map;
-
-    // Initialize the noise map with the correct dimensions
-    noise_map.resize(width, std::vector<float>(height, 0.0f));
-
-    // Precompute wave contributions
+    // Precompute wave contributions in parallel
     std::vector<std::vector<float>> wave_contributions(waves.size(), std::vector<float>(width * height, 0.0f));
 
-    for (size_t i = 0; i < waves.size(); ++i)
+    const int numThreads = std::thread::hardware_concurrency();
+    const int chunkSize = height / numThreads;
+
+    std::vector<std::future<void>> futures;
+    for (int t = 0; t < numThreads; ++t)
     {
-        const auto &wave = waves[i];
-        for (unsigned int y = 0; y < height; y++)
-        {
-            for (unsigned int x = 0; x < width; x++)
+        futures.push_back(std::async(std::launch::async, [this, t, chunkSize, width, height, scale, &waves, &offset,
+                                                          &wave_contributions, &numThreads]() {
+            const int startY = t * chunkSize;
+            const int endY = (t == numThreads - 1) ? height : (t + 1) * chunkSize;
+
+            for (size_t i = 0; i < waves.size(); ++i)
             {
-                float sample_pos_x = static_cast<float>(x) * scale + offset.x;
-                float sample_pos_y = static_cast<float>(y) * scale + offset.y;
-                wave_contributions[i][y * width + x] =
-                    wave.amplitude *
-                    noise(sample_pos_x * wave.frequency + wave.seed, sample_pos_y * wave.frequency + wave.seed);
+                const auto &wave = waves[i];
+                for (int y = startY; y < endY; ++y)
+                {
+                    for (int x = 0; x < width; ++x)
+                    {
+                        float sample_pos_x = static_cast<float>(x) * scale + offset.x;
+                        float sample_pos_y = static_cast<float>(y) * scale + offset.y;
+                        wave_contributions[i][y * width + x] =
+                            wave.amplitude *
+                            noise(sample_pos_x * wave.frequency + wave.seed, sample_pos_y * wave.frequency + wave.seed);
+                    }
+                }
             }
-        }
+        }));
+    }
+
+    for (auto &f : futures)
+    {
+        f.wait();
     }
 
     // Combine the precomputed contributions into the final noise map
-    for (unsigned int y = 0; y < height; y++)
+    for (int y = 0; y < height; ++y)
     {
-        for (unsigned int x = 0; x < width; x++)
+        for (int x = 0; x < width; ++x)
         {
             float normalization = 0.0f;
 

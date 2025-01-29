@@ -1,5 +1,5 @@
 {
-    "framerateLimit": 40,
+    "framerateLimit": 60,
     "fullscreen": true,
     "resolution": {},
     "vsync": false,
