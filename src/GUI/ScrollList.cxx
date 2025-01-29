@@ -19,7 +19,9 @@ ScrollList::ScrollList(const sf::VideoMode &vm, const sf::Vector2f &size, const 
     // View
     scrollView.setSize(
         sf::Vector2f(container.getSize().x + 2.f, container.getSize().y + 2.f)); // Match view size to container
-    scrollView.setCenter(container.getPosition() + container.getSize() / 2.f);   // Center it on the container
+    scrollView.setCenter(sf::Vector2f(
+        static_cast<int>(container.getPosition().x + container.getSize().x / 2.f),
+        static_cast<int>(container.getPosition().y + container.getSize().y / 2.f))); // Center it on the container
 
     // Viewport mapping (to proportional rendering to a part of the screen)
     scrollView.setViewport(sf::FloatRect({container.getPosition().x / static_cast<float>(vm.size.x),
@@ -32,8 +34,13 @@ ScrollList::~ScrollList()
 {
 }
 
-void ScrollList::update(const float &dt, const sf::Vector2f &mouse_pos)
+void ScrollList::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
+                        sf::Event::MouseWheelScrolled &mouse_data)
 {
+    if (event->is<sf::Event::MouseWheelScrolled>())
+    {
+        scrollView.move(sf::Vector2f(0.f, 800.f * dt * mouse_data.delta));
+    }
 }
 
 void ScrollList::render(sf::RenderTarget &target)

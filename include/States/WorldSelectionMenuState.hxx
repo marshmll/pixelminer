@@ -35,7 +35,8 @@ class WorldSelectionMenuState : public State
             : data(data), metadata(metadata), selected(false)
         {
             container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 18.f)));
-            container.setPosition(sf::Vector2f(data.vm->size.x / 2.f - container.getSize().x / 2.f, y_position));
+            container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
+                                               static_cast<int>(y_position)));
             container.setFillColor(sf::Color(0, 0, 0, 80));
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))
@@ -61,8 +62,9 @@ class WorldSelectionMenuState : public State
                     ")\nGame Version: " + metadata.gameVersion + ", Difficulty: " + metadata.difficulty,
                 gui::charSize(*data.vm, 100));
 
-            description->setPosition(sf::Vector2f(
-                name->getPosition().x, static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 5.f))));
+            description->setPosition(
+                sf::Vector2f(static_cast<int>(name->getPosition().x),
+                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 5.f))));
 
             description->setFillColor(sf::Color(200, 200, 200, 255));
         }
@@ -109,7 +111,6 @@ class WorldSelectionMenuState : public State
 
     std::vector<WorldSelector> worldSelectors;
     std::unique_ptr<gui::ScrollList> worldSelectorsList;
-
 
     void initGUI();
 

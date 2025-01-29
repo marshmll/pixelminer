@@ -15,6 +15,7 @@ struct EngineData
     sf::RenderWindow *window;
     sf::VideoMode *vm;
     std::optional<sf::Event> *event;
+    sf::Event::MouseWheelScrolled mouseData; // Only access after checking if event is mouse wheel scroll
 };
 
 class State

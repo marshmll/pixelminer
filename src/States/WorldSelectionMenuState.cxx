@@ -140,7 +140,7 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
     if (buttons.at("Cancel")->isPressed())
         killState();
 
-    worldSelectorsList->update(dt, mousePosView);
+    worldSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
 
     updateMousePositions(worldSelectorsList->getView());
     for (auto &selector : worldSelectors)

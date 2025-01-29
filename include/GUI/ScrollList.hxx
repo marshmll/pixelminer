@@ -15,7 +15,8 @@ class ScrollList
 
     ~ScrollList();
 
-    void update(const float &dt, const sf::Vector2f &mouse_pos);
+    void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
+                sf::Event::MouseWheelScrolled &mouse_data);
 
     void render(sf::RenderTarget &target);
 

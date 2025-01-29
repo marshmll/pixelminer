@@ -97,6 +97,7 @@ void Engine::initEngineData()
     engineData.window = &window;
     engineData.vm = &vm;
     engineData.event = &event;
+    engineData.mouseData = {};
 }
 
 void Engine::initMainMenuState()
@@ -110,6 +111,9 @@ void Engine::pollWindowEvents()
     {
         if (event->is<sf::Event::Closed>())
             window.close();
+
+        else if (event->is<sf::Event::MouseWheelScrolled>())
+            engineData.mouseData = *event->getIf<sf::Event::MouseWheelScrolled>();
     }
 }
 
