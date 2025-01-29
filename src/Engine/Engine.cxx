@@ -102,7 +102,7 @@ void Engine::initEngineData()
 
 void Engine::initMainMenuState()
 {
-    states.push(std::make_unique<MainMenuState>(engineData));
+    states.push(std::make_shared<MainMenuState>(engineData));
 }
 
 void Engine::pollWindowEvents()
@@ -129,9 +129,19 @@ void Engine::update()
     if (!states.empty())
     {
         if (states.top()->isDead())
+        {
             states.pop();
+        }
+        else if (states.top()->wasReplaced())
+        {
+            std::shared_ptr<State> replacerState = states.top()->getReplacerState();
+            states.pop();
+            states.push(replacerState);
+        }
         else
+        {
             states.top()->update(dt);
+        }
     }
     if (states.empty())
         window.close();

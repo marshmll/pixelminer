@@ -146,13 +146,36 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Cancel")->isPressed())
-        killState();
+        killSelf();
+    if (buttons.at("PlaySelectedWorld")->isPressed())
+        replaceSelf(std::make_shared<GameState>(data));
 
     worldSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
 
     updateMousePositions(worldSelectorsList->getView());
-    for (auto &selector : worldSelectors)
-        selector->update(dt, mousePosView);
+    if (mouseButtonPressedWithin(1200.f * dt, sf::Mouse::Button::Left))
+    {
+        for (auto &selector : worldSelectors)
+        {
+            selector->update(dt, mousePosView);
+            if (selectedWorld.has_value())
+            {
+                if (selector->isSelected() && selectedWorld.value() != selector)
+                {
+                    selectedWorld.value()->setSelected(false);
+                    selectedWorld = selector;
+                }
+            }
+            else if (selector->isSelected())
+            {
+                selectedWorld = selector;
+
+                // Activate buttons
+                for (auto &[_, button] : buttons)
+                    button->setState(gui::ButtonState::Idle);
+            }
+        }
+    }
     updateMousePositions();
 }
 

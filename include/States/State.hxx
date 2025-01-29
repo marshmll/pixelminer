@@ -9,7 +9,7 @@ struct EngineData
     std::string uuid;
     unsigned int gridSize;
     unsigned int scale;
-    std::stack<std::unique_ptr<State>> *states;
+    std::stack<std::shared_ptr<State>> *states;
     std::map<std::string, ResourcePack> *resourcePacks;
     std::shared_ptr<ResourcePack> activeResourcePack;
     sf::RenderWindow *window;
@@ -33,24 +33,37 @@ class State
     sf::Vector2i mousePosGrid;
 
     bool dead;
+    bool replaced;
 
     sf::Clock keyClock;
+    sf::Clock mouseClock;
+
+    std::shared_ptr<State> replacerState;
 
   public:
     State(EngineData &data);
 
     virtual ~State();
 
-    virtual void update(const float &dt) = 0;
+    virtual void update(const float &dt);
 
-    virtual void render(sf::RenderTarget &target) = 0;
-
-    // Kills the current state.
-    virtual void killState();
-
-    const bool &isDead() const;
+    virtual void render(sf::RenderTarget &target);
 
     void updateMousePositions(std::optional<sf::View> view = {});
 
-    const bool keyPressedWithin(const std::int32_t &milisseconds, const sf::Keyboard::Key &key);
+    const bool keyPressedWithin(const std::int32_t &milliseconds, const sf::Keyboard::Key &key);
+
+    const bool mouseButtonPressedWithin(const std::int32_t &milliseconds, const sf::Mouse::Button &button);
+
+    // Kills the current state.
+    virtual void killSelf();
+
+    // Kills current state and replace its frame with another State in stack.
+    void replaceSelf(std::shared_ptr<State> state);
+
+    std::shared_ptr<State> &getReplacerState();
+
+    const bool &isDead() const;
+
+    const bool &wasReplaced() const;
 };

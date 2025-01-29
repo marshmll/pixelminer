@@ -74,7 +74,7 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
     if (buttons.at("SaveAndQuit")->isPressed())
     {
         map.save();
-        data.states->top()->killState();
+        data.states->top()->killSelf();
     }
 }
 

@@ -28,7 +28,7 @@ class Engine
     unsigned int scale;
 
     EngineData engineData;
-    std::stack<std::unique_ptr<State>> states;
+    std::stack<std::shared_ptr<State>> states;
 
     std::map<std::string, ResourcePack> resourcePacks;
     std::shared_ptr<ResourcePack> activeResourcePack;

@@ -50,7 +50,7 @@ void DirectConnectState::update(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Cancel")->isPressed())
-        killState();
+        killSelf();
 }
 
 void DirectConnectState::render(sf::RenderTarget &target)

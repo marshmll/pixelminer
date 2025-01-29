@@ -106,9 +106,9 @@ void MultiplayerState::updateGUI(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Cancel")->isPressed())
-        killState();
+        killSelf();
     else if (buttons.at("DirectConnect")->isPressed())
-        data.states->push(std::make_unique<DirectConnectState>(data));
+        data.states->push(std::make_shared<DirectConnectState>(data));
 }
 
 void MultiplayerState::renderGUI(sf::RenderTarget &target)

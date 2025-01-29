@@ -66,13 +66,13 @@ void MainMenuState::update(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Singleplayer")->isPressed())
-        data.states->push(std::make_unique<WorldSelectionMenuState>(data));
+        data.states->push(std::make_shared<WorldSelectionMenuState>(data));
 
     else if (buttons.at("Multiplayer")->isPressed())
-        data.states->push(std::make_unique<MultiplayerState>(data));
+        data.states->push(std::make_shared<MultiplayerState>(data));
 
     else if (buttons.at("Quit")->isPressed())
-        killState();
+        killSelf();
 }
 
 void MainMenuState::render(sf::RenderTarget &target)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUI/GUI.hxx"
+#include "States/GameState.hxx"
 #include "States/State.hxx"
 #include "Tools/Date.hxx"
 #include "Tools/JSON.hxx"
@@ -38,6 +39,7 @@ class WorldSelectionMenuState : public State
             container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
                                                static_cast<int>(y_position)));
             container.setFillColor(sf::Color(0, 0, 0, 80));
+            container.setOutlineColor(sf::Color::White);
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))
                 std::cerr << "Error while loading image: " << MAPS_FOLDER + metadata.folderName + "/icon.png" << "\n";
@@ -71,13 +73,15 @@ class WorldSelectionMenuState : public State
 
         inline void update(const float &dt, const sf::Vector2f &mouse_pos)
         {
+            if (!selected)
+                container.setOutlineThickness(0.f);
+
             if (container.getGlobalBounds().contains(mouse_pos))
             {
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
                     selected = true;
                     container.setOutlineThickness(1.f);
-                    container.setOutlineColor(sf::Color::White);
                 }
             }
         }
@@ -104,6 +108,16 @@ class WorldSelectionMenuState : public State
         {
             return selected;
         }
+
+        inline void setSelected(const bool selected)
+        {
+            this->selected = selected;
+
+            if (!selected)
+                container.setOutlineThickness(0.f);
+            else
+                container.setOutlineThickness(1.f);
+        }
     };
 
     sf::RectangleShape background;
@@ -114,8 +128,10 @@ class WorldSelectionMenuState : public State
 
     std::map<std::string, std::unique_ptr<gui::TextButton>> buttons;
 
-    std::vector<std::unique_ptr<WorldSelector>> worldSelectors;
+    std::vector<std::shared_ptr<WorldSelector>> worldSelectors;
     std::unique_ptr<gui::ScrollableContainer> worldSelectorsList;
+
+    std::optional<std::shared_ptr<WorldSelector>> selectedWorld;
 
     void initGUI();
 
