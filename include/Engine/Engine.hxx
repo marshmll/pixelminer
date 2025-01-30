@@ -37,6 +37,8 @@ class Engine
 
     void seedRandom();
 
+    void verifyGlobalFolder();
+
     void identificateSelf();
 
     void initGraphicsSettings();

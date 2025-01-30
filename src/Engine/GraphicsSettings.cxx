@@ -35,7 +35,7 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
     }
     catch (std::runtime_error e)
     {
-        std::cerr << "[ GraphicsSettings ] -> Could not load settings from file " << path << " :\n      " << e.what();
+        std::cerr << "[ GraphicsSettings ] -> Could not load settings from file " << path << "\n" << e.what();
     }
 
     return false;

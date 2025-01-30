@@ -11,15 +11,15 @@ void ResourcePack::load(const std::string &name)
     root_path = RESOURCES_FOLDER + name;
 
     if (!std::filesystem::exists(root_path))
-        logger.logError("Inexistent resouce pack: " + name);
+        logger.logError("Inexistent resouce pack: " + root_path.string());
 
     if (!std::filesystem::exists(root_path / "pack.json"))
-        logger.logError("Resource pack \"" + name + "\" does not have a \"pack.json\" file.");
+        logger.logError("Resource pack \"" + root_path.string() + "\" does not have a \"pack.json\" file.");
 
     std::ifstream packFile(root_path / "pack.json");
 
     if (!packFile.is_open())
-        logger.logError("Failed to open \"pack.json\" file in resource pack: " + name);
+        logger.logError("Failed to open \"pack.json\" file in resource pack: " + root_path.string());
 
     std::stringstream packStream;
     packStream << packFile.rdbuf();

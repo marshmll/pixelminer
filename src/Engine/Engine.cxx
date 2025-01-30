@@ -8,11 +8,36 @@ void Engine::seedRandom()
     std::srand(std::time(0));
 }
 
+void Engine::verifyGlobalFolder()
+{
+    if (std::filesystem::exists(GLOBAL_FOLDER))
+    {
+        logger.logInfo("Found global folder: " + GLOBAL_FOLDER);
+    }
+    else
+    {
+        logger.logInfo("Creating global folder: " + GLOBAL_FOLDER);
+        std::filesystem::create_directory(GLOBAL_FOLDER);
+
+        logger.logInfo("Creating settings folder: " + SETTINGS_FOLDER);
+        std::filesystem::create_directory(SETTINGS_FOLDER);
+
+        logger.logInfo("Creating maps folder: " + MAPS_FOLDER);
+        std::filesystem::create_directory(MAPS_FOLDER);
+
+        logger.logInfo("Creating resource packs folder: " + RESOURCES_FOLDER);
+        std::filesystem::create_directory(RESOURCES_FOLDER);
+
+        logger.logInfo("Copying Vanilla resource pack to: " + RESOURCES_FOLDER);
+        std::filesystem::copy("Assets/ResourcePacks/", RESOURCES_FOLDER, std::filesystem::copy_options::recursive);
+    }
+}
+
 void Engine::identificateSelf()
 {
-    if (std::filesystem::exists("Assets/Settings/uuid.bin"))
+    if (std::filesystem::exists(SETTINGS_FOLDER + "uuid.bin"))
     {
-        std::ifstream fUuid("Assets/Settings/uuid.bin", std::ios::binary);
+        std::ifstream fUuid(SETTINGS_FOLDER + "uuid.bin", std::ios::binary);
         if (!fUuid.is_open())
             logger.logError("Could not identificate self.");
 
@@ -24,7 +49,7 @@ void Engine::identificateSelf()
     }
     else
     {
-        std::ofstream fUuid("Assets/Settings/uuid.bin", std::ios::binary);
+        std::ofstream fUuid(SETTINGS_FOLDER + "uuid.bin", std::ios::binary);
         if (!fUuid.is_open())
             logger.logError("Could not identificate self.");
 
@@ -38,7 +63,7 @@ void Engine::identificateSelf()
 
 void Engine::initGraphicsSettings()
 {
-    if (gfx.loadFromFile("Assets/Settings/graphics.json"))
+    if (gfx.loadFromFile(SETTINGS_FOLDER + "graphics.json"))
     {
         vm = sf::VideoMode({gfx.screenWidth, gfx.screenHeight});
 
@@ -82,8 +107,16 @@ void Engine::initVariables()
 
 void Engine::initResourcePacks()
 {
-    resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
-    activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+    if (!gfx.resourcePack.empty())
+    {
+        resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
+        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+    }
+    else
+    {
+        resourcePacks["Vanilla"].load("Vanilla");
+        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at("Vanilla"));
+    }
 }
 
 void Engine::initEngineData()
@@ -162,6 +195,7 @@ void Engine::render()
 Engine::Engine() : logger("Engine")
 {
     seedRandom();
+    verifyGlobalFolder();
     identificateSelf();
     initGraphicsSettings();
     initVariables();
