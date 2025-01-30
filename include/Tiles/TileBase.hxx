@@ -14,7 +14,7 @@ class TileBase
 
   public:
     TileBase(const std::string name, const std::string &id, sf::Texture &texture, const sf::IntRect &texture_rect,
-             const float &scale = 1.f);
+             const unsigned int &scale = 1);
 
     virtual ~TileBase();
 

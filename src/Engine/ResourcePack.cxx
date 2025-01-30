@@ -78,6 +78,10 @@ void ResourcePack::load(const std::string &name)
     if (!textures["BreadFull"].loadFromFile(root_path / "Images/Icons/bread_full.png"))
         logger.logError("Missing texture \"bread_full.png\" in resource pack: " + name);
 
+    // Ensure that texture smoothing is off
+    for (auto &[_, texture] : textures)
+        texture.setSmooth(false);
+
     /* Tile Data ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
     std::ifstream tileDataFile(root_path / "tiledata.json");

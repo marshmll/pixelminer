@@ -23,25 +23,25 @@ void MovementFunctionality::move(const float &dt, const MovementDirection direct
     {
         this->direction = direction;
         state = MovementState::Walking;
-        sprite.move({0.f, -maxVelocity * sprite.getScale().x * dt});
+        sprite.move(sf::Vector2f(0.f, std::round(-maxVelocity * sprite.getScale().y * dt)));
     }
     else if (direction == MovementDirection::Down && movementFlags & Movement::AllowDown)
     {
         this->direction = direction;
         state = MovementState::Walking;
-        sprite.move({0.f, maxVelocity * sprite.getScale().x * dt});
+        sprite.move(sf::Vector2f(0.f, std::round(maxVelocity * sprite.getScale().y * dt)));
     }
     else if (direction == MovementDirection::Left && movementFlags & Movement::AllowLeft)
     {
         this->direction = direction;
         state = MovementState::Walking;
-        sprite.move({-maxVelocity * sprite.getScale().x * dt, 0.f});
+        sprite.move(sf::Vector2f(std::round(-maxVelocity * sprite.getScale().x) * dt, 0.f));
     }
     else if (direction == MovementDirection::Right && movementFlags & Movement::AllowRight)
     {
         this->direction = direction;
         state = MovementState::Walking;
-        sprite.move({maxVelocity * sprite.getScale().x * dt, 0.f});
+        sprite.move(sf::Vector2f(std::round(maxVelocity * sprite.getScale().x * dt), 0.f));
     }
 }
 

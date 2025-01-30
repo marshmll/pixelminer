@@ -65,7 +65,7 @@ void Engine::initGraphicsSettings()
 {
     if (gfx.loadFromFile(SETTINGS_FOLDER + "graphics.json"))
     {
-        vm = sf::VideoMode({gfx.screenWidth, gfx.screenHeight});
+        vm = sf::VideoMode(sf::Vector2u(gfx.screenWidth, gfx.screenHeight));
 
         if (!vm.isValid() && gfx.fullscreen)
         {
@@ -82,17 +82,24 @@ void Engine::initGraphicsSettings()
                                             sf::VideoMode::getDesktopMode().size.y / 2 - window.getSize().y / 2));
         }
 
+        window.setVerticalSyncEnabled(false);
         window.setFramerateLimit(gfx.framerateLimit);
-
-        window.setVerticalSyncEnabled(gfx.vsync);
     }
     else
     {
+
         logger.logInfo("Using default graphics settings.");
 
         vm = sf::VideoMode::getDesktopMode();
         window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+        window.setVerticalSyncEnabled(false);
         window.setFramerateLimit(60);
+
+        gfx.fullscreen = true;
+        gfx.screenWidth = window.getSize().x;
+        gfx.screenHeight = window.getSize().y;
+        gfx.framerateLimit = 60;
+        gfx.resourcePack = "Vanilla";
     }
 }
 
@@ -101,22 +108,14 @@ void Engine::initVariables()
     dt = 0.f;
     dtClock.restart();
 
-    gridSize = GRID_SIZE;                                                           // 16x16 pixels tile textures.
-    scale = static_cast<unsigned int>(std::round((vm.size.x + vm.size.y) / 693.f)); // Dynamic scaling
+    gridSize = GRID_SIZE; // 16x16 pixels tile textures.
+    scale = std::max(1u, static_cast<unsigned int>(std::ceil((vm.size.x + vm.size.y) / 693.f)));
 }
 
 void Engine::initResourcePacks()
 {
-    if (!gfx.resourcePack.empty())
-    {
-        resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
-        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
-    }
-    else
-    {
-        resourcePacks["Vanilla"].load("Vanilla");
-        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at("Vanilla"));
-    }
+    resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
+    activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
 }
 
 void Engine::initEngineData()
@@ -153,6 +152,7 @@ void Engine::pollWindowEvents()
 void Engine::updateDeltaTime()
 {
     dt = dtClock.restart().asSeconds();
+    std::min(dt, 0.1f); // Prevent lag spikes and spiral of death
 }
 
 void Engine::update()

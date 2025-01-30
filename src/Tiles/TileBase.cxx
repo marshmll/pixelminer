@@ -2,10 +2,10 @@
 #include "stdafx.hxx"
 
 TileBase::TileBase(const std::string name, const std::string &id, sf::Texture &texture, const sf::IntRect &texture_rect,
-                   const float &scale)
+                   const unsigned int &scale)
     : name(name), id(id), texture(texture), textureRect(texture_rect), sprite(texture, textureRect)
 {
-    sprite.setScale({scale, scale});
+    sprite.setScale(sf::Vector2f(scale, scale));
 }
 
 TileBase::~TileBase()

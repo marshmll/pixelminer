@@ -26,8 +26,6 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
 
         fullscreen = obj.at("fullscreen").getAs<bool>();
 
-        vsync = obj.at("vsync").getAs<bool>();
-
         resourcePack = obj.at("resourcePack").getAs<std::string>();
 
         std::cout << "[ GraphicsSettings ] -> Loaded settings from file: " << path.string() << "\n";
@@ -55,7 +53,6 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
     obj["resolution"] = JObject{{"width", screenWidth}, {"height", screenHeight}};
     obj["framerateLimit"] = framerateLimit;
     obj["fullscreen"] = fullscreen;
-    obj["vsync"] = vsync;
     obj["resourcePack"] = resourcePack;
 
     try

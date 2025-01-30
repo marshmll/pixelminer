@@ -158,25 +158,23 @@ void GameState::updatePlayerCamera()
 
     if ((playerCamera.getCenter().x - playerCamera.getSize().x / 2.f) <= 0.f)
     {
-        playerCamera.setCenter(sf::Vector2f(static_cast<int>(playerCamera.getSize().x / 2.f),
-                                            static_cast<int>(playerCamera.getCenter().y)));
+        playerCamera.setCenter(
+            sf::Vector2f(std::floor(playerCamera.getSize().x / 2.f), std::floor(playerCamera.getCenter().y)));
     }
     else if ((playerCamera.getCenter().x + playerCamera.getSize().x / 2.f) >= map->getRealDimensions().x)
     {
-        playerCamera.setCenter(
-            sf::Vector2f(static_cast<int>(map->getRealDimensions().x - playerCamera.getSize().x / 2.f),
-                         static_cast<int>(playerCamera.getCenter().y)));
+        playerCamera.setCenter(sf::Vector2f(std::floor(map->getRealDimensions().x - playerCamera.getSize().x / 2.f),
+                                            std::floor(playerCamera.getCenter().y)));
     }
     if ((playerCamera.getCenter().y - playerCamera.getSize().y / 2.f) <= 0.f)
     {
-        playerCamera.setCenter(sf::Vector2f(static_cast<int>(playerCamera.getCenter().x),
-                                            static_cast<int>(playerCamera.getSize().y / 2.f)));
+        playerCamera.setCenter(
+            sf::Vector2f(std::floor(playerCamera.getCenter().x), std::floor(playerCamera.getSize().y / 2.f)));
     }
     else if ((playerCamera.getCenter().y + playerCamera.getSize().y / 2.f) >= map->getRealDimensions().y)
     {
-        playerCamera.setCenter(
-            sf::Vector2f(static_cast<int>(playerCamera.getCenter().x),
-                         static_cast<int>(map->getRealDimensions().y - playerCamera.getSize().y / 2.f)));
+        playerCamera.setCenter(sf::Vector2f(std::floor(playerCamera.getCenter().x),
+                                            std::floor(map->getRealDimensions().y - playerCamera.getSize().y / 2.f)));
     }
 }
 

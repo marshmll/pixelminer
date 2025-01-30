@@ -9,7 +9,6 @@ class GraphicsSettings
     unsigned int screenHeight;
     unsigned int framerateLimit;
     bool fullscreen;
-    bool vsync;
     std::string resourcePack;
 
     GraphicsSettings();

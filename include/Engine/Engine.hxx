@@ -22,8 +22,8 @@ class Engine
     sf::RenderWindow window;
     std::optional<sf::Event> event;
 
-    sf::Clock dtClock;
     float dt; // Delta time
+    sf::Clock dtClock;
     unsigned int gridSize;
     unsigned int scale;
 
