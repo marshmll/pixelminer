@@ -80,7 +80,7 @@ void WorldSelectionMenuState::initWorldSelectors()
         *data.vm, sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 61.f)),
         sf::Vector2f(data.vm->size.x / 2.f - gui::percent(data.vm->size.x, 60.f) / 2.f,
                      header.getPosition().y + header.getSize().y),
-        80.f, gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
+        0.f, gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
 
     int i = 0;
     for (auto const &entry : std::filesystem::directory_iterator(MAPS_FOLDER))
@@ -145,6 +145,11 @@ void WorldSelectionMenuState::render(sf::RenderTarget &target)
 
 void WorldSelectionMenuState::updateGUI(const float &dt)
 {
+    worldSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
+
+    if (worldSelectorsList->isScrollLocked())
+        return;
+
     for (auto &[_, button] : buttons)
         button->update(mousePosView);
 
@@ -153,10 +158,8 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
     if (buttons.at("PlaySelectedWorld")->isPressed() && selectedWorld.has_value())
         replaceSelf(std::make_shared<GameState>(data, selectedWorld.value()->metadata.folderName));
 
-    worldSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
-
     updateMousePositions(worldSelectorsList->getView());
-    if (mouseButtonPressedWithin(1200.f * dt, sf::Mouse::Button::Left))
+    if (mouseButtonPressedWithin(1200.f * dt, sf::Mouse::Button::Left) && !worldSelectorsList->isScrollLocked())
     {
         for (auto &selector : worldSelectors)
         {

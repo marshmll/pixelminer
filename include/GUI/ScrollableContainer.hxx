@@ -10,6 +10,8 @@ class ScrollableContainer
     sf::View scrollView;
     float maxScrollDelta;
 
+    bool scrollBarLock;
+
   public:
     ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size, const sf::Vector2f &position,
                         const float &max_scroll_delta, const float &scrollbar_width,
@@ -28,8 +30,14 @@ class ScrollableContainer
 
     sf::View &getView();
 
+    const bool &isScrollLocked() const;
+
     void setMaxScrollDelta(const float &delta);
 
     void setMaxScrollDelta(const float &last_element_bottom_y, const float &tolerance);
+
+    void setViewScrollPercent(const float &percent);
+
+    void setScrollBarPercent(const float &percent);
 };
 } // namespace gui

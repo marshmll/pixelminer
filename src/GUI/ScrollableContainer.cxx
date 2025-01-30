@@ -6,54 +6,82 @@ using namespace gui;
 ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size,
                                          const sf::Vector2f &position, const float &max_scroll_delta,
                                          const float &scrollbar_width, const sf::Color &scrollbar_color)
-    : maxScrollDelta(max_scroll_delta)
+    : maxScrollDelta(max_scroll_delta), scrollBarLock(false)
 {
-    // Container
+    // Cache container position and size
     container.setSize(size);
     container.setPosition(position);
 
+    const float containerCenterX = container.getPosition().x + container.getSize().x / 2.f;
+    const float containerCenterY = container.getPosition().y + container.getSize().y / 2.f;
+
     // Scrollbar
     scrollBar.setSize(sf::Vector2f(scrollbar_width, container.getSize().y / 4.f));
-    scrollBar.setPosition(sf::Vector2f(container.getPosition().x + container.getSize().x, container.getPosition().y));
+    scrollBar.setPosition(sf::Vector2f(container.getPosition().x + container.getSize().x + scrollBar.getSize().x / 2.f,
+                                       container.getPosition().y));
     scrollBar.setFillColor(scrollbar_color);
 
     // View
     scrollView.setSize(
         sf::Vector2f(container.getSize().x + 2.f, container.getSize().y + 2.f)); // Match view size to container
-    scrollView.setCenter(sf::Vector2f(
-        static_cast<int>(container.getPosition().x + container.getSize().x / 2.f),
-        static_cast<int>(container.getPosition().y + container.getSize().y / 2.f))); // Center it on the container
+    scrollView.setCenter(sf::Vector2f(containerCenterX, containerCenterY));      // Center it on the container
 
     // Viewport mapping (to proportional rendering to a part of the screen)
-    scrollView.setViewport(sf::FloatRect({container.getPosition().x / static_cast<float>(vm.size.x),
-                                          container.getPosition().y / static_cast<float>(vm.size.y)},
-                                         {container.getSize().x / static_cast<float>(vm.size.x),
-                                          container.getSize().y / static_cast<float>(vm.size.y)}));
+    const float viewportLeft = container.getPosition().x / static_cast<float>(vm.size.x);
+    const float viewportTop = container.getPosition().y / static_cast<float>(vm.size.y);
+    const float viewportWidth = container.getSize().x / static_cast<float>(vm.size.x);
+    const float viewportHeight = container.getSize().y / static_cast<float>(vm.size.y);
+    scrollView.setViewport(sf::FloatRect({viewportLeft, viewportTop}, {viewportWidth, viewportHeight}));
 }
 
-ScrollableContainer::~ScrollableContainer()
-{
-}
+ScrollableContainer::~ScrollableContainer() = default;
 
 void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
                                  sf::Event::MouseWheelScrolled &mouse_data)
 {
-    if (event->is<sf::Event::MouseWheelScrolled>() && maxScrollDelta > 0.f)
+    if (maxScrollDelta <= 0.f)
+        return;
+
+    const float containerTop = container.getPosition().y;
+    const float containerBottom = containerTop + container.getSize().y;
+    const float scrollBarHeight = scrollBar.getSize().y;
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && scrollBarLock)
     {
-        scrollView.move(sf::Vector2f(0.f, 800.f * dt * -mouse_data.delta));
+        float newScrollBarY = mouse_pos.y - scrollBarHeight / 2.f;
 
-        float delta = scrollView.getCenter().y - (container.getPosition().y + container.getSize().y / 2.f);
+        // Clamp scrollbar position within container bounds
+        newScrollBarY = std::clamp(newScrollBarY, containerTop, containerBottom - scrollBarHeight);
+        scrollBar.setPosition(sf::Vector2f(scrollBar.getPosition().x, newScrollBarY));
 
-        // Top Limit
-        if (delta < 0)
-            scrollView.setCenter(sf::Vector2f(
-                scrollView.getCenter().x, static_cast<int>(container.getPosition().y + container.getSize().y / 2.f)));
+        // Calculate scroll percentage based on scrollbar position
+        float percent = (newScrollBarY + scrollBarHeight - (containerTop + scrollBarHeight)) /
+                        (containerBottom - scrollBarHeight * 2.f);
+        setViewScrollPercent(percent);
+    }
+    else if (scrollBar.getGlobalBounds().contains(mouse_pos))
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            scrollBarLock = true;
+    }
+    else if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+    {
+        scrollBarLock = false;
+    }
 
-        // Bottom Limit
-        else if (delta > maxScrollDelta)
-            scrollView.setCenter(sf::Vector2f(
-                scrollView.getCenter().x,
-                static_cast<int>(container.getPosition().y + container.getSize().y / 2.f + maxScrollDelta)));
+    if (!scrollBarLock && event->is<sf::Event::MouseWheelScrolled>())
+    {
+        float scrollDelta = 800.f * dt * -mouse_data.delta;
+        float newViewCenterY = scrollView.getCenter().y + scrollDelta;
+
+        // Clamp view center within scrollable bounds
+        newViewCenterY = std::clamp(newViewCenterY, containerTop + container.getSize().y / 2.f,
+                                    containerTop + container.getSize().y / 2.f + maxScrollDelta);
+        scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, newViewCenterY));
+
+        // Update scrollbar position based on view position
+        float scrollPercent = (newViewCenterY - (containerTop + container.getSize().y / 2.f)) / maxScrollDelta;
+        setScrollBarPercent(scrollPercent);
     }
 }
 
@@ -78,6 +106,11 @@ sf::View &ScrollableContainer::getView()
     return scrollView;
 }
 
+const bool &ScrollableContainer::isScrollLocked() const
+{
+    return scrollBarLock;
+}
+
 void ScrollableContainer::setMaxScrollDelta(const float &delta)
 {
     maxScrollDelta = delta;
@@ -85,11 +118,24 @@ void ScrollableContainer::setMaxScrollDelta(const float &delta)
 
 void ScrollableContainer::setMaxScrollDelta(const float &last_element_bottom_y, const float &tolerance)
 {
-    // No scrolling if content does not overflow container.
-    if (last_element_bottom_y <= container.getPosition().y + container.getSize().y)
-        maxScrollDelta = 0.f;
+    const float containerBottom = container.getPosition().y + container.getSize().y;
 
+    // No scrolling if content does not overflow container
+    if (last_element_bottom_y <= containerBottom)
+        maxScrollDelta = 0.f;
     else
         // Delta = last_element_bottom_y - container_top_y - view_size_y + tolerance
         maxScrollDelta = last_element_bottom_y - container.getPosition().y - scrollView.getSize().y + tolerance;
+}
+
+void ScrollableContainer::setViewScrollPercent(const float &percent)
+{
+    float newViewCenterY = (container.getPosition().y + container.getSize().y / 2.f) + maxScrollDelta * percent;
+    scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, newViewCenterY));
+}
+
+void ScrollableContainer::setScrollBarPercent(const float &percent)
+{
+    float newScrollBarY = container.getPosition().y + (container.getSize().y - scrollBar.getSize().y) * percent;
+    scrollBar.setPosition(sf::Vector2f(scrollBar.getPosition().x, newScrollBarY));
 }
