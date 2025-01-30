@@ -35,77 +35,59 @@ void TerrainGenerator::initBiomes()
         {BiomeType::Tundra, .8f, .3f, .1f},
     };
 
-    // Parallelize biome map generation
-    std::vector<std::future<void>> futures;
-    const int numThreads = std::thread::hardware_concurrency();
-    const int chunkSize = MAX_WORLD_GRID_SIZE.x / numThreads;
-
-    for (int t = 0; t < numThreads; ++t)
+    for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; ++x)
     {
-        futures.push_back(std::async(std::launch::async, [this, t, chunkSize, &numThreads]() {
-            const int startX = t * chunkSize;
-            const int endX = (t == numThreads - 1) ? MAX_WORLD_GRID_SIZE.x : (t + 1) * chunkSize;
+        for (int y = 0; y < MAX_WORLD_GRID_SIZE.y; ++y)
+        {
+            float height = heightMap[x][y];
+            float moisture = moistureMap[x][y];
+            float heat = heatMap[x][y];
 
-            for (int x = startX; x < endX; ++x)
+            float maxWeight = -1.f;
+            for (const auto &biome : biomes)
             {
-                for (int y = 0; y < MAX_WORLD_GRID_SIZE.y; ++y)
+                float weight = biome.calculateWeight(height, moisture, heat);
+                if (weight > maxWeight)
                 {
-                    float height = heightMap[x][y];
-                    float moisture = moistureMap[x][y];
-                    float heat = heatMap[x][y];
-
-                    float maxWeight = -1.f;
-                    for (const auto &biome : biomes)
-                    {
-                        float weight = biome.calculateWeight(height, moisture, heat);
-                        if (weight > maxWeight)
-                        {
-                            maxWeight = weight;
-                            biomeMap[x][y].type = biome.getType();
-                        }
-                    }
-
-                    switch (biomeMap[x][y].type)
-                    {
-                    case BiomeType::Desert:
-                        biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
-                        biomeMap[x][y].baseTileId = "sand";
-                        break;
-                    case BiomeType::Forest:
-                        biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
-                        biomeMap[x][y].baseTileId = "grass_tile";
-                        break;
-                    case BiomeType::Grassland:
-                        biomeMap[x][y].color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
-                        biomeMap[x][y].baseTileId = "grass_tile";
-                        break;
-                    case BiomeType::Jungle:
-                        biomeMap[x][y].color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
-                        biomeMap[x][y].baseTileId = "grass_tile";
-                        break;
-                    case BiomeType::Mountains:
-                        biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
-                        biomeMap[x][y].baseTileId = "stone";
-                        break;
-                    case BiomeType::Ocean:
-                        biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                        biomeMap[x][y].baseTileId = "water_tile";
-                        break;
-                    case BiomeType::Tundra:
-                        biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
-                        biomeMap[x][y].baseTileId = "grass_tile";
-                        break;
-                    default:
-                        break;
-                    }
+                    maxWeight = weight;
+                    biomeMap[x][y].type = biome.getType();
                 }
             }
-        }));
-    }
 
-    for (auto &f : futures)
-    {
-        f.wait();
+            switch (biomeMap[x][y].type)
+            {
+            case BiomeType::Desert:
+                biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
+                biomeMap[x][y].baseTileId = "sand";
+                break;
+            case BiomeType::Forest:
+                biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
+                biomeMap[x][y].baseTileId = "grass_tile";
+                break;
+            case BiomeType::Grassland:
+                biomeMap[x][y].color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
+                biomeMap[x][y].baseTileId = "grass_tile";
+                break;
+            case BiomeType::Jungle:
+                biomeMap[x][y].color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
+                biomeMap[x][y].baseTileId = "grass_tile";
+                break;
+            case BiomeType::Mountains:
+                biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
+                biomeMap[x][y].baseTileId = "stone";
+                break;
+            case BiomeType::Ocean:
+                biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
+                biomeMap[x][y].baseTileId = "water_tile";
+                break;
+            case BiomeType::Tundra:
+                biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
+                biomeMap[x][y].baseTileId = "grass_tile";
+                break;
+            default:
+                break;
+            }
+        }
     }
 }
 
@@ -167,10 +149,10 @@ Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int 
 }
 
 TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, long int seed,
-                                   sf::Texture &texture_pack, std::map<std::string, TileData> &tile_data,
+                                   sf::Texture &texture_pack, std::unordered_map<std::string, TileData> &tile_db,
                                    const unsigned int &grid_size, const float &scale)
     : logger("TerrainGenerator"), msg(msg), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
-      tileData(tile_data), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
+      tileDB(tile_db), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
 {
     using namespace std::chrono_literals;
 
@@ -216,7 +198,7 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                 for (int y = REGION_GRID_START_Y; y <= REGION_GRID_END_Y; ++y)
                 {
                     const auto &biome = biomeMap[x][y];
-                    TileData tile_data = tileData.at(biome.baseTileId);
+                    TileData tile_data = tileDB.at(biome.baseTileId);
 
                     if (tile_data.id == "grass_tile")
                     {
@@ -229,13 +211,13 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
 
                         if (randomValue < 0.01f)
                         { // 1% chance for grass_var_1
-                            TileData td = tileData.at("grass_var_1");
+                            TileData td = tileDB.at("grass_var_1");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }
                         else if (randomValue < 0.04f)
                         { // 3% chance for grass_var_2
-                            TileData td = tileData.at("grass_var_2");
+                            TileData td = tileDB.at("grass_var_2");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }

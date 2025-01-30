@@ -10,7 +10,7 @@ struct EngineData
     unsigned int gridSize;
     unsigned int scale;
     std::stack<std::shared_ptr<State>> *states;
-    std::map<std::string, ResourcePack> *resourcePacks;
+    std::unordered_map<std::string, ResourcePack> *resourcePacks;
     std::shared_ptr<ResourcePack> activeResourcePack;
     sf::RenderWindow *window;
     sf::VideoMode *vm;

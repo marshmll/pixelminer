@@ -14,7 +14,7 @@ class GameState : public State
   private:
     std::unique_ptr<gui::PauseMenu> pauseMenu;
 
-    std::map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
+    std::unordered_map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
     sf::View playerCamera;
     std::unique_ptr<PlayerGUI> playerGUI;

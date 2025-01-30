@@ -17,10 +17,10 @@ class ResourcePack
     std::string description;
     sf::Texture icon;
 
-    std::map<std::string, sf::Font> fonts;
-    std::map<std::string, sf::Texture> textures;
-    std::map<std::string, sf::SoundBuffer> soundBuffers;
-    std::map<std::string, TileData> tileDB;
+    std::unordered_map<std::string, sf::Font> fonts;
+    std::unordered_map<std::string, sf::Texture> textures;
+    std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
+    std::unordered_map<std::string, TileData> tileDB;
 
     void load(const std::string &name);
 

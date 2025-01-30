@@ -20,7 +20,7 @@ class Map
 
     std::unique_ptr<TerrainGenerator> terrainGenerator;
 
-    std::map<std::string, TileData> &tileDB;
+    std::unordered_map<std::string, TileData> &tileDB;
     sf::Texture &texturePack;
 
     unsigned int gridSize;
@@ -45,13 +45,13 @@ class Map
     /**
      * @brief Generates a new world with the given name and seed.
      */
-    Map(const std::string &name, const long int &seed, std::map<std::string, TileData> &tile_db,
+    Map(const std::string &name, const long int &seed, std::unordered_map<std::string, TileData> &tile_db,
         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
 
     /**
      * @brief Generates a empty world.
      */
-    Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
+    Map(std::unordered_map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
         const float &scale);
 
     ~Map();

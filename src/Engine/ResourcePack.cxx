@@ -108,8 +108,8 @@ void ResourcePack::load(const std::string &name)
         this->tileDB[id] = TileData{id, name, sf::IntRect({rect_x * size, rect_y * size}, {size, size}), size};
     }
 
-    logger.logInfo("Resource pack \"" + name + "\" sucessfully loaded: " + std::to_string(textures.size()) +
-                   " textures loaded.");
+    logger.logInfo("Resource pack \"" + name + "\" sucessfully loaded:\n    - " + std::to_string(textures.size()) +
+                   " textures loaded\n    - " + std::to_string(fonts.size()) + " fonts loaded");
 }
 
 sf::Texture &ResourcePack::getTexture(const std::string &key)

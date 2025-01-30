@@ -46,7 +46,7 @@ void Map::setReady(const bool ready)
     this->ready = ready;
 }
 
-Map::Map(const std::string &name, const long int &seed, std::map<std::string, TileData> &tile_db,
+Map::Map(const std::string &name, const long int &seed, std::unordered_map<std::string, TileData> &tile_db,
          sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
     : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
       scale(scale), rng(seed)
@@ -56,7 +56,7 @@ Map::Map(const std::string &name, const long int &seed, std::map<std::string, Ti
     std::thread(&Map::initTerrainGenerator, this, seed).detach();
 }
 
-Map::Map(std::map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
+Map::Map(std::unordered_map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale)
     : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
       scale(scale), rng(0)

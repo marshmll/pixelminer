@@ -30,7 +30,7 @@ class Engine
     EngineData engineData;
     std::stack<std::shared_ptr<State>> states;
 
-    std::map<std::string, ResourcePack> resourcePacks;
+    std::unordered_map<std::string, ResourcePack> resourcePacks;
     std::shared_ptr<ResourcePack> activeResourcePack;
 
     /* PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
