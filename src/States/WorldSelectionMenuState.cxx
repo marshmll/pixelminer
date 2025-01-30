@@ -115,8 +115,11 @@ void WorldSelectionMenuState::initWorldSelectors()
         metadataFile.close();
     }
 
-    worldSelectorsList->setMaxScrollDelta(worldSelectors.back()->getPosition().y + worldSelectors.back()->getSize().y,
-                                          10.f);
+    if (!worldSelectors.empty())
+    {
+        worldSelectorsList->setMaxScrollDelta(
+            worldSelectors.back()->getPosition().y + worldSelectors.back()->getSize().y, 10.f);
+    }
 }
 
 WorldSelectionMenuState::WorldSelectionMenuState(EngineData &data) : State(data)
