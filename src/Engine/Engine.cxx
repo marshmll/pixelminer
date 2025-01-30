@@ -152,7 +152,7 @@ void Engine::pollWindowEvents()
 void Engine::updateDeltaTime()
 {
     dt = dtClock.restart().asSeconds();
-    std::min(dt, 0.1f); // Prevent lag spikes and spiral of death
+    std::max(dt, .25f); // Prevent lag spikes and spiral of death
 }
 
 void Engine::update()
