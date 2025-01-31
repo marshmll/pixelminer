@@ -16,6 +16,7 @@ enum BiomeType
 
 struct BiomeData
 {
+    std::string name = "Unknown";
     BiomeType type = BiomeType::UnknownBiome;
     sf::Color color = sf::Color::White;
     std::string baseTileId = "unknown";

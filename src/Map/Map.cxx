@@ -493,6 +493,30 @@ const sf::Vector2f Map::getRealDimensions() const
     return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
 }
 
+const BiomeData Map::getBiomeAt(const sf::Vector2i &grid_coords) const
+{
+    if (grid_coords.x < 0 || grid_coords.y < 0 || grid_coords.x >= MAX_WORLD_GRID_SIZE.x ||
+        grid_coords.y >= MAX_WORLD_GRID_SIZE.y)
+        return BiomeData{};
+
+    return this->terrainGenerator->getBiomeData(sf::Vector2u(grid_coords));
+}
+
+const float &Map::getHeightAt(const sf::Vector2i &grid_pos) const
+{
+    return terrainGenerator->getHeightAt(sf::Vector2u(grid_pos));
+}
+
+const float &Map::getMoistureAt(const sf::Vector2i &grid_pos) const
+{
+    return terrainGenerator->getMoistureAt(sf::Vector2u(grid_pos));
+}
+
+const float &Map::getHeatAt(const sf::Vector2i &grid_pos) const
+{
+    return terrainGenerator->getHeatAt(sf::Vector2u(grid_pos));
+}
+
 const bool Map::isReady() const
 {
     return ready;

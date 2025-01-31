@@ -52,6 +52,7 @@ void TerrainGenerator::initBiomes()
                 if (weight > maxWeight)
                 {
                     maxWeight = weight;
+                    biomeMap[x][y].name = biome.getName();
                     biomeMap[x][y].type = biome.getType();
                 }
             }
@@ -83,8 +84,8 @@ void TerrainGenerator::initBiomes()
                 biomeMap[x][y].baseTileId = "water_tile";
                 break;
             case BiomeType::Tundra:
-                biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
-                biomeMap[x][y].baseTileId = "grass_tile";
+                biomeMap[x][y].color = sf::Color(255, 255, 255, 255);
+                biomeMap[x][y].baseTileId = "snowy_grass_tile";
                 break;
             default:
                 biomeMap[x][y].color = sf::Color::Black;
@@ -215,7 +216,6 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
 
                     if (tile_data.id == "grass_tile")
                     {
-                        // Use precomputed random value for structure placement
                         float randomValue = randomGrid[x][y];
 
                         if (randomValue < 0.005f)
@@ -237,6 +237,17 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                                     1);
                         }
                     }
+                    else if (tile_data.id == "snowy_grass_tile")
+                    {
+                        float randomValue = randomGrid[x][y];
+
+                        if (randomValue < 0.01f)
+                        {
+                            TileData td = tileDB.at("snow_tile");
+                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                                    1);
+                        }
+                    }
                 }
             }
         }));
@@ -251,4 +262,19 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
 const BiomeData &TerrainGenerator::getBiomeData(const sf::Vector2u &grid_pos) const
 {
     return biomeMap[grid_pos.x][grid_pos.y];
+}
+
+const float &TerrainGenerator::getHeightAt(const sf::Vector2u &grid_pos) const
+{
+    return heightMap[grid_pos.x][grid_pos.y];
+}
+
+const float &TerrainGenerator::getMoistureAt(const sf::Vector2u &grid_pos) const
+{
+    return moistureMap[grid_pos.x][grid_pos.y];
+}
+
+const float &TerrainGenerator::getHeatAt(const sf::Vector2u &grid_pos) const
+{
+    return heatMap[grid_pos.x][grid_pos.y];
 }

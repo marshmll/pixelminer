@@ -75,4 +75,10 @@ class TerrainGenerator
     void generateRegion(const sf::Vector2i &region_index);
 
     const BiomeData &getBiomeData(const sf::Vector2u &grid_pos) const;
+
+    const float &getHeightAt(const sf::Vector2u &grid_pos) const;
+
+    const float &getMoistureAt(const sf::Vector2u &grid_pos) const;
+
+    const float &getHeatAt(const sf::Vector2u &grid_pos) const;
 };

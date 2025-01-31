@@ -82,6 +82,14 @@ class Map
 
     const sf::Vector2f getRealDimensions() const;
 
+    const BiomeData getBiomeAt(const sf::Vector2i &grid_coords) const;
+
+    const float &getHeightAt(const sf::Vector2i &grid_pos) const;
+
+    const float &getMoistureAt(const sf::Vector2i &grid_pos) const;
+
+    const float &getHeatAt(const sf::Vector2i &grid_pos) const;
+
     const bool isReady() const;
 
     const std::string &getMessage() const;

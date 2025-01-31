@@ -49,6 +49,20 @@
         "size": 16
     },
     {
+        "id": "snow_tile",
+        "name": "Snow",
+        "rectX": 7,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "snowy_grass_tile",
+        "name": "Grass",
+        "rectX": 8,
+        "rectY": 0,
+        "size": 16
+    },
+    {
         "id": "bush_1",
         "name": "Bush",
         "rectX": 0,

@@ -200,7 +200,11 @@ void GameState::updateDebugText(const float &dt)
             << ", "
             << static_cast<unsigned int>(thisPlayer->getCenter().y /
                                          (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
-            << "]";
+            << "]" << "\n"
+            << "biome: " << map->getBiomeAt(thisPlayer->getCenterGridPosition()).name << "\n"
+            << "height: " << map->getHeightAt(thisPlayer->getCenterGridPosition())
+            << ", moisture: " << map->getHeightAt(thisPlayer->getCenterGridPosition())
+            << ", heat: " << map->getHeatAt(thisPlayer->getCenterGridPosition()) << "\n";
 
     debugText->setString(sstream.str());
 }
