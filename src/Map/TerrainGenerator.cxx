@@ -6,9 +6,9 @@ void TerrainGenerator::initPerlinWaves()
     logger.logInfo("Initializing perlin waves.");
     msg = "Initializing perlin waves...";
 
-    heightWaves = {{120.f, .009f, 4.f}, {300.f, .2f, 1.5f}, {500.f, .018f, 8.f}};
-    moistureWaves = {{622.f, .04f, 5.f}, {200.f, .08f, 2.f}, {400.f, .2f, .8f}};
-    heatWaves = {{318.6f, .05f, 5.f}, {329.7f, .5f, 1.f}};
+    heightWaves = {{120.f, .08f, 8.f}};
+    moistureWaves = {{622.f, .06f, 6.f}, {344.f, .02f, 2.f}};
+    heatWaves = {{318.6f, .06f, 8.f}};
 }
 
 void TerrainGenerator::initNoiseMaps()
@@ -19,8 +19,8 @@ void TerrainGenerator::initNoiseMaps()
     heightMap =
         perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heightWaves, {0.f, 0.f});
     moistureMap =
-        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .18f, moistureWaves, {10.f, 10.f});
-    heatMap = perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heatWaves, {5.f, 5.f});
+        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .011f, moistureWaves, {10.f, 10.f});
+    heatMap = perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .28f, heatWaves, {5.f, 5.f});
 }
 
 void TerrainGenerator::initBiomes()
@@ -29,11 +29,13 @@ void TerrainGenerator::initBiomes()
     msg = "Precomputing biomes...";
 
     biomes = {
-        {BiomeType::Desert, .35f, 0.1f, .8f},  {BiomeType::Forest, .4f, .6f, .4f},
-        {BiomeType::Grassland, .3f, .5f, .5f}, {BiomeType::Jungle, .45f, .8f, .7f},
-        {BiomeType::Mountains, .9f, .3f, .3f}, {BiomeType::Ocean, .35f, .7f, .4f},
-        {BiomeType::Tundra, .8f, .3f, .1f},
+        {BiomeType::Desert, .2f, .1f, .85f},   {BiomeType::Forest, .4f, .85f, .8f},
+        {BiomeType::Grassland, .55f, .5f, .35f}, {BiomeType::Jungle, .45f, .8f, .7f},
+        {BiomeType::Mountains, .95f, .4f, .1f}, {BiomeType::Ocean, .15f, .5f, .6f},
+        {BiomeType::Tundra, .65f, .4f, .1f},
     };
+
+    sf::Image mapImg(MAX_WORLD_GRID_SIZE);
 
     for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; ++x)
     {
@@ -58,7 +60,7 @@ void TerrainGenerator::initBiomes()
             {
             case BiomeType::Desert:
                 biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
-                biomeMap[x][y].baseTileId = "sand";
+                biomeMap[x][y].baseTileId = "sand_tile";
                 break;
             case BiomeType::Forest:
                 biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
@@ -74,21 +76,28 @@ void TerrainGenerator::initBiomes()
                 break;
             case BiomeType::Mountains:
                 biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
-                biomeMap[x][y].baseTileId = "stone";
+                biomeMap[x][y].baseTileId = "stone_tile";
                 break;
             case BiomeType::Ocean:
                 biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                biomeMap[x][y].baseTileId = "water_tile";
+                biomeMap[x][y].baseTileId = "gravel_tile";
                 break;
             case BiomeType::Tundra:
                 biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
                 biomeMap[x][y].baseTileId = "grass_tile";
                 break;
             default:
+                biomeMap[x][y].color = sf::Color::Black;
+                biomeMap[x][y].baseTileId = "unknown";
                 break;
             }
+
+            mapImg.setPixel(sf::Vector2u(x, y), biomeMap[x][y].color);
         }
     }
+
+    if (!mapImg.saveToFile(GLOBAL_FOLDER + "map.png"))
+        logger.logError("Failed to save map image.", false);
 }
 
 void TerrainGenerator::initRandomGrid()
@@ -200,32 +209,43 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                     const auto &biome = biomeMap[x][y];
                     TileData tile_data = tileDB.at(biome.baseTileId);
 
+                    putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
+                                 biome.color),
+                            x, y, 0);
+
                     if (tile_data.id == "grass_tile")
                     {
-                        putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
-                                     biome.color),
-                                x, y, 0);
-
                         // Use precomputed random value for structure placement
                         float randomValue = randomGrid[x][y];
 
-                        if (randomValue < 0.01f)
-                        { // 1% chance for grass_var_1
-                            TileData td = tileDB.at("grass_var_1");
+                        if (randomValue < 0.005f)
+                        {
+                            TileData td = tileDB.at("short_grass");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }
-                        else if (randomValue < 0.04f)
-                        { // 3% chance for grass_var_2
-                            TileData td = tileDB.at("grass_var_2");
+                        if (randomValue < 0.002f)
+                        {
+                            TileData td = tileDB.at("arbust_1");
+                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                                    1);
+                        }
+                        if (randomValue < 0.001f)
+                        {
+                            TileData td = tileDB.at("arbust_2");
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }
                     }
-                    else
+
+                    if (biome.type == BiomeType::Ocean)
                     {
-                        putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale), x,
-                                y, 0);
+                        TileData td = tileDB.at("water_tile");
+
+                        if (biome.baseTileId == "gravel_tile")
+                            putTile(
+                                Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale), x,
+                                y, 1);
                     }
                 }
             }

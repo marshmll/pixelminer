@@ -105,12 +105,12 @@ void WorldSelectionMenuState::initWorldSelectors()
 
         if (worldSelectors.empty())
             worldSelectors.push_back(
-                std::make_unique<WorldSelector>(data, metadata, worldSelectorsList->getPosition().y));
+                std::make_unique<WorldSelector>(data, metadata, std::floor(worldSelectorsList->getPosition().y)));
         else
             worldSelectors.push_back(std::make_unique<WorldSelector>(data, metadata,
-                                                                     worldSelectors.back()->getPosition().y +
-                                                                         worldSelectors.back()->getSize().y +
-                                                                         gui::percent(data.vm->size.y, 2.f)));
+                                                                     std::floor(worldSelectors.back()->getPosition().y +
+                                                                                worldSelectors.back()->getSize().y +
+                                                                                gui::percent(data.vm->size.y, 2.f))));
 
         metadataFile.close();
     }

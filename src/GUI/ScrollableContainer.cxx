@@ -77,7 +77,7 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
         // Clamp view center within scrollable bounds
         newViewCenterY = std::clamp(newViewCenterY, containerTop + container.getSize().y / 2.f,
                                     containerTop + container.getSize().y / 2.f + maxScrollDelta);
-        scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, newViewCenterY));
+        scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, static_cast<int>(newViewCenterY)));
 
         // Update scrollbar position based on view position
         float scrollPercent = (newViewCenterY - (containerTop + container.getSize().y / 2.f)) / maxScrollDelta;
