@@ -29,13 +29,13 @@ void TerrainGenerator::initBiomes()
     msg = "Precomputing biomes...";
 
     biomes = {
-        {BiomeType::Desert, .2f, .1f, .85f},   {BiomeType::Forest, .4f, .85f, .8f},
+        {BiomeType::Desert, .2f, .1f, .85f},     {BiomeType::Forest, .4f, .85f, .8f},
         {BiomeType::Grassland, .55f, .5f, .35f}, {BiomeType::Jungle, .45f, .8f, .7f},
-        {BiomeType::Mountains, .95f, .4f, .1f}, {BiomeType::Ocean, .15f, .5f, .6f},
+        {BiomeType::Mountains, .95f, .4f, .1f},  {BiomeType::Ocean, .15f, .5f, .6f},
         {BiomeType::Tundra, .65f, .4f, .1f},
     };
 
-    sf::Image mapImg(MAX_WORLD_GRID_SIZE);
+    sf::Image mapImg(sf::Vector2u(MAX_WORLD_GRID_SIZE.x / 4, MAX_WORLD_GRID_SIZE.y / 4));
 
     for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; ++x)
     {
@@ -80,7 +80,7 @@ void TerrainGenerator::initBiomes()
                 break;
             case BiomeType::Ocean:
                 biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                biomeMap[x][y].baseTileId = "gravel_tile";
+                biomeMap[x][y].baseTileId = "water_tile";
                 break;
             case BiomeType::Tundra:
                 biomeMap[x][y].color = sf::Color(216, 242, 230, 255);
@@ -92,7 +92,7 @@ void TerrainGenerator::initBiomes()
                 break;
             }
 
-            mapImg.setPixel(sf::Vector2u(x, y), biomeMap[x][y].color);
+            mapImg.setPixel(sf::Vector2u(x / 4, y / 4), biomeMap[x][y].color);
         }
     }
 
@@ -236,16 +236,6 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                             putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
                                     1);
                         }
-                    }
-
-                    if (biome.type == BiomeType::Ocean)
-                    {
-                        TileData td = tileDB.at("water_tile");
-
-                        if (biome.baseTileId == "gravel_tile")
-                            putTile(
-                                Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale), x,
-                                y, 1);
                     }
                 }
             }

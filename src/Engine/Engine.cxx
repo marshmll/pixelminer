@@ -74,10 +74,12 @@ void Engine::initGraphicsSettings()
         }
 
         if (gfx.fullscreen)
-            window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+            window =
+                sf::RenderWindow(vm, "PixelMiner " + static_cast<std::string>(GAME_VERSION), sf::State::Fullscreen);
         else
         {
-            window = sf::RenderWindow(vm, "PixelMiner", sf::Style::Close | sf::Style::Titlebar);
+            window = sf::RenderWindow(vm, "PixelMiner " + static_cast<std::string>(GAME_VERSION),
+                                      sf::Style::Close | sf::Style::Titlebar);
             window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x / 2 - window.getSize().x / 2,
                                             sf::VideoMode::getDesktopMode().size.y / 2 - window.getSize().y / 2));
         }
@@ -91,7 +93,7 @@ void Engine::initGraphicsSettings()
         logger.logInfo("Using default graphics settings.");
 
         vm = sf::VideoMode::getDesktopMode();
-        window = sf::RenderWindow(vm, "PixelMiner", sf::State::Fullscreen);
+        window = sf::RenderWindow(vm, "PixelMiner " + static_cast<std::string>(GAME_VERSION), sf::State::Fullscreen);
         window.setVerticalSyncEnabled(false);
         window.setFramerateLimit(60);
 
