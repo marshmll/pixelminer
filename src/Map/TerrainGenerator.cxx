@@ -88,7 +88,7 @@ void TerrainGenerator::initBiomes()
                 biomeMap[x][y].baseTileId = "snowy_grass_tile";
                 break;
             default:
-                biomeMap[x][y].color = sf::Color::Black;
+                biomeMap[x][y].color = sf::Color::White;
                 biomeMap[x][y].baseTileId = "unknown";
                 break;
             }

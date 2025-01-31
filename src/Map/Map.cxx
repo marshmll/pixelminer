@@ -502,18 +502,27 @@ const BiomeData Map::getBiomeAt(const sf::Vector2i &grid_coords) const
     return this->terrainGenerator->getBiomeData(sf::Vector2u(grid_coords));
 }
 
-const float &Map::getHeightAt(const sf::Vector2i &grid_pos) const
+const float Map::getHeightAt(const sf::Vector2i &grid_pos) const
 {
+    if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
+        return 0.f;
+
     return terrainGenerator->getHeightAt(sf::Vector2u(grid_pos));
 }
 
-const float &Map::getMoistureAt(const sf::Vector2i &grid_pos) const
+const float Map::getMoistureAt(const sf::Vector2i &grid_pos) const
 {
+    if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
+        return 0.f;
+
     return terrainGenerator->getMoistureAt(sf::Vector2u(grid_pos));
 }
 
-const float &Map::getHeatAt(const sf::Vector2i &grid_pos) const
+const float Map::getHeatAt(const sf::Vector2i &grid_pos) const
 {
+    if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
+        return 0.f;
+    
     return terrainGenerator->getHeatAt(sf::Vector2u(grid_pos));
 }
 
