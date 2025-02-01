@@ -17,10 +17,10 @@ void TerrainGenerator::initNoiseMaps()
     msg = "Generating noise maps...";
 
     heightMap =
-        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .08f, heightWaves, {0.f, 0.f});
+        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .06f, heightWaves, {0.f, 0.f});
     moistureMap =
-        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .011f, moistureWaves, {10.f, 10.f});
-    heatMap = perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .28f, heatWaves, {5.f, 5.f});
+        perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .009f, moistureWaves, {10.f, 10.f});
+    heatMap = perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .26f, heatWaves, {5.f, 5.f});
 }
 
 void TerrainGenerator::initBiomes()
