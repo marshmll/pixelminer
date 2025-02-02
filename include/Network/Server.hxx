@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Network/File.hxx"
 #include "Network/PacketAddress.hxx"
 #include "Tools/Logger.hxx"
@@ -29,8 +30,6 @@ class Server
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     std::atomic_bool online;
-
-    sf::Packet pktBuf;
 
     void listenerThread();
 
@@ -62,7 +61,8 @@ class Server
     void sendFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &path,
                   std::ios::openmode mode);
 
-    void receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder);
+    void receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder,
+                     sf::Packet &packet);
 
     void shutdown();
 

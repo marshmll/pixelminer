@@ -7,7 +7,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     socket.setBlocking(true); // Blocking mode for connection
     setReady(false);
 
-    pktBuf.clear();
+    sf::Packet pktBuf;
+
     pktBuf << "ASK+UUID" << myUuid;
 
     if (!send(pktBuf, ip, port))
@@ -60,6 +61,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
 
 void Client::listenerThread()
 {
+    sf::Packet pktBuf;
+
     while (connected)
     {
         std::lock_guard<std::mutex> lock(mutex);
@@ -107,7 +110,7 @@ void Client::handler()
         }
         else if (header == "FILE")
         {
-            receiveFile("Assets/Client/");
+            receiveFile("Assets/Client/", pkt);
         }
     }
 }
@@ -189,7 +192,8 @@ void Client::disconnect()
         return;
     }
 
-    pktBuf.clear();
+    sf::Packet pktBuf;
+
     pktBuf << "KIL" << myUuid;
 
     if (!send(pktBuf))
@@ -236,54 +240,105 @@ const bool Client::send(sf::Packet &packet, const sf::IpAddress &ip, const unsig
 
 void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mode)
 {
+    using namespace std::chrono_literals;
+
     if (!isConnected())
         logger.logError("Not connected to any server.");
 
     if (!File::validatePath(path))
         logger.logError("File \"" + path.string() + "\" does not exist.");
 
-    std::ifstream file(path, mode);
-    if (!file.is_open())
-        logger.logError("Could not open file \"" + path.string() + "\"");
-
     File::FileDescriptor fd = File::createFileDescriptor(path, mode);
+    const size_t HEADER_SIZE = sizeof("FILE") + sizeof(fd);
 
-    if (fd.filesize > sf::UdpSocket::MaxDatagramSize)
-        logger.logError("File \"" + path.string() + "\" too large (" + std::to_string(fd.filesize) + " bytes).");
+    std::ifstream file(path, mode);
 
-    pktBuf.clear();
-    pktBuf << "FILE" << myUuid << fd;
+    for (int i = 0; i < fd.total_parts; ++i)
+    {
+        sf::Packet packet;
+        packet << "FILE" << fd;
 
-    char c;
-    while (file.get(c))
-        pktBuf << c;
+        unsigned int bytes = 0;
+        if (mode == std::ios::binary)
+        {
+            std::uint8_t byte;
+            while (bytes < sf::UdpSocket::MaxDatagramSize - HEADER_SIZE)
+            {
+                if (!file.read(reinterpret_cast<char *>(&byte), sizeof(byte)))
+                    break;
+
+                packet << byte;
+                ++bytes;
+            }
+        }
+        else
+        {
+            char c;
+            while (bytes < sf::UdpSocket::MaxDatagramSize - HEADER_SIZE)
+            {
+                if (!file.get(c))
+                    break;
+
+                packet << c;
+                ++bytes;
+            }
+        }
+
+        if (!send(packet, serverIp, serverPort))
+        {
+            logger.logError("Error sending file part " + std::to_string(fd.part) + "/" +
+                            std::to_string(fd.total_parts) + " (" + std::to_string(bytes) + " bytes) of file " +
+                            fd.filename + "to: " + serverIp.toString() + ":" + std::to_string(serverPort));
+        }
+        else
+        {
+            logger.logInfo("Sent file part: " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) + " (" +
+                           std::to_string(bytes) + " bytes) of file " + fd.filename);
+            ++fd.part;
+            std::this_thread::sleep_for(20ms); // Reduce network congestion
+        }
+    }
 
     file.close();
-
-    if (send(pktBuf))
-        logger.logInfo("Sent file \"" + path.string() + "\" (" + std::to_string(fd.filesize) + " bytes) to " +
-                       serverIp.toString());
 }
 
-void Client::receiveFile(const std::filesystem::path &folder)
+void Client::receiveFile(const std::filesystem::path &folder, sf::Packet &packet)
 {
     if (!File::validatePath(folder))
         std::filesystem::create_directory(folder);
 
     File::FileDescriptor fd;
-    pktBuf >> fd;
+    packet >> fd;
 
-    std::ofstream file(folder / fd.filename, static_cast<std::ios::openmode>(fd.mode));
+    std::ios::openmode modes = fd.part > 1 ? static_cast<std::ios::openmode>(fd.mode) | std::ios::app
+                                           : static_cast<std::ios::openmode>(fd.mode);
+
+    std::ofstream file(folder / fd.filename, modes);
     if (!file.is_open())
-        logger.logError("Could not write file \"" + (folder / fd.filename).string() + "\"");
+    {
+        logger.logError("Could not write to file: \"" + (folder / fd.filename).string() + "\"");
+    }
 
-    std::uint8_t c;
-    while (pktBuf >> c)
-        file.put(c);
+    if (static_cast<std::ios::openmode>(fd.mode) == std::ios::binary)
+    {
+        std::uint8_t byte;
+        while (packet >> byte)
+        {
+            file.write(reinterpret_cast<const char *>(&byte), sizeof(byte));
+        }
+    }
+    else
+    {
+        std::uint8_t c;
+        while (packet >> c)
+        {
+            file.put(static_cast<char>(c));
+        }
+    }
 
     file.close();
-    logger.logInfo("Received file \"" + (folder / fd.filename).string() + "\" (" + std::to_string(fd.filesize) +
-                   " bytes).");
+    logger.logInfo("Received file part " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) +
+                   " of file: " + fd.filename);
 }
 
 std::optional<std::pair<PacketAddress, sf::Packet>> Client::consumePacket()
@@ -291,7 +346,7 @@ std::optional<std::pair<PacketAddress, sf::Packet>> Client::consumePacket()
     if (packetQueue.empty())
         return std::nullopt;
 
-    auto packet = packetQueue.front();
+    auto packet = std::move(packetQueue.front());
     packetQueue.pop();
     return packet;
 }

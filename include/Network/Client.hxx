@@ -24,8 +24,6 @@ class Client
     bool ready;
     bool connected;
 
-    sf::Packet pktBuf;
-
     std::optional<sf::IpAddress> ipBuffer;
     unsigned short portBuf;
 
@@ -65,7 +63,7 @@ class Client
 
     void sendFile(const std::filesystem::path &path, std::ios::openmode &mode);
 
-    void receiveFile(const std::filesystem::path &folder);
+    void receiveFile(const std::filesystem::path &folder, sf::Packet &packet);
 
     std::optional<std::pair<PacketAddress, sf::Packet>> consumePacket();
 };

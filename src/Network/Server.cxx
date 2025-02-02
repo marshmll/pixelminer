@@ -8,6 +8,8 @@ void Server::listenerThread()
     logger.logInfo("[ Server::listenerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
                    std::to_string(socket.getLocalPort()) + ") online.");
 
+    sf::Packet pktBuf;
+
     while (online)
     {
         {
@@ -57,7 +59,7 @@ void Server::handler()
         }
         else if (header == "FILE")
         {
-            receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server");
+            receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server", pkt);
         }
     }
 }
@@ -87,12 +89,12 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short port)
 {
-    if (uuid == myUuid)
-    {
-        logger.logError("Connecting to self is not allowed.", false);
-        sendControlMessage("RFS", ip, port);
-        return;
-    }
+    // if (uuid == myUuid)
+    // {
+    //     logger.logError("Connecting to self is not allowed.", false);
+    //     sendControlMessage("RFS", ip, port);
+    //     return;
+    // }
 
     auto it = connections.find(uuid);
     if (it != connections.end())
@@ -130,7 +132,10 @@ Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), online
     socket.setBlocking(true);
 }
 
-Server::~Server() = default;
+Server::~Server()
+{
+    shutdown();
+}
 
 /* PUBLIC METHODS =========================================================================================== */
 
@@ -205,6 +210,8 @@ void Server::sendControlMessage(const std::string &header, const sf::IpAddress &
 void Server::sendFile(const sf::IpAddress &ip, const unsigned short port, const std::filesystem::path &path,
                       std::ios::openmode mode)
 {
+    using namespace std::chrono_literals;
+
     if (!isClientConnected(ip, port))
     {
         logger.logError("Client is not connected: " + ip.toString());
@@ -217,46 +224,62 @@ void Server::sendFile(const sf::IpAddress &ip, const unsigned short port, const 
         return;
     }
 
-    File::FileDescriptor f_desc = File::createFileDescriptor(path, mode);
-    if (f_desc.filesize > sf::UdpSocket::MaxDatagramSize)
-    {
-        throw std::runtime_error("File too big: " + path.string());
-    }
-
-    sf::Packet packet;
-    packet << "FILE" << f_desc;
+    File::FileDescriptor fd = File::createFileDescriptor(path, mode);
+    const size_t HEADER_SIZE = sizeof("FILE") + sizeof(fd);
 
     std::ifstream file(path, mode);
-    if (mode == std::ios::binary)
+
+    for (int i = 0; i < fd.total_parts; ++i)
     {
-        std::uint8_t byte;
-        while (file.read(reinterpret_cast<char *>(&byte), sizeof(byte)))
+        sf::Packet packet;
+        packet << "FILE" << fd;
+
+        unsigned int bytes = 0;
+        if (mode == std::ios::binary)
         {
-            packet << byte;
+            std::uint8_t byte;
+            while (bytes < sf::UdpSocket::MaxDatagramSize - HEADER_SIZE)
+            {
+                if (!file.read(reinterpret_cast<char *>(&byte), sizeof(byte)))
+                    break;
+
+                packet << byte;
+                ++bytes;
+            }
         }
-    }
-    else
-    {
-        char c;
-        while (file.get(c))
+        else
         {
-            packet << c;
+            char c;
+            while (bytes < sf::UdpSocket::MaxDatagramSize - HEADER_SIZE)
+            {
+                if (!file.get(c))
+                    break;
+
+                packet << c;
+                ++bytes;
+            }
+        }
+
+        if (!send(packet, ip, port))
+        {
+            logger.logError("Error sending file part " + std::to_string(fd.part) + "/" +
+                            std::to_string(fd.total_parts) + " (" + std::to_string(bytes) + " bytes) of file " +
+                            fd.filename + "to: " + ip.toString() + ":" + std::to_string(port));
+        }
+        else
+        {
+            logger.logInfo("Sent file part: " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) + " (" +
+                           std::to_string(bytes) + " bytes) of file " + fd.filename);
+            ++fd.part;
+            std::this_thread::sleep_for(20ms); // Reduce network congestion
         }
     }
 
     file.close();
-
-    if (!send(packet, ip, port))
-    {
-        logger.logError("Error sending file to: " + ip.toString() + ":" + std::to_string(port));
-    }
-    else
-    {
-        logger.logInfo("Sent file " + f_desc.filename);
-    }
 }
 
-void Server::receiveFile(const sf::IpAddress &ip, const unsigned short port, const std::filesystem::path &folder)
+void Server::receiveFile(const sf::IpAddress &ip, const unsigned short port, const std::filesystem::path &folder,
+                         sf::Packet &packet)
 {
     if (!isClientConnected(ip, port))
     {
@@ -268,25 +291,19 @@ void Server::receiveFile(const sf::IpAddress &ip, const unsigned short port, con
         std::filesystem::create_directory(folder);
     }
 
-    std::string path_str = folder.string();
-    if (path_str.back() != '/')
-    {
-        path_str.push_back('/');
-    }
+    File::FileDescriptor fd;
+    packet >> fd;
 
-    File::FileDescriptor f_desc;
-    pktBuf >> f_desc;
-
-    std::ofstream file(path_str + f_desc.filename, static_cast<std::ios::openmode>(f_desc.mode));
+    std::ofstream file(folder / fd.filename, static_cast<std::ios::openmode>(fd.mode) | std::ios::app);
     if (!file.is_open())
     {
-        throw std::runtime_error("Could not write file: " + path_str + f_desc.filename);
+        logger.logError("Could not write file: " + (folder / fd.filename).string());
     }
 
-    if (static_cast<std::ios::openmode>(f_desc.mode) == std::ios::binary)
+    if (static_cast<std::ios::openmode>(fd.mode) == std::ios::binary)
     {
         std::uint8_t byte;
-        while (pktBuf >> byte)
+        while (packet >> byte)
         {
             file.write(reinterpret_cast<const char *>(&byte), sizeof(byte));
         }
@@ -294,24 +311,21 @@ void Server::receiveFile(const sf::IpAddress &ip, const unsigned short port, con
     else
     {
         std::uint8_t c;
-        while (pktBuf >> c)
+        while (packet >> c)
         {
             file.put(static_cast<char>(c));
         }
     }
 
-    pktBuf.clear();
     file.close();
-    logger.logInfo("Received file: " + f_desc.filename);
+    logger.logInfo("Received file part " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) +
+                   "of file: " + fd.filename);
 }
 
 void Server::shutdown()
 {
     if (!online)
-    {
-        logger.logError("Server is not online", false);
         return;
-    }
 
     for (const auto &[uuid, conn] : connections)
     {

@@ -71,7 +71,7 @@ void GameState::initDebugging()
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
-GameState::GameState(EngineData &data) : State(data)
+GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(data.uuid)
 {
     initLoadingScreen();
     initMap();
@@ -82,7 +82,8 @@ GameState::GameState(EngineData &data) : State(data)
     initDebugging();
 }
 
-GameState::GameState(EngineData &data, const std::string &map_folder_name) : State(data)
+GameState::GameState(EngineData &data, const std::string &map_folder_name)
+    : State(data), client(data.uuid), server(data.uuid)
 {
     initLoadingScreen();
     initMap(map_folder_name);
@@ -91,6 +92,9 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name) : Sta
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
+
+    server.listen(55000);
+    client.connect({127, 0, 0, 1}, 55000);
 }
 
 GameState::~GameState()

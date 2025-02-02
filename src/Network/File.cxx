@@ -8,7 +8,9 @@ File::FileDescriptor File::createFileDescriptor(std::filesystem::path path, std:
     fd.filesize = std::filesystem::file_size(path);
     fd.mode = static_cast<int>(mode);
     fd.part = 1;
-    fd.total_parts = 1;
+    fd.total_parts = static_cast<unsigned short>(
+        std::ceil(static_cast<float>(fd.filesize) /
+                  static_cast<float>(sf::UdpSocket::MaxDatagramSize - sizeof(fd) - sizeof("FILE"))));
 
     return fd;
 }
