@@ -5,7 +5,7 @@ void GameState::initLoadingScreen()
 {
     loadingBg.setSize(sf::Vector2f(data.vm->size));
     loadingBg.setPosition({0, 0});
-    loadingBg.setTexture(&data.activeResourcePack->textures.at("Background"));
+    loadingBg.setTexture(&data.activeResourcePack->getTexture("Background"));
     loadingBg.setFillColor(sf::Color(255, 255, 255, 80));
 
     loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
@@ -25,13 +25,13 @@ void GameState::initLoadingScreen()
 
 void GameState::initMap()
 {
-    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
+    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->getTexture("TileSheet"),
                                 data.gridSize, data.scale);
 }
 
 void GameState::initMap(const std::string &map_folder_name)
 {
-    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->textures.at("TileSheet"),
+    map = std::make_unique<Map>(data.activeResourcePack->tileDB, data.activeResourcePack->getTexture("TileSheet"),
                                 data.gridSize, data.scale);
 
     map->load(map_folder_name);
@@ -39,8 +39,8 @@ void GameState::initMap(const std::string &map_folder_name)
 
 void GameState::initThisPlayer()
 {
-    players[data.uuid] =
-        std::make_shared<Player>("My New World", data.uuid, data.activeResourcePack->getTexture("Player1"), data.scale);
+    players[data.uuid] = std::make_shared<Player>("marshmll", map->getFolderName(), data.uuid, map->getSpawnPoint(),
+                                                  data.activeResourcePack->getTexture("Player1"), data.scale);
 
     thisPlayer = players.at(data.uuid);
 }

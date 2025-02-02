@@ -18,7 +18,7 @@ add_subdirectory(src)
 target_link_libraries(pixelminer PRIVATE SFML::Graphics SFML::Network SFML::Audio)
 target_compile_features(pixelminer PRIVATE cxx_std_17)
 
-target_compile_definitions(pixelminer PRIVATE DEBUG=1 GAME_VERSION="Alpha 0.1.1" METADATA_VERSION="1.0.0" TERRAIN_GENERATOR_VERSION="1.1.0")
+target_compile_definitions(pixelminer PRIVATE DEBUG=1 GAME_VERSION="Alpha 0.1.2" METADATA_VERSION="1.0.0" TERRAIN_GENERATOR_VERSION="1.1.0")
 
 target_include_directories(pixelminer PRIVATE include/)
 

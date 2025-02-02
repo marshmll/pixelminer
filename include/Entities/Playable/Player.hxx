@@ -25,10 +25,8 @@ class Player : public Entity
     const bool loadPlayerData(const std::string &folder_name, const std::string &uuid);
 
   public:
-    Player(const std::string &name, const std::string &uuid, const sf::Vector2f spawn_position,
-           sf::Texture &sprite_sheet, const float &scale);
-
-    Player(const std::string &folder_name, const std::string &uuid, sf::Texture &sprite_sheet, const float &scale);
+    Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
+           const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale);
 
     ~Player();
 

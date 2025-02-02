@@ -49,12 +49,12 @@ PauseMenu::PauseMenu(EngineData &data) : active(false), quit(false), data(data)
         std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
                                                        buttonContainer.getPosition().y + (btn_height + gap) * 3),
                                           sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200),
-                                          "Open to LAN", data.activeResourcePack->fonts.at("Regular"),
+                                          "Open To LAN", data.activeResourcePack->fonts.at("Regular"),
                                           gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["SaveAndQuit"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 4),
-        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save and Quit to Main Menu",
+        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save And Quit To Main Menu",
         data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 }

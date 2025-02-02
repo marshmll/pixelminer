@@ -42,14 +42,6 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     if (!player_data_file.is_open())
         throw std::runtime_error("[ Player ] -> Failed to open player data file: " + uuid + ".dat");
 
-    uint8_t name_size;
-    char buf[256];
-
-    // Name
-    player_data_file.read(reinterpret_cast<char *>(&name_size), sizeof(uint8_t));
-    player_data_file.read(buf, name_size);
-    playerData.name = std::string(buf, name_size);
-
     // Current Position
     player_data_file.read(reinterpret_cast<char *>(&playerData.currentPosition.x), sizeof(float));
     player_data_file.read(reinterpret_cast<char *>(&playerData.currentPosition.y), sizeof(float));
@@ -82,38 +74,35 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     return true;
 }
 
-Player::Player(const std::string &name, const std::string &uuid, const sf::Vector2f spawn_position,
-               sf::Texture &sprite_sheet, const float &scale)
+Player::Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
+               const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
     : Entity(name, spawn_position, sprite_sheet, scale)
 {
-    createMovementFunctionality(100.f, Movement::AllowAll);
-    createAnimationFunctionality();
-    createAttributeFunctionality(20, 20);
-    initPlayerAnimations();
+    if (loadPlayerData(folder_name, uuid))
+    {
+        spawnPosition = playerData.spawnPosition;
+        setPosition(playerData.currentPosition);
+        createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
+        createAnimationFunctionality();
+        createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
+        attributeFunctionality->setHealth(playerData.health);
+        attributeFunctionality->setHunger(playerData.hunger);
+        initPlayerAnimations();
 
-    std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id << " spawned at x: " << std::dec
-              << spawn_position.x << ", y: " << spawn_position.y << "\n";
-}
+        std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
+                  << " loaded from file. Spawned at x: " << std::dec << spawn_position.x << ", y: " << spawn_position.y
+                  << "\n";
+    }
+    else
+    {
+        createMovementFunctionality(100.f, Movement::AllowAll);
+        createAnimationFunctionality();
+        createAttributeFunctionality(20, 20);
+        initPlayerAnimations();
 
-Player::Player(const std::string &folder_name, const std::string &uuid, sf::Texture &sprite_sheet, const float &scale)
-    : Entity("", sf::Vector2f(), sprite_sheet, scale)
-{
-    if (!loadPlayerData(folder_name, uuid))
-        throw std::runtime_error("Could not load player data to player with UUID: " + uuid);
-
-    name = playerData.name;
-    spawnPosition = playerData.spawnPosition;
-    setPosition(playerData.currentPosition);
-    createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
-    createAnimationFunctionality();
-    createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
-    attributeFunctionality->setHealth(playerData.health);
-    attributeFunctionality->setHunger(playerData.hunger);
-    initPlayerAnimations();
-
-    std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-              << " loaded from file, spawned at x: " << std::dec << getPosition().x << ", y: " << getPosition().y
-              << "\n";
+        std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
+                  << " spawned at x: " << std::dec << spawn_position.x << ", y: " << spawn_position.y << "\n";
+    }
 }
 
 Player::~Player()
@@ -171,11 +160,6 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
 
     if (!player_data_file.is_open())
         throw std::runtime_error("[ Player ] -> Failed to save player data: " + name);
-
-    uint8_t name_size = playerData.name.size();
-
-    player_data_file.write(reinterpret_cast<char *>(&name_size), sizeof(uint8_t));
-    player_data_file.write(reinterpret_cast<char *>(playerData.name.data()), playerData.name.size());
 
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentPosition.x), sizeof(float));
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentPosition.y), sizeof(float));
