@@ -111,7 +111,7 @@ void Engine::initVariables()
     dtClock.restart();
 
     gridSize = GRID_SIZE; // 16x16 pixels tile textures.
-    scale = std::max(1u, static_cast<unsigned int>(std::ceil((vm.size.x + vm.size.y) / 693.f)));
+    scale = std::max(1u, static_cast<unsigned int>(std::roundf((vm.size.x + vm.size.y) / 693.f)));
 }
 
 void Engine::initResourcePacks()

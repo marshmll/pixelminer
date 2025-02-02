@@ -8,7 +8,7 @@ Random::Random(const long long int &seed)
     current = tmp;
 }
 
-// Generate a random number in the range [0, 1)
+// Generate a random number in the range [0, 1]
 float Random::nextFloat()
 {
     current = (a * current + c) % m;

@@ -8,8 +8,8 @@
 struct EntityData
 {
     std::string name;
-    sf::Vector2f currentPosition;
-    sf::Vector2f spawnPosition;
+    sf::Vector2f currentGridPosition;
+    sf::Vector2f spawnGridPosition;
 };
 
 class Entity
@@ -18,7 +18,7 @@ class Entity
     std::string name;
     uint64_t id; // Unique session identifier
 
-    sf::Vector2f spawnPosition;
+    sf::Vector2f spawnGridPosition;
 
     sf::Texture &spriteSheet;
     sf::Sprite sprite;
@@ -36,7 +36,9 @@ class Entity
     void createAttributeFunctionality(const uint8_t &max_health, const uint8_t &max_hunger);
 
   public:
-    Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale);
+    Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
+           const float &scale);
+
     virtual ~Entity();
 
     virtual void update(const float &dt);

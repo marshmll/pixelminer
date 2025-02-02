@@ -1,22 +1,22 @@
 {
-    "creationDate": 1738071674,
+    "creationDate": 1738510139,
     "dataPacks": {
         "disabled": [
 
         ],
         "enabled": [
-            "Vanilla"
+            "vanilla"
         ]
     },
     "dayTime": 300000,
     "difficulty": "normal",
-    "gameVersion": "Alpha 0.0.1",
+    "gameVersion": "Alpha 0.1.2",
     "generatorName": "default",
-    "lastPlayed": 1738506217,
+    "lastPlayed": 1738511612,
     "metadataVersion": "1.0.0",
     "name": "My New World",
     "seed": 56465456464654,
-    "spawnX": 1888,
-    "spawnY": 21632,
-    "timePlayed": 290.502
+    "spawnX": 483,
+    "spawnY": 570,
+    "timePlayed": 205.601
 }

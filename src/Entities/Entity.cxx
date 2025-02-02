@@ -17,13 +17,14 @@ void Entity::createAttributeFunctionality(const uint8_t &max_health, const uint8
     attributeFunctionality.emplace(max_health, max_hunger);
 }
 
-Entity::Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
+Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
+               const float &scale)
 
-    : name(name), spawnPosition(spawn_position), id(reinterpret_cast<uint64_t>(this)), spriteSheet(sprite_sheet),
-      sprite(spriteSheet)
+    : name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
+      spriteSheet(sprite_sheet), sprite(spriteSheet)
 {
-    sprite.setPosition(spawnPosition);
     sprite.setScale({scale, scale});
+    sprite.setPosition(spawnGridPosition * static_cast<float>(GRID_SIZE * scale));
 }
 
 Entity::~Entity()

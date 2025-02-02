@@ -18,8 +18,8 @@ void Player::initPlayerAnimations()
 void Player::preparePlayerData(const std::string &uuid)
 {
     playerData.name = name;
-    playerData.currentPosition = getPosition();
-    playerData.spawnPosition = spawnPosition;
+    playerData.currentGridPosition = getPosition() / (GRID_SIZE * sprite.getScale().x);
+    playerData.spawnGridPosition = spawnGridPosition;
     playerData.maxVelocity = movementFunctionality->getMaxVelocity();
     playerData.movFlags = movementFunctionality->getFlags();
     playerData.movDirection = movementFunctionality->getDirection();
@@ -43,13 +43,13 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
         throw std::runtime_error("[ Player ] -> Failed to open player data file: " + uuid + ".dat");
 
     // Current Position
-    player_data_file.read(reinterpret_cast<char *>(&playerData.currentPosition.x), sizeof(float));
-    player_data_file.read(reinterpret_cast<char *>(&playerData.currentPosition.y), sizeof(float));
+    player_data_file.read(reinterpret_cast<char *>(&playerData.currentGridPosition.x), sizeof(float));
+    player_data_file.read(reinterpret_cast<char *>(&playerData.currentGridPosition.y), sizeof(float));
 
     // Spawnpoint
-    player_data_file.read(reinterpret_cast<char *>(&playerData.spawnPosition.x), sizeof(float));
-    player_data_file.read(reinterpret_cast<char *>(&playerData.spawnPosition.y), sizeof(float));
-    spawnPosition = playerData.spawnPosition;
+    player_data_file.read(reinterpret_cast<char *>(&playerData.spawnGridPosition.x), sizeof(float));
+    player_data_file.read(reinterpret_cast<char *>(&playerData.spawnGridPosition.y), sizeof(float));
+    spawnGridPosition = playerData.spawnGridPosition;
 
     // Movement
     player_data_file.read(reinterpret_cast<char *>(&playerData.maxVelocity), sizeof(float));
@@ -62,9 +62,8 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     player_data_file.read(reinterpret_cast<char *>(&playerData.maxHunger), sizeof(uint8_t));
     player_data_file.read(reinterpret_cast<char *>(&playerData.hunger), sizeof(uint8_t));
 
-    // std::cout << playerData.name << "\n"
-    //           << playerData.currentPosition.x << ", " << playerData.currentPosition.y << "\n"
-    //           << playerData.spawnPosition.x << ", " << playerData.spawnPosition.y << "\n"
+    // std::cout << playerData.currentGridPosition.x << ", " << playerData.currentGridPosition.y << "\n"
+    //           << playerData.spawnGridPosition.x << ", " << playerData.spawnGridPosition.y << "\n"
     //           << playerData.maxVelocity << "\n"
     //           << static_cast<int>(playerData.movFlags) << "\n"
     //           << static_cast<int>(playerData.movDirection) << "\n";
@@ -75,13 +74,13 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
 }
 
 Player::Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
-               const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
-    : Entity(name, spawn_position, sprite_sheet, scale)
+               const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
+    : Entity(name, spawn_grid_position, sprite_sheet, scale)
 {
     if (loadPlayerData(folder_name, uuid))
     {
-        spawnPosition = playerData.spawnPosition;
-        setPosition(playerData.currentPosition);
+        spawnGridPosition = playerData.spawnGridPosition;
+        setPosition(playerData.currentGridPosition * static_cast<float>(GRID_SIZE * scale));
         createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
         createAnimationFunctionality();
         createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
@@ -90,8 +89,8 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initPlayerAnimations();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " loaded from file. Spawned at x: " << std::dec << spawn_position.x << ", y: " << spawn_position.y
-                  << "\n";
+                  << " loaded from file. Spawned at x: " << std::dec << playerData.currentGridPosition.x
+                  << ", y: " << playerData.currentGridPosition.y << "\n";
     }
     else
     {
@@ -101,7 +100,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initPlayerAnimations();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " spawned at x: " << std::dec << spawn_position.x << ", y: " << spawn_position.y << "\n";
+                  << " spawned at x: " << std::dec << spawn_grid_position.x << ", y: " << spawn_grid_position.y << "\n";
     }
 }
 
@@ -161,11 +160,11 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     if (!player_data_file.is_open())
         throw std::runtime_error("[ Player ] -> Failed to save player data: " + name);
 
-    player_data_file.write(reinterpret_cast<char *>(&playerData.currentPosition.x), sizeof(float));
-    player_data_file.write(reinterpret_cast<char *>(&playerData.currentPosition.y), sizeof(float));
+    player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.x), sizeof(float));
+    player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.y), sizeof(float));
 
-    player_data_file.write(reinterpret_cast<char *>(&playerData.spawnPosition.x), sizeof(float));
-    player_data_file.write(reinterpret_cast<char *>(&playerData.spawnPosition.y), sizeof(float));
+    player_data_file.write(reinterpret_cast<char *>(&playerData.spawnGridPosition.x), sizeof(float));
+    player_data_file.write(reinterpret_cast<char *>(&playerData.spawnGridPosition.y), sizeof(float));
 
     player_data_file.write(reinterpret_cast<char *>(&playerData.maxVelocity), sizeof(float));
     player_data_file.write(reinterpret_cast<char *>(&playerData.movFlags), sizeof(uint8_t));

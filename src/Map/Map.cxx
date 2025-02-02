@@ -27,8 +27,8 @@ void Map::initMetadata(const std::string &name, const long int &seed)
     metadata.lastPlayed = -1;
     metadata.name = name;
     metadata.seed = seed;
-    metadata.spawnX = static_cast<float>((rng.nextInt(0, INT32_MAX) % MAX_WORLD_GRID_SIZE.x) * gridSize);
-    metadata.spawnY = static_cast<float>((rng.nextInt(0, INT32_MAX) % MAX_WORLD_GRID_SIZE.y) * gridSize);
+    metadata.spawnX = static_cast<float>(rng.nextFloat() * MAX_WORLD_GRID_SIZE.x);
+    metadata.spawnY = static_cast<float>(rng.nextFloat() * MAX_WORLD_GRID_SIZE.y);
     metadata.timePlayed = 0;
 }
 
@@ -322,6 +322,7 @@ void Map::load(const std::string &name)
 
     JObject metadataObj = JSON::parse(ss.str()).getAs<JObject>();
     metadataObj >> metadata;
+    metadataFile.close();
 
     msg = "Initializing terrain generator...";
     std::thread(&Map::initTerrainGenerator, this, metadata.seed).detach();
