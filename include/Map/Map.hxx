@@ -16,6 +16,7 @@ class Map
     std::atomic_bool ready; // Flag for loading status.
     std::string msg;        // User feedback
 
+    std::string folderName;
     Metadata metadata;
 
     std::unique_ptr<TerrainGenerator> terrainGenerator;
@@ -93,6 +94,8 @@ class Map
     const bool isReady() const;
 
     const std::string &getMessage() const;
+
+    const std::string &getFolderName() const;
 
     const bool isRegionLoaded(const sf::Vector2i &region_index) const;
 };

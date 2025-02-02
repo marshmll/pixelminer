@@ -1,15 +1,18 @@
 #pragma once
 
-enum Movement : std::uint8_t
+enum Movement : uint8_t
 {
-    AllowUp = 0b00000001,    // Allow moving upwards
-    AllowDown = 0b00000010,  // Allow moving downwards
-    AllowLeft = 0b00000100,  // Allow moving leftwards
-    AllowRight = 0b00001000, // Allow moving rightwards
-    AllowAll = 0b00001111,   // Allow moving all directions
+    AllowUp = 0b00000001,     // Allow moving upwards
+    AllowDown = 0b00000010,   // Allow moving downwards
+    AllowLeft = 0b00000100,   // Allow moving leftwards
+    AllowRight = 0b00001000,  // Allow moving rightwards
+    AllowSprint = 0b00010000, // Allow sprinting (depends on movement allow)
+    AllowJump = 0b00100000,   // Allow jumping
+    AllowCrouch = 0b01000000, // Allow crouch
+    AllowAll = 0b11111111,    // Allow all movements
 };
 
-enum MovementState : unsigned int
+enum MovementState : uint8_t
 {
     Idle = 0,
     Walking,
@@ -18,7 +21,7 @@ enum MovementState : unsigned int
     Crouching,
 };
 
-enum MovementDirection : unsigned int
+enum MovementDirection : uint8_t
 {
     Up = 0,
     Down,
@@ -31,23 +34,28 @@ class MovementFunctionality
   private:
     sf::Sprite &sprite;
     float maxVelocity;
-    std::uint8_t movementFlags;
-
-    MovementState state;
-    MovementDirection direction;
+    uint8_t flags;
+    uint8_t state;
+    uint8_t direction;
 
   public:
-    MovementFunctionality(sf::Sprite &sprite, const float max_velocity, const std::uint8_t movement_flags);
+    MovementFunctionality(sf::Sprite &sprite, const float max_velocity, const uint8_t &movement_flags,
+                          const uint8_t &movement_direction = MovementDirection::Down,
+                          const uint8_t &movement_state = MovementState::Idle);
 
     ~MovementFunctionality();
 
     void update();
 
-    void move(const float &dt, const MovementDirection direction);
+    void move(const float &dt, const uint8_t direction);
 
-    const MovementState &getState() const;
+    const float &getMaxVelocity() const;
 
-    const MovementDirection &getDirection() const;
+    const uint8_t &getState() const;
+
+    const uint8_t &getDirection() const;
+
+    const uint8_t &getFlags() const;
 
     const std::string getDirectionAsString() const;
 };

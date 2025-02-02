@@ -2,9 +2,10 @@
 #include "stdafx.hxx"
 
 MovementFunctionality::MovementFunctionality(sf::Sprite &sprite, const float max_velocity,
-                                             const std::uint8_t movement_flags)
-    : sprite(sprite), maxVelocity(max_velocity), movementFlags(movement_flags), state(MovementState::Idle),
-      direction(MovementDirection::Down)
+                                             const uint8_t &movement_flags, const uint8_t &movement_direction,
+                                             const uint8_t &movement_state)
+    : sprite(sprite), maxVelocity(max_velocity), flags(movement_flags), state(movement_state),
+      direction(movement_direction)
 {
 }
 
@@ -17,27 +18,27 @@ void MovementFunctionality::update()
     state = MovementState::Idle;
 }
 
-void MovementFunctionality::move(const float &dt, const MovementDirection direction)
+void MovementFunctionality::move(const float &dt, const uint8_t direction)
 {
-    if (direction == MovementDirection::Up && movementFlags & Movement::AllowUp)
+    if (direction == MovementDirection::Up && flags & Movement::AllowUp)
     {
         this->direction = direction;
         state = MovementState::Walking;
         sprite.move(sf::Vector2f(0.f, std::round(-maxVelocity * sprite.getScale().y * dt)));
     }
-    else if (direction == MovementDirection::Down && movementFlags & Movement::AllowDown)
+    else if (direction == MovementDirection::Down && flags & Movement::AllowDown)
     {
         this->direction = direction;
         state = MovementState::Walking;
         sprite.move(sf::Vector2f(0.f, std::round(maxVelocity * sprite.getScale().y * dt)));
     }
-    else if (direction == MovementDirection::Left && movementFlags & Movement::AllowLeft)
+    else if (direction == MovementDirection::Left && flags & Movement::AllowLeft)
     {
         this->direction = direction;
         state = MovementState::Walking;
         sprite.move(sf::Vector2f(std::round(-maxVelocity * sprite.getScale().x) * dt, 0.f));
     }
-    else if (direction == MovementDirection::Right && movementFlags & Movement::AllowRight)
+    else if (direction == MovementDirection::Right && flags & Movement::AllowRight)
     {
         this->direction = direction;
         state = MovementState::Walking;
@@ -45,14 +46,24 @@ void MovementFunctionality::move(const float &dt, const MovementDirection direct
     }
 }
 
-const MovementState &MovementFunctionality::getState() const
+const float &MovementFunctionality::getMaxVelocity() const
+{
+    return maxVelocity;
+}
+
+const uint8_t &MovementFunctionality::getState() const
 {
     return state;
 }
 
-const MovementDirection &MovementFunctionality::getDirection() const
+const uint8_t &MovementFunctionality::getDirection() const
 {
     return direction;
+}
+
+const uint8_t &MovementFunctionality::getFlags() const
+{
+    return flags;
 }
 
 const std::string MovementFunctionality::getDirectionAsString() const

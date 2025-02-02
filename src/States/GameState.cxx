@@ -40,7 +40,8 @@ void GameState::initMap(const std::string &map_folder_name)
 void GameState::initThisPlayer()
 {
     players[data.uuid] =
-        std::make_shared<Player>(map->getSpawnPoint(), data.activeResourcePack->textures.at("Player1"), data.scale);
+        std::make_shared<Player>("My New World", data.uuid, data.activeResourcePack->getTexture("Player1"), data.scale);
+
     thisPlayer = players.at(data.uuid);
 }
 
@@ -57,7 +58,7 @@ void GameState::initPlayerCamera()
 
 void GameState::initPauseMenu()
 {
-    pauseMenu = std::make_unique<gui::PauseMenu>(data, *map);
+    pauseMenu = std::make_unique<gui::PauseMenu>(data);
 }
 
 void GameState::initDebugging()
@@ -65,7 +66,7 @@ void GameState::initDebugging()
     debugChunks = debugInfo = false;
 
     debugText =
-        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Italic"), "0", gui::charSize(*data.vm, 130));
+        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Italic"), "", gui::charSize(*data.vm, 130));
     debugText->setPosition(
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
@@ -111,7 +112,15 @@ void GameState::update(const float &dt)
     updatePauseMenu(dt);
 
     if (pauseMenu->isActive())
+    {
+        if (pauseMenu->getQuit())
+        {
+            saveWorld();
+            killSelf();
+        }
+
         return;
+    }
 
     updateMap(dt);
     updatePlayers(dt);
@@ -241,4 +250,12 @@ void GameState::render(sf::RenderTarget &target)
     renderSprite.setTexture(renderTexture.getTexture());
 
     target.draw(renderSprite);
+}
+
+void GameState::saveWorld()
+{
+    map->save();
+
+    for (auto &[uuid, player] : players)
+        player->save(map->getFolderName(), uuid);
 }

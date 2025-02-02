@@ -1,9 +1,10 @@
 #include "Entities/Entity.hxx"
 #include "stdafx.hxx"
 
-void Entity::createMovementFunctionality(const float &max_velocity, const std::uint8_t &movement_flags)
+void Entity::createMovementFunctionality(const float &max_velocity, const uint8_t &movement_flags,
+                                         const uint8_t &movement_direction, const uint8_t &movement_state)
 {
-    movementFunctionality.emplace(sprite, max_velocity, movement_flags);
+    movementFunctionality.emplace(sprite, max_velocity, movement_flags, movement_direction, movement_state);
 }
 
 void Entity::createAnimationFunctionality()
@@ -18,7 +19,7 @@ void Entity::createAttributeFunctionality(const uint8_t &max_health, const uint8
 
 Entity::Entity(const std::string name, const sf::Vector2f spawn_position, sf::Texture &sprite_sheet, const float &scale)
 
-    : name(name), spawnPosition(spawn_position), id(reinterpret_cast<std::uint64_t>(this)), spriteSheet(sprite_sheet),
+    : name(name), spawnPosition(spawn_position), id(reinterpret_cast<uint64_t>(this)), spriteSheet(sprite_sheet),
       sprite(spriteSheet)
 {
     sprite.setPosition(spawnPosition);

@@ -66,4 +66,6 @@ class GameState : public State
     void updateDebugText(const float &dt);
 
     void render(sf::RenderTarget &target);
+
+    void saveWorld();
 };

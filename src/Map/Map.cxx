@@ -48,8 +48,8 @@ void Map::setReady(const bool ready)
 
 Map::Map(const std::string &name, const long int &seed, std::unordered_map<std::string, TileData> &tile_db,
          sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
-    : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
-      scale(scale), rng(seed)
+    : ready(false), msg("Preparing to load"), folderName(name), tileDB(tile_db), texturePack(texture_pack),
+      gridSize(grid_size), scale(scale), rng(seed)
 {
     initRegionStatusArray();
     initMetadata(name, seed);
@@ -58,8 +58,8 @@ Map::Map(const std::string &name, const long int &seed, std::unordered_map<std::
 
 Map::Map(std::unordered_map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
          const float &scale)
-    : ready(false), msg("Preparing to load"), tileDB(tile_db), texturePack(texture_pack), gridSize(grid_size),
-      scale(scale), rng(0)
+    : ready(false), msg("Preparing to load"), folderName("ERROR"), tileDB(tile_db), texturePack(texture_pack),
+      gridSize(grid_size), scale(scale), rng(0)
 {
     initRegionStatusArray();
 }
@@ -308,6 +308,7 @@ void Map::load(const std::string &name)
         throw std::runtime_error("[ Map::loadFromFile ] -> Inexistent world: " + path_str + "\n");
 
     msg = "Loading world metadata...";
+    folderName = name;
 
     if (!std::filesystem::exists(path_str + "metadata.json"))
         throw std::runtime_error("[ Map::loadFromFile ] -> No world metadata found: " + path_str + "\n");
@@ -522,7 +523,7 @@ const float Map::getHeatAt(const sf::Vector2i &grid_pos) const
 {
     if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
         return 0.f;
-    
+
     return terrainGenerator->getHeatAt(sf::Vector2u(grid_pos));
 }
 
@@ -534,6 +535,11 @@ const bool Map::isReady() const
 const std::string &Map::getMessage() const
 {
     return msg;
+}
+
+const std::string &Map::getFolderName() const
+{
+    return folderName;
 }
 
 const bool Map::isRegionLoaded(const sf::Vector2i &region_index) const

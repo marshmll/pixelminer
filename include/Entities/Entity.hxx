@@ -8,16 +8,15 @@
 struct EntityData
 {
     std::string name;
-    std::uint64_t id;
-    sf::Vector2f current_position;
-    sf::Vector2f spawn_position;
+    sf::Vector2f currentPosition;
+    sf::Vector2f spawnPosition;
 };
 
 class Entity
 {
   protected:
     std::string name;
-    std::uint64_t id; // Unique identifier
+    uint64_t id; // Unique session identifier
 
     sf::Vector2f spawnPosition;
 
@@ -28,7 +27,9 @@ class Entity
     std::optional<AnimationFunctionality> animationFunctionality;
     std::optional<AttributeFunctionality> attributeFunctionality;
 
-    void createMovementFunctionality(const float &max_velocity, const std::uint8_t &movement_flags);
+    void createMovementFunctionality(const float &max_velocity, const uint8_t &movement_flags,
+                                     const uint8_t &movement_direction = MovementDirection::Down,
+                                     const uint8_t &movement_state = MovementState::Idle);
 
     void createAnimationFunctionality();
 

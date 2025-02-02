@@ -3,7 +3,7 @@
 
 using namespace gui;
 
-PauseMenu::PauseMenu(EngineData &data, Map &map) : active(false), data(data), map(map)
+PauseMenu::PauseMenu(EngineData &data) : active(false), quit(false), data(data)
 {
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setSize((sf::Vector2f(data.vm->size)));
@@ -77,8 +77,7 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
     }
     else if (buttons.at("SaveAndQuit")->isPressed())
     {
-        map.save();
-        data.states->top()->killSelf();
+        setQuit(true);
     }
 }
 
@@ -98,6 +97,11 @@ const bool &PauseMenu::isActive() const
     return active;
 }
 
+const bool &PauseMenu::getQuit() const
+{
+    return quit;
+}
+
 void PauseMenu::toggleActive()
 {
     active = !active;
@@ -106,4 +110,9 @@ void PauseMenu::toggleActive()
 void PauseMenu::setActive(const bool &active)
 {
     this->active = active;
+}
+
+void PauseMenu::setQuit(const bool &quit)
+{
+    this->quit = quit;
 }
