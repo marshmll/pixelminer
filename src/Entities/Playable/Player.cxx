@@ -70,12 +70,12 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     player_data_file.read(reinterpret_cast<char *>(&playerData.maxHunger), sizeof(uint8_t));
     player_data_file.read(reinterpret_cast<char *>(&playerData.hunger), sizeof(uint8_t));
 
-    std::cout << playerData.name << "\n"
-              << playerData.currentPosition.x << ", " << playerData.currentPosition.y << "\n"
-              << playerData.spawnPosition.x << ", " << playerData.spawnPosition.y << "\n"
-              << playerData.maxVelocity << "\n"
-              << static_cast<int>(playerData.movFlags) << "\n"
-              << static_cast<int>(playerData.movDirection) << "\n";
+    // std::cout << playerData.name << "\n"
+    //           << playerData.currentPosition.x << ", " << playerData.currentPosition.y << "\n"
+    //           << playerData.spawnPosition.x << ", " << playerData.spawnPosition.y << "\n"
+    //           << playerData.maxVelocity << "\n"
+    //           << static_cast<int>(playerData.movFlags) << "\n"
+    //           << static_cast<int>(playerData.movDirection) << "\n";
 
     player_data_file.close();
     std::cout << "[ Player ] -> PlayerData was read from world save: " << folder_name << "\n";
