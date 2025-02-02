@@ -94,6 +94,7 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initDebugging();
 
     server.listen(55000);
+    client.connect({127, 0, 0, 1}, 55000);
 }
 
 GameState::~GameState()

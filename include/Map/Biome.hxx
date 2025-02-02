@@ -14,7 +14,7 @@ enum BiomeType
     Tundra,
 };
 
-struct BiomeData
+struct BiomePreset
 {
     std::string name = "Unknown";
     BiomeType type = BiomeType::UnknownBiome;

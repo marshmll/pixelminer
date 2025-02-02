@@ -191,75 +191,51 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
     const int REGION_GRID_END_X = (REGION_GRID_START_X + REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x) - 1;
     const int REGION_GRID_END_Y = (REGION_GRID_START_Y + REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y) - 1;
 
-    // Parallelize tile generation
-    std::vector<std::future<void>> futures;
-    const int numThreads = std::thread::hardware_concurrency();
-    const int chunkSize = (REGION_GRID_END_X - REGION_GRID_START_X + 1) / numThreads;
-
-    for (int t = 0; t < numThreads; ++t)
+    for (int x = REGION_GRID_START_X; x <= REGION_GRID_END_X; ++x)
     {
-        futures.push_back(std::async(std::launch::async, [this, t, chunkSize, REGION_GRID_START_X, REGION_GRID_START_Y,
-                                                          REGION_GRID_END_X, REGION_GRID_END_Y, &numThreads]() {
-            const int startX = REGION_GRID_START_X + t * chunkSize;
-            const int endX = (t == numThreads - 1) ? REGION_GRID_END_X + 1 : REGION_GRID_START_X + (t + 1) * chunkSize;
+        for (int y = REGION_GRID_START_Y; y <= REGION_GRID_END_Y; ++y)
+        {
+            const BiomePreset &biome = biomeMap[x][y];
+            TileData tile_data = tileDB.at(biome.baseTileId);
 
-            for (int x = startX; x < endX; ++x)
+            putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale, biome.color),
+                    x, y, 0);
+
+            if (tile_data.id == "grass_tile")
             {
-                for (int y = REGION_GRID_START_Y; y <= REGION_GRID_END_Y; ++y)
+                float randomValue = randomGrid[x][y];
+
+                if (randomValue < 0.005f)
                 {
-                    const auto &biome = biomeMap[x][y];
-                    TileData tile_data = tileDB.at(biome.baseTileId);
-
-                    putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
-                                 biome.color),
-                            x, y, 0);
-
-                    if (tile_data.id == "grass_tile")
-                    {
-                        float randomValue = randomGrid[x][y];
-
-                        if (randomValue < 0.005f)
-                        {
-                            TileData td = tileDB.at("short_grass");
-                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                                    1);
-                        }
-                        if (randomValue < 0.002f)
-                        {
-                            TileData td = tileDB.at("arbust_1");
-                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                                    1);
-                        }
-                        if (randomValue < 0.001f)
-                        {
-                            TileData td = tileDB.at("arbust_2");
-                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                                    1);
-                        }
-                    }
-                    else if (tile_data.id == "snowy_grass_tile")
-                    {
-                        float randomValue = randomGrid[x][y];
-
-                        if (randomValue < 0.01f)
-                        {
-                            TileData td = tileDB.at("snow_tile");
-                            putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                                    1);
-                        }
-                    }
+                    TileData td = tileDB.at("short_grass");
+                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                }
+                if (randomValue < 0.002f)
+                {
+                    TileData td = tileDB.at("arbust_1");
+                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                }
+                if (randomValue < 0.001f)
+                {
+                    TileData td = tileDB.at("arbust_2");
+                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
                 }
             }
-        }));
-    }
+            else if (tile_data.id == "snowy_grass_tile")
+            {
+                float randomValue = randomGrid[x][y];
 
-    for (auto &f : futures)
-    {
-        f.wait();
+                if (randomValue < 0.01f)
+                {
+                    TileData td = tileDB.at("snow_tile");
+                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                }
+            }
+        }
     }
 }
 
-const BiomeData &TerrainGenerator::getBiomeData(const sf::Vector2u &grid_pos) const
+const BiomePreset &TerrainGenerator::getBiomeData(const sf::Vector2u &grid_pos) const
 {
     return biomeMap[grid_pos.x][grid_pos.y];
 }

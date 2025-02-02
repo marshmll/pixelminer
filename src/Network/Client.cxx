@@ -66,7 +66,7 @@ void Client::listenerThread()
     while (connected)
     {
         std::lock_guard<std::mutex> lock(mutex);
-        if (socketSelector.wait(sf::seconds(10.f)))
+        if (socketSelector.wait(sf::seconds(5.f)))
         {
             if (socketSelector.isReady(socket))
             {
@@ -88,7 +88,7 @@ void Client::listenerThread()
         }
         else
         {
-            logger.logInfo("Connection with server " + serverIp.toString() + " timed out after 10 seconds.");
+            logger.logInfo("Connection with server " + serverIp.toString() + " timed out after 5 seconds.");
             disconnect();
         }
     }

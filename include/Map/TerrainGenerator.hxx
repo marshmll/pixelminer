@@ -17,7 +17,7 @@ static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
 };
 
 using ChunkMatrix = std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
-using BiomeMap = std::array<std::array<BiomeData, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x>;
+using BiomeMap = std::array<std::array<BiomePreset, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x>;
 
 class TerrainGenerator
 {
@@ -74,7 +74,7 @@ class TerrainGenerator
 
     void generateRegion(const sf::Vector2i &region_index);
 
-    const BiomeData &getBiomeData(const sf::Vector2u &grid_pos) const;
+    const BiomePreset &getBiomeData(const sf::Vector2u &grid_pos) const;
 
     const float &getHeightAt(const sf::Vector2u &grid_pos) const;
 

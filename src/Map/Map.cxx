@@ -404,7 +404,7 @@ void Map::loadRegion(const sf::Vector2i &region_index)
             }
 
             sf::Vector2u grid_pos(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
-            BiomeData biome_data = terrainGenerator->getBiomeData(grid_pos);
+            BiomePreset biome_data = terrainGenerator->getBiomeData(grid_pos);
 
             Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
             chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
@@ -495,11 +495,11 @@ const sf::Vector2f Map::getRealDimensions() const
     return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
 }
 
-const BiomeData Map::getBiomeAt(const sf::Vector2i &grid_coords) const
+const BiomePreset Map::getBiomeAt(const sf::Vector2i &grid_coords) const
 {
     if (grid_coords.x < 0 || grid_coords.y < 0 || grid_coords.x >= MAX_WORLD_GRID_SIZE.x ||
         grid_coords.y >= MAX_WORLD_GRID_SIZE.y)
-        return BiomeData{};
+        return BiomePreset{};
 
     return this->terrainGenerator->getBiomeData(sf::Vector2u(grid_coords));
 }

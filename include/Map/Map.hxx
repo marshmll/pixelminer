@@ -83,7 +83,7 @@ class Map
 
     const sf::Vector2f getRealDimensions() const;
 
-    const BiomeData getBiomeAt(const sf::Vector2i &grid_coords) const;
+    const BiomePreset getBiomeAt(const sf::Vector2i &grid_coords) const;
 
     const float getHeightAt(const sf::Vector2i &grid_pos) const;
 
