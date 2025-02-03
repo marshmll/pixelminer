@@ -8,6 +8,7 @@
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
 #include "Tools/UUID.hxx"
+#include "Tools/Zip.hxx"
 
 class Engine
 {
