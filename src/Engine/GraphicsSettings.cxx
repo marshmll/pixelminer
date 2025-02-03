@@ -1,13 +1,11 @@
 #include "Engine/GraphicsSettings.hxx"
 #include "stdafx.hxx"
 
-GraphicsSettings::GraphicsSettings()
+GraphicsSettings::GraphicsSettings() : logger("GraphicsSettings")
 {
 }
 
-GraphicsSettings::~GraphicsSettings()
-{
-}
+GraphicsSettings::~GraphicsSettings() = default;
 
 const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
 {
@@ -28,12 +26,12 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
 
         resourcePack = obj.at("resourcePack").getAs<std::string>();
 
-        std::cout << "[ GraphicsSettings ] -> Loaded settings from file: " << path.string() << "\n";
+        logger.logInfo("Loaded settings from file: " + path.string());
         return true;
     }
     catch (std::runtime_error e)
     {
-        std::cerr << "[ GraphicsSettings ] -> Could not load settings from file " << path << "\n" << e.what();
+        logger.logWarning("Failed to load settings from file " + path.string() + "\n" + e.what());
     }
 
     return false;
@@ -45,7 +43,7 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
 
     if (!out.is_open())
     {
-        std::cout << "[ GraphicsSettings ] -> Could not save settings to file " << path.string() << "\n";
+        logger.logWarning("Failed to save settings to file " + path.string());
         return false;
     }
 
@@ -62,11 +60,11 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
     catch (std::runtime_error e)
     {
         out.close();
-        std::cerr << "[ GraphicsSettings ] -> Error while saving to file: \"" << e.what() << "\"\n";
+        logger.logWarning("Error while saving to file: \"" + static_cast<std::string>(e.what()) + "\"");
         return false;
     }
 
     out.close();
-    std::cout << "[ GraphicsSettings ] -> Saved settings to file: " << path.string() << "\n";
+    logger.logInfo("Saved settings to file: " + path.string());
     return true;
 }

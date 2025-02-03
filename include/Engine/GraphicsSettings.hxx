@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Tools/JSON.hxx"
+#include "Tools/Logger.hxx"
 
 class GraphicsSettings
 {
+  private:
+    Logger logger;
+
   public:
     unsigned int screenWidth;
     unsigned int screenHeight;
