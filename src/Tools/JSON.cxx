@@ -1,5 +1,68 @@
 #include "Tools/JSON.hxx"
 #include "stdafx.hxx"
+#include <iomanip>
+#include <sstream>
+
+// Helper function to calculate line and column numbers
+std::pair<size_t, size_t> getLineAndColumn(const std::string &json, size_t pos)
+{
+    size_t line = 1;
+    size_t column = 1;
+
+    for (size_t i = 0; i < pos && i < json.size(); ++i)
+    {
+        if (json[i] == '\n')
+        {
+            ++line;
+            column = 1;
+        }
+        else
+        {
+            ++column;
+        }
+    }
+
+    return {line, column};
+}
+
+// Helper function to generate an error message with context and an arrow
+std::string generateErrorMessage(const std::string &json, size_t pos, const std::string &message)
+{
+    auto [line, column] = getLineAndColumn(json, pos);
+
+    // Find the start and end of the line containing the error
+    size_t lineStart = json.rfind('\n', pos);
+    if (lineStart == std::string::npos)
+    {
+        lineStart = 0;
+    }
+    else
+    {
+        lineStart++; // Move past the newline character
+    }
+
+    size_t lineEnd = json.find('\n', pos);
+    if (lineEnd == std::string::npos)
+    {
+        lineEnd = json.size();
+    }
+
+    // Extract the line content
+    std::string lineContent = json.substr(lineStart, lineEnd - lineStart);
+
+    // Create the arrow pointing to the error position
+    std::string arrow(column - 1, ' ');
+    arrow += "^";
+
+    // Build the error message
+    std::ostringstream oss;
+    oss << "[ JSON ] -> Error at line " << line << ", column " << column << ":\n"
+        << "    " << lineContent << "\n"
+        << "    " << arrow << "\n"
+        << "    " << message << "\n\n";
+
+    return oss.str();
+}
 
 std::string JSON::stringify(const JValue &value)
 {
@@ -90,7 +153,7 @@ JValue JSON::parseValue(const std::string &json, size_t &pos)
 
     if (pos >= json.size())
     {
-        throw std::runtime_error("[ JSON ] -> Unexpected end of input");
+        throw std::runtime_error(generateErrorMessage(json, pos, "Unexpected end of input"));
     }
 
     if (json[pos] == 'n')
@@ -125,13 +188,13 @@ JValue JSON::parseValue(const std::string &json, size_t &pos)
         return parseNumber(json, pos);
     }
 
-    throw std::runtime_error("[ JSON ] -> Invalid JSON value at position " + std::to_string(pos));
+    throw std::runtime_error(generateErrorMessage(json, pos, "Invalid JSON value"));
 }
 
 std::string JSON::parseString(const std::string &json, size_t &pos)
 {
     if (json[pos] != '"')
-        throw std::runtime_error("[ JSON ] -> Expected '\"' at position " + std::to_string(pos));
+        throw std::runtime_error(generateErrorMessage(json, pos, "Expected '\"'"));
     ++pos;
 
     std::string result;
@@ -141,7 +204,7 @@ std::string JSON::parseString(const std::string &json, size_t &pos)
         {
             ++pos;
             if (pos >= json.size())
-                throw std::runtime_error("[ JSON ] -> Unexpected end of input in string");
+                throw std::runtime_error(generateErrorMessage(json, pos, "Unexpected end of input in string"));
             switch (json[pos])
             {
             case '"':
@@ -169,7 +232,7 @@ std::string JSON::parseString(const std::string &json, size_t &pos)
                 result += '\t';
                 break;
             default:
-                throw std::runtime_error("[ JSON ] -> Invalid escape character in string");
+                throw std::runtime_error(generateErrorMessage(json, pos, "Invalid escape character in string"));
             }
         }
         else
@@ -180,7 +243,7 @@ std::string JSON::parseString(const std::string &json, size_t &pos)
     }
 
     if (pos >= json.size() || json[pos] != '"')
-        throw std::runtime_error("[ JSON ] -> Unterminated string");
+        throw std::runtime_error(generateErrorMessage(json, pos, "Unterminated string"));
     ++pos;
 
     return result;
@@ -240,7 +303,7 @@ JValue JSON::parseNumber(const std::string &json, size_t &pos)
         }
         catch (const std::out_of_range &)
         {
-            throw std::runtime_error("[ JSON ] -> Integer value out of range: " + numberStr);
+            throw std::runtime_error(generateErrorMessage(json, pos, "Integer value out of range: " + numberStr));
         }
     }
     else
@@ -252,7 +315,8 @@ JValue JSON::parseNumber(const std::string &json, size_t &pos)
         }
         catch (const std::out_of_range &)
         {
-            throw std::runtime_error("[ JSON ] -> Floating-point value out of range: " + numberStr);
+            throw std::runtime_error(
+                generateErrorMessage(json, pos, "Floating-point value out of range: " + numberStr));
         }
     }
 }
@@ -269,7 +333,7 @@ bool JSON::parseBool(const std::string &json, size_t &index)
         index += 5;
         return false;
     }
-    throw std::runtime_error("[ JSON ] -> Invalid boolean value");
+    throw std::runtime_error(generateErrorMessage(json, index, "Invalid boolean value"));
 }
 
 std::nullptr_t JSON::parseNull(const std::string &json, size_t &index)
@@ -279,14 +343,14 @@ std::nullptr_t JSON::parseNull(const std::string &json, size_t &index)
         index += 4;
         return nullptr;
     }
-    throw std::runtime_error("[ JSON ] -> Invalid null value");
+    throw std::runtime_error(generateErrorMessage(json, index, "Invalid null value"));
 }
 
 JValue JSON::parseObject(const std::string &json, size_t &pos)
 {
     skipWhitespace(json, pos);
     if (json[pos] != '{')
-        throw std::runtime_error("[ JSON ] -> Expected '{' at position " + std::to_string(pos));
+        throw std::runtime_error(generateErrorMessage(json, pos, "Expected '{'"));
     ++pos;
 
     JObject object;
@@ -301,12 +365,12 @@ JValue JSON::parseObject(const std::string &json, size_t &pos)
     {
         skipWhitespace(json, pos);
         if (json[pos] != '"')
-            throw std::runtime_error("[ JSON ] -> Expected '\"' at position " + std::to_string(pos));
+            throw std::runtime_error(generateErrorMessage(json, pos, "Expected '\"'"));
         std::string key = parseString(json, pos);
 
         skipWhitespace(json, pos);
         if (json[pos] != ':')
-            throw std::runtime_error("[ JSON ] -> Expected ':' at position " + std::to_string(pos));
+            throw std::runtime_error(generateErrorMessage(json, pos, "Expected ':'"));
         ++pos;
 
         object[key] = parseValue(json, pos);
@@ -323,7 +387,7 @@ JValue JSON::parseObject(const std::string &json, size_t &pos)
         }
         else
         {
-            throw std::runtime_error("[ JSON ] -> Expected ',' or '}' at position " + std::to_string(pos));
+            throw std::runtime_error(generateErrorMessage(json, pos, "Expected ',' or '}'"));
         }
     }
 }
@@ -332,7 +396,7 @@ JValue JSON::parseArray(const std::string &json, size_t &pos)
 {
     skipWhitespace(json, pos);
     if (json[pos] != '[')
-        throw std::runtime_error("[ JSON ] -> Expected '[' at position " + std::to_string(pos));
+        throw std::runtime_error(generateErrorMessage(json, pos, "Expected '['"));
     ++pos;
 
     JArray array;
@@ -359,7 +423,7 @@ JValue JSON::parseArray(const std::string &json, size_t &pos)
         }
         else
         {
-            throw std::runtime_error("[ JSON ] -> Expected ',' or ']' at position " + std::to_string(pos));
+            throw std::runtime_error(generateErrorMessage(json, pos, "Expected ',' or ']'"));
         }
     }
 }
@@ -375,7 +439,7 @@ void JSON::expect(const std::string &json, size_t &pos, const std::string &expec
     size_t len = expected.length();
     if (json.substr(pos, len) != expected)
     {
-        throw std::runtime_error("[ JSON ] -> Expected '" + expected + "' at position " + std::to_string(pos));
+        throw std::runtime_error(generateErrorMessage(json, pos, "Expected '" + expected + "'"));
     }
     pos += len;
 }
