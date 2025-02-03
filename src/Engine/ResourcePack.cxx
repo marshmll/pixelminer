@@ -57,6 +57,12 @@ void ResourcePack::load(const std::string &name)
     if (!textures["Player1"].loadFromFile(root_path / "Images/Sprites/Entities/Player/player_1.png"))
         logger.logError("Missing texture \"player_1.png\" in resource pack: " + name);
 
+    if (!textures["PineTreeCrown"].loadFromFile(root_path / "Images/Sprites/Entities/Tree/pine_tree_crown.png"))
+        logger.logError("Missing texture \"pine_tree_crown.png\" in resource pack: " + name);
+
+    if (!textures["PineTreeTrunk"].loadFromFile(root_path / "Images/Sprites/Entities/Tree/pine_tree_trunk.png"))
+        logger.logError("Missing texture \"pine_tree_trunk.png\" in resource pack: " + name);
+
     if (!textures["TileSheet"].loadFromFile(root_path / "Images/Tiles/tile_sheet.png"))
         logger.logError("Missing texture \"tile_sheet.png\" in resource pack: " + name);
 

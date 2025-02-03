@@ -108,6 +108,32 @@ Player::~Player()
 {
 }
 
+void Player::update(const float &dt, const sf::Vector2f &mouse_pos)
+{
+    movementFunctionality->update();
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        move(dt, Up);
+
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        move(dt, Down);
+
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+        move(dt, Left);
+
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+        move(dt, Right);
+
+    const uint8_t mov_state = movementFunctionality->getState();
+    const std::string mov_direction = movementFunctionality->getDirectionAsString();
+
+    if (mov_state == MovementState::Idle)
+        animationFunctionality->play("Idle" + mov_direction, true);
+
+    else if (mov_state == MovementState::Walking)
+        animationFunctionality->play("Walk" + mov_direction, true);
+}
+
 void Player::update(const float &dt, const bool &update_movement)
 {
     if (update_movement)

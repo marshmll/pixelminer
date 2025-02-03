@@ -19,6 +19,8 @@ target_sources(pixelminer PRIVATE
 ./States/WorldSelectionMenuState.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx
+./Entities/Inanimated/Trees/Tree.cxx
+./Entities/Inanimated/Trees/PineTree.cxx
 ./Entities/Functionalities/AttributeFunctionality.cxx
 ./Entities/Functionalities/MovementFunctionality.cxx
 ./Entities/Functionalities/AnimationFunctionalitiy.cxx

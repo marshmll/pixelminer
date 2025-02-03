@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entities/Inanimated/Trees/PineTree.hxx"
 #include "Entities/Playable/Player.hxx"
 #include "GUI/GUI.hxx"
 #include "Map/Map.hxx"
@@ -13,6 +14,8 @@ class GameState : public State
 {
   private:
     std::unique_ptr<gui::PauseMenu> pauseMenu;
+
+    std::vector<std::shared_ptr<Entity>> globalEntities; // All entities apart from players
 
     std::unordered_map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
@@ -62,6 +65,8 @@ class GameState : public State
 
     void updateMap(const float &dt);
 
+    void updateGlobalEntities(const float &dt);
+
     void updatePlayers(const float &dt);
 
     void updatePlayerCamera();
@@ -69,6 +74,8 @@ class GameState : public State
     void updateDebugText(const float &dt);
 
     void render(sf::RenderTarget &target);
+
+    void renderGlobalEntities(sf::RenderTarget &target);
 
     void saveWorld();
 };

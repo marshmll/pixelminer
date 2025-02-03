@@ -30,6 +30,8 @@ class Player : public Entity
 
     ~Player();
 
+    void update(const float &dt, const sf::Vector2f &mouse_pos);
+
     void update(const float &dt, const bool &update_movement = true);
 
     void render(sf::RenderTarget &target);

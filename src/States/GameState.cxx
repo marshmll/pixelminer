@@ -80,6 +80,9 @@ GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
+
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTreeCrown"), data.scale));
 }
 
 GameState::GameState(EngineData &data, const std::string &map_folder_name)
@@ -93,8 +96,8 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initPauseMenu();
     initDebugging();
 
-    server.listen(55000);
-    client.connect({127, 0, 0, 1}, 55000);
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        sf::Vector2f(thisPlayer->getCenterGridPosition()), data.activeResourcePack->getTexture("PineTreeCrown"), data.scale));
 }
 
 GameState::~GameState()
@@ -127,6 +130,7 @@ void GameState::update(const float &dt)
     }
 
     updateMap(dt);
+    updateGlobalEntities(dt);
     updatePlayers(dt);
     updatePlayerCamera();
 
@@ -157,6 +161,13 @@ void GameState::updatePauseMenu(const float &dt)
 void GameState::updateMap(const float &dt)
 {
     map->update(dt, thisPlayer->getCenterGridPosition());
+}
+
+void GameState::updateGlobalEntities(const float &dt)
+{
+    for (auto &entity : globalEntities)
+        if (entity)
+            entity->update(dt, mousePosView);
 }
 
 void GameState::updatePlayers(const float &dt)
@@ -225,7 +236,7 @@ void GameState::updateDebugText(const float &dt)
 
 void GameState::render(sf::RenderTarget &target)
 {
-    renderTexture.clear();
+    renderTexture.clear(); // DO NOT FORGET TO RENDER TO THE RENDER TEXTURE!
 
     if (!map->isReady())
     {
@@ -238,6 +249,8 @@ void GameState::render(sf::RenderTarget &target)
     renderTexture.setView(playerCamera);
 
     map->render(renderTexture, thisPlayer->getCenterGridPosition(), debugChunks);
+
+    renderGlobalEntities(renderTexture);
 
     for (auto &[name, player] : players)
         player->render(renderTexture);
@@ -255,6 +268,17 @@ void GameState::render(sf::RenderTarget &target)
     renderSprite.setTexture(renderTexture.getTexture());
 
     target.draw(renderSprite);
+}
+
+void GameState::renderGlobalEntities(sf::RenderTarget &target)
+{
+    for (auto &entity : globalEntities)
+    {
+        if (entity)
+        {
+            entity->render(target);
+        }
+    }
 }
 
 void GameState::saveWorld()

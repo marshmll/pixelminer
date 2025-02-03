@@ -41,9 +41,9 @@ class Entity
 
     virtual ~Entity();
 
-    virtual void update(const float &dt);
+    virtual void update(const float &dt, const sf::Vector2f &mouse_pos) = 0;
 
-    virtual void render(sf::RenderTarget &target);
+    virtual void render(sf::RenderTarget &target) = 0;
 
     void move(const float &dt, const MovementDirection &direction);
 
