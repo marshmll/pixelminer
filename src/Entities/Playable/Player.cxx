@@ -5,20 +5,20 @@ void Player::initPlayerAnimations()
 {
     sf::Vector2u frame_size(16, 24);
 
-    animationFunctionality->addAnimation("IdleDown", 10000, frame_size, {0, 0}, {0, 0});
-    animationFunctionality->addAnimation("IdleUp", 10000, frame_size, {0, 1}, {0, 1});
-    animationFunctionality->addAnimation("IdleLeft", 10000, frame_size, {0, 2}, {0, 2});
-    animationFunctionality->addAnimation("IdleRight", 10000, frame_size, {0, 3}, {0, 3});
-    animationFunctionality->addAnimation("WalkDown", 150, frame_size, {0, 0}, {3, 0});
-    animationFunctionality->addAnimation("WalkUp", 150, frame_size, {0, 1}, {3, 1});
-    animationFunctionality->addAnimation("WalkLeft", 150, frame_size, {0, 2}, {3, 2});
-    animationFunctionality->addAnimation("WalkRight", 150, frame_size, {0, 3}, {3, 3});
+    animationFunctionality->addAnimation("Base", "IdleDown", 10000, frame_size, {0, 0}, {0, 0});
+    animationFunctionality->addAnimation("Base", "IdleUp", 10000, frame_size, {0, 1}, {0, 1});
+    animationFunctionality->addAnimation("Base", "IdleLeft", 10000, frame_size, {0, 2}, {0, 2});
+    animationFunctionality->addAnimation("Base", "IdleRight", 10000, frame_size, {0, 3}, {0, 3});
+    animationFunctionality->addAnimation("Base", "WalkDown", 150, frame_size, {0, 0}, {3, 0});
+    animationFunctionality->addAnimation("Base", "WalkUp", 150, frame_size, {0, 1}, {3, 1});
+    animationFunctionality->addAnimation("Base", "WalkLeft", 150, frame_size, {0, 2}, {3, 2});
+    animationFunctionality->addAnimation("Base", "WalkRight", 150, frame_size, {0, 3}, {3, 3});
 }
 
 void Player::preparePlayerData(const std::string &uuid)
 {
     playerData.name = name;
-    playerData.currentGridPosition = getPosition() / (GRID_SIZE * sprite.getScale().x);
+    playerData.currentGridPosition = getPosition() / (GRID_SIZE * baseSprite->getScale().x);
     playerData.spawnGridPosition = spawnGridPosition;
     playerData.maxVelocity = movementFunctionality->getMaxVelocity();
     playerData.movFlags = movementFunctionality->getFlags();
@@ -165,7 +165,11 @@ void Player::update(const float &dt, const bool &update_movement)
 
 void Player::render(sf::RenderTarget &target)
 {
-    target.draw(sprite);
+    for (auto &[_, sprite] : layers)
+    {
+        if (sprite)
+            target.draw(*sprite);
+    }
 }
 
 void Player::save(const std::string &folder_name, const std::string &uuid)

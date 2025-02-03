@@ -32,15 +32,15 @@ enum MovementDirection : uint8_t
 class MovementFunctionality
 {
   private:
-    sf::Sprite &sprite;
+    std::map<std::string, std::shared_ptr<sf::Sprite>> &layers;
     float maxVelocity;
     uint8_t flags;
     uint8_t state;
     uint8_t direction;
 
   public:
-    MovementFunctionality(sf::Sprite &sprite, const float max_velocity, const uint8_t &movement_flags,
-                          const uint8_t &movement_direction = MovementDirection::Down,
+    MovementFunctionality(std::map<std::string, std::shared_ptr<sf::Sprite>> &layers, const float max_velocity,
+                          const uint8_t &movement_flags, const uint8_t &movement_direction = MovementDirection::Down,
                           const uint8_t &movement_state = MovementState::Idle);
 
     ~MovementFunctionality();

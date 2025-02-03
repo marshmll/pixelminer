@@ -81,8 +81,8 @@ GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(
     initPauseMenu();
     initDebugging();
 
-    globalEntities.emplace_back(std::make_shared<PineTree>(
-        map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTreeCrown"), data.scale));
+    globalEntities.emplace_back(
+        std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
 }
 
 GameState::GameState(EngineData &data, const std::string &map_folder_name)
@@ -96,8 +96,9 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initPauseMenu();
     initDebugging();
 
-    globalEntities.emplace_back(std::make_shared<PineTree>(
-        sf::Vector2f(thisPlayer->getCenterGridPosition()), data.activeResourcePack->getTexture("PineTreeCrown"), data.scale));
+    globalEntities.emplace_back(std::make_shared<PineTree>(sf::Vector2f(thisPlayer->getCenterGridPosition()),
+                                                           data.activeResourcePack->getTexture("PineTree"),
+                                                           data.scale));
 }
 
 GameState::~GameState()

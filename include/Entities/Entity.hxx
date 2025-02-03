@@ -21,7 +21,11 @@ class Entity
     sf::Vector2f spawnGridPosition;
 
     sf::Texture &spriteSheet;
-    sf::Sprite sprite;
+    float scale;
+
+    // All entities have a base sprie layer by default
+    std::map<std::string, std::shared_ptr<sf::Sprite>> layers;
+    std::shared_ptr<sf::Sprite> baseSprite;
 
     std::optional<MovementFunctionality> movementFunctionality;
     std::optional<AnimationFunctionality> animationFunctionality;
@@ -51,6 +55,8 @@ class Entity
 
     const sf::Vector2f getPosition() const;
 
+    std::shared_ptr<sf::Sprite> getSpriteLayer(const std::string &key);
+
     const sf::Vector2i getGridPosition() const;
 
     const sf::Vector2f getCenter() const;
@@ -60,4 +66,9 @@ class Entity
     AttributeFunctionality &getAttributeFunctionality();
 
     void setPosition(const sf::Vector2f &position);
+
+    /**
+     * @attention The order of rendering of the layers follows the order of insertion.
+     */
+    void addSpriteLayer(const std::string &key);
 };
