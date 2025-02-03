@@ -6,6 +6,7 @@ target_sources(pixelminer PRIVATE
 ./Map/TerrainGenerator.cxx
 ./Tools/JSON.cxx
 ./Tools/LinearCongruentialGenerator.cxx
+./Tools/TerminalColor.cxx
 ./Tools/Zip.cxx
 ./Tools/Date.cxx
 ./Tools/Logger.cxx
