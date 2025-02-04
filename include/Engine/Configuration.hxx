@@ -15,7 +15,7 @@ constexpr unsigned int GRID_SIZE = 16;
 #endif
 
 #ifdef DEBUG
-#define GLOBAL_FOLDER static_cast<const std::string>("Assets/")
+#define GLOBAL_FOLDER static_cast<const std::string>(".pixelminer/")
 
 #elif __linux__
 #define GLOBAL_FOLDER static_cast<const std::string>(getenv("HOME")) + "/.pixelminer/"

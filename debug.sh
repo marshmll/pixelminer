@@ -9,9 +9,9 @@ then
 fi
 
 rm -rf \
-Debug/bin/Assets/
+Debug/bin/.pixelminer/
 
-cp -r src/Assets/ Debug/bin/
+cp -r src/.pixelminer/ Debug/bin/
 
 cd Debug/ &&
 ninja -j10 &&
@@ -20,6 +20,6 @@ clear &&
 ./pixelminer &&
 cd ../../
 
-cp -rf Debug/bin/Assets src/
+cp -rf Debug/bin/.pixelminer src/
 
 cp Debug/compile_commands.json .

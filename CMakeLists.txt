@@ -21,7 +21,7 @@ add_subdirectory(externals/minizip-ng)
 target_link_libraries(pixelminer PRIVATE SFML::Graphics SFML::Network SFML::Audio minizip)
 
 target_compile_features(pixelminer PRIVATE cxx_std_17)
-target_compile_definitions(pixelminer PRIVATE DEBUG=1 GAME_VERSION="Alpha 0.4.0" METADATA_VERSION="1.0.0" TERRAIN_GENERATOR_VERSION="1.1.0")
+target_compile_definitions(pixelminer PRIVATE DEBUG=1 GAME_VERSION="Alpha 0.5.0" METADATA_VERSION="1.0.0" TERRAIN_GENERATOR_VERSION="1.1.0")
 
 target_include_directories(pixelminer PRIVATE include/)
 target_include_directories(pixelminer PRIVATE externals/minizip-ng)

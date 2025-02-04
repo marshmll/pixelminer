@@ -89,7 +89,6 @@ void Engine::initGraphicsSettings()
     }
     else
     {
-
         logger.logInfo("Using default graphics settings.");
 
         vm = sf::VideoMode::getDesktopMode();
@@ -106,7 +105,7 @@ void Engine::initGraphicsSettings()
 
     sf::Image icon;
     
-    if (!icon.loadFromFile((GLOBAL_FOLDER + "Default/sapphire_5x.png")))
+    if (!icon.loadFromFile((GLOBAL_FOLDER + "Default/icon_5x.png")))
         logger.logWarning("Failed to load window icon. Using OS default icon instead.");
 
     else

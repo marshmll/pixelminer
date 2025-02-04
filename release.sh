@@ -9,9 +9,9 @@ then
 fi
 
 rm -rf \
-Release/bin/Assets/
+Release/bin/.pixelminer/
 
-cp -r src/Assets/ Release/bin/
+cp -r src/.pixelminer/ Release/bin/
 
 cd Release/ &&
 ninja -j10 &&
@@ -20,6 +20,6 @@ clear &&
 ./pixelminer &&
 cd ../../
 
-cp -rf Release/bin/Assets src/
+cp -rf Release/bin/.pixelminer src/
 
 cp Release/compile_commands.json .
