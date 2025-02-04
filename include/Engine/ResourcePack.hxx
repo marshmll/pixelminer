@@ -4,6 +4,7 @@
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
+#include "Tools/Zip.hxx"
 
 class ResourcePack
 {
@@ -22,7 +23,7 @@ class ResourcePack
     std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
     std::unordered_map<std::string, TileData> tileDB;
 
-    void load(const std::string &name);
+    const bool load(const std::string &name);
 
     sf::Texture &getTexture(const std::string &key);
 };

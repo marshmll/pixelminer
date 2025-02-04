@@ -29,7 +29,10 @@ void Engine::verifyGlobalFolder()
         std::filesystem::create_directory(RESOURCES_FOLDER);
 
         logger.logInfo("Copying Vanilla resource pack to: " + RESOURCES_FOLDER);
-        std::filesystem::copy("Assets/ResourcePacks/", RESOURCES_FOLDER, std::filesystem::copy_options::recursive);
+        std::filesystem::copy(".pixelminer/Default/Vanilla.zip", RESOURCES_FOLDER);
+
+        logger.logInfo("Creating cache folder: " + CACHE_FOLDER);
+        std::filesystem::create_directory(CACHE_FOLDER);
     }
 }
 
@@ -104,7 +107,7 @@ void Engine::initGraphicsSettings()
     }
 
     sf::Image icon;
-    
+
     if (!icon.loadFromFile((GLOBAL_FOLDER + "Default/icon_5x.png")))
         logger.logWarning("Failed to load window icon. Using OS default icon instead.");
 

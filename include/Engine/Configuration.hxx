@@ -39,3 +39,7 @@ constexpr unsigned int GRID_SIZE = 16;
 #ifndef RESOURCES_FOLDER
 #define RESOURCES_FOLDER GLOBAL_FOLDER + "ResourcePacks/"
 #endif
+
+#ifndef CACHE_FOLDER
+#define CACHE_FOLDER GLOBAL_FOLDER + ".cache/"
+#endif

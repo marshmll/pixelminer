@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Tools/Logger.hxx"
 #include "minizip/unzip.h"
 #include "minizip/zip.h"
 

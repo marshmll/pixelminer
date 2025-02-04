@@ -5,17 +5,18 @@
 
 const bool Zip::extract(const std::filesystem::path &src, const std::filesystem::path &dst)
 {
+    Logger logger("Zip");
     unzFile zip_file = unzOpen(src.c_str());
 
     if (!zip_file)
     {
-        std::cerr << "[ Zip ] -> Failed to open ZIP archive for extraction: " + src.string() << "\n";
+        logger.logError("Failed to open ZIP archive for extraction: " + src.string(), false);
         return false;
     }
 
     if (unzGoToFirstFile(zip_file) != UNZ_OK)
     {
-        std::cerr << "[ Zip ] -> Failed to locate first file of ZIP archive: " + src.string() << "\n";
+        logger.logError("Failed to locate first file of ZIP archive: " + src.string(), false);
         unzClose(zip_file);
         return false;
     }
@@ -24,12 +25,12 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
     {
         if (!std::filesystem::create_directories(dst))
         {
-            std::cout << "[ Zip ] -> Failed to create output directory \"" << dst.string() << "\"" << "\n";
+            logger.logError("Failed to create output directory \"" + dst.string() + "\"", false);
             unzClose(zip_file);
             return false;
         }
 
-        std::cout << "[ Zip ] -> Created output directory \"" << dst.string() << "\"" << "\n";
+        logger.logInfo("Created output directory \"" + dst.string() + "\"");
     }
 
     int files_extracted = 0;
@@ -42,7 +43,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
 
         if (unzGetCurrentFileInfo(zip_file, &file_info, filename, sizeof(filename), NULL, 0, NULL, 0) != UNZ_OK)
         {
-            std::cerr << "[ Zip ] -> Failed to get file info from ZIP archive: " + src.string() << "\n";
+            logger.logError("Failed to get file info from ZIP archive: " + src.string(), false);
             unzClose(zip_file);
             return false;
         }
@@ -51,7 +52,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
 
         if (unzOpenCurrentFile(zip_file) != UNZ_OK)
         {
-            std::cerr << "[ Zip ] -> Failed to open file inside ZIP archive: " + src.string() << "\n";
+            logger.logError("Failed to open file inside ZIP archive: " + src.string(), false);
             continue;
         }
 
@@ -60,12 +61,12 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
         {
             if (!std::filesystem::create_directory(full_path))
             {
-                std::cout << "[ Zip ] -> Failed to create directory \"" << full_path.string() << "\"" << "\n";
+                logger.logError("Failed to create directory \"" + full_path.string() + "\"", false);
                 unzClose(zip_file);
                 return false;
             }
 
-            std::cout << "[ Zip ] -> Created directory \"" << full_path.string() << "\"" << "\n";
+            logger.logInfo("Created directory \"" + full_path.string() + "\"");
             continue;
         }
 
@@ -73,7 +74,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
 
         if (!out.is_open())
         {
-            std::cerr << "[ Zip ] -> Failed to create output file: " + full_path.string() << "\n";
+            logger.logError("Failed to create output file: " + full_path.string(), false);
             unzClose(zip_file);
             continue;
         }
@@ -88,8 +89,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
             bytes_written += bytes_read;
         }
 
-        std::cout << "[ Zip ] -> Extracted file \"" << full_path.string() << "\" (" << bytes_written << " bytes)"
-                  << "\n";
+        logger.logInfo("Extracted file \"" + full_path.string() + "\" (" + std::to_string(bytes_written) + " bytes)");
 
         files_extracted++;
         total_size += bytes_written;
@@ -99,18 +99,20 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
 
     } while (unzGoToNextFile(zip_file) == UNZ_OK);
 
-    std::cout << "[ Zip ] -> Successfully extracted " << files_extracted << " files (" << total_size
-              << " bytes) from ZIP archive: \"" << src.string() << "\n";
+    logger.logInfo("Successfully extracted " + std::to_string(files_extracted) + " files (" +
+                   std::to_string(total_size) + " bytes) from ZIP archive: \"" + src.string());
 
     return true;
 }
 
 const bool Zip::compress(const std::filesystem::path &src, const std::filesystem::path &dst)
 {
+    Logger logger("Zip");
+
     zipFile zf = zipOpen(dst.c_str(), APPEND_STATUS_CREATE);
     if (!zf)
     {
-        std::cerr << "[ Zip ] -> Failed to create ZIP file: " << dst << std::endl;
+        logger.logError("Failed to create ZIP file: " + dst.string(), false);
         return false;
     }
 
@@ -129,8 +131,7 @@ const bool Zip::compress(const std::filesystem::path &src, const std::filesystem
     zipClose(zf, nullptr);
 
     if (result)
-        std::cout << "[ Zip ] -> Successfully compressed \"" << src.string() << "\" to ZIP archive: \"" << dst.string()
-                  << "\"" << "\n";
+        logger.logInfo("Successfully compressed \"" + src.string() + "\" to ZIP archive: \"" + dst.string() + "\"");
 
     return result;
 }
@@ -141,11 +142,13 @@ const bool Zip::compress(const std::filesystem::path &src, const std::filesystem
 const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
                              const std::filesystem::path &zip_entry_name)
 {
+    Logger logger("Zip");
+
     std::ifstream inFile(file_path, std::ios::binary);
 
     if (!inFile)
     {
-        std::cerr << "[ Zip ] -> Failed to open file: " << file_path.string() << std::endl;
+        logger.logError("Failed to open file: " + file_path.string(), false);
         return false;
     }
 
@@ -153,7 +156,7 @@ const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
     if (zipOpenNewFileInZip(zf, zip_entry_name.c_str(), &zfi, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED,
                             Z_DEFAULT_COMPRESSION) != ZIP_OK)
     {
-        std::cerr << "[ Zip ] -> Failed to add file to ZIP: " << zip_entry_name.string() << std::endl;
+        logger.logError("Failed to add file to ZIP: " + zip_entry_name.string(), false);
         return false;
     }
 
@@ -162,7 +165,7 @@ const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
     {
         if (zipWriteInFileInZip(zf, buffer, inFile.gcount()) < 0)
         {
-            std::cerr << "[ Zip ] -> Failed to write data to ZIP file: " << zip_entry_name.string() << std::endl;
+            logger.logError("Failed to write data to ZIP file: " + zip_entry_name.string(), false);
             zipCloseFileInZip(zf);
             return false;
         }
@@ -170,7 +173,7 @@ const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
 
     zipCloseFileInZip(zf);
 
-    std::cout << "[ Zip ] -> Added file: " << zip_entry_name.string() << "\n";
+    logger.logInfo("Added file: " + zip_entry_name.string());
 
     return true;
 }
