@@ -103,6 +103,14 @@ void Engine::initGraphicsSettings()
         gfx.framerateLimit = 60;
         gfx.resourcePack = "Vanilla";
     }
+
+    sf::Image icon;
+    
+    if (!icon.loadFromFile((GLOBAL_FOLDER + "Default/sapphire_5x.png")))
+        logger.logWarning("Failed to load window icon. Using OS default icon instead.");
+
+    else
+        window.setIcon(icon);
 }
 
 void Engine::initVariables()
