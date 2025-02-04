@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Tools/Logger.hxx"
-#include "minizip/unzip.h"
-#include "minizip/zip.h"
+#include "compat/unzip.h"
+#include "compat/zip.h"
 
 static constexpr size_t BUFFER_SIZE = 2048;
 
