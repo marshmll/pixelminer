@@ -17,7 +17,8 @@ static std::unordered_map<sf::Keyboard::Key, char> keyMap = {
     {sf::Keyboard::Key::Num7, '7'},       {sf::Keyboard::Key::Num8, '8'},        {sf::Keyboard::Key::Num9, '9'},
     {sf::Keyboard::Key::Space, ' '},      {sf::Keyboard::Key::Period, '.'},      {sf::Keyboard::Key::Comma, ','},
     {sf::Keyboard::Key::Semicolon, ';'},  {sf::Keyboard::Key::Apostrophe, '\''}, {sf::Keyboard::Key::Slash, '/'},
-    {sf::Keyboard::Key::Backslash, '\\'}, {sf::Keyboard::Key::LBracket, '['},    {sf::Keyboard::Key::RBracket, ']'}};
+    {sf::Keyboard::Key::Backslash, '\\'}, {sf::Keyboard::Key::LBracket, '['},    {sf::Keyboard::Key::RBracket, ']'},
+    {sf::Keyboard::Key::Hyphen, '-'},     {sf::Keyboard::Key::Equal, '='}};
 
 static std::vector<sf::Keyboard::Key> specialKeys = {
     sf::Keyboard::Key::Escape, sf::Keyboard::Key::Space, sf::Keyboard::Key::Enter, sf::Keyboard::Key::Left,
