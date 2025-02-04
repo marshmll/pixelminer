@@ -19,6 +19,11 @@ static std::unordered_map<sf::Keyboard::Key, char> keyMap = {
     {sf::Keyboard::Key::Semicolon, ';'},  {sf::Keyboard::Key::Apostrophe, '\''}, {sf::Keyboard::Key::Slash, '/'},
     {sf::Keyboard::Key::Backslash, '\\'}, {sf::Keyboard::Key::LBracket, '['},    {sf::Keyboard::Key::RBracket, ']'}};
 
+static std::vector<sf::Keyboard::Key> specialKeys = {
+    sf::Keyboard::Key::Escape, sf::Keyboard::Key::Space, sf::Keyboard::Key::Enter, sf::Keyboard::Key::Left,
+    sf::Keyboard::Key::Right,  sf::Keyboard::Key::Up,    sf::Keyboard::Key::Down,
+};
+
 namespace gui
 {
 class Input
@@ -35,6 +40,7 @@ class Input
     sf::RectangleShape blinkerCursor;
     float cursorTimer;
     float cursorTimerMax;
+    int cursorIndex;
 
     sf::Clock keyTimer;
 
@@ -49,6 +55,12 @@ class Input
     void handleBackspace();
 
     void handleTab();
+
+    void handleEnter();
+
+    void handleArrowKey(sf::Keyboard::Key key);
+
+    void handleSpecialKey(sf::Keyboard::Key key);
 
   public:
     Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &body_color, sf::Font &font,
