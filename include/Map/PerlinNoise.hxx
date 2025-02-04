@@ -16,7 +16,7 @@ using NoiseMap = std::vector<std::vector<float>>;
 class PerlinNoise
 {
   private:
-    std::array<int, PERMUTATION_SIZE> permutation;
+    std::vector<int> permutation;
 
     float fade(float t);
     float lerp(float a, float b, float t);
