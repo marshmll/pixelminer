@@ -3,6 +3,7 @@
 #include "Engine/Configuration.hxx"
 #include "Entities/Functionalities/AnimationFunctionality.hxx"
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
+#include "Entities/Functionalities/CollisionFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
 
 struct EntityData
@@ -30,6 +31,7 @@ class Entity
     std::optional<MovementFunctionality> movementFunctionality;
     std::optional<AnimationFunctionality> animationFunctionality;
     std::optional<AttributeFunctionality> attributeFunctionality;
+    std::optional<CollisionFunctionality> collisionFunctionality;
 
     void createMovementFunctionality(const float &max_velocity, const uint8_t &movement_flags,
                                      const uint8_t &movement_direction = MovementDirection::Down,
@@ -38,6 +40,8 @@ class Entity
     void createAnimationFunctionality();
 
     void createAttributeFunctionality(const uint8_t &max_health, const uint8_t &max_hunger);
+
+    void createCollisionFunctionality();
 
   public:
     Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
@@ -75,4 +79,8 @@ class Entity
      * @attention The order of rendering of the layers follows the order of insertion.
      */
     void addSpriteLayer(const std::string &key);
+
+    const std::unordered_map<std::string, HitBox> &getHitBoxes() const;
+
+    const HitBox getHitBox(const std::string &key) const;
 };

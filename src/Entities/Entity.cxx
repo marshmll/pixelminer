@@ -17,11 +17,16 @@ void Entity::createAttributeFunctionality(const uint8_t &max_health, const uint8
     attributeFunctionality.emplace(max_health, max_hunger);
 }
 
-Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &baseSprite_sheet,
+void Entity::createCollisionFunctionality()
+{
+    collisionFunctionality.emplace(*baseSprite);
+}
+
+Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
                const float &scale)
 
     : name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
-      spriteSheet(baseSprite_sheet), scale(scale)
+      spriteSheet(sprite_sheet), scale(scale)
 {
     addSpriteLayer("Base");
     baseSprite = layers.at("Base");
@@ -130,4 +135,17 @@ void Entity::addSpriteLayer(const std::string &key)
 
     if (baseSprite)
         layers.at(key)->setPosition(baseSprite->getPosition());
+}
+
+const std::unordered_map<std::string, HitBox> &Entity::getHitBoxes() const
+{
+    if (!collisionFunctionality.has_value())
+        throw std::runtime_error("Entity " + name + " does not have a collision functionality.");
+
+    return collisionFunctionality->getHitBoxes();
+}
+
+const HitBox Entity::getHitBox(const std::string &key) const
+{
+    return collisionFunctionality->getHitBox(key);
 }

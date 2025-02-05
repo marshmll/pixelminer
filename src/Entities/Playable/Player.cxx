@@ -1,7 +1,7 @@
 #include "Entities/Playable/Player.hxx"
 #include "stdafx.hxx"
 
-void Player::initPlayerAnimations()
+void Player::initAnimations()
 {
     sf::Vector2u frame_size(16, 24);
 
@@ -13,6 +13,11 @@ void Player::initPlayerAnimations()
     animationFunctionality->addAnimation("Base", "WalkUp", 150, frame_size, {0, 1}, {3, 1});
     animationFunctionality->addAnimation("Base", "WalkLeft", 150, frame_size, {0, 2}, {3, 2});
     animationFunctionality->addAnimation("Base", "WalkRight", 150, frame_size, {0, 3}, {3, 3});
+}
+
+void Player::initHitBoxes()
+{
+    collisionFunctionality->addHitBox("Body", sf::Vector2u(8, 2), sf::Vector2u(4, 20), scale);
 }
 
 void Player::preparePlayerData(const std::string &uuid)
@@ -86,7 +91,9 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
         attributeFunctionality->setHealth(playerData.health);
         attributeFunctionality->setHunger(playerData.hunger);
-        initPlayerAnimations();
+        createCollisionFunctionality();
+        initAnimations();
+        initHitBoxes();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
                   << " loaded from file. Spawned at x: " << std::dec << getCenterGridPosition().x
@@ -97,7 +104,9 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         createMovementFunctionality(100.f, Movement::AllowAll);
         createAnimationFunctionality();
         createAttributeFunctionality(20, 20);
-        initPlayerAnimations();
+        createCollisionFunctionality();
+        initAnimations();
+        initHitBoxes();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
                   << " spawned at x: " << std::dec << getCenterGridPosition().x << ", y: " << getCenterGridPosition().y
@@ -105,8 +114,37 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
     }
 }
 
-Player::~Player()
+Player::~Player() = default;
+
+void Player::update(const float &dt, const bool &update_movement)
 {
+    if (update_movement)
+    {
+        movementFunctionality->update();
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+            move(dt, Up);
+
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+            move(dt, Down);
+
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+            move(dt, Left);
+
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+            move(dt, Right);
+    }
+
+    collisionFunctionality->update();
+
+    const uint8_t mov_state = movementFunctionality->getState();
+    const std::string mov_direction = movementFunctionality->getDirectionAsString();
+
+    if (mov_state == MovementState::Idle)
+        animationFunctionality->play("Idle" + mov_direction, true);
+
+    else if (mov_state == MovementState::Walking)
+        animationFunctionality->play("Walk" + mov_direction, true);
 }
 
 void Player::update(const float &dt, const sf::Vector2f &mouse_pos)
@@ -135,41 +173,29 @@ void Player::update(const float &dt, const sf::Vector2f &mouse_pos)
         animationFunctionality->play("Walk" + mov_direction, true);
 }
 
-void Player::update(const float &dt, const bool &update_movement)
-{
-    if (update_movement)
-    {
-        movementFunctionality->update();
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-            move(dt, Up);
-
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-            move(dt, Down);
-
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-            move(dt, Left);
-
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-            move(dt, Right);
-    }
-
-    const uint8_t mov_state = movementFunctionality->getState();
-    const std::string mov_direction = movementFunctionality->getDirectionAsString();
-
-    if (mov_state == MovementState::Idle)
-        animationFunctionality->play("Idle" + mov_direction, true);
-
-    else if (mov_state == MovementState::Walking)
-        animationFunctionality->play("Walk" + mov_direction, true);
-}
-
 void Player::render(sf::RenderTarget &target)
 {
     for (auto &[_, sprite] : layers)
     {
         if (sprite)
             target.draw(*sprite);
+    }
+}
+
+void Player::render(sf::RenderTarget &target, const bool &show_hitboxes)
+{
+    for (auto &[_, sprite] : layers)
+    {
+        if (sprite)
+            target.draw(*sprite);
+    }
+
+    if (show_hitboxes)
+    {
+        for (auto &[_, hitbox] : getHitBoxes())
+        {
+            target.draw(hitbox.rect);
+        }
     }
 }
 

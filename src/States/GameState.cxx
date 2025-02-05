@@ -63,7 +63,7 @@ void GameState::initPauseMenu()
 
 void GameState::initDebugging()
 {
-    debugChunks = debugInfo = false;
+    debugChunks = debugInfo = debugHitBoxes = false;
 
     debugText =
         std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Italic"), "", gui::charSize(*data.vm, 130));
@@ -146,9 +146,13 @@ void GameState::update(const float &dt)
     {
         if (keyPressedWithin(250, sf::Keyboard::Key::F1))
             debugChunks = !debugChunks;
+        else if (keyPressedWithin(250, sf::Keyboard::Key::F2))
+            debugHitBoxes = !debugHitBoxes;
     }
     else if (keyPressedWithin(250, sf::Keyboard::Key::F3))
+    {
         debugInfo = !debugInfo;
+    }
 }
 
 void GameState::updatePauseMenu(const float &dt)
@@ -253,7 +257,7 @@ void GameState::render(sf::RenderTarget &target)
     renderGlobalEntities(renderTexture);
 
     for (auto &[name, player] : players)
-        player->render(renderTexture);
+        player->render(renderTexture, debugHitBoxes);
 
     renderTexture.setView(renderTexture.getDefaultView());
 

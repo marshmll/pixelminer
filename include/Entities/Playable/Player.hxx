@@ -18,7 +18,9 @@ class Player : public Entity
   private:
     PlayerData playerData;
 
-    void initPlayerAnimations();
+    void initAnimations();
+
+    void initHitBoxes();
 
     void preparePlayerData(const std::string &uuid);
 
@@ -32,9 +34,11 @@ class Player : public Entity
 
     void update(const float &dt, const sf::Vector2f &mouse_pos);
 
-    void update(const float &dt, const bool &update_movement = true);
-
     void render(sf::RenderTarget &target);
+
+    void update(const float &dt, const bool &update_movement);
+
+    void render(sf::RenderTarget &target, const bool &show_hitboxes);
 
     void save(const std::string &folder_name, const std::string &uuid);
 };

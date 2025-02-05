@@ -32,6 +32,7 @@ class GameState : public State
 
     bool debugInfo;
     bool debugChunks;
+    bool debugHitBoxes;
 
     Client client;
     Server server;

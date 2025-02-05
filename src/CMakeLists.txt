@@ -22,6 +22,7 @@ target_sources(pixelminer PRIVATE
 ./Entities/Inanimated/Trees/Tree.cxx
 ./Entities/Inanimated/Trees/PineTree.cxx
 ./Entities/Functionalities/AttributeFunctionality.cxx
+./Entities/Functionalities/CollisionFunctionality.cxx
 ./Entities/Functionalities/MovementFunctionality.cxx
 ./Entities/Functionalities/AnimationFunctionalitiy.cxx
 ./GUI/PauseMenu.cxx
