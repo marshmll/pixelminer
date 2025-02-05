@@ -18,7 +18,7 @@ void Player::initPlayerAnimations()
 void Player::preparePlayerData(const std::string &uuid)
 {
     playerData.name = name;
-    playerData.currentGridPosition = getPosition() / (GRID_SIZE * baseSprite->getScale().x);
+    playerData.currentGridPosition = getCenterGridPosition();
     playerData.spawnGridPosition = spawnGridPosition;
     playerData.maxVelocity = movementFunctionality->getMaxVelocity();
     playerData.movFlags = movementFunctionality->getFlags();
@@ -62,11 +62,11 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     player_data_file.read(reinterpret_cast<char *>(&playerData.maxHunger), sizeof(uint8_t));
     player_data_file.read(reinterpret_cast<char *>(&playerData.hunger), sizeof(uint8_t));
 
-    // std::cout << playerData.currentGridPosition.x << ", " << playerData.currentGridPosition.y << "\n"
-    //           << playerData.spawnGridPosition.x << ", " << playerData.spawnGridPosition.y << "\n"
-    //           << playerData.maxVelocity << "\n"
-    //           << static_cast<int>(playerData.movFlags) << "\n"
-    //           << static_cast<int>(playerData.movDirection) << "\n";
+    std::cout << playerData.currentGridPosition.x << ", " << playerData.currentGridPosition.y << "\n"
+              << playerData.spawnGridPosition.x << ", " << playerData.spawnGridPosition.y << "\n"
+              << playerData.maxVelocity << "\n"
+              << static_cast<int>(playerData.movFlags) << "\n"
+              << static_cast<int>(playerData.movDirection) << "\n";
 
     player_data_file.close();
     std::cout << "[ Player ] -> PlayerData was read from world save: " << folder_name << "\n";
@@ -80,7 +80,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
     if (loadPlayerData(folder_name, uuid))
     {
         spawnGridPosition = playerData.spawnGridPosition;
-        setPosition(playerData.currentGridPosition * static_cast<float>(GRID_SIZE * scale));
+        setCenterGridPosition(playerData.currentGridPosition);
         createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
         createAnimationFunctionality();
         createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);

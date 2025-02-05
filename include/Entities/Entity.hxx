@@ -57,15 +57,19 @@ class Entity
 
     std::shared_ptr<sf::Sprite> getSpriteLayer(const std::string &key);
 
-    const sf::Vector2i getGridPosition() const;
+    const sf::Vector2f getGridPosition() const;
 
     const sf::Vector2f getCenter() const;
 
-    const sf::Vector2i getCenterGridPosition() const;
+    const sf::Vector2f getCenterGridPosition() const;
 
     AttributeFunctionality &getAttributeFunctionality();
 
     void setPosition(const sf::Vector2f &position);
+
+    void setGridPosition(const sf::Vector2f &grid_position);
+
+    void setCenterGridPosition(const sf::Vector2f &grid_position);
 
     /**
      * @attention The order of rendering of the layers follows the order of insertion.

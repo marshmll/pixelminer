@@ -81,8 +81,9 @@ GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(
     initPauseMenu();
     initDebugging();
 
-    globalEntities.emplace_back(
-        std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    // globalEntities.emplace_back(
+    //     std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"),
+    //     data.scale));
 }
 
 GameState::GameState(EngineData &data, const std::string &map_folder_name)
@@ -96,9 +97,8 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initPauseMenu();
     initDebugging();
 
-    globalEntities.emplace_back(std::make_shared<PineTree>(sf::Vector2f(thisPlayer->getCenterGridPosition()),
-                                                           data.activeResourcePack->getTexture("PineTree"),
-                                                           data.scale));
+    globalEntities.emplace_back(
+        std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
 }
 
 GameState::~GameState()
@@ -161,7 +161,7 @@ void GameState::updatePauseMenu(const float &dt)
 
 void GameState::updateMap(const float &dt)
 {
-    map->update(dt, thisPlayer->getCenterGridPosition());
+    map->update(dt, sf::Vector2i(thisPlayer->getCenterGridPosition()));
 }
 
 void GameState::updateGlobalEntities(const float &dt)
@@ -227,10 +227,10 @@ void GameState::updateDebugText(const float &dt)
             << static_cast<unsigned int>(thisPlayer->getCenter().y /
                                          (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
             << "]" << "\n"
-            << "biome: " << map->getBiomeAt(thisPlayer->getCenterGridPosition()).name << "\n"
-            << "height: " << map->getHeightAt(thisPlayer->getCenterGridPosition())
-            << ", moisture: " << map->getHeightAt(thisPlayer->getCenterGridPosition())
-            << ", heat: " << map->getHeatAt(thisPlayer->getCenterGridPosition()) << "\n";
+            << "biome: " << map->getBiomeAt(sf::Vector2i(thisPlayer->getCenterGridPosition())).name << "\n"
+            << "height: " << map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition()))
+            << ", moisture: " << map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition()))
+            << ", heat: " << map->getHeatAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << "\n";
 
     debugText->setString(sstream.str());
 }
@@ -249,7 +249,7 @@ void GameState::render(sf::RenderTarget &target)
 
     renderTexture.setView(playerCamera);
 
-    map->render(renderTexture, thisPlayer->getCenterGridPosition(), debugChunks);
+    map->render(renderTexture, sf::Vector2i(thisPlayer->getCenterGridPosition()), debugChunks);
 
     renderGlobalEntities(renderTexture);
 
