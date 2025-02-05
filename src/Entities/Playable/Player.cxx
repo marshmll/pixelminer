@@ -18,7 +18,7 @@ void Player::initPlayerAnimations()
 void Player::preparePlayerData(const std::string &uuid)
 {
     playerData.name = name;
-    playerData.currentGridPosition = getCenterGridPosition();
+    playerData.currentGridPosition = getGridPosition();
     playerData.spawnGridPosition = spawnGridPosition;
     playerData.maxVelocity = movementFunctionality->getMaxVelocity();
     playerData.movFlags = movementFunctionality->getFlags();
@@ -62,11 +62,11 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     player_data_file.read(reinterpret_cast<char *>(&playerData.maxHunger), sizeof(uint8_t));
     player_data_file.read(reinterpret_cast<char *>(&playerData.hunger), sizeof(uint8_t));
 
-    std::cout << playerData.currentGridPosition.x << ", " << playerData.currentGridPosition.y << "\n"
-              << playerData.spawnGridPosition.x << ", " << playerData.spawnGridPosition.y << "\n"
-              << playerData.maxVelocity << "\n"
-              << static_cast<int>(playerData.movFlags) << "\n"
-              << static_cast<int>(playerData.movDirection) << "\n";
+    // std::cout << playerData.currentGridPosition.x << ", " << playerData.currentGridPosition.y << "\n"
+    //           << playerData.spawnGridPosition.x << ", " << playerData.spawnGridPosition.y << "\n"
+    //           << playerData.maxVelocity << "\n"
+    //           << static_cast<int>(playerData.movFlags) << "\n"
+    //           << static_cast<int>(playerData.movDirection) << "\n";
 
     player_data_file.close();
     std::cout << "[ Player ] -> PlayerData was read from world save: " << folder_name << "\n";
@@ -80,7 +80,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
     if (loadPlayerData(folder_name, uuid))
     {
         spawnGridPosition = playerData.spawnGridPosition;
-        setCenterGridPosition(playerData.currentGridPosition);
+        setGridPosition(playerData.currentGridPosition);
         createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
         createAnimationFunctionality();
         createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
@@ -89,8 +89,8 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initPlayerAnimations();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " loaded from file. Spawned at x: " << std::dec << playerData.currentGridPosition.x
-                  << ", y: " << playerData.currentGridPosition.y << "\n";
+                  << " loaded from file. Spawned at x: " << std::dec << getCenterGridPosition().x
+                  << ", y: " << getCenterGridPosition().y << "\n";
     }
     else
     {
@@ -100,7 +100,8 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initPlayerAnimations();
 
         std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " spawned at x: " << std::dec << spawn_grid_position.x << ", y: " << spawn_grid_position.y << "\n";
+                  << " spawned at x: " << std::dec << getCenterGridPosition().x << ", y: " << getCenterGridPosition().y
+                  << "\n";
     }
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Configuration.hxx"
 #include "Map/TerrainGenerator.hxx"
 #include "Tiles/Tile.hxx"
 #include "Tools/JSON.hxx"

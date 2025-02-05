@@ -3,15 +3,15 @@
 constexpr unsigned int GRID_SIZE = 16;
 
 #ifndef GAME_VERSION
-#warning "GAME_VERSION NOT DEFINED IN COMPILE TILE, CHECK target_compile_definitions"
+#define GAME_VERSION "Alpha 0.7.1"
 #endif
 
 #ifndef METADATA_VERSION
-#warning "METADATA_VERSION NOT DEFINED IN COMPILE TILE, CHECK target_compile_definitions"
+#define METADATA_VERSION "1.0.0"
 #endif
 
 #ifndef TERRAIN_GENERATOR_VERSION
-#warning "TERRAIN_GENERATOR_VERSION NOT DEFINED IN COMPILE TILE, CHECK target_compile_definitions"
+#define TERRAIN_GENERATOR_VERSION "1.2.0"
 #endif
 
 #ifdef DEBUG

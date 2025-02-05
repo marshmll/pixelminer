@@ -2,6 +2,7 @@
 
 class State;
 
+#include "Engine/Configuration.hxx"
 #include "Engine/ResourcePack.hxx"
 
 struct EngineData

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Configuration.hxx"
 #include "Tiles/Tile.hxx"
 
 enum ChunkFlags : uint8_t

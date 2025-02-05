@@ -93,38 +93,34 @@ AttributeFunctionality &Entity::getAttributeFunctionality()
 
 void Entity::setPosition(const sf::Vector2f &position)
 {
-    sf::Vector2f offset = baseSprite->getPosition() - position; // Offset to move each sprite layer proportionally
+    sf::Vector2f previous_pos = baseSprite->getPosition();
+    sf::Vector2f offset = position - previous_pos;
 
     for (auto &[_, sprite] : layers)
-    {
         if (sprite)
             sprite->move(offset);
-    }
 }
 
 void Entity::setGridPosition(const sf::Vector2f &grid_position)
 {
-    sf::Vector2f offset = baseSprite->getPosition() -
-                          sf::Vector2f(grid_position.x * GRID_SIZE * scale, grid_position.y * GRID_SIZE * scale);
+    sf::Vector2f previous_pos = baseSprite->getPosition();
+    sf::Vector2f new_pos(sf::Vector2f(grid_position.x * GRID_SIZE * scale, grid_position.y * GRID_SIZE * scale));
+    sf::Vector2f offset = new_pos - previous_pos;
 
     for (auto &[_, sprite] : layers)
-    {
         if (sprite)
             sprite->move(offset);
-    }
 }
 
 void Entity::setCenterGridPosition(const sf::Vector2f &grid_position)
 {
-    sf::Vector2f offset = (grid_position * static_cast<float>(GRID_SIZE) * scale) - baseSprite->getPosition();
+    sf::Vector2f previous_pos(baseSprite->getPosition() + baseSprite->getGlobalBounds().size / 2.f);
+    sf::Vector2f new_pos(sf::Vector2f(grid_position.x * GRID_SIZE * scale, grid_position.y * GRID_SIZE * scale));
+    sf::Vector2f offset = new_pos - previous_pos;
 
     for (auto &[_, sprite] : layers)
-    {
         if (sprite)
             sprite->move(offset);
-    }
-
-    std::cout << getCenterGridPosition().x << " " << getCenterGridPosition().y << "\n";
 }
 
 void Entity::addSpriteLayer(const std::string &key)

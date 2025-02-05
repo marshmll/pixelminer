@@ -209,9 +209,8 @@ void GameState::updateDebugText(const float &dt)
 
     sstream << static_cast<int>(1.f / dt) << " fps" << "\n"
             << std::fixed << std::setprecision(5) << dt << " ms" << "\n"
-            << "grid x, y: " << std::fixed << std::setprecision(5)
-            << thisPlayer->getCenter().x / (data.gridSize * data.scale) << " | " << std::fixed << std::setprecision(5)
-            << thisPlayer->getCenter().y / (data.gridSize * data.scale) << "\n"
+            << "grid x, y: " << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().x << " | "
+            << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().y << "\n"
             << "chunk: ["
             << static_cast<unsigned int>(thisPlayer->getCenter().x /
                                          (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))

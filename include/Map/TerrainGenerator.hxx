@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Map/Biome.hxx"
 #include "Map/Chunk.hxx"
 #include "Map/Metadata.hxx"

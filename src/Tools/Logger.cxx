@@ -11,7 +11,7 @@ Logger::~Logger()
 
 void Logger::logInfo(const std::string &log)
 {
-    TerminalColor::set(White);
+    TerminalColor::set(BrightBlue);
 
     std::cerr << "[ " << logger << " ] -> INFO: " << log << "\n";
 

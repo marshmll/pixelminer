@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Configuration.hxx"
 #include "Network/File.hxx"
 #include "Network/PacketAddress.hxx"
 #include "Tools/Logger.hxx"
