@@ -7,12 +7,21 @@ void PineTree::initAnimations()
     animationFunctionality->addAnimation("Base", "TrunkIdle", 10000, {50, 82}, {0, 1}, {0, 1});
 }
 
+void PineTree::initHitBoxes()
+{
+    collisionFunctionality->addHitBox("Trunk", sf::Vector2u(20, 5), sf::Vector2u(15, 76), scale);
+}
+
 PineTree::PineTree(const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
     : Tree("Pine Tree", spawn_grid_position, sprite_sheet, scale)
 {
     addSpriteLayer("Top");
+
     createAnimationFunctionality();
+    createCollisionFunctionality();
+
     initAnimations();
+    initHitBoxes();
 }
 
 PineTree::~PineTree() = default;
@@ -29,5 +38,20 @@ void PineTree::render(sf::RenderTarget &target)
     {
         if (sprite)
             target.draw(*sprite);
+    }
+}
+
+void PineTree::render(sf::RenderTarget &target, const bool &show_hitboxes)
+{
+    for (auto &[_, sprite] : layers)
+    {
+        if (sprite)
+            target.draw(*sprite);
+    }
+
+    if (show_hitboxes)
+    {
+        for (auto &[_, hitbox] : collisionFunctionality->getHitBoxes())
+            target.draw(hitbox.rect);
     }
 }

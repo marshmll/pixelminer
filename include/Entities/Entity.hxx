@@ -53,6 +53,8 @@ class Entity
 
     virtual void render(sf::RenderTarget &target) = 0;
 
+    virtual void render(sf::RenderTarget &target, const bool &show_hitboxes) = 0;
+
     void move(const float &dt, const MovementDirection &direction);
 
     void playAnimation(const std::string &name);

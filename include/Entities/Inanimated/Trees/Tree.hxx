@@ -13,4 +13,6 @@ class Tree : public Entity
     virtual void update(const float &dt, const sf::Vector2f &mouse_pos) = 0;
 
     virtual void render(sf::RenderTarget &target) = 0;
+
+    virtual void render(sf::RenderTarget &target, const bool &show_hitboxes) = 0;
 };

@@ -279,9 +279,7 @@ void GameState::renderGlobalEntities(sf::RenderTarget &target)
     for (auto &entity : globalEntities)
     {
         if (entity)
-        {
-            entity->render(target);
-        }
+            entity->render(target, debugHitBoxes);
     }
 }
 
