@@ -4,11 +4,14 @@
 #include "Tiles/Tile.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/LinearCongruentialGenerator.hxx"
+#include "Tools/Logger.hxx"
 
 class Map
 {
   private:
     std::mutex mutex;
+
+    Logger logger;
 
     sf::Clock clock;
 
@@ -96,5 +99,5 @@ class Map
 
     const std::string &getFolderName() const;
 
-    const bool isRegionLoaded(const sf::Vector2i &region_index) const;
+    const bool isRegionLoaded(const sf::Vector2i &region_index);
 };

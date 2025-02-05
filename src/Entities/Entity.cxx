@@ -25,7 +25,7 @@ void Entity::createCollisionFunctionality()
 Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
                const float &scale)
 
-    : name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
+    : logger(name), name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
       spriteSheet(sprite_sheet), scale(scale)
 {
     addSpriteLayer("Base");
@@ -44,8 +44,8 @@ void Entity::move(const float &dt, const MovementDirection &direction)
     if (movementFunctionality.has_value())
         movementFunctionality->move(dt, direction);
     else
-        std::cout << "[ Entity: \"" << name << "\" ID: " << std::hex << id << std::dec
-                  << " ]: Tried to move without an initialized movement component." << "\n";
+        logger.logWarning("Entity with ID: " + std::to_string(id) +
+                          " tried to move without an initialized movement component.");
 }
 
 void Entity::playAnimation(const std::string &name)
@@ -54,8 +54,8 @@ void Entity::playAnimation(const std::string &name)
         animationFunctionality->play(name);
 
     else
-        std::cout << "[ Entity: \"" << name << "\" ID: " << std::hex << id << std::dec
-                  << " ]: Tried to play animation without an initialized animation component." << "\n";
+        logger.logWarning("Entity with ID: " + std::to_string(id) +
+                          " tried to play an animation without an initialized animation component.");
 }
 
 const sf::Vector2f Entity::getPosition() const
@@ -90,8 +90,8 @@ const sf::Vector2f Entity::getCenterGridPosition() const
 AttributeFunctionality &Entity::getAttributeFunctionality()
 {
     if (!attributeFunctionality.has_value())
-        throw std::runtime_error("Entity " + name + " ID: " + std::to_string(id) +
-                                 " accessed non-initialized AttributeFunctionality.");
+        logger.logError("Entity " + name + " ID: " + std::to_string(id) +
+                        " accessed non-initialized AttributeFunctionality.");
 
     return *attributeFunctionality;
 }
@@ -137,10 +137,10 @@ void Entity::addSpriteLayer(const std::string &key)
         layers.at(key)->setPosition(baseSprite->getPosition());
 }
 
-const std::unordered_map<std::string, HitBox> &Entity::getHitBoxes() const
+const std::unordered_map<std::string, HitBox> &Entity::getHitBoxes()
 {
     if (!collisionFunctionality.has_value())
-        throw std::runtime_error("Entity " + name + " does not have a collision functionality.");
+        logger.logError("Entity " + name + " does not have a collision functionality.");
 
     return collisionFunctionality->getHitBoxes();
 }

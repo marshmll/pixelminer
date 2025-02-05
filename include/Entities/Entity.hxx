@@ -5,6 +5,7 @@
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "Entities/Functionalities/CollisionFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
+#include "Tools/Logger.hxx"
 
 struct EntityData
 {
@@ -16,6 +17,8 @@ struct EntityData
 class Entity
 {
   protected:
+    Logger logger;
+
     std::string name;
     uint64_t id; // Unique session identifier
 
@@ -82,7 +85,7 @@ class Entity
      */
     void addSpriteLayer(const std::string &key);
 
-    const std::unordered_map<std::string, HitBox> &getHitBoxes() const;
+    const std::unordered_map<std::string, HitBox> &getHitBoxes();
 
     const HitBox getHitBox(const std::string &key) const;
 };

@@ -38,14 +38,14 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
 {
     if (!std::filesystem::exists(MAPS_FOLDER + folder_name + "/players/" + uuid + ".dat"))
     {
-        std::cerr << "[ Player ] -> Failed to load player data: no save file was found." << "\n";
+        logger.logWarning("Failed to load player data: no save file was found.");
         return false;
     }
 
     std::ifstream player_data_file(MAPS_FOLDER + folder_name + "/players/" + uuid + ".dat");
 
     if (!player_data_file.is_open())
-        throw std::runtime_error("[ Player ] -> Failed to open player data file: " + uuid + ".dat");
+        logger.logError("Failed to open player data file: " + uuid + ".dat");
 
     // Current Position
     player_data_file.read(reinterpret_cast<char *>(&playerData.currentGridPosition.x), sizeof(float));
@@ -74,7 +74,7 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
     //           << static_cast<int>(playerData.movDirection) << "\n";
 
     player_data_file.close();
-    std::cout << "[ Player ] -> PlayerData was read from world save: " << folder_name << "\n";
+    logger.logInfo("Player data was read from world save: " + folder_name);
     return true;
 }
 
@@ -95,9 +95,8 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initAnimations();
         initHitBoxes();
 
-        std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " loaded from file. Spawned at x: " << std::dec << getCenterGridPosition().x
-                  << ", y: " << getCenterGridPosition().y << "\n";
+        logger.logInfo("Player \"" + name + "\" with id " + std::to_string(id) + " loaded from file. Spawned at x: " +
+                       std::to_string(getCenterGridPosition().x) + ", y: " + std::to_string(getCenterGridPosition().y));
     }
     else
     {
@@ -108,9 +107,8 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initAnimations();
         initHitBoxes();
 
-        std::cout << "[ Player ] -> Player \"" << name << "\" with id " << std::hex << id
-                  << " spawned at x: " << std::dec << getCenterGridPosition().x << ", y: " << getCenterGridPosition().y
-                  << "\n";
+        logger.logInfo("Player \"" + name + "\" with id " + std::to_string(id) + " spawned at x: " +
+                       std::to_string(getCenterGridPosition().x) + ", y: " + std::to_string(getCenterGridPosition().y));
     }
 }
 
@@ -204,8 +202,7 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     const std::filesystem::path root = MAPS_FOLDER + folder_name;
 
     if (!std::filesystem::exists(root))
-        throw std::runtime_error("[ Player ] -> Failed to save " + name + " to map " + folder_name +
-                                 ": Folder does not exist.");
+        logger.logError("Failed to save " + name + " to map " + folder_name + ": Folder does not exist.");
 
     if (!std::filesystem::exists(root / "players/"))
         std::filesystem::create_directory(root / "players/");
@@ -215,7 +212,7 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     std::ofstream player_data_file(root / "players" / (uuid + ".dat"));
 
     if (!player_data_file.is_open())
-        throw std::runtime_error("[ Player ] -> Failed to save player data: " + name);
+        throw std::runtime_error("Failed to save player data: " + name);
 
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.x), sizeof(float));
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.y), sizeof(float));
@@ -235,11 +232,10 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     if (player_data_file.bad())
     {
         player_data_file.close();
-        throw std::runtime_error("[ Player ] -> Something went wrong while saving player data: " + name +
-                                 " (bad bit was set).");
+        logger.logError("Something went wrong while saving player data: " + name + " (bad bit was set).");
     }
 
     player_data_file.close();
 
-    std::cout << "[ Player ] -> Player data saved to player: " << name << "\n";
+    logger.logInfo("Player data saved to player: " + name);
 }

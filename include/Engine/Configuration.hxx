@@ -3,7 +3,7 @@
 constexpr unsigned int GRID_SIZE = 16;
 
 #ifndef GAME_VERSION
-#define GAME_VERSION "Alpha 0.8.1"
+#define GAME_VERSION "Alpha 0.8.2"
 #endif
 
 #ifndef METADATA_VERSION
