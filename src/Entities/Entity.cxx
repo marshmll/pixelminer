@@ -73,18 +73,20 @@ std::shared_ptr<sf::Sprite> Entity::getSpriteLayer(const std::string &key)
 
 const sf::Vector2f Entity::getGridPosition() const
 {
-    return sf::Vector2f(baseSprite->getPosition() / static_cast<float>(GRID_SIZE * scale));
+    return sf::Vector2f((baseSprite->getPosition().x / static_cast<float>(GRID_SIZE * scale)) * 100 / 100,
+                        (baseSprite->getPosition().y / static_cast<float>(GRID_SIZE * scale)) * 100 / 100);
 }
 
 const sf::Vector2f Entity::getCenter() const
 {
-    return sf::Vector2f(baseSprite->getPosition().x + baseSprite->getGlobalBounds().size.x / 2.f,
-                        baseSprite->getPosition().y + baseSprite->getGlobalBounds().size.y / 2.f);
+    return sf::Vector2f((baseSprite->getPosition().x + baseSprite->getGlobalBounds().size.x / 2.f) * 100 / 100,
+                        (baseSprite->getPosition().y + baseSprite->getGlobalBounds().size.y / 2.f) * 100 / 100);
 }
 
 const sf::Vector2f Entity::getCenterGridPosition() const
 {
-    return sf::Vector2f(getCenter() / static_cast<float>(GRID_SIZE * scale));
+    return sf::Vector2f((getCenter().x / static_cast<float>(GRID_SIZE * scale)) * 100 / 100,
+                        (getCenter().y / static_cast<float>(GRID_SIZE * scale)) * 100 / 100);
 }
 
 AttributeFunctionality &Entity::getAttributeFunctionality()
@@ -99,7 +101,7 @@ AttributeFunctionality &Entity::getAttributeFunctionality()
 void Entity::setPosition(const sf::Vector2f &position)
 {
     sf::Vector2f previous_pos = baseSprite->getPosition();
-    sf::Vector2f offset = position - previous_pos;
+    sf::Vector2f offset((position.x - previous_pos.x) * 100.f / 100.f, (position.y - previous_pos.y) * 100.f / 100.f);
 
     for (auto &[_, sprite] : layers)
         if (sprite)
@@ -110,7 +112,7 @@ void Entity::setGridPosition(const sf::Vector2f &grid_position)
 {
     sf::Vector2f previous_pos = baseSprite->getPosition();
     sf::Vector2f new_pos(sf::Vector2f(grid_position.x * GRID_SIZE * scale, grid_position.y * GRID_SIZE * scale));
-    sf::Vector2f offset = new_pos - previous_pos;
+    sf::Vector2f offset(std::floor(new_pos.x - previous_pos.x), std::floor(new_pos.y - previous_pos.y));
 
     for (auto &[_, sprite] : layers)
         if (sprite)
@@ -121,7 +123,7 @@ void Entity::setCenterGridPosition(const sf::Vector2f &grid_position)
 {
     sf::Vector2f previous_pos(baseSprite->getPosition() + baseSprite->getGlobalBounds().size / 2.f);
     sf::Vector2f new_pos(sf::Vector2f(grid_position.x * GRID_SIZE * scale, grid_position.y * GRID_SIZE * scale));
-    sf::Vector2f offset = new_pos - previous_pos;
+    sf::Vector2f offset(std::floor(new_pos.x - previous_pos.x), std::floor(new_pos.y - previous_pos.y));
 
     for (auto &[_, sprite] : layers)
         if (sprite)

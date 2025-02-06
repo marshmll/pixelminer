@@ -14,7 +14,7 @@ Debug/bin/.pixelminer/
 cp -r src/.pixelminer/ Debug/bin/
 
 cd Debug/ &&
-ninja -j10 &&
+ninja -j4 &&
 cd bin/ &&
 clear &&
 ./pixelminer &&

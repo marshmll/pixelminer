@@ -14,7 +14,7 @@ Release/bin/.pixelminer/
 cp -r src/.pixelminer/ Release/bin/
 
 cd Release/ &&
-ninja -j10 &&
+ninja -j4 &&
 cd bin/ &&
 clear &&
 ./pixelminer &&

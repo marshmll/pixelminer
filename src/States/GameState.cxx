@@ -65,7 +65,8 @@ void GameState::initChat()
 {
     chat = std::make_unique<gui::Chat>(
         sf::Vector2f(gui::percent(data.vm->size.x, 25.f), gui::percent(data.vm->size.y, 30.f)),
-        sf::Vector2f(20.f, 20.f), data.activeResourcePack->fonts.at("Regular"), *data.vm);
+        sf::Vector2f(gui::percent(data.vm->size.x, 5.f), data.vm->size.y - gui::percent(data.vm->size.y, 35.f)),
+        data.activeResourcePack->fonts.at("Regular"), *data.vm);
 }
 
 void GameState::initDebugging()
@@ -200,23 +201,21 @@ void GameState::updatePlayerCamera()
 
     if ((playerCamera.getCenter().x - playerCamera.getSize().x / 2.f) <= 0.f)
     {
-        playerCamera.setCenter(
-            sf::Vector2f(std::floor(playerCamera.getSize().x / 2.f), std::floor(playerCamera.getCenter().y)));
+        playerCamera.setCenter(sf::Vector2f(playerCamera.getSize().x / 2.f, playerCamera.getCenter().y));
     }
     else if ((playerCamera.getCenter().x + playerCamera.getSize().x / 2.f) >= map->getRealDimensions().x)
     {
-        playerCamera.setCenter(sf::Vector2f(std::floor(map->getRealDimensions().x - playerCamera.getSize().x / 2.f),
-                                            std::floor(playerCamera.getCenter().y)));
+        playerCamera.setCenter(
+            sf::Vector2f(map->getRealDimensions().x - playerCamera.getSize().x / 2.f, playerCamera.getCenter().y));
     }
     if ((playerCamera.getCenter().y - playerCamera.getSize().y / 2.f) <= 0.f)
     {
-        playerCamera.setCenter(
-            sf::Vector2f(std::floor(playerCamera.getCenter().x), std::floor(playerCamera.getSize().y / 2.f)));
+        playerCamera.setCenter(sf::Vector2f(playerCamera.getCenter().x, playerCamera.getSize().y / 2.f));
     }
     else if ((playerCamera.getCenter().y + playerCamera.getSize().y / 2.f) >= map->getRealDimensions().y)
     {
-        playerCamera.setCenter(sf::Vector2f(std::floor(playerCamera.getCenter().x),
-                                            std::floor(map->getRealDimensions().y - playerCamera.getSize().y / 2.f)));
+        playerCamera.setCenter(
+            sf::Vector2f(playerCamera.getCenter().x, map->getRealDimensions().y - playerCamera.getSize().y / 2.f));
     }
 }
 
