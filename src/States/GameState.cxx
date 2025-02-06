@@ -61,6 +61,13 @@ void GameState::initPauseMenu()
     pauseMenu = std::make_unique<gui::PauseMenu>(data);
 }
 
+void GameState::initChat()
+{
+    chat = std::make_unique<gui::Chat>(
+        sf::Vector2f(gui::percent(data.vm->size.x, 25.f), gui::percent(data.vm->size.y, 30.f)),
+        sf::Vector2f(20.f, 20.f), data.activeResourcePack->fonts.at("Regular"), *data.vm);
+}
+
 void GameState::initDebugging()
 {
     debugChunks = debugInfo = debugHitBoxes = false;
@@ -95,6 +102,7 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initPlayerGUI();
     initPlayerCamera();
     initPauseMenu();
+    initChat();
     initDebugging();
 
     globalEntities.emplace_back(
@@ -136,6 +144,11 @@ void GameState::update(const float &dt)
     updatePlayerCamera();
 
     playerGUI->update(dt);
+
+    chat->update(dt, mousePosView, *data.event, data.mouseData);
+
+    if (keyPressedWithin(250, sf::Keyboard::Key::T))
+        chat->setActive(!chat->isActive());
 
     if (debugInfo)
         updateDebugText(dt);
@@ -262,6 +275,8 @@ void GameState::render(sf::RenderTarget &target)
     renderTexture.setView(renderTexture.getDefaultView());
 
     playerGUI->render(renderTexture);
+
+    chat->render(renderTexture);
 
     if (!pauseMenu->isActive() && debugInfo)
         renderTexture.draw(*debugText);

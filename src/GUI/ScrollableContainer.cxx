@@ -6,7 +6,7 @@ using namespace gui;
 ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size,
                                          const sf::Vector2f &position, const float &max_scroll_delta,
                                          const float &scrollbar_width, const sf::Color &scrollbar_color)
-    : maxScrollDelta(max_scroll_delta), scrollBarLock(false)
+    : maxScrollDelta(max_scroll_delta), scrollBarLock(false), scrollBarVisibility(true)
 {
     // Cache container position and size
     container.setSize(size);
@@ -59,7 +59,7 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
                         (containerBottom - scrollBarHeight * 2.f);
         setViewScrollPercent(percent);
     }
-    else if (scrollBar.getGlobalBounds().contains(mouse_pos))
+    else if (scrollBar.getGlobalBounds().contains(mouse_pos) && scrollBarVisibility)
     {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             scrollBarLock = true;
@@ -87,7 +87,9 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
 
 void ScrollableContainer::render(sf::RenderTarget &target)
 {
-    if (maxScrollDelta > 0.f)
+    // target.draw(container);
+
+    if (maxScrollDelta > 0.f && scrollBarVisibility)
         target.draw(scrollBar);
 }
 
@@ -138,4 +140,20 @@ void ScrollableContainer::setScrollBarPercent(const float &percent)
 {
     float newScrollBarY = container.getPosition().y + (container.getSize().y - scrollBar.getSize().y) * percent;
     scrollBar.setPosition(sf::Vector2f(scrollBar.getPosition().x, newScrollBarY));
+}
+
+void ScrollableContainer::setScrollBarVisibility(const bool &visibility)
+{
+    scrollBarVisibility = visibility;
+}
+
+void ScrollableContainer::setScrollPercent(const float &percent)
+{
+    setViewScrollPercent(percent);
+    setScrollBarPercent(percent);
+}
+
+void ScrollableContainer::scrollToBottom()
+{
+    setScrollPercent(1.f);
 }

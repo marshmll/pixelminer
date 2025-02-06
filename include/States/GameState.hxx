@@ -2,6 +2,7 @@
 
 #include "Entities/Inanimated/Trees/PineTree.hxx"
 #include "Entities/Playable/Player.hxx"
+#include "GUI/Chat.hxx"
 #include "GUI/GUI.hxx"
 #include "Map/Map.hxx"
 #include "Network/Client.hxx"
@@ -37,6 +38,8 @@ class GameState : public State
     Client client;
     Server server;
 
+    std::unique_ptr<gui::Chat> chat;
+
     void initLoadingScreen();
 
     void initMap();
@@ -50,6 +53,8 @@ class GameState : public State
     void initPlayerCamera();
 
     void initPauseMenu();
+
+    void initChat();
 
     void initDebugging();
 
