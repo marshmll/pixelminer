@@ -33,7 +33,7 @@ class Input
     sf::RectangleShape body;
 
     std::unique_ptr<sf::Text> label;
-    std::unique_ptr<sf::Text> value;
+    std::unique_ptr<sf::Text> text;
 
     unsigned int charSize;
     float padding;
@@ -74,5 +74,7 @@ class Input
     void render(sf::RenderTarget &target);
 
     const std::string getValue() const;
+
+    void clear();
 };
 } // namespace gui

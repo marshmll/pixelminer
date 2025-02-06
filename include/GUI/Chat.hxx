@@ -50,7 +50,7 @@ class Chat
         {
             if (with_fade)
             {
-                opacity -= 5.f * dt;
+                opacity -= 10.f * dt;
 
                 if (opacity <= 0.f)
                     opacity = 0.f;
@@ -102,8 +102,11 @@ class Chat
         }
     };
 
+    std::string thisAuthor;
+
     std::unique_ptr<gui::ScrollableContainer> chatContainer;
     std::deque<std::unique_ptr<Message>> messages;
+    std::unique_ptr<gui::Input> input;
 
     sf::Font &font;
     sf::VideoMode &vm;
@@ -111,7 +114,8 @@ class Chat
     bool active;
 
   public:
-    Chat(const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font, sf::VideoMode &vm);
+    Chat(const std::string &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
+         sf::VideoMode &vm);
 
     ~Chat();
 
@@ -125,5 +129,7 @@ class Chat
     const bool &isActive() const;
 
     void setActive(const bool &active);
+
+    void sendMessageFromInput();
 };
 } // namespace gui

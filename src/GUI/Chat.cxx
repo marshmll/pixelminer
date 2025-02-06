@@ -3,13 +3,20 @@
 
 using namespace gui;
 
-Chat::Chat(const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font, sf::VideoMode &vm)
-    : font(font), vm(vm), active(false)
+Chat::Chat(const std::string &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
+           sf::VideoMode &vm)
+    : thisAuthor(this_author), font(font), vm(vm), active(false)
 {
-    chatContainer = std::make_unique<gui::ScrollableContainer>(vm, size, position, 0.f, 2.f);
-    setActive(false);
+    float padding = gui::percent(vm.size.x, 1.f);
 
-    displayMessage("marshmll", "hello, world!");
+    chatContainer = std::make_unique<gui::ScrollableContainer>(vm, size, position, 0.f, 2.f);
+
+    input = std::make_unique<gui::Input>(sf::Vector2f(padding, vm.size.y - gui::percent(vm.size.y, 5.f) - padding),
+                                         sf::Vector2f(vm.size.x - padding * 2.f, gui::percent(vm.size.y, 5.f)),
+                                         sf::Color(0, 0, 0, 80), font, gui::charSize(vm, 120), padding, 1.f,
+                                         sf::Color(200, 200, 200, 200));
+
+    setActive(false);
 }
 
 Chat::~Chat()
@@ -20,7 +27,10 @@ void Chat::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<
                   sf::Event::MouseWheelScrolled &mouse_data)
 {
     if (active)
+    {
         chatContainer->update(dt, mouse_pos, event, mouse_data);
+        input->update(dt, mouse_pos, event);
+    }
 
     for (auto &message : messages)
     {
@@ -34,6 +44,12 @@ void Chat::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<
 
 void Chat::render(sf::RenderTarget &target)
 {
+    if (active)
+    {
+        chatContainer->render(target);
+        input->render(target);
+    }
+
     chatContainer->render(target);
 
     target.setView(chatContainer->getView());
@@ -78,4 +94,10 @@ void Chat::setActive(const bool &active)
 
     if (!active)
         chatContainer->scrollToBottom();
+}
+
+void Chat::sendMessageFromInput()
+{
+    displayMessage(thisAuthor, input->getValue());
+    input->clear();
 }

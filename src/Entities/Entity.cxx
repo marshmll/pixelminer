@@ -58,6 +58,11 @@ void Entity::playAnimation(const std::string &name)
                           " tried to play an animation without an initialized animation component.");
 }
 
+const std::string &Entity::getName() const
+{
+    return name;
+}
+
 const sf::Vector2f Entity::getPosition() const
 {
     return baseSprite->getPosition();

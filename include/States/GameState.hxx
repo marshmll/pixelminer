@@ -77,6 +77,8 @@ class GameState : public State
 
     void updatePlayerCamera();
 
+    void updateChat(const float &dt);
+
     void updateDebugText(const float &dt);
 
     void render(sf::RenderTarget &target);

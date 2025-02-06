@@ -9,7 +9,7 @@ void Hotbar::initGUI()
     hungerBarRows = static_cast<uint8_t>(
         std::ceil(static_cast<float>(playerAttributes.getMaxHunger()) / static_cast<float>(maxCols) / 2.f));
 
-    hotbarContainer.setSize(sf::Vector2f(gui::percent(vm.size.x, 50.f), gui::percent(vm.size.y, 10.f)));
+    hotbarContainer.setSize(sf::Vector2f(gui::percent(vm.size.x, 60.f), gui::percent(vm.size.y, 10.f)));
     hotbarContainer.setPosition(
         sf::Vector2f(vm.size.x / 2.f - hotbarContainer.getSize().x / 2.f, gui::percent(vm.size.y, 80.f)));
 

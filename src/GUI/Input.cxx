@@ -20,13 +20,13 @@ Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::C
                      static_cast<int>(body.getPosition().y - this->label->getGlobalBounds().size.y - char_size)));
     this->label->setFillColor(sf::Color(255, 255, 255, 200));
 
-    value = std::make_unique<sf::Text>(font, "", char_size);
-    value->setPosition(sf::Vector2f(static_cast<int>(body.getPosition().x + padding),
-                                    static_cast<int>(body.getPosition().y + padding - char_size / 3.f)));
-    value->setFillColor(sf::Color::White);
+    text = std::make_unique<sf::Text>(font, "", char_size);
+    text->setPosition(sf::Vector2f(static_cast<int>(body.getPosition().x + padding),
+                                   static_cast<int>(body.getPosition().y + padding - char_size / 3.f)));
+    text->setFillColor(sf::Color::White);
 
-    blinkerCursor.setSize(sf::Vector2f(char_size / 2.f, value->getLetterSpacing()));
-    blinkerCursor.setPosition(sf::Vector2f(value->getPosition().x + value->getGlobalBounds().size.x,
+    blinkerCursor.setSize(sf::Vector2f(char_size / 2.f, text->getLetterSpacing()));
+    blinkerCursor.setPosition(sf::Vector2f(text->getPosition().x + text->getGlobalBounds().size.x,
                                            body.getPosition().y + body.getSize().y - padding));
     blinkerCursor.setFillColor(sf::Color::White);
 
@@ -117,42 +117,42 @@ void Input::handleKeyPress(char32_t c)
         }
     }
 
-    sf::String currStr = value->getString();
+    sf::String currStr = text->getString();
     currStr.insert(cursorIndex, c);
-    value->setString(currStr);
+    text->setString(currStr);
     cursorIndex++;
 }
 
 void Input::handleBackspace()
 {
-    sf::String currStr = value->getString();
+    sf::String currStr = text->getString();
     if (cursorIndex > 0)
     {
         currStr.erase(cursorIndex - 1, 1);
-        value->setString(currStr);
+        text->setString(currStr);
         --cursorIndex;
     }
 }
 
 void Input::handleTab()
 {
-    sf::String currStr = value->getString();
+    sf::String currStr = text->getString();
     currStr.insert(cursorIndex, "    ");
-    value->setString(currStr);
+    text->setString(currStr);
     cursorIndex += 4;
 }
 
 void Input::handleEnter()
 {
-    sf::String currStr = value->getString();
+    sf::String currStr = text->getString();
     currStr.insert(cursorIndex, "\n");
-    value->setString(currStr);
+    text->setString(currStr);
     ++cursorIndex;
 }
 
 void Input::handleArrowKey(sf::Keyboard::Key key)
 {
-    if (key == sf::Keyboard::Key::Right && cursorIndex < value->getString().getSize())
+    if (key == sf::Keyboard::Key::Right && cursorIndex < text->getString().getSize())
         ++cursorIndex;
     if (key == sf::Keyboard::Key::Left && cursorIndex > 0)
         --cursorIndex;
@@ -184,9 +184,9 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
         toggleCursorVisibility();
 
     // Update cursor position using findCharacterPos
-    if (cursorIndex <= value->getString().getSize())
+    if (cursorIndex <= text->getString().getSize())
     {
-        sf::Vector2f cursorPos = value->findCharacterPos(cursorIndex);
+        sf::Vector2f cursorPos = text->findCharacterPos(cursorIndex);
         blinkerCursor.setPosition(sf::Vector2f(cursorPos.x, body.getPosition().y + body.getSize().y - padding));
     }
 
@@ -236,7 +236,8 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     {
         for (const auto &[key, character] : keyMap)
         {
-            if (sf::Keyboard::isKeyPressed(key))
+            if (sf::Keyboard::isKeyPressed(key) &&
+                !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // Ignore control chars
             {
                 if (lastKeyPressed == key && keyTimer.getElapsedTime().asSeconds() > .5f)
                 {
@@ -293,12 +294,18 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
 void Input::render(sf::RenderTarget &target)
 {
     target.draw(body);
-    target.draw(*value);
+    target.draw(*text);
     target.draw(*label);
     target.draw(blinkerCursor);
 }
 
 const std::string Input::getValue() const
 {
-    return value->getString();
+    return text->getString();
+}
+
+void Input::clear()
+{
+    text->setString("");
+    cursorIndex = 0;
 }

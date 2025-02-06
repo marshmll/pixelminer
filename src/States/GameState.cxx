@@ -64,8 +64,8 @@ void GameState::initPauseMenu()
 void GameState::initChat()
 {
     chat = std::make_unique<gui::Chat>(
-        sf::Vector2f(gui::percent(data.vm->size.x, 25.f), gui::percent(data.vm->size.y, 30.f)),
-        sf::Vector2f(gui::percent(data.vm->size.x, 5.f), data.vm->size.y - gui::percent(data.vm->size.y, 35.f)),
+        thisPlayer->getName(), sf::Vector2f(gui::percent(data.vm->size.x, 30.f), gui::percent(data.vm->size.y, 25.f)),
+        sf::Vector2f(gui::percent(data.vm->size.x, 2.f), gui::percent(data.vm->size.y, 2.f)),
         data.activeResourcePack->fonts.at("Regular"), *data.vm);
 }
 
@@ -143,13 +143,7 @@ void GameState::update(const float &dt)
     updateGlobalEntities(dt);
     updatePlayers(dt);
     updatePlayerCamera();
-
-    playerGUI->update(dt);
-
-    chat->update(dt, mousePosView, *data.event, data.mouseData);
-
-    if (keyPressedWithin(250, sf::Keyboard::Key::T))
-        chat->setActive(!chat->isActive());
+    updateChat(dt);
 
     if (debugInfo)
         updateDebugText(dt);
@@ -192,7 +186,7 @@ void GameState::updateGlobalEntities(const float &dt)
 void GameState::updatePlayers(const float &dt)
 {
     for (auto &[uuid, player] : players)
-        player->update(dt, player.get() == thisPlayer.get());
+        player->update(dt, player.get() == thisPlayer.get() && !chat->isActive());
 }
 
 void GameState::updatePlayerCamera()
@@ -217,6 +211,23 @@ void GameState::updatePlayerCamera()
         playerCamera.setCenter(
             sf::Vector2f(playerCamera.getCenter().x, map->getRealDimensions().y - playerCamera.getSize().y / 2.f));
     }
+}
+
+void GameState::updateChat(const float &dt)
+{
+    if (!chat->isActive())
+        playerGUI->update(dt);
+
+    chat->update(dt, mousePosView, *data.event, data.mouseData);
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+    {
+        if (keyPressedWithin(250, sf::Keyboard::Key::C))
+            chat->setActive(!chat->isActive());
+    }
+
+    else if (keyPressedWithin(250, sf::Keyboard::Key::Enter) && chat->isActive())
+        chat->sendMessageFromInput();
 }
 
 void GameState::updateDebugText(const float &dt)
@@ -273,9 +284,11 @@ void GameState::render(sf::RenderTarget &target)
 
     renderTexture.setView(renderTexture.getDefaultView());
 
-    playerGUI->render(renderTexture);
+    if (!chat->isActive())
+        playerGUI->render(renderTexture);
 
-    chat->render(renderTexture);
+    if (!pauseMenu->isActive())
+        chat->render(renderTexture);
 
     if (!pauseMenu->isActive() && debugInfo)
         renderTexture.draw(*debugText);

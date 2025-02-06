@@ -62,6 +62,8 @@ class Entity
 
     void playAnimation(const std::string &name);
 
+    const std::string &getName() const;
+
     const sf::Vector2f getPosition() const;
 
     std::shared_ptr<sf::Sprite> getSpriteLayer(const std::string &key);
