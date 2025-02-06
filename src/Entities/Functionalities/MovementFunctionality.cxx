@@ -2,10 +2,11 @@
 #include "stdafx.hxx"
 
 MovementFunctionality::MovementFunctionality(std::map<std::string, std::shared_ptr<sf::Sprite>> &layers,
-                                             const float max_velocity, const uint8_t &movement_flags,
-                                             const uint8_t &movement_direction, const uint8_t &movement_state)
-    : layers(layers), maxVelocity(max_velocity), flags(movement_flags), state(movement_state),
-      direction(movement_direction)
+                                             const float &max_velocity, const float &scale,
+                                             const uint8_t &movement_flags, const uint8_t &movement_direction,
+                                             const uint8_t &movement_state)
+    : layers(layers), velocity(0.f, 0.f), maxVelocity(max_velocity), scale(scale), flags(movement_flags),
+      state(movement_state), direction(movement_direction)
 {
 }
 
@@ -16,6 +17,7 @@ MovementFunctionality::~MovementFunctionality()
 void MovementFunctionality::update()
 {
     state = MovementState::Idle;
+    velocity.x = velocity.y = 0.f;
 }
 
 void MovementFunctionality::move(const float &dt, const uint8_t direction)
@@ -24,46 +26,38 @@ void MovementFunctionality::move(const float &dt, const uint8_t direction)
     {
         this->direction = direction;
         state = MovementState::Walking;
-
-        for (auto &[_, sprite] : layers)
-        {
-            if (sprite)
-                sprite->move(sf::Vector2f(0.f, std::round(-maxVelocity * sprite->getScale().y * dt)));
-        }
+        velocity.y = std::round(-maxVelocity * scale * dt);
     }
     else if (direction == MovementDirection::Down && flags & Movement::AllowDown)
     {
         this->direction = direction;
         state = MovementState::Walking;
-
-        for (auto &[_, sprite] : layers)
-        {
-            if (sprite)
-                sprite->move(sf::Vector2f(0.f, std::round(maxVelocity * sprite->getScale().y * dt)));
-        }
+        velocity.y = std::round(maxVelocity * scale * dt);
     }
     else if (direction == MovementDirection::Left && flags & Movement::AllowLeft)
     {
         this->direction = direction;
         state = MovementState::Walking;
-
-        for (auto &[_, sprite] : layers)
-        {
-            if (sprite)
-                sprite->move(sf::Vector2f(std::round(-maxVelocity * sprite->getScale().x) * dt, 0.f));
-        }
+        velocity.x = std::round(-maxVelocity * scale * dt);
     }
     else if (direction == MovementDirection::Right && flags & Movement::AllowRight)
     {
         this->direction = direction;
         state = MovementState::Walking;
 
-        for (auto &[_, sprite] : layers)
-        {
-            if (sprite)
-                sprite->move(sf::Vector2f(std::round(maxVelocity * sprite->getScale().x * dt), 0.f));
-        }
+        velocity.x = std::round(maxVelocity * scale * dt);
     }
+
+    for (auto &[_, sprite] : layers)
+    {
+        if (sprite)
+            sprite->move(velocity);
+    }
+}
+
+const sf::Vector2f &MovementFunctionality::getVelocity() const
+{
+    return velocity;
 }
 
 const float &MovementFunctionality::getMaxVelocity() const

@@ -33,14 +33,17 @@ class MovementFunctionality
 {
   private:
     std::map<std::string, std::shared_ptr<sf::Sprite>> &layers;
+    sf::Vector2f velocity;
     float maxVelocity;
+    float scale;
     uint8_t flags;
     uint8_t state;
     uint8_t direction;
 
   public:
-    MovementFunctionality(std::map<std::string, std::shared_ptr<sf::Sprite>> &layers, const float max_velocity,
-                          const uint8_t &movement_flags, const uint8_t &movement_direction = MovementDirection::Down,
+    MovementFunctionality(std::map<std::string, std::shared_ptr<sf::Sprite>> &layers, const float &max_velocity,
+                          const float &scale, const uint8_t &movement_flags,
+                          const uint8_t &movement_direction = MovementDirection::Down,
                           const uint8_t &movement_state = MovementState::Idle);
 
     ~MovementFunctionality();
@@ -48,6 +51,8 @@ class MovementFunctionality
     void update();
 
     void move(const float &dt, const uint8_t direction);
+
+    const sf::Vector2f &getVelocity() const;
 
     const float &getMaxVelocity() const;
 

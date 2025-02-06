@@ -4,7 +4,7 @@
 void Entity::createMovementFunctionality(const float &max_velocity, const uint8_t &movement_flags,
                                          const uint8_t &movement_direction, const uint8_t &movement_state)
 {
-    movementFunctionality.emplace(layers, max_velocity, movement_flags, movement_direction, movement_state);
+    movementFunctionality.emplace(layers, max_velocity, scale, movement_flags, movement_direction, movement_state);
 }
 
 void Entity::createAnimationFunctionality()

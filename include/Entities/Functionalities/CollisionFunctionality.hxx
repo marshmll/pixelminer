@@ -13,6 +13,7 @@ class CollisionFunctionality
   private:
     sf::Sprite &sprite;
     std::unordered_map<std::string, HitBox> hitBoxes;
+    HitBox predictionHitBox;
     bool collisionEnabled;
 
   public:
@@ -25,6 +26,8 @@ class CollisionFunctionality
     const std::unordered_map<std::string, HitBox> &getHitBoxes() const;
 
     const HitBox getHitBox(const std::string &key) const;
+
+    const HitBox &predictHitBoxPosition(const std::string key, const sf::Vector2f &velocity);
 
     const bool &getCollisionEnabled() const;
 

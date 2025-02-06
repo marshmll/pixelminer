@@ -193,6 +193,7 @@ void Player::render(sf::RenderTarget &target, const bool &show_hitboxes)
         for (auto &[_, hitbox] : getHitBoxes())
         {
             target.draw(hitbox.rect);
+            target.draw(collisionFunctionality->predictHitBoxPosition("Body", movementFunctionality->getVelocity()).rect);
         }
     }
 }

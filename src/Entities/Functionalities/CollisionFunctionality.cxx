@@ -30,6 +30,21 @@ const HitBox CollisionFunctionality::getHitBox(const std::string &key) const
     }
 }
 
+const HitBox &CollisionFunctionality::predictHitBoxPosition(const std::string key, const sf::Vector2f &velocity)
+{
+    try
+    {
+        predictionHitBox = hitBoxes.at(key);
+        predictionHitBox.rect.move(velocity);
+        return predictionHitBox;
+    }
+    catch (std::out_of_range &)
+    {
+        predictionHitBox = HitBox();
+        return predictionHitBox;
+    }
+}
+
 const bool &CollisionFunctionality::getCollisionEnabled() const
 {
     return collisionEnabled;
