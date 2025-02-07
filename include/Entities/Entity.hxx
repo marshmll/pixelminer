@@ -64,6 +64,8 @@ class Entity
 
     const std::string &getName() const;
 
+    const uint64_t &getId() const;
+
     const sf::Vector2f getPosition() const;
 
     std::shared_ptr<sf::Sprite> getSpriteLayer(const std::string &key);

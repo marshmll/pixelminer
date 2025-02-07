@@ -1,6 +1,6 @@
 target_sources(pixelminer PRIVATE
 ./Map/Biome.cxx
-./Map/PerlinNoise.cxx
+./Map/EntitySpacialGridPartition.cxx
 ./Map/Map.cxx
 ./Map/Chunk.cxx
 ./Map/TerrainGenerator.cxx
@@ -8,6 +8,7 @@ target_sources(pixelminer PRIVATE
 ./Tools/LinearCongruentialGenerator.cxx
 ./Tools/TerminalColor.cxx
 ./Tools/Zip.cxx
+./Tools/PerlinNoise.cxx
 ./Tools/Date.cxx
 ./Tools/Logger.cxx
 ./Tools/UUID.cxx

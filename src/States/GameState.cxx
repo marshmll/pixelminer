@@ -43,6 +43,12 @@ void GameState::initThisPlayer()
                                                   data.activeResourcePack->getTexture("Player1"), data.scale);
 
     thisPlayer = players.at(data.uuid);
+
+    if (entitySpacialGridPartition.put(std::reinterpret_pointer_cast<Entity>(thisPlayer)))
+    {
+        std::cout << entitySpacialGridPartition.getEntitySpatialGridCoords(thisPlayer).x << " "
+                  << entitySpacialGridPartition.getEntitySpatialGridCoords(thisPlayer).y << "\n";
+    }
 }
 
 void GameState::initPlayerGUI()
@@ -187,6 +193,10 @@ void GameState::updatePlayers(const float &dt)
 {
     for (auto &[uuid, player] : players)
         player->update(dt, player.get() == thisPlayer.get() && !chat->isActive());
+}
+
+void GameState::updateCollisions(const float &dt)
+{
 }
 
 void GameState::updatePlayerCamera()

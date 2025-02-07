@@ -4,9 +4,9 @@
 #include "Map/Biome.hxx"
 #include "Map/Chunk.hxx"
 #include "Map/Metadata.hxx"
-#include "Map/PerlinNoise.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/Logger.hxx"
+#include "Tools/PerlinNoise.hxx"
 
 static constexpr sf::Vector2u MAX_REGIONS = {16, 16};
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,

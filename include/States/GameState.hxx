@@ -4,7 +4,9 @@
 #include "Entities/Playable/Player.hxx"
 #include "GUI/Chat.hxx"
 #include "GUI/GUI.hxx"
+#include "Map/EntitySpacialGridPartition.hxx"
 #include "Map/Map.hxx"
+#include "Map/TerrainGenerator.hxx"
 #include "Network/Client.hxx"
 #include "Network/Server.hxx"
 #include "Player/PlayerGUI.hxx"
@@ -16,10 +18,12 @@ class GameState : public State
   private:
     std::unique_ptr<gui::PauseMenu> pauseMenu;
 
+    EntitySpacialGridPartition entitySpacialGridPartition;
     std::vector<std::shared_ptr<Entity>> globalEntities; // All entities apart from players
 
     std::unordered_map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
+
     sf::View playerCamera;
     std::unique_ptr<PlayerGUI> playerGUI;
 
@@ -74,6 +78,8 @@ class GameState : public State
     void updateGlobalEntities(const float &dt);
 
     void updatePlayers(const float &dt);
+
+    void updateCollisions(const float &dt);
 
     void updatePlayerCamera();
 

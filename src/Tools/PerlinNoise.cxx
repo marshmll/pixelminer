@@ -1,4 +1,4 @@
-#include "Map/PerlinNoise.hxx"
+#include "Tools/PerlinNoise.hxx"
 #include "stdafx.hxx"
 
 float PerlinNoise::fade(float t)

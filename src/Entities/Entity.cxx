@@ -63,6 +63,11 @@ const std::string &Entity::getName() const
     return name;
 }
 
+const uint64_t &Entity::getId() const
+{
+    return id;
+}
+
 const sf::Vector2f Entity::getPosition() const
 {
     return baseSprite->getPosition();
