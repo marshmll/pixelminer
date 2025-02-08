@@ -1,6 +1,6 @@
 /**
  * @file Animation.hxx
- * @brief Defines the Animation class for handling sprite animations.
+ * @brief Declares the Animation class for handling sprite animations.
  */
 
 #pragma once

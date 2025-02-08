@@ -1,6 +1,6 @@
 /**
  * @file AttributeFunctionality.hxx
- * @brief Defines the AttributeFunctionality class for managing entity attributes.
+ * @brief Declares the AttributeFunctionality class for managing entity attributes.
  */
 
 #pragma once

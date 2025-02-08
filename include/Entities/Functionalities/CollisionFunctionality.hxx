@@ -1,6 +1,6 @@
 /**
  * @file CollisionFunctionality.hxx
- * @brief Defines the CollisionFunctionality class for managing entity collisions.
+ * @brief Declares the CollisionFunctionality class for managing entity collisions.
  */
 
 #pragma once

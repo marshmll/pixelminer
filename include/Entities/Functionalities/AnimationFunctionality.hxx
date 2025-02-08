@@ -1,6 +1,6 @@
 /**
  * @file AnimationFunctionality.hxx
- * @brief Defines the AnimationFunctionality class for managing entity animations.
+ * @brief Declares the AnimationFunctionality class for managing entity animations.
  */
 
 #pragma once

@@ -1,6 +1,6 @@
 /**
  * @file ResourcePack.hxx
- * @brief Defines the ResourcePack class for managing game assets.
+ * @brief Declares the ResourcePack class for managing game assets.
  */
 
 #pragma once

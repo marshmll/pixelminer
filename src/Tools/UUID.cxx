@@ -1,13 +1,9 @@
 #include "Tools/UUID.hxx"
 #include "stdafx.hxx"
 
-UUID::UUID()
-{
-}
+UUID::UUID() = default;
 
-UUID::~UUID()
-{
-}
+UUID::~UUID() = default;
 
 const std::string UUID::generate()
 {

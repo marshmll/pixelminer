@@ -1,3 +1,8 @@
+/**
+ * @file WorldSelectionMenuState.hxx
+ * @brief Declares the WorldSelectionMenuState class for visualizing and playing in local worlds.
+ */
+
 #pragma once
 
 #include "GUI/GUI.hxx"
@@ -6,32 +11,56 @@
 #include "Tools/Date.hxx"
 #include "Tools/JSON.hxx"
 
+/**
+ * @struct WorldMetadata
+ * @brief A structure that holds metadata for a world, including the name, folder, creation date, and other details.
+ */
 struct WorldMetadata
 {
-    std::string worldName;
-    std::string folderName;
-    unsigned long long creationDate;
-    unsigned long long lastPlayed;
-    std::string gameVersion;
-    std::string difficulty;
+    std::string worldName;           ///< Name of the world.
+    std::string folderName;          ///< Folder name of the world.
+    unsigned long long creationDate; ///< Creation date of the world (in Unix timestamp format).
+    unsigned long long lastPlayed;   ///< Last played date of the world (in Unix timestamp format).
+    std::string gameVersion;         ///< Version of the game associated with the world.
+    std::string difficulty;          ///< Difficulty setting of the world.
 };
 
+/**
+ * @class WorldSelectionMenuState
+ * @brief The state for displaying and managing the world selection menu.
+ *
+ * This class allows the player to select, create, edit, or delete worlds, and provides options to manage the
+ * selected world. It contains functionality to display, interact with, and update world selectors.
+ */
 class WorldSelectionMenuState : public State
 {
   private:
+    /**
+     * @class WorldSelector
+     * @brief A class representing a selectable world in the world selection menu.
+     *
+     * This class is responsible for displaying and handling interactions with individual world selectors,
+     * including rendering and selection logic.
+     */
     class WorldSelector
     {
       public:
-        EngineData &data;
-        sf::Texture iconTexture;
-        WorldMetadata metadata;
-        sf::RectangleShape container;
-        sf::RectangleShape icon;
-        std::unique_ptr<sf::Text> name;
-        std::unique_ptr<sf::Text> description;
+        EngineData &data;               ///< Engine data used for various purposes, like window size and textures.
+        sf::Texture iconTexture;        ///< Texture of the world icon.
+        WorldMetadata metadata;         ///< Metadata of the world associated with this selector.
+        sf::RectangleShape container;   ///< Container shape for the world selector.
+        sf::RectangleShape icon;        ///< Icon shape representing the world.
+        std::unique_ptr<sf::Text> name; ///< Name of the world displayed.
+        std::unique_ptr<sf::Text> description; ///< Description of the world displayed.
 
-        bool selected;
+        bool selected; ///< Flag indicating if the world is selected.
 
+        /**
+         * @brief Constructs a WorldSelector object.
+         * @param data Engine data reference for accessing resources like textures and fonts.
+         * @param metadata Metadata associated with the world.
+         * @param y_position The vertical position for the world selector in the menu.
+         */
         WorldSelector(EngineData &data, WorldMetadata metadata, const float y_position)
             : data(data), metadata(metadata), selected(false)
         {
@@ -71,6 +100,11 @@ class WorldSelectionMenuState : public State
             description->setFillColor(sf::Color(200, 200, 200, 255));
         }
 
+        /**
+         * @brief Updates the state of the world selector based on mouse interaction.
+         * @param dt Delta time for frame-based updates.
+         * @param mouse_pos Current mouse position.
+         */
         inline void update(const float &dt, const sf::Vector2f &mouse_pos)
         {
             if (!selected)
@@ -86,6 +120,10 @@ class WorldSelectionMenuState : public State
             }
         }
 
+        /**
+         * @brief Renders the world selector to the target.
+         * @param target The render target where the world selector will be drawn.
+         */
         inline void render(sf::RenderTarget &target)
         {
             target.draw(container);
@@ -94,21 +132,37 @@ class WorldSelectionMenuState : public State
             target.draw(*description);
         }
 
+        /**
+         * @brief Gets the position of the world selector container.
+         * @return Position of the world selector container.
+         */
         inline const sf::Vector2f getPosition() const
         {
             return container.getPosition();
         }
 
+        /**
+         * @brief Gets the size of the world selector container.
+         * @return Size of the world selector container.
+         */
         inline const sf::Vector2f getSize() const
         {
             return container.getSize();
         }
 
+        /**
+         * @brief Checks if the world selector is selected.
+         * @return True if selected, false otherwise.
+         */
         inline const bool isSelected() const
         {
             return selected;
         }
 
+        /**
+         * @brief Sets the selection state of the world selector.
+         * @param selected The new selection state.
+         */
         inline void setSelected(const bool selected)
         {
             this->selected = selected;
@@ -120,33 +174,62 @@ class WorldSelectionMenuState : public State
         }
     };
 
-    sf::RectangleShape background;
-    sf::RectangleShape header;
-    sf::RectangleShape footer;
+    sf::RectangleShape background; ///< Background rectangle of the menu.
+    sf::RectangleShape header;     ///< Header section rectangle of the menu.
+    sf::RectangleShape footer;     ///< Footer section rectangle of the menu.
 
-    sf::RectangleShape buttonContainer;
+    sf::RectangleShape buttonContainer; ///< Container for buttons in the footer.
 
-    std::map<std::string, std::unique_ptr<gui::TextButton>> buttons;
+    std::map<std::string, std::unique_ptr<gui::TextButton>> buttons; ///< Map of buttons in the menu.
 
-    std::vector<std::shared_ptr<WorldSelector>> worldSelectors;
-    std::unique_ptr<gui::ScrollableContainer> worldSelectorsList;
+    std::vector<std::shared_ptr<WorldSelector>> worldSelectors;   ///< List of world selectors.
+    std::unique_ptr<gui::ScrollableContainer> worldSelectorsList; ///< Scrollable container for the world selectors.
 
-    std::optional<std::shared_ptr<WorldSelector>> selectedWorld;
+    std::optional<std::shared_ptr<WorldSelector>> selectedWorld; ///< Currently selected world, if any.
 
+    /**
+     * @brief Initializes the GUI components for the world selection menu.
+     */
     void initGUI();
 
+    /**
+     * @brief Initializes the world selectors based on available world metadata.
+     */
     void initWorldSelectors();
 
   public:
+    /**
+     * @brief Constructs the WorldSelectionMenuState object.
+     * @param data Engine data reference for accessing resources and managing the state.
+     */
     WorldSelectionMenuState(EngineData &data);
 
+    /**
+     * @brief Destroys the WorldSelectionMenuState object.
+     */
     ~WorldSelectionMenuState();
 
+    /**
+     * @brief Updates the world selection menu state.
+     * @param dt Delta time for frame-based updates.
+     */
     void update(const float &dt);
 
+    /**
+     * @brief Renders the world selection menu to the target.
+     * @param target The render target where the world selection menu will be drawn.
+     */
     void render(sf::RenderTarget &target);
 
+    /**
+     * @brief Updates the GUI components of the world selection menu.
+     * @param dt Delta time for frame-based updates.
+     */
     void updateGUI(const float &dt);
 
+    /**
+     * @brief Renders the GUI components of the world selection menu.
+     * @param target The render target where the GUI will be drawn.
+     */
     void renderGUI(sf::RenderTarget &target);
 };

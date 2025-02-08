@@ -1,6 +1,6 @@
 /**
  * @file GraphicsSettings.hxx
- * @brief Defines the GraphicsSettings class for handling graphical configurations.
+ * @brief Declares the GraphicsSettings class for handling graphical configurations.
  */
 
 #pragma once

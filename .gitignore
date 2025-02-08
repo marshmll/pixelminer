@@ -4,3 +4,4 @@ Release/
 .vscode
 compile_commands.json
 src/Assets/Settings/uuid.bin
+docs/

@@ -1,6 +1,6 @@
 /**
  * @file Engine.hxx
- * @brief Defines the Engine class for managing game execution.
+ * @brief Declares the Engine class for managing game execution.
  */
 
 #pragma once
