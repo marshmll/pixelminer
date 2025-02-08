@@ -1,7 +1,8 @@
 #include "Entities/Functionalities/CollisionFunctionality.hxx"
 #include "stdafx.hxx"
 
-CollisionFunctionality::CollisionFunctionality(sf::Sprite &sprite) : sprite(sprite), collisionEnabled(true)
+CollisionFunctionality::CollisionFunctionality(sf::Sprite &sprite)
+    : logger("CollisionFunctionality"), sprite(sprite), collisionEnabled(true)
 {
 }
 
@@ -13,7 +14,7 @@ void CollisionFunctionality::update()
         hitbox.rect.setPosition(sprite.getPosition() + hitbox.offset);
 }
 
-const std::unordered_map<std::string, HitBox> &CollisionFunctionality::getHitBoxes() const
+std::map<std::string, HitBox> &CollisionFunctionality::getHitBoxes()
 {
     return hitBoxes;
 }
@@ -28,6 +29,20 @@ const HitBox CollisionFunctionality::getHitBox(const std::string &key) const
     {
         return HitBox();
     }
+}
+
+HitBox &CollisionFunctionality::getFirstHitBox()
+{
+    try
+    {
+        return hitBoxes.begin()->second;
+    }
+    catch (std::exception &)
+    {
+        logger.logError("Failed to acesss first hitbox of entity.");
+    }
+
+    return hitBoxes.begin()->second; // SHOULD NEVER REACH HERE!
 }
 
 const HitBox &CollisionFunctionality::predictHitBoxPosition(const std::string key, const sf::Vector2f &velocity)

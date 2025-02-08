@@ -102,3 +102,8 @@ const std::string MovementFunctionality::getDirectionAsString() const
 
     return str;
 }
+
+void MovementFunctionality::setVelocity(const sf::Vector2f &velocity)
+{
+    this->velocity = velocity;
+}

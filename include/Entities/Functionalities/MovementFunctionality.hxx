@@ -63,4 +63,6 @@ class MovementFunctionality
     const uint8_t &getFlags() const;
 
     const std::string getDirectionAsString() const;
+
+    void setVelocity(const sf::Vector2f &velocity);
 };

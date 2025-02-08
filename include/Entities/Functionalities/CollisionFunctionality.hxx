@@ -1,18 +1,33 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Tools/Logger.hxx"
 
-struct HitBox
+class HitBox
 {
+  public:
     sf::RectangleShape rect;
     sf::Vector2f offset;
+
+    inline HitBox predictNextPos(const sf::Vector2f &velocity)
+    {
+        HitBox hb = *this;
+        hb.rect.move(velocity);
+        return hb;
+    }
+
+    std::optional<sf::FloatRect> findIntersection(HitBox &hitbox)
+    {
+        return rect.getGlobalBounds().findIntersection(hitbox.rect.getGlobalBounds());
+    }
 };
 
 class CollisionFunctionality
 {
   private:
+    Logger logger;
     sf::Sprite &sprite;
-    std::unordered_map<std::string, HitBox> hitBoxes;
+    std::map<std::string, HitBox> hitBoxes;
     HitBox predictionHitBox;
     bool collisionEnabled;
 
@@ -23,7 +38,9 @@ class CollisionFunctionality
 
     void update();
 
-    const std::unordered_map<std::string, HitBox> &getHitBoxes() const;
+    std::map<std::string, HitBox> &getHitBoxes();
+
+    HitBox &getFirstHitBox();
 
     const HitBox getHitBox(const std::string &key) const;
 

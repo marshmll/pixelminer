@@ -116,21 +116,48 @@ Player::~Player() = default;
 
 void Player::update(const float &dt, const bool &update_movement)
 {
+    movementFunctionality->update();
+
     if (update_movement)
     {
-        movementFunctionality->update();
+        if (collisionRect.has_value())
+        {
+            uint8_t movement_direction = movementFunctionality->getDirection();
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-            move(dt, Up);
+            if (movement_direction == Up && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+                setHitBoxPosition(
+                    sf::Vector2f(getFirstHitBoxPosition().x, collisionRect->position.y + collisionRect->size.y + 1.f));
 
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-            move(dt, Down);
+            else if (movement_direction == Down && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+                setHitBoxPosition(
+                    sf::Vector2f(getFirstHitBoxPosition().x, collisionRect->position.y - getFirstHitBoxSize().y - 1.f));
 
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-            move(dt, Left);
+            else if (movement_direction == Left && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+                setHitBoxPosition(
+                    sf::Vector2f(collisionRect->position.x + collisionRect->size.x + 1.f, getFirstHitBoxPosition().y));
 
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-            move(dt, Right);
+            else if (movement_direction == Right && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+                setHitBoxPosition(
+                    sf::Vector2f(collisionRect->position.x - getFirstHitBoxSize().x - 1.f, getFirstHitBoxPosition().y));
+
+            else
+                collisionRect.reset();
+        }
+
+        if (!collisionRect.has_value())
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+                move(dt, Up);
+
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+                move(dt, Down);
+
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+                move(dt, Left);
+
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+                move(dt, Right);
+        }
     }
 
     collisionFunctionality->update();
@@ -193,7 +220,8 @@ void Player::render(sf::RenderTarget &target, const bool &show_hitboxes)
         for (auto &[_, hitbox] : getHitBoxes())
         {
             target.draw(hitbox.rect);
-            target.draw(collisionFunctionality->predictHitBoxPosition("Body", movementFunctionality->getVelocity()).rect);
+            target.draw(
+                collisionFunctionality->predictHitBoxPosition("Body", movementFunctionality->getVelocity()).rect);
         }
     }
 }

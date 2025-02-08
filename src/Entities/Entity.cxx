@@ -26,7 +26,7 @@ Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, s
                const float &scale)
 
     : logger(name), name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
-      spriteSheet(sprite_sheet), scale(scale)
+      spriteSheet(sprite_sheet), scale(scale), collisionRect(std::nullopt)
 {
     addSpriteLayer("Base");
     baseSprite = layers.at("Base");
@@ -46,6 +46,15 @@ void Entity::move(const float &dt, const MovementDirection &direction)
     else
         logger.logWarning("Entity with ID: " + std::to_string(id) +
                           " tried to move without an initialized movement component.");
+}
+
+void Entity::move(const sf::Vector2f &offset)
+{
+    for (auto &[_, sprite] : layers)
+    {
+        if (sprite)
+            sprite->move(offset);
+    }
 }
 
 void Entity::playAnimation(const std::string &name)
@@ -73,6 +82,32 @@ const sf::Vector2f Entity::getPosition() const
     return baseSprite->getPosition();
 }
 
+const sf::Vector2f Entity::getFirstHitBoxPosition()
+{
+    if (!collisionFunctionality.has_value())
+        return sf::Vector2f();
+
+    return collisionFunctionality->getFirstHitBox().rect.getPosition();
+}
+
+const sf::Vector2f Entity::getVelocity()
+{
+    if (!movementFunctionality.has_value())
+        return sf::Vector2f();
+
+    return movementFunctionality->getVelocity();
+}
+
+const bool Entity::isMovable()
+{
+    return movementFunctionality.has_value();
+}
+
+const bool Entity::isMoving()
+{
+    return getVelocity().x != 0.f || getVelocity().y != 0.f;
+}
+
 std::shared_ptr<sf::Sprite> Entity::getSpriteLayer(const std::string &key)
 {
     if (layers.count(key) == 0)
@@ -85,6 +120,20 @@ const sf::Vector2f Entity::getGridPosition() const
 {
     return sf::Vector2f((baseSprite->getPosition().x / static_cast<float>(GRID_SIZE * scale)) * 100 / 100,
                         (baseSprite->getPosition().y / static_cast<float>(GRID_SIZE * scale)) * 100 / 100);
+}
+
+const sf::Vector2f Entity::getFirstHitBoxGridPosition()
+{
+    return sf::Vector2f(
+        (collisionFunctionality->getFirstHitBox().rect.getPosition().x / static_cast<float>(GRID_SIZE * scale)) * 100 /
+            100,
+        (collisionFunctionality->getFirstHitBox().rect.getPosition().y / static_cast<float>(GRID_SIZE * scale)) * 100 /
+            100);
+}
+
+const sf::Vector2f Entity::getFirstHitBoxSize()
+{
+    return collisionFunctionality->getFirstHitBox().rect.getSize();
 }
 
 const sf::Vector2f Entity::getCenter() const
@@ -106,6 +155,32 @@ AttributeFunctionality &Entity::getAttributeFunctionality()
                         " accessed non-initialized AttributeFunctionality.");
 
     return *attributeFunctionality;
+}
+
+std::map<std::string, HitBox> &Entity::getHitBoxes()
+{
+    if (!collisionFunctionality.has_value())
+        logger.logError("Entity " + name + " does not have a collision functionality.");
+
+    return collisionFunctionality->getHitBoxes();
+}
+
+const HitBox Entity::getHitBox(const std::string &key) const
+{
+    return collisionFunctionality->getHitBox(key);
+}
+
+const bool Entity::isCollideable() const
+{
+    if (!collisionFunctionality.has_value())
+        return false;
+
+    return collisionFunctionality->getCollisionEnabled();
+}
+
+const std::optional<sf::FloatRect> &Entity::getCollisionRect() const
+{
+    return collisionRect;
 }
 
 void Entity::setPosition(const sf::Vector2f &position)
@@ -140,6 +215,20 @@ void Entity::setCenterGridPosition(const sf::Vector2f &grid_position)
             sprite->move(offset);
 }
 
+void Entity::setHitBoxPosition(const sf::Vector2f &position)
+{
+    if (!collisionFunctionality.has_value())
+        setPosition(position);
+
+    HitBox &hb = collisionFunctionality->getFirstHitBox();
+    setPosition(sf::Vector2f(position.x - hb.offset.x, position.y - hb.offset.y));
+}
+
+void Entity::setCollisionRect(const std::optional<sf::FloatRect> &rect)
+{
+    this->collisionRect = rect;
+}
+
 void Entity::addSpriteLayer(const std::string &key)
 {
     layers[key] = std::make_unique<sf::Sprite>(spriteSheet);
@@ -147,17 +236,4 @@ void Entity::addSpriteLayer(const std::string &key)
 
     if (baseSprite)
         layers.at(key)->setPosition(baseSprite->getPosition());
-}
-
-const std::unordered_map<std::string, HitBox> &Entity::getHitBoxes()
-{
-    if (!collisionFunctionality.has_value())
-        logger.logError("Entity " + name + " does not have a collision functionality.");
-
-    return collisionFunctionality->getHitBoxes();
-}
-
-const HitBox Entity::getHitBox(const std::string &key) const
-{
-    return collisionFunctionality->getHitBox(key);
 }

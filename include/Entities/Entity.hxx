@@ -36,6 +36,8 @@ class Entity
     std::optional<AttributeFunctionality> attributeFunctionality;
     std::optional<CollisionFunctionality> collisionFunctionality;
 
+    std::optional<sf::FloatRect> collisionRect;
+
     void createMovementFunctionality(const float &max_velocity, const uint8_t &movement_flags,
                                      const uint8_t &movement_direction = MovementDirection::Down,
                                      const uint8_t &movement_state = MovementState::Idle);
@@ -60,6 +62,8 @@ class Entity
 
     void move(const float &dt, const MovementDirection &direction);
 
+    void move(const sf::Vector2f &offset);
+
     void playAnimation(const std::string &name);
 
     const std::string &getName() const;
@@ -68,9 +72,21 @@ class Entity
 
     const sf::Vector2f getPosition() const;
 
+    const sf::Vector2f getVelocity();
+
+    const bool isMovable();
+
+    const bool isMoving();
+
     std::shared_ptr<sf::Sprite> getSpriteLayer(const std::string &key);
 
     const sf::Vector2f getGridPosition() const;
+
+    const sf::Vector2f getFirstHitBoxPosition();
+
+    const sf::Vector2f getFirstHitBoxGridPosition();
+
+    const sf::Vector2f getFirstHitBoxSize();
 
     const sf::Vector2f getCenter() const;
 
@@ -78,18 +94,26 @@ class Entity
 
     AttributeFunctionality &getAttributeFunctionality();
 
+    std::map<std::string, HitBox> &getHitBoxes();
+
+    const HitBox getHitBox(const std::string &key) const;
+
+    const bool isCollideable() const;
+
+    const std::optional<sf::FloatRect> &getCollisionRect() const;
+
     void setPosition(const sf::Vector2f &position);
 
     void setGridPosition(const sf::Vector2f &grid_position);
 
     void setCenterGridPosition(const sf::Vector2f &grid_position);
 
+    void setHitBoxPosition(const sf::Vector2f &position);
+
+    void setCollisionRect(const std::optional<sf::FloatRect> &rect);
+
     /**
      * @attention The order of rendering of the layers follows the order of insertion.
      */
     void addSpriteLayer(const std::string &key);
-
-    const std::unordered_map<std::string, HitBox> &getHitBoxes();
-
-    const HitBox getHitBox(const std::string &key) const;
 };

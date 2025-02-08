@@ -30,6 +30,7 @@ void PineTree::update(const float &dt, const sf::Vector2f &mouse_pos)
 {
     animationFunctionality->play("CrownIdle");
     animationFunctionality->play("TrunkIdle");
+    collisionFunctionality->update();
 }
 
 void PineTree::render(sf::RenderTarget &target)

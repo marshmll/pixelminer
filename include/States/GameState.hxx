@@ -18,11 +18,13 @@ class GameState : public State
   private:
     std::unique_ptr<gui::PauseMenu> pauseMenu;
 
-    EntitySpacialGridPartition entitySpacialGridPartition;
     std::vector<std::shared_ptr<Entity>> globalEntities; // All entities apart from players
 
     std::unordered_map<std::string, std::shared_ptr<Player>> players; // Map UUID to player
     std::shared_ptr<Player> thisPlayer;
+
+    std::unique_ptr<EntitySpacialGridPartition> entitySpacialGridPartition;
+    std::queue<Cell *> spatialGridCellBuffer;
 
     sf::View playerCamera;
     std::unique_ptr<PlayerGUI> playerGUI;
@@ -50,6 +52,8 @@ class GameState : public State
 
     void initMap(const std::string &map_folder_name);
 
+    void initEntitySpatialGridPartition();
+
     void initThisPlayer();
 
     void initPlayerGUI();
@@ -61,6 +65,9 @@ class GameState : public State
     void initChat();
 
     void initDebugging();
+
+    void resolveCollision(std::shared_ptr<Entity> first_entity, std::shared_ptr<Entity> second_entity,
+                          const sf::FloatRect &intersection);
 
   public:
     GameState(EngineData &data);

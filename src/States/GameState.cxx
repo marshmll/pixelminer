@@ -37,6 +37,11 @@ void GameState::initMap(const std::string &map_folder_name)
     map->load(map_folder_name);
 }
 
+void GameState::initEntitySpatialGridPartition()
+{
+    entitySpacialGridPartition = std::make_unique<EntitySpacialGridPartition>(data.scale);
+}
+
 void GameState::initThisPlayer()
 {
     players[data.uuid] = std::make_shared<Player>("marshmll", map->getFolderName(), data.uuid, map->getSpawnPoint(),
@@ -44,10 +49,10 @@ void GameState::initThisPlayer()
 
     thisPlayer = players.at(data.uuid);
 
-    if (entitySpacialGridPartition.put(std::reinterpret_pointer_cast<Entity>(thisPlayer)))
+    if (entitySpacialGridPartition->put(std::reinterpret_pointer_cast<Entity>(thisPlayer)))
     {
-        std::cout << entitySpacialGridPartition.getEntitySpatialGridCoords(thisPlayer).x << " "
-                  << entitySpacialGridPartition.getEntitySpatialGridCoords(thisPlayer).y << "\n";
+        std::cout << entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer).x << " "
+                  << entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer).y << "\n";
     }
 }
 
@@ -85,10 +90,44 @@ void GameState::initDebugging()
         sf::Vector2f((int)gui::percent(data.vm->size.x, 1.f), (int)gui::percent(data.vm->size.y, 1.f)));
 }
 
+// Helper function to resolve collisions
+void GameState::resolveCollision(std::shared_ptr<Entity> first_entity, std::shared_ptr<Entity> second_entity,
+                                 const sf::FloatRect &intersection)
+{
+    if (!first_entity->isMovable())
+        return;
+
+    // Calculate the overlap in the X and Y directions
+    float overlapX = intersection.size.x;
+    float overlapY = intersection.size.y;
+
+    // Determine the direction of the collision
+    sf::Vector2f first_pos = first_entity->getPosition();
+    sf::Vector2f second_pos = second_entity->getPosition();
+
+    if (overlapX < overlapY)
+    {
+        // Resolve collision on the X axis
+        if (first_pos.x < second_pos.x)
+            first_entity->move(sf::Vector2f(-overlapX, 0.f));
+        else
+            first_entity->move(sf::Vector2f(overlapX, 0.f));
+    }
+    else
+    {
+        // Resolve collision on the Y axis
+        if (first_pos.y < second_pos.y)
+            first_entity->move(sf::Vector2f(0.f, -overlapY));
+        else
+            first_entity->move(sf::Vector2f(0.f, overlapY));
+    }
+}
+
 GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(data.uuid)
 {
     initLoadingScreen();
     initMap();
+    initEntitySpatialGridPartition();
     initThisPlayer();
     initPlayerGUI();
     initPlayerCamera();
@@ -105,6 +144,7 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
 {
     initLoadingScreen();
     initMap(map_folder_name);
+    initEntitySpatialGridPartition();
     initThisPlayer();
     initPlayerGUI();
     initPlayerCamera();
@@ -114,6 +154,12 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
 
     globalEntities.emplace_back(
         std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
+
+    if (entitySpacialGridPartition->put(globalEntities.back()))
+    {
+        std::cout << entitySpacialGridPartition->getEntitySpatialGridCoords(globalEntities.back()).x << " "
+                  << entitySpacialGridPartition->getEntitySpatialGridCoords(globalEntities.back()).y << "\n";
+    }
 }
 
 GameState::~GameState()
@@ -146,6 +192,7 @@ void GameState::update(const float &dt)
     }
 
     updateMap(dt);
+    updateCollisions(dt);
     updateGlobalEntities(dt);
     updatePlayers(dt);
     updatePlayerCamera();
@@ -197,6 +244,54 @@ void GameState::updatePlayers(const float &dt)
 
 void GameState::updateCollisions(const float &dt)
 {
+    // Update the entity's position in the spatial grid
+    auto [prev_x, prev_y] = entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer);
+    auto [curr_x, curr_y] = entitySpacialGridPartition->calculateSpatialGridCoords(thisPlayer);
+
+    if (prev_x != curr_x || prev_y != curr_y)
+        entitySpacialGridPartition->move(thisPlayer, curr_x, curr_y);
+
+    // Get the current cell of the player
+    auto &currentCell = entitySpacialGridPartition->getCell(curr_x, curr_y);
+
+    // Iterate over all entities in the current cell
+    for (size_t i = 0; i < currentCell.size(); ++i)
+    {
+        auto &first_entity = currentCell[i];
+        if (!first_entity)
+            continue;
+
+        // Check collisions with other entities in the same cell
+        for (size_t j = i + 1; j < currentCell.size(); ++j)
+        {
+            auto &second_entity = currentCell[j];
+            if (!second_entity || first_entity == second_entity)
+                continue;
+
+            // Check collisions between all hitboxes of the two entities
+            for (auto &[_, first_hitbox] : first_entity->getHitBoxes())
+            {
+                for (auto &[_, second_hitbox] : second_entity->getHitBoxes())
+                {
+                    // Predict the next position of the first entity's hitbox
+                    HitBox next_first_hitbox = first_hitbox.predictNextPos(first_entity->getVelocity());
+
+                    // Check for intersection
+                    std::optional<sf::FloatRect> intersection = next_first_hitbox.findIntersection(second_hitbox);
+
+                    if (intersection)
+                    {
+                        // Set the collision rectangle for both entities
+                        first_entity->setCollisionRect(intersection);
+                        second_entity->setCollisionRect(intersection);
+
+                        // Resolve the collision by adjusting the first entity's position
+                        resolveCollision(first_entity, second_entity, intersection.value());
+                    }
+                }
+            }
+        }
+    }
 }
 
 void GameState::updatePlayerCamera()
@@ -248,6 +343,8 @@ void GameState::updateDebugText(const float &dt)
             << std::fixed << std::setprecision(5) << dt << " ms" << "\n"
             << "grid x, y: " << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().x << " | "
             << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().y << "\n"
+            << "velocity x, y: " << std::fixed << std::setprecision(5) << thisPlayer->getVelocity().x << " | "
+            << std::fixed << std::setprecision(5) << thisPlayer->getVelocity().y << "\n"
             << "chunk: ["
             << static_cast<unsigned int>(thisPlayer->getCenter().x /
                                          (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))

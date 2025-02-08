@@ -1,14 +1,12 @@
 #include "Map/EntitySpacialGridPartition.hxx"
 #include "stdafx.hxx"
 
-EntitySpacialGridPartition::EntitySpacialGridPartition() : logger("EntitySpacialGridPartition")
+EntitySpacialGridPartition::EntitySpacialGridPartition(const float &scale) : logger("EntitySpacialGridPartition")
 {
     resize(SPACIAL_GRID_PARTITION_DIMENSIONS.x, SPACIAL_GRID_PARTITION_DIMENSIONS.y);
 }
 
-EntitySpacialGridPartition::~EntitySpacialGridPartition()
-{
-}
+EntitySpacialGridPartition::~EntitySpacialGridPartition() = default;
 
 const Cell &EntitySpacialGridPartition::getCell(const int &x, const int &y)
 {
@@ -20,12 +18,12 @@ const Cell &EntitySpacialGridPartition::getCell(const int &x, const int &y)
 
 const std::unordered_map<uint64_t, sf::Vector2i> &EntitySpacialGridPartition::getEntityLookUpTable() const
 {
-    return entityLookUpTable;
+    return entitySpacialGridLookUpTable;
 }
 
 const sf::Vector2i EntitySpacialGridPartition::getEntitySpatialGridCoords(std::shared_ptr<Entity> entity)
 {
-    if (entityLookUpTable.count(entity->getId()) == 0)
+    if (entitySpacialGridLookUpTable.count(entity->getId()) == 0)
     {
         logger.logWarning("Entiity " + entity->getName() + " with id " + std::to_string(entity->getId()) +
                           " was not found in the spatial grid partition.");
@@ -33,15 +31,23 @@ const sf::Vector2i EntitySpacialGridPartition::getEntitySpatialGridCoords(std::s
         return sf::Vector2i(-1, -1);
     }
 
-    return entityLookUpTable.at(entity->getId());
+    return entitySpacialGridLookUpTable.at(entity->getId());
 }
 
 sf::Vector2i EntitySpacialGridPartition::calculateSpatialGridCoords(std::shared_ptr<Entity> entity) const
 {
     sf::Vector2i coords;
 
-    coords.x = static_cast<int>(entity->getCenterGridPosition().x / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
-    coords.y = static_cast<int>(entity->getCenterGridPosition().y / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+    if (entity->isCollideable())
+    {
+        coords.x = static_cast<int>(entity->getFirstHitBoxGridPosition().x / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.y = static_cast<int>(entity->getFirstHitBoxGridPosition().y / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+    }
+    else
+    {
+        coords.x = static_cast<int>(entity->getCenterGridPosition().x / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.y = static_cast<int>(entity->getCenterGridPosition().y / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+    }
 
     return coords;
 }
@@ -69,7 +75,7 @@ const bool EntitySpacialGridPartition::put(std::shared_ptr<Entity> entity)
         return false;
 
     cells[cell_x][cell_y].emplace_back(entity);
-    entityLookUpTable[entity->getId()] = {cell_x, cell_y};
+    entitySpacialGridLookUpTable[entity->getId()] = sf::Vector2i(cell_x, cell_y);
 
     return true;
 }
@@ -91,7 +97,7 @@ const bool EntitySpacialGridPartition::remove(std::shared_ptr<Entity> entity)
         return false;
 
     cells[cell_x][cell_y].erase(it);
-    entityLookUpTable.erase(entity->getId());
+    entitySpacialGridLookUpTable.erase(entity->getId());
 
     return true;
 }
@@ -130,5 +136,5 @@ const bool EntitySpacialGridPartition::existsInTable(std::shared_ptr<Entity> ent
     if (!entity.get())
         return false;
 
-    return entityLookUpTable.count(entity->getId()) > 0;
+    return entitySpacialGridLookUpTable.count(entity->getId()) > 0;
 }

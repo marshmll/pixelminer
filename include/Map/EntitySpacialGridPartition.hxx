@@ -1,9 +1,10 @@
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Entities/Entity.hxx"
 #include "Map/TerrainGenerator.hxx"
 
-constexpr unsigned int SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 3;
+constexpr unsigned int SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 8;
 
 static const sf::Vector2u SPACIAL_GRID_PARTITION_DIMENSIONS =
     sf::Vector2u(std::ceil(static_cast<float>(MAX_WORLD_GRID_SIZE.x) /
@@ -19,10 +20,11 @@ class EntitySpacialGridPartition
   private:
     Logger logger;
     SpacialGridPartition cells;
-    std::unordered_map<uint64_t, sf::Vector2i> entityLookUpTable;
+    std::unordered_map<uint64_t, sf::Vector2i> entitySpacialGridLookUpTable;
+    float scale;
 
   public:
-    EntitySpacialGridPartition();
+    EntitySpacialGridPartition(const float &scale);
 
     ~EntitySpacialGridPartition();
 
@@ -36,15 +38,11 @@ class EntitySpacialGridPartition
 
     void resize(const unsigned int x, const unsigned int y);
 
-    [[nodiscard]]
     const bool put(std::shared_ptr<Entity> entity);
 
-    [[nodiscard]]
     const bool remove(std::shared_ptr<Entity> entity);
 
-    [[nodiscard]]
     const bool move(std::shared_ptr<Entity> entity, const int &to_x, const int &to_y);
 
-    [[nodiscard]]
     const bool existsInTable(std::shared_ptr<Entity> entity);
 };
