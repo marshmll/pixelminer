@@ -28,7 +28,8 @@ class EntitySpacialGridPartition
 
     ~EntitySpacialGridPartition();
 
-    const Cell &getCell(const int &x, const int &y);
+    // DO NOT INSERT OR REMOVE DIRECTLY! USE ONLY TO ACCESS ENTITIES!
+    Cell &getCell(const int &x, const int &y);
 
     const std::unordered_map<uint64_t, sf::Vector2i> &getEntityLookUpTable() const;
 

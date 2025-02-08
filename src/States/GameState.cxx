@@ -49,11 +49,7 @@ void GameState::initThisPlayer()
 
     thisPlayer = players.at(data.uuid);
 
-    if (entitySpacialGridPartition->put(std::reinterpret_pointer_cast<Entity>(thisPlayer)))
-    {
-        std::cout << entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer).x << " "
-                  << entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer).y << "\n";
-    }
+    entitySpacialGridPartition->put(std::reinterpret_pointer_cast<Entity>(thisPlayer));
 }
 
 void GameState::initPlayerGUI()
@@ -91,7 +87,7 @@ void GameState::initDebugging()
 }
 
 // Helper function to resolve collisions
-void GameState::resolveCollision(std::shared_ptr<Entity> first_entity, std::shared_ptr<Entity> second_entity,
+void GameState::resolveCollision(std::shared_ptr<Entity> &first_entity, std::shared_ptr<Entity> &second_entity,
                                  const sf::FloatRect &intersection)
 {
     if (!first_entity->isMovable())
@@ -133,10 +129,6 @@ GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(
     initPlayerCamera();
     initPauseMenu();
     initDebugging();
-
-    // globalEntities.emplace_back(
-    //     std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"),
-    //     data.scale));
 }
 
 GameState::GameState(EngineData &data, const std::string &map_folder_name)
@@ -155,11 +147,7 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     globalEntities.emplace_back(
         std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
 
-    if (entitySpacialGridPartition->put(globalEntities.back()))
-    {
-        std::cout << entitySpacialGridPartition->getEntitySpatialGridCoords(globalEntities.back()).x << " "
-                  << entitySpacialGridPartition->getEntitySpatialGridCoords(globalEntities.back()).y << "\n";
-    }
+    entitySpacialGridPartition->put(globalEntities.back());
 }
 
 GameState::~GameState()
@@ -323,8 +311,6 @@ void GameState::updateChat(const float &dt)
     if (!chat->isActive())
         playerGUI->update(dt);
 
-    chat->update(dt, mousePosView, *data.event, data.mouseData);
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
     {
         if (keyPressedWithin(250, sf::Keyboard::Key::C))
@@ -333,6 +319,8 @@ void GameState::updateChat(const float &dt)
 
     else if (keyPressedWithin(250, sf::Keyboard::Key::Enter) && chat->isActive())
         chat->sendMessageFromInput();
+
+    chat->update(dt, mousePosView, *data.event, data.mouseData);
 }
 
 void GameState::updateDebugText(const float &dt)
@@ -343,8 +331,9 @@ void GameState::updateDebugText(const float &dt)
             << std::fixed << std::setprecision(5) << dt << " ms" << "\n"
             << "grid x, y: " << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().x << " | "
             << std::fixed << std::setprecision(5) << thisPlayer->getCenterGridPosition().y << "\n"
-            << "velocity x, y: " << std::fixed << std::setprecision(5) << thisPlayer->getVelocity().x << " | "
-            << std::fixed << std::setprecision(5) << thisPlayer->getVelocity().y << "\n"
+            << "velocity x, y: " << std::fixed << std::setprecision(5)
+            << std::round(thisPlayer->getVelocity().x / data.scale / dt) << " | " << std::fixed << std::setprecision(5)
+            << std::round(thisPlayer->getVelocity().y / data.scale / dt) << "\n"
             << "chunk: ["
             << static_cast<unsigned int>(thisPlayer->getCenter().x /
                                          (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))

@@ -8,7 +8,7 @@ EntitySpacialGridPartition::EntitySpacialGridPartition(const float &scale) : log
 
 EntitySpacialGridPartition::~EntitySpacialGridPartition() = default;
 
-const Cell &EntitySpacialGridPartition::getCell(const int &x, const int &y)
+Cell &EntitySpacialGridPartition::getCell(const int &x, const int &y)
 {
     if (x < 0 || x >= SPACIAL_GRID_PARTITION_DIMENSIONS.x || y < 0 || y >= SPACIAL_GRID_PARTITION_DIMENSIONS.y)
         logger.logError("Cell out of bounds: " + std::to_string(x) + ", " + std::to_string(y));

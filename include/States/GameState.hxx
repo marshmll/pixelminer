@@ -66,7 +66,7 @@ class GameState : public State
 
     void initDebugging();
 
-    void resolveCollision(std::shared_ptr<Entity> first_entity, std::shared_ptr<Entity> second_entity,
+    void resolveCollision(std::shared_ptr<Entity> &first_entity, std::shared_ptr<Entity> &second_entity,
                           const sf::FloatRect &intersection);
 
   public:
