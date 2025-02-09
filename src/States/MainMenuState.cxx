@@ -13,9 +13,14 @@ void MainMenuState::initGUI()
                                        gui::charSize(*data.vm, 20));
     title->setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - title->getGlobalBounds().size.x / 2.f),
                                     static_cast<int>(gui::percent(data.vm->size.y, 15.f))));
-    title->setFillColor({200, 200, 200, 255});
-    title->setOutlineThickness(2.f);
-    title->setOutlineColor({50, 50, 50, 255});
+    title->setFillColor({240, 240, 240, 255});
+
+    // TITLE
+    shadow = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), "PIXELMINER",
+                                        gui::charSize(*data.vm, 21));
+    shadow->setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - shadow->getGlobalBounds().size.x / 2.f),
+                                     title->getPosition().y + gui::percent(data.vm->size.y, 2.f)));
+    shadow->setFillColor({0, 0, 0, 150});
 
     // BUTTONS
     buttons["Singleplayer"] = std::make_unique<gui::TextButton>(
@@ -78,8 +83,9 @@ void MainMenuState::update(const float &dt)
 void MainMenuState::render(sf::RenderTarget &target)
 {
     target.draw(bgShape);
+    target.draw(*shadow);
     target.draw(*title);
 
-    for (auto &[key, button] : buttons)
+    for (auto &[_, button] : buttons)
         button->render(target);
 }

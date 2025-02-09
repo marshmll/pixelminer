@@ -7,23 +7,6 @@
 
 #include "GUI/GUI.hxx"
 
-/**
- * @brief Mapping of SFML keyboard keys to character values.
- *
- * This unordered map defines how the SFML keyboard keys are mapped to their
- * corresponding character values (e.g., 'A' is mapped to 'a', '1' to '1').
- * Special keys and symbols are handled as well, like Shift-modified characters.
- */
-static std::unordered_map<sf::Keyboard::Key, char> keyMap;
-
-/**
- * @brief List of special keys that require custom handling.
- *
- * This list contains keys like Escape, Enter, Space, and Arrow keys that
- * are treated differently from regular alphanumeric keys.
- */
-static std::vector<sf::Keyboard::Key> specialKeys;
-
 namespace gui
 {
 /**
@@ -52,9 +35,9 @@ class Input
     float cursorTimerMax;             ///< The maximum time between cursor visibility toggles.
     int cursorIndex;                  ///< The current position of the cursor in the text.
 
-    sf::Clock keyTimer;               ///< Timer used to detect key repetition.
-    sf::Keyboard::Key lastKeyPressed; ///< The last key pressed to handle key repetition.
-    bool repeat;                      ///< Flag indicating whether a key is being held down for repetition.
+    sf::Clock keyTimer;      ///< Timer used to detect key repetition.
+    char32_t lastKeyPressed; ///< The last char32_t read from the keyboard.
+    bool repeat;             ///< Flag indicating whether a key is being held down for repetition.
 
     /**
      * @brief Toggles the visibility of the blinking cursor.
@@ -83,21 +66,6 @@ class Input
     void handleBackspace();
 
     /**
-     * @brief Handles the tab key press.
-     *
-     * This method inserts spaces to simulate the tab behavior in the input field.
-     */
-    void handleTab();
-
-    /**
-     * @brief Handles the enter key press.
-     *
-     * This method inserts a newline character at the cursor position when
-     * the enter key is pressed.
-     */
-    void handleEnter();
-
-    /**
      * @brief Handles arrow key presses (left/right).
      *
      * This method moves the cursor left or right based on the arrow key pressed,
@@ -106,16 +74,6 @@ class Input
      * @param key The arrow key pressed (left or right).
      */
     void handleArrowKey(sf::Keyboard::Key key);
-
-    /**
-     * @brief Handles special keys like Escape and Space.
-     *
-     * Special keys such as Escape, Space, and arrow keys are handled by this
-     * method, performing actions like inserting spaces or exiting input modes.
-     *
-     * @param key The special key pressed.
-     */
-    void handleSpecialKey(sf::Keyboard::Key key);
 
   public:
     /**

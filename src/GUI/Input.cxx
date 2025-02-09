@@ -33,9 +33,7 @@ Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::C
     keyTimer.restart();
 }
 
-Input::~Input()
-{
-}
+Input::~Input() = default;
 
 void Input::toggleCursorVisibility()
 {
@@ -46,76 +44,8 @@ void Input::toggleCursorVisibility()
 
 void Input::handleKeyPress(char32_t c)
 {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::RShift))
-    {
-        switch (c)
-        {
-        case '1':
-            c = '!';
-            break;
-        case '2':
-            c = '@';
-            break;
-        case '3':
-            c = '#';
-            break;
-        case '4':
-            c = '$';
-            break;
-        case '5':
-            c = '%';
-            break;
-        case '6':
-            c = '^';
-            break;
-        case '7':
-            c = '&';
-            break;
-        case '8':
-            c = '*';
-            break;
-        case '9':
-            c = '(';
-            break;
-        case '0':
-            c = ')';
-            break;
-        case '-':
-            c = '_';
-            break;
-        case '=':
-            c = '+';
-            break;
-        case '[':
-            c = '{';
-            break;
-        case ']':
-            c = '}';
-            break;
-        case '\\':
-            c = '|';
-            break;
-        case ';':
-            c = ':';
-            break;
-        case '\'':
-            c = '"';
-            break;
-        case ',':
-            c = '<';
-            break;
-        case '.':
-            c = '>';
-            break;
-        case '/':
-            c = '?';
-            break;
-        default:
-            if (std::isalpha(c))
-                c = toupper(c);
-            break;
-        }
-    }
+    if (std::iscntrl(c))
+        return;
 
     sf::String currStr = text->getString();
     currStr.insert(cursorIndex, c);
@@ -134,47 +64,12 @@ void Input::handleBackspace()
     }
 }
 
-void Input::handleTab()
-{
-    sf::String currStr = text->getString();
-    currStr.insert(cursorIndex, "    ");
-    text->setString(currStr);
-    cursorIndex += 4;
-}
-
-void Input::handleEnter()
-{
-    sf::String currStr = text->getString();
-    currStr.insert(cursorIndex, "\n");
-    text->setString(currStr);
-    ++cursorIndex;
-}
-
 void Input::handleArrowKey(sf::Keyboard::Key key)
 {
     if (key == sf::Keyboard::Key::Right && cursorIndex < text->getString().getSize())
         ++cursorIndex;
     if (key == sf::Keyboard::Key::Left && cursorIndex > 0)
         --cursorIndex;
-}
-
-void Input::handleSpecialKey(sf::Keyboard::Key key)
-{
-    switch (key)
-    {
-    case sf::Keyboard::Key::Escape:
-        // Handle escape key
-        break;
-    case sf::Keyboard::Key::Space:
-        handleKeyPress(' ');
-        break;
-    case sf::Keyboard::Key::Left:
-    case sf::Keyboard::Key::Right:
-        handleArrowKey(key);
-        break;
-    default:
-        break;
-    }
 }
 
 void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Event> &event)
@@ -192,12 +87,12 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Backspace))
     {
-        if (lastKeyPressed == sf::Keyboard::Key::Backspace && keyTimer.getElapsedTime().asSeconds() > .5f)
+        if (lastKeyPressed == '\b' && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
             handleBackspace();
         }
-        else if (lastKeyPressed != sf::Keyboard::Key::Backspace)
+        else if (lastKeyPressed != '\b')
         {
             repeat = false;
             handleBackspace();
@@ -208,86 +103,77 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
             handleBackspace();
         }
 
-        lastKeyPressed = sf::Keyboard::Key::Backspace;
+        lastKeyPressed = '\b';
         return;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Tab))
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
-        if (lastKeyPressed == sf::Keyboard::Key::Tab && keyTimer.getElapsedTime().asSeconds() > .5f)
+        if (lastKeyPressed == -2 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
-            handleTab();
+            handleArrowKey(sf::Keyboard::Key::Left);
         }
-        else if (lastKeyPressed != sf::Keyboard::Key::Tab)
+        else if (lastKeyPressed != -2)
         {
             repeat = false;
-            handleTab();
+            handleArrowKey(sf::Keyboard::Key::Left);
             keyTimer.restart();
         }
         else if (repeat)
         {
-            handleTab();
+            handleArrowKey(sf::Keyboard::Key::Left);
         }
 
-        lastKeyPressed = sf::Keyboard::Key::Tab;
+        lastKeyPressed = -2;
         return;
     }
-    else
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
-        for (const auto &[key, character] : keyMap)
+        if (lastKeyPressed == -3 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
-            if (sf::Keyboard::isKeyPressed(key) &&
-                !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)) // Ignore control chars
-            {
-                if (lastKeyPressed == key && keyTimer.getElapsedTime().asSeconds() > .5f)
-                {
-                    repeat = true;
-                    handleKeyPress(character);
-                }
-                else if (lastKeyPressed != key)
-                {
-                    repeat = false;
-                    handleKeyPress(character);
-                    keyTimer.restart();
-                }
-                else if (repeat)
-                {
-                    handleKeyPress(character);
-                }
-
-                lastKeyPressed = key;
-                return;
-            }
+            repeat = true;
+            handleArrowKey(sf::Keyboard::Key::Right);
+        }
+        else if (lastKeyPressed != -3)
+        {
+            repeat = false;
+            handleArrowKey(sf::Keyboard::Key::Right);
+            keyTimer.restart();
+        }
+        else if (repeat)
+        {
+            handleArrowKey(sf::Keyboard::Key::Right);
         }
 
-        // Handle special keys
-        for (const auto &key : specialKeys)
-        {
-            if (sf::Keyboard::isKeyPressed(key))
-            {
-                if (lastKeyPressed == key && keyTimer.getElapsedTime().asSeconds() > .5f)
-                {
-                    repeat = true;
-                    handleSpecialKey(key);
-                }
-                else if (lastKeyPressed != key)
-                {
-                    repeat = false;
-                    handleSpecialKey(key);
-                    keyTimer.restart();
-                }
-                else if (repeat)
-                {
-                    handleSpecialKey(key);
-                }
+        lastKeyPressed = -3;
+        return;
+    }
+    else if (const auto *text_entered = event->getIf<sf::Event::TextEntered>())
+    {
+        sf::String currStr = text->getString();
+        char32_t unicode = text_entered->unicode;
 
-                lastKeyPressed = key;
-                return;
-            }
+        if (lastKeyPressed == unicode && keyTimer.getElapsedTime().asSeconds() > .5f)
+        {
+            repeat = true;
+            handleKeyPress(unicode);
         }
+        else if (lastKeyPressed != unicode)
+        {
+            repeat = false;
+            handleKeyPress(unicode);
+            keyTimer.restart();
+        }
+        else if (repeat)
+        {
+            handleKeyPress(unicode);
+        }
+
+        lastKeyPressed = unicode;
+        return;
     }
 
-    lastKeyPressed = sf::Keyboard::Key::Unknown;
+    lastKeyPressed = -1;
     keyTimer.restart();
 }
 

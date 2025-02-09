@@ -23,8 +23,9 @@
 class MainMenuState : public State
 {
   private:
-    sf::RectangleShape bgShape;      ///< Background shape of the main menu.
-    std::unique_ptr<sf::Text> title; ///< Title text displayed at the top of the main menu.
+    sf::RectangleShape bgShape;       ///< Background shape of the main menu.
+    std::unique_ptr<sf::Text> title;  ///< Title text displayed at the top of the main menu.
+    std::unique_ptr<sf::Text> shadow; ///< Title text shadow displayed at the top of the main menu.
 
     std::map<std::string, std::unique_ptr<gui::Button>>
         buttons; ///< Map containing the buttons in the main menu, such as Singleplayer, Multiplayer, Options, and Quit.

@@ -42,7 +42,7 @@ struct Metadata
     long long seed;              ///< Seed used for the generation of the map.
     long long spawnX;            ///< X-coordinate of the spawn point.
     long long spawnY;            ///< Y-coordinate of the spawn point.
-    double timePlayed;           ///< Total time played on the map (in hours).
+    double timePlayed;           ///< Total time played on the map (in seconds).
 };
 
 /**
