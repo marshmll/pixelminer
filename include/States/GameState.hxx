@@ -5,11 +5,12 @@
 
 #pragma once
 
+#include "Entities/EntityRenderPriorityQueue.hxx"
 #include "Entities/Inanimated/Trees/PineTree.hxx"
 #include "Entities/Playable/Player.hxx"
 #include "GUI/Chat.hxx"
 #include "GUI/GUI.hxx"
-#include "Map/EntitySpacialGridPartition.hxx"
+#include "Map/EntitySpatialGridPartition.hxx"
 #include "Map/Map.hxx"
 #include "Map/TerrainGenerator.hxx"
 #include "Network/Client.hxx"
@@ -36,9 +37,12 @@ class GameState : public State
     std::unordered_map<std::string, std::shared_ptr<Player>> players; ///< Map of players, identified by UUID.
     std::shared_ptr<Player> thisPlayer;                               ///< Pointer to the current player.
 
-    std::unique_ptr<EntitySpacialGridPartition>
+    std::unique_ptr<EntitySpatialGridPartition>
         entitySpacialGridPartition;           ///< Partition grid for entities' spatial organization.
     std::queue<Cell *> spatialGridCellBuffer; ///< Buffer for spatial grid cells.
+
+    EntityRenderPriorityQueue
+        entityRenderPriorityQueue; ///< A priority queue that manages the entity's order of rendering.
 
     sf::View playerCamera; ///< Camera view for the player.
 
@@ -171,6 +175,11 @@ class GameState : public State
     void updatePlayers(const float &dt);
 
     /**
+     * @brief Updates the order of the entities to be rendered in the render queue.
+     */
+    void updateEntityRenderPriorityQueue();
+
+    /**
      * @brief Updates collisions between entities.
      * @param dt The delta time for the frame update.
      */
@@ -200,7 +209,7 @@ class GameState : public State
     void render(sf::RenderTarget &target);
 
     /**
-     * @brief Renders global entities in the game world.
+     * @brief Renders global entities in the game world from the entity render priority queue.
      * @param target The render target to draw the entities to.
      */
     void renderGlobalEntities(sf::RenderTarget &target);

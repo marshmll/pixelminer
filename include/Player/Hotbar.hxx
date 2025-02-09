@@ -1,5 +1,5 @@
 /**
- * @file HotBar.hxx
+ * @file Hotbar.hxx
  * @brief Declares the HotBar class to manage player hotbar GUI.
  */
 

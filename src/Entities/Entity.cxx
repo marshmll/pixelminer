@@ -22,11 +22,12 @@ void Entity::createCollisionFunctionality()
     collisionFunctionality.emplace(*baseSprite);
 }
 
-Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
-               const float &scale)
+Entity::Entity(const std::string &name, const std::uint8_t &type, const sf::Vector2f &spawn_grid_position,
+               sf::Texture &sprite_sheet, const float &scale, const uint8_t &render_behavior)
 
-    : logger(name), name(name), spawnGridPosition(spawn_grid_position), id(reinterpret_cast<uint64_t>(this)),
-      spriteSheet(sprite_sheet), scale(scale), collisionRect(std::nullopt)
+    : logger(name), name(name), type(type), spawnGridPosition(spawn_grid_position),
+      id(reinterpret_cast<uint64_t>(this)), spriteSheet(sprite_sheet), scale(scale), renderBehavior(render_behavior),
+      collisionRect(std::nullopt)
 {
     addSpriteLayer("Base");
     baseSprite = layers.at("Base");
@@ -35,9 +36,7 @@ Entity::Entity(const std::string name, const sf::Vector2f spawn_grid_position, s
         sf::Vector2f(baseSprite->getGlobalBounds().size.x / 2.f, baseSprite->getGlobalBounds().size.y / 2.f));
 }
 
-Entity::~Entity()
-{
-}
+Entity::~Entity() = default;
 
 void Entity::move(const float &dt, const MovementDirection &direction)
 {
@@ -72,6 +71,11 @@ const std::string &Entity::getName() const
     return name;
 }
 
+const uint8_t &Entity::getType() const
+{
+    return type;
+}
+
 const uint64_t &Entity::getId() const
 {
     return id;
@@ -80,6 +84,11 @@ const uint64_t &Entity::getId() const
 const sf::Vector2f Entity::getPosition() const
 {
     return baseSprite->getPosition();
+}
+
+const sf::Vector2f Entity::getSize() const
+{
+    return baseSprite->getGlobalBounds().size;
 }
 
 const sf::Vector2f Entity::getFirstHitBoxPosition()
@@ -98,9 +107,12 @@ const sf::Vector2f Entity::getVelocity()
     return movementFunctionality->getVelocity();
 }
 
-const bool Entity::isMovable()
+const bool Entity::canMove()
 {
-    return movementFunctionality.has_value();
+    if (movementFunctionality.has_value())
+        return movementFunctionality->getFlags() != MovementAllow::AllowNone;
+
+    return false;
 }
 
 const bool Entity::isMoving()
@@ -181,6 +193,11 @@ const bool Entity::isCollideable() const
 const std::optional<sf::FloatRect> &Entity::getCollisionRect() const
 {
     return collisionRect;
+}
+
+const uint8_t &Entity::getRenderBehavior() const
+{
+    return renderBehavior;
 }
 
 void Entity::setPosition(const sf::Vector2f &position)

@@ -1,6 +1,6 @@
 target_sources(pixelminer PRIVATE
 ./Map/Biome.cxx
-./Map/EntitySpacialGridPartition.cxx
+./Map/EntitySpatialGridPartition.cxx
 ./Map/Map.cxx
 ./Map/Chunk.cxx
 ./Map/TerrainGenerator.cxx
@@ -18,6 +18,7 @@ target_sources(pixelminer PRIVATE
 ./States/State.cxx
 ./States/MultiplayerState.cxx
 ./States/WorldSelectionMenuState.cxx
+./Entities/EntityRenderPriorityQueue.cxx
 ./Entities/Playable/Player.cxx
 ./Entities/Entity.cxx
 ./Entities/Inanimated/Trees/Tree.cxx

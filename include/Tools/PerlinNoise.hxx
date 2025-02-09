@@ -7,6 +7,9 @@
 
 #include "Tools/LinearCongruentialGenerator.hxx"
 
+/**
+ * @brief Standard size of the permutation vector size for the perlin noise algorithm.
+ */
 constexpr int PERMUTATION_SIZE = 256;
 
 /**

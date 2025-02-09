@@ -1,27 +1,27 @@
-#include "Map/EntitySpacialGridPartition.hxx"
+#include "Map/EntitySpatialGridPartition.hxx"
 #include "stdafx.hxx"
 
-EntitySpacialGridPartition::EntitySpacialGridPartition(const float &scale) : logger("EntitySpacialGridPartition")
+EntitySpatialGridPartition::EntitySpatialGridPartition(const float &scale) : logger("EntitySpatialGridPartition")
 {
-    resize(SPACIAL_GRID_PARTITION_DIMENSIONS.x, SPACIAL_GRID_PARTITION_DIMENSIONS.y);
+    resize(SPATIAL_GRID_PARTITION_DIMENSIONS.x, SPATIAL_GRID_PARTITION_DIMENSIONS.y);
 }
 
-EntitySpacialGridPartition::~EntitySpacialGridPartition() = default;
+EntitySpatialGridPartition::~EntitySpatialGridPartition() = default;
 
-Cell &EntitySpacialGridPartition::getCell(const int &x, const int &y)
+Cell &EntitySpatialGridPartition::getCell(const int &x, const int &y)
 {
-    if (x < 0 || x >= SPACIAL_GRID_PARTITION_DIMENSIONS.x || y < 0 || y >= SPACIAL_GRID_PARTITION_DIMENSIONS.y)
+    if (x < 0 || x >= SPATIAL_GRID_PARTITION_DIMENSIONS.x || y < 0 || y >= SPATIAL_GRID_PARTITION_DIMENSIONS.y)
         logger.logError("Cell out of bounds: " + std::to_string(x) + ", " + std::to_string(y));
 
     return cells[x][y];
 }
 
-const std::unordered_map<uint64_t, sf::Vector2i> &EntitySpacialGridPartition::getEntityLookUpTable() const
+const std::unordered_map<uint64_t, sf::Vector2i> &EntitySpatialGridPartition::getEntityLookUpTable() const
 {
     return entitySpacialGridLookUpTable;
 }
 
-const sf::Vector2i EntitySpacialGridPartition::getEntitySpatialGridCoords(std::shared_ptr<Entity> entity)
+const sf::Vector2i EntitySpatialGridPartition::getEntitySpatialGridCoords(std::shared_ptr<Entity> entity)
 {
     if (entitySpacialGridLookUpTable.count(entity->getId()) == 0)
     {
@@ -34,25 +34,25 @@ const sf::Vector2i EntitySpacialGridPartition::getEntitySpatialGridCoords(std::s
     return entitySpacialGridLookUpTable.at(entity->getId());
 }
 
-sf::Vector2i EntitySpacialGridPartition::calculateSpatialGridCoords(std::shared_ptr<Entity> entity) const
+sf::Vector2i EntitySpatialGridPartition::calculateSpatialGridCoords(std::shared_ptr<Entity> entity) const
 {
     sf::Vector2i coords;
 
     if (entity->isCollideable())
     {
-        coords.x = static_cast<int>(entity->getFirstHitBoxGridPosition().x / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
-        coords.y = static_cast<int>(entity->getFirstHitBoxGridPosition().y / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.x = static_cast<int>(entity->getFirstHitBoxGridPosition().x / SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.y = static_cast<int>(entity->getFirstHitBoxGridPosition().y / SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
     }
     else
     {
-        coords.x = static_cast<int>(entity->getCenterGridPosition().x / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
-        coords.y = static_cast<int>(entity->getCenterGridPosition().y / SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.x = static_cast<int>(entity->getCenterGridPosition().x / SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
+        coords.y = static_cast<int>(entity->getCenterGridPosition().y / SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES);
     }
 
     return coords;
 }
 
-void EntitySpacialGridPartition::resize(const unsigned int x, const unsigned int y)
+void EntitySpatialGridPartition::resize(const unsigned int x, const unsigned int y)
 {
     cells.resize(x);
 
@@ -60,7 +60,7 @@ void EntitySpacialGridPartition::resize(const unsigned int x, const unsigned int
         row.resize(y);
 }
 
-const bool EntitySpacialGridPartition::put(std::shared_ptr<Entity> entity)
+const bool EntitySpatialGridPartition::put(std::shared_ptr<Entity> entity)
 {
     if (!entity.get())
         return false;
@@ -70,8 +70,8 @@ const bool EntitySpacialGridPartition::put(std::shared_ptr<Entity> entity)
 
     auto [cell_x, cell_y] = calculateSpatialGridCoords(entity);
 
-    if (cell_x < 0 || cell_x >= SPACIAL_GRID_PARTITION_DIMENSIONS.x || cell_y < 0 ||
-        cell_y >= SPACIAL_GRID_PARTITION_DIMENSIONS.y)
+    if (cell_x < 0 || cell_x >= SPATIAL_GRID_PARTITION_DIMENSIONS.x || cell_y < 0 ||
+        cell_y >= SPATIAL_GRID_PARTITION_DIMENSIONS.y)
         return false;
 
     cells[cell_x][cell_y].emplace_back(entity);
@@ -80,7 +80,7 @@ const bool EntitySpacialGridPartition::put(std::shared_ptr<Entity> entity)
     return true;
 }
 
-const bool EntitySpacialGridPartition::remove(std::shared_ptr<Entity> entity)
+const bool EntitySpatialGridPartition::remove(std::shared_ptr<Entity> entity)
 {
     if (!entity.get())
         return false;
@@ -102,13 +102,13 @@ const bool EntitySpacialGridPartition::remove(std::shared_ptr<Entity> entity)
     return true;
 }
 
-const bool EntitySpacialGridPartition::move(std::shared_ptr<Entity> entity, const int &to_x, const int &to_y)
+const bool EntitySpatialGridPartition::move(std::shared_ptr<Entity> entity, const int &to_x, const int &to_y)
 {
     if (!entity.get())
         return false;
 
-    if (to_x < 0 || to_x >= SPACIAL_GRID_PARTITION_DIMENSIONS.x || to_y < 0 ||
-        to_y >= SPACIAL_GRID_PARTITION_DIMENSIONS.y)
+    if (to_x < 0 || to_x >= SPATIAL_GRID_PARTITION_DIMENSIONS.x || to_y < 0 ||
+        to_y >= SPATIAL_GRID_PARTITION_DIMENSIONS.y)
         return false;
 
     if (!existsInTable(entity))
@@ -131,7 +131,7 @@ const bool EntitySpacialGridPartition::move(std::shared_ptr<Entity> entity, cons
     return true;
 }
 
-const bool EntitySpacialGridPartition::existsInTable(std::shared_ptr<Entity> entity)
+const bool EntitySpatialGridPartition::existsInTable(std::shared_ptr<Entity> entity)
 {
     if (!entity.get())
         return false;

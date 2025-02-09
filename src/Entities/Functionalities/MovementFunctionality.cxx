@@ -22,25 +22,25 @@ void MovementFunctionality::update()
 
 void MovementFunctionality::move(const float &dt, const uint8_t direction)
 {
-    if (direction == MovementDirection::Up && flags & Movement::AllowUp)
+    if (direction == MovementDirection::Up && flags & MovementAllow::AllowUp)
     {
         this->direction = direction;
         state = MovementState::Walking;
         velocity.y = std::round(-maxVelocity * scale * dt);
     }
-    else if (direction == MovementDirection::Down && flags & Movement::AllowDown)
+    else if (direction == MovementDirection::Down && flags & MovementAllow::AllowDown)
     {
         this->direction = direction;
         state = MovementState::Walking;
         velocity.y = std::round(maxVelocity * scale * dt);
     }
-    else if (direction == MovementDirection::Left && flags & Movement::AllowLeft)
+    else if (direction == MovementDirection::Left && flags & MovementAllow::AllowLeft)
     {
         this->direction = direction;
         state = MovementState::Walking;
         velocity.x = std::round(-maxVelocity * scale * dt);
     }
-    else if (direction == MovementDirection::Right && flags & Movement::AllowRight)
+    else if (direction == MovementDirection::Right && flags & MovementAllow::AllowRight)
     {
         this->direction = direction;
         state = MovementState::Walking;

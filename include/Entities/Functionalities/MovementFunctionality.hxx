@@ -6,19 +6,20 @@
 #pragma once
 
 /**
- * @enum Movement
+ * @enum MovementAllow
  * @brief Bitmask flags representing allowed movement actions.
  */
-enum Movement : uint8_t
+enum MovementAllow : uint8_t
 {
-    AllowUp = 0b00000001,     ///< Allow moving upwards.
-    AllowDown = 0b00000010,   ///< Allow moving downwards.
-    AllowLeft = 0b00000100,   ///< Allow moving leftwards.
-    AllowRight = 0b00001000,  ///< Allow moving rightwards.
-    AllowSprint = 0b00010000, ///< Allow sprinting (depends on movement allow).
-    AllowJump = 0b00100000,   ///< Allow jumping.
-    AllowCrouch = 0b01000000, ///< Allow crouching.
-    AllowAll = 0b11111111,    ///< Allow all movements.
+    AllowNone = 0x0,    ///< Allow no movement.
+    AllowUp = 0x1,      ///< Allow moving upwards.
+    AllowDown = 0x2,    ///< Allow moving downwards.
+    AllowLeft = 0x4,    ///< Allow moving leftwards.
+    AllowRight = 0x8,   ///< Allow moving rightwards.
+    AllowSprint = 0x10, ///< Allow sprinting (depends on movement allow).
+    AllowJump = 0x20,   ///< Allow jumping.
+    AllowCrouch = 0x40, ///< Allow crouching.
+    AllowAll = 0xFF,    ///< Allow all movements.
 };
 
 /**

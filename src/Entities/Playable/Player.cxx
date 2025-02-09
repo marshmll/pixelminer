@@ -80,7 +80,7 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
 
 Player::Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
                const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
-    : Entity(name, spawn_grid_position, sprite_sheet, scale)
+    : Entity(name, EntityType::PlayerEntity, spawn_grid_position, sprite_sheet, scale, RenderBehavior::Perspective)
 {
     if (loadPlayerData(folder_name, uuid))
     {
@@ -100,7 +100,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
     }
     else
     {
-        createMovementFunctionality(100.f, Movement::AllowAll);
+        createMovementFunctionality(100.f, MovementAllow::AllowAll);
         createAnimationFunctionality();
         createAttributeFunctionality(20, 20);
         createCollisionFunctionality();

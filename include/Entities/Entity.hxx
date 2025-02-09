@@ -10,7 +10,10 @@
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "Entities/Functionalities/CollisionFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
+#include "Entities/RenderBehavior.hxx"
 #include "Tools/Logger.hxx"
+
+class Entity;
 
 /**
  * @struct EntityData
@@ -24,6 +27,18 @@ struct EntityData
 };
 
 /**
+ * @enum EntityType
+ * @brief Specify types of entity.
+ */
+enum EntityType : uint8_t
+{
+    InanimatedEntity, ///< An inanimated entity, generally a object.
+    MobEntity,        ///< A monster, animal or any similar entity.
+    NpcEntity,        ///< Interactible entity.
+    PlayerEntity      ///< Playable entity.
+};
+
+/**
  * @class Entity
  * @brief Base class for all entities in the game. Handles common functionality like movement, animation, and collision.
  */
@@ -33,12 +48,14 @@ class Entity
     Logger logger; ///< Logger instance for logging messages.
 
     std::string name; ///< Name of the entity.
-    uint64_t id;      ///< Unique session identifier for the entity.
+    uint8_t type; ///< Type of entity (e.g., inanimated, mob, etc.).
+    uint64_t id; ///< Unique session identifier for the entity.
 
     sf::Vector2f spawnGridPosition; ///< Spawn position of the entity in grid coordinates.
 
     sf::Texture &spriteSheet; ///< Reference to the sprite sheet texture used by the entity.
     float scale;              ///< Scaling factor for the entity's sprites.
+    uint8_t renderBehavior;   ///< Rendering behavior relative to other entities.
 
     std::map<std::string, std::shared_ptr<sf::Sprite>> layers; ///< Map of sprite layers for the entity.
     std::shared_ptr<sf::Sprite> baseSprite;                    ///< Base sprite layer for the entity.
@@ -82,12 +99,14 @@ class Entity
     /**
      * @brief Constructs an Entity object.
      * @param name Name of the entity.
+     * @param type Type of the entity.
      * @param spawn_grid_position Spawn position of the entity in grid coordinates.
      * @param sprite_sheet Reference to the sprite sheet texture.
      * @param scale Scaling factor for the entity's sprites.
+     * @param render_behavior The render behavior for the entity's sprites.
      */
-    Entity(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet,
-           const float &scale);
+    Entity(const std::string &name, const std::uint8_t &type, const sf::Vector2f &spawn_grid_position,
+           sf::Texture &sprite_sheet, const float &scale, const uint8_t &render_behavior = RenderBehavior::Flat);
 
     /**
      * @brief Destructor for the Entity class.
@@ -140,16 +159,28 @@ class Entity
     const std::string &getName() const;
 
     /**
+     * @brief Gets the type of the entity.
+     * @return Type of the entity.
+     */
+    const uint8_t &getType() const;
+
+    /**
      * @brief Gets the unique ID of the entity.
      * @return Unique ID of the entity.
      */
     const uint64_t &getId() const;
 
     /**
-     * @brief Gets the current position of the entity.
-     * @return Current position of the entity.
+     * @brief Gets the current position of the base sprite of the entity.
+     * @return Current position of the base sprite of the entity.
      */
     const sf::Vector2f getPosition() const;
+
+    /**
+     * @brief Gets the current size of the the base sprite of the entity.
+     * @return Current size of the base sprite of the entity.
+     */
+    const sf::Vector2f getSize() const;
 
     /**
      * @brief Gets the current velocity of the entity.
@@ -159,9 +190,9 @@ class Entity
 
     /**
      * @brief Checks if the entity is movable.
-     * @return True if the entity has movement functionality, false otherwise.
+     * @return True if the entity has movement functionality and it allows any movement, false otherwise.
      */
-    const bool isMovable();
+    const bool canMove();
 
     /**
      * @brief Checks if the entity is currently moving.
@@ -242,6 +273,12 @@ class Entity
      * @return Optional collision rectangle.
      */
     const std::optional<sf::FloatRect> &getCollisionRect() const;
+
+    /**
+     * @brief Gets the render behavior of the entity.
+     * @return Render behavior of the entity.
+     */
+    const uint8_t &getRenderBehavior() const;
 
     /**
      * @brief Sets the position of the entity.

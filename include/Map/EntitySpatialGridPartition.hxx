@@ -12,7 +12,7 @@
 /**
  * @brief The size of each cell in the spatial grid partition (in tiles).
  */
-constexpr unsigned int SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 8;
+constexpr unsigned int SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 8;
 
 /**
  * @brief The dimensions of the spatial grid partition, based on the world grid size.
@@ -20,11 +20,11 @@ constexpr unsigned int SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 8;
  * This is calculated using the maximum world grid size and the cell size, ensuring that the entire world
  * can be divided into smaller partitions of cells.
  */
-static const sf::Vector2u SPACIAL_GRID_PARTITION_DIMENSIONS =
+static const sf::Vector2u SPATIAL_GRID_PARTITION_DIMENSIONS =
     sf::Vector2u(std::ceil(static_cast<float>(MAX_WORLD_GRID_SIZE.x) /
-                           static_cast<float>(SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES)),
+                           static_cast<float>(SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES)),
                  std::ceil(static_cast<float>(MAX_WORLD_GRID_SIZE.y) /
-                           static_cast<float>(SPACIAL_GRID_PARTITION_CELL_SIZE_IN_TILES)));
+                           static_cast<float>(SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES)));
 
 /**
  * @typedef Cell
@@ -36,44 +36,44 @@ static const sf::Vector2u SPACIAL_GRID_PARTITION_DIMENSIONS =
 using Cell = std::vector<std::shared_ptr<Entity>>;
 
 /**
- * @typedef SpacialGridPartition
+ * @typedef SpatialGridPartition
  * @brief A type alias for the entire spatial grid partition.
  *
  * This represents a 2D grid of cells, each holding a collection of entities.
  */
-using SpacialGridPartition = std::vector<std::vector<Cell>>;
+using SpatialGridPartition = std::vector<std::vector<Cell>>;
 
 /**
- * @class EntitySpacialGridPartition
+ * @class EntitySpatialGridPartition
  * @brief Manages a spatial grid partition to organize and track entities in a grid-based system.
  *
  * This class manages a partition of the world grid, organizing entities into cells for efficient spatial queries.
  * It provides methods to put, remove, and move entities within the grid, as well as retrieve entities based
  * on their grid coordinates.
  */
-class EntitySpacialGridPartition
+class EntitySpatialGridPartition
 {
   private:
     Logger logger;              ///< Logger for logging errors and warnings.
-    SpacialGridPartition cells; ///< The 2D grid of cells where entities are stored.
+    SpatialGridPartition cells; ///< The 2D grid of cells where entities are stored.
     std::unordered_map<uint64_t, sf::Vector2i>
         entitySpacialGridLookUpTable; ///< A look-up table for entity IDs and their grid coordinates.
     float scale;                      ///< The scaling factor used for the grid.
 
   public:
     /**
-     * @brief Constructs an EntitySpacialGridPartition object.
+     * @brief Constructs an EntitySpatialGridPartition object.
      *
      * Initializes the partition with the given scaling factor and resizes the grid to fit the world dimensions.
      *
      * @param scale The scaling factor to be applied to the spatial grid.
      */
-    EntitySpacialGridPartition(const float &scale);
+    EntitySpatialGridPartition(const float &scale);
 
     /**
-     * @brief Destructor for the EntitySpacialGridPartition class.
+     * @brief Destructor for the EntitySpatialGridPartition class.
      */
-    ~EntitySpacialGridPartition();
+    ~EntitySpatialGridPartition();
 
     /**
      * @brief Retrieves a cell from the spatial grid partition.

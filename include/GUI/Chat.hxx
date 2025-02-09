@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "GUI/Input.hxx"
+#include "GUI/ScrollableContainer.hxx"
 #include "GUI/Utils.hxx"
 
 namespace gui
