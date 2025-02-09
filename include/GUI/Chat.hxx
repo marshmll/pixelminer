@@ -1,11 +1,11 @@
 /**
  * @file Chat.hxx
- * @brief Declares the Chat class for managing in-game messaging and commands functionalities.
+ * @brief Declares the gui::Chat class for managing in-game messaging and commands functionalities.
  */
 
 #pragma once
 
-#include "GUI/GUI.hxx"
+#include "GUI/Utils.hxx"
 
 namespace gui
 {

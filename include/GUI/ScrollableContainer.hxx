@@ -1,6 +1,6 @@
 /**
  * @file ScrollableContainer.hxx
- * @brief Declares the ScrollableContainer class for creating containers that can
+ * @brief Declares the gui::ScrollableContainer class for creating containers that can
  * hold content larger that its visible area.
  */
 

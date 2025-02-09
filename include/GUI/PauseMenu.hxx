@@ -1,6 +1,6 @@
 /**
  * @file PauseMenu.hxx
- * @brief Declares the PauseMenu class for handling game pauses.
+ * @brief Declares the gui::PauseMenu class for handling game pauses.
  */
 
 #pragma once

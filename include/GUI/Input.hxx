@@ -1,11 +1,11 @@
 /**
  * @file Input.hxx
- * @brief Declares the Input class for gathering textual input from the user's keyboard.
+ * @brief Declares the gui::Input class for gathering textual input from the user's keyboard.
  */
 
 #pragma once
 
-#include "GUI/GUI.hxx"
+#include "GUI/Utils.hxx"
 
 namespace gui
 {

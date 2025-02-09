@@ -1,6 +1,6 @@
 /**
  * @file Button.hxx
- * @brief Declares the Button class for managing clickable buttons.
+ * @brief Declares the gui::Button class for managing clickable buttons.
  */
 
 #pragma once

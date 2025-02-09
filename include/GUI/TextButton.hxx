@@ -1,6 +1,6 @@
 /**
  * @file TextButton.hxx
- * @brief Declares the TextButton class to manage GUI clicklable buttons with textual content.
+ * @brief Declares the gui::TextButton class to manage GUI clicklable buttons with textual content.
  */
 
 #pragma once
