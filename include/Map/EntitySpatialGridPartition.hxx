@@ -111,7 +111,6 @@ class EntitySpatialGridPartition
      *
      * This method computes the grid coordinates based on the entity's position or hitbox;
      *
-     * @note If a entity's hitbox occupies  more than 1 cell space, the entity is added in all cells.
      * @param entity A shared pointer to the entity whose coordinates are being calculated.
      * @return The calculated spatial grid coordinates (x, y).
      */

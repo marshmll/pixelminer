@@ -31,7 +31,7 @@ const sf::Vector2i EntitySpatialGridPartition::getEntityCellGridCoords(const std
     {
         logger.logWarning("Entity " + entity->getName() + " with id " + std::to_string(entity->getId()) +
                           " was not found in the spatial grid partition.");
-        return {};
+        return sf::Vector2i(-1, -1);
     }
     return it->second;
 }
