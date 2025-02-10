@@ -9,7 +9,7 @@ void PineTree::initAnimations()
 
 void PineTree::initHitBoxes()
 {
-    collisionFunctionality->addHitBox("Trunk", sf::Vector2u(20, 5), sf::Vector2u(15, 76), scale);
+    collisionFunctionality->addHitBox("Trunk", sf::Vector2u(18, 5), sf::Vector2u(16, 76), scale);
 }
 
 PineTree::PineTree(const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)

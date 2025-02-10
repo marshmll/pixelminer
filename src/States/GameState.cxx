@@ -125,6 +125,22 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     globalEntities.emplace_back(
         std::make_shared<PineTree>(map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
     entitySpacialGridPartition->put(globalEntities.back());
+
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        map->getSpawnPoint() + sf::Vector2f(2.f, 2.f), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    entitySpacialGridPartition->put(globalEntities.back());
+
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        map->getSpawnPoint() + sf::Vector2f(4.f, 4.f), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    entitySpacialGridPartition->put(globalEntities.back());
+
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        map->getSpawnPoint() + sf::Vector2f(6.f, 6.f), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    entitySpacialGridPartition->put(globalEntities.back());
+
+    globalEntities.emplace_back(std::make_shared<PineTree>(
+        map->getSpawnPoint() + sf::Vector2f(8.f, 8.f), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    entitySpacialGridPartition->put(globalEntities.back());
 }
 
 GameState::~GameState() = default;
@@ -212,35 +228,70 @@ void GameState::updateEntityRenderPriorityQueue()
 
 void GameState::updateCollisions(const float &dt)
 {
-    auto [prev_x, prev_y] = entitySpacialGridPartition->getEntitySpatialGridCoords(thisPlayer);
-    auto [curr_x, curr_y] = entitySpacialGridPartition->calculateSpatialGridCoords(thisPlayer);
+    // Get current and previous cell coordinates of the player
+    const sf::Vector2i prev_cell_coords = entitySpacialGridPartition->getEntityCellGridCoords(thisPlayer);
+    const sf::Vector2i curr_cell_coords = entitySpacialGridPartition->calcEntityCellGridCoords(thisPlayer);
+    const auto &[curr_x, curr_y] = curr_cell_coords;
 
-    if (prev_x != curr_x || prev_y != curr_y)
-        entitySpacialGridPartition->move(thisPlayer, curr_x, curr_y);
+    // Move the player to the new cell if the coordinates have changed
+    if (curr_cell_coords != prev_cell_coords)
+        entitySpacialGridPartition->move(thisPlayer, curr_cell_coords);
 
-    auto &currentCell = entitySpacialGridPartition->getCell(curr_x, curr_y);
-    for (size_t i = 0; i < currentCell.size(); ++i)
+    Cell &current_cell = entitySpacialGridPartition->getCell(curr_x, curr_y);
+
+    // Track pairs of entities that have already been checked to avoid redundant checks
+    std::unordered_set<uint64_t> processedPairs;
+
+    for (int dx = -1; dx <= 1; ++dx)
     {
-        auto &first_entity = currentCell[i];
-        if (!first_entity)
-            continue;
-
-        for (size_t j = i + 1; j < currentCell.size(); ++j)
+        for (int dy = -1; dy <= 1; ++dy)
         {
-            auto &second_entity = currentCell[j];
-            if (!second_entity || first_entity == second_entity)
+            const int neighbour_x = curr_x + dx;
+            const int neighbour_y = curr_y + dy;
+
+            if (neighbour_x < 0 || neighbour_x >= SPATIAL_GRID_PARTITION_DIMENSIONS.x || neighbour_y < 0 ||
+                neighbour_y >= SPATIAL_GRID_PARTITION_DIMENSIONS.y)
                 continue;
 
-            for (auto &[_, first_hitbox] : first_entity->getHitBoxes())
+            Cell &neighbour_cell = entitySpacialGridPartition->getCell(neighbour_x, neighbour_y);
+
+            // Compare all entities
+            for (auto &first_entity : neighbour_cell)
             {
-                for (auto &[_, second_hitbox] : second_entity->getHitBoxes())
+                if (!first_entity)
+                    continue;
+
+                for (auto &second_entity : current_cell)
                 {
-                    HitBox next_first_hitbox = first_hitbox.predictNextPos(first_entity->getVelocity());
-                    if (auto intersection = next_first_hitbox.findIntersection(second_hitbox))
+                    if (!second_entity || first_entity == second_entity)
+                        continue;
+
+                    // Generate two unique keys for the pair to avoid redundant checks between two entities, regardless
+                    // of order.
+                    const uint64_t first_pair_key =
+                        (static_cast<uint64_t>(first_entity->getId()) << 32) | second_entity->getId();
+                    const uint64_t second_pair_key =
+                        (static_cast<uint64_t>(second_entity->getId()) << 32) | first_entity->getId();
+
+                    if (processedPairs.count(first_pair_key) || processedPairs.count(second_pair_key))
+                        continue;
+
+                    processedPairs.insert(first_pair_key);
+                    processedPairs.insert(second_pair_key);
+
+                    // Check collisions between hitboxes of the two entities
+                    for (auto &[_, first_hitbox] : first_entity->getHitBoxes())
                     {
-                        first_entity->setCollisionRect(intersection);
-                        second_entity->setCollisionRect(intersection);
-                        resolveCollision(first_entity, second_entity, intersection.value());
+                        for (auto &[_, second_hitbox] : second_entity->getHitBoxes())
+                        {
+                            HitBox next_first_hitbox = first_hitbox.predictNextPos(first_entity->getVelocity());
+                            if (auto intersection = next_first_hitbox.findIntersection(second_hitbox))
+                            {
+                                first_entity->setCollisionRect(intersection);
+                                second_entity->setCollisionRect(intersection);
+                                resolveCollision(first_entity, second_entity, intersection.value());
+                            }
+                        }
                     }
                 }
             }

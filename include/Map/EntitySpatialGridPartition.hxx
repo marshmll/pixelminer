@@ -12,7 +12,7 @@
 /**
  * @brief The size of each cell in the spatial grid partition (in tiles).
  */
-constexpr unsigned int SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 8;
+constexpr unsigned int SPATIAL_GRID_PARTITION_CELL_SIZE_IN_TILES = 3;
 
 /**
  * @brief The dimensions of the spatial grid partition, based on the world grid size.
@@ -57,7 +57,7 @@ class EntitySpatialGridPartition
     Logger logger;              ///< Logger for logging errors and warnings.
     SpatialGridPartition cells; ///< The 2D grid of cells where entities are stored.
     std::unordered_map<uint64_t, sf::Vector2i>
-        entitySpacialGridLookUpTable; ///< A look-up table for entity IDs and their grid coordinates.
+        entitySpacialGridLookUpTable; ///< A look-up table for entity IDs and the cells they are inside.
     float scale;                      ///< The scaling factor used for the grid.
 
   public:
@@ -89,31 +89,33 @@ class EntitySpatialGridPartition
     /**
      * @brief Retrieves the entity look-up table.
      *
-     * The look-up table maps each entity's unique ID to its corresponding grid coordinates.
+     * The look-up table maps each entity's unique ID to all the cells coordinates
+     * the are inside.
      *
      * @return A constant reference to the entity look-up table.
      */
     const std::unordered_map<uint64_t, sf::Vector2i> &getEntityLookUpTable() const;
 
     /**
-     * @brief Retrieves the spatial grid coordinates of a given entity.
+     * @brief Retrieves all the spatial cell grid coordinates of a given entity.
      *
      * If the entity is not found in the spatial grid, a warning is logged, and (-1, -1) is returned.
      *
      * @param entity A shared pointer to the entity whose coordinates are being retrieved.
      * @return The spatial grid coordinates (x, y) of the entity.
      */
-    const sf::Vector2i getEntitySpatialGridCoords(std::shared_ptr<Entity> entity);
+    const sf::Vector2i getEntityCellGridCoords(const std::shared_ptr<Entity> &entity);
 
     /**
      * @brief Calculates the spatial grid coordinates of a given entity.
      *
-     * This method computes the grid coordinates based on the entity's position or hitbox.
+     * This method computes the grid coordinates based on the entity's position or hitbox;
      *
+     * @note If a entity's hitbox occupies  more than 1 cell space, the entity is added in all cells.
      * @param entity A shared pointer to the entity whose coordinates are being calculated.
      * @return The calculated spatial grid coordinates (x, y).
      */
-    sf::Vector2i calculateSpatialGridCoords(std::shared_ptr<Entity> entity) const;
+    const sf::Vector2i calcEntityCellGridCoords(const std::shared_ptr<Entity> &entity) const;
 
     /**
      * @brief Resizes the spatial grid partition to the given dimensions.
@@ -134,17 +136,28 @@ class EntitySpatialGridPartition
      * @param entity A shared pointer to the entity to be added.
      * @return True if the entity was successfully added, otherwise false.
      */
-    const bool put(std::shared_ptr<Entity> entity);
+    const bool put(const std::shared_ptr<Entity> &entity);
 
     /**
      * @brief Removes an entity from the spatial grid partition.
      *
-     * This method removes the specified entity from its current cell in the grid.
+     * This method removes the specified entity from its current cells in the grid.
      *
      * @param entity A shared pointer to the entity to be removed.
-     * @return True if the entity was successfully removed, otherwise false.
+     * @return True if the entity was successfully removed from any cell, otherwise false.
      */
-    const bool remove(std::shared_ptr<Entity> entity);
+    const bool remove(const std::shared_ptr<Entity> &entity);
+
+    /**
+     * @brief Removes an entity from the given cell in the spatial grid partition.
+     *
+     * This method removes the specified entity from the specified cell in the spatial grid partition.
+     *
+     * @param entity A shared pointer to the entity to be removed.
+     * @param from_cell A cell to try to remove the entity from
+     * @return True if the entity was successfully removed from the cell, otherwise false.
+     */
+    const bool remove(const std::shared_ptr<Entity> &entity, const sf::Vector2i &from_cell);
 
     /**
      * @brief Moves an entity to a different cell in the spatial grid.
@@ -153,11 +166,10 @@ class EntitySpatialGridPartition
      * If the entity cannot be moved, the method returns false.
      *
      * @param entity A shared pointer to the entity to be moved.
-     * @param to_x The target x-coordinate of the new cell.
-     * @param to_y The target y-coordinate of the new cell.
-     * @return True if the entity was successfully moved, otherwise false.
+     * @param new_cell A new cell grid coords to move the entity to.
+     * @return True if the entity was successfully moved to the cell, false otherwise.
      */
-    const bool move(std::shared_ptr<Entity> entity, const int &to_x, const int &to_y);
+    const bool move(const std::shared_ptr<Entity> &entity, const sf::Vector2i &new_cell);
 
     /**
      * @brief Checks if an entity exists in the entity look-up table.
@@ -167,5 +179,5 @@ class EntitySpatialGridPartition
      * @param entity A shared pointer to the entity.
      * @return True if the entity exists in the look-up table, otherwise false.
      */
-    const bool existsInTable(std::shared_ptr<Entity> entity);
+    const bool existsInTable(const std::shared_ptr<Entity> &entity) const;
 };
