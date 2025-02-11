@@ -75,10 +75,13 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 
     const int REGION_X = player_pos_grid.x / (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x);
     const int REGION_Y = player_pos_grid.y / (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y);
+    std::optional<bool> loaded;
 
-    if (!isRegionLoaded({REGION_X, REGION_Y}))
+    loaded = isRegionLoaded({REGION_X, REGION_Y});
+    if (loaded.has_value())
     {
-        std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
+        if (loaded.value() == false)
+            std::thread(&Map::loadRegion, this, sf::Vector2i(REGION_X, REGION_Y)).detach();
     }
 
     auto manageRegions = [&](int load_offset_x, int load_offset_y, int unload_offset_x, int unload_offset_y) {
@@ -87,18 +90,22 @@ void Map::update(const float &dt, const sf::Vector2i &player_pos_grid)
 
         if (load_region.x >= 0 && load_region.x < MAX_REGIONS.x && load_region.y >= 0 && load_region.y < MAX_REGIONS.y)
         {
-            if (!isRegionLoaded(load_region))
+            loaded = isRegionLoaded(load_region);
+            if (loaded.has_value())
             {
-                std::thread(&Map::loadRegion, this, load_region).detach();
+                if (!loaded.value())
+                    std::thread(&Map::loadRegion, this, load_region).detach();
             }
         }
 
         if (unload_region.x >= 0 && unload_region.x < MAX_REGIONS.x && unload_region.y >= 0 &&
             unload_region.y < MAX_REGIONS.y)
         {
-            if (isRegionLoaded(unload_region))
+            loaded = isRegionLoaded(unload_region);
+            if (loaded.has_value())
             {
-                std::thread(&Map::unloadRegion, this, unload_region).detach();
+                if (loaded.value())
+                    std::thread(&Map::unloadRegion, this, unload_region).detach();
             }
         }
     };
@@ -334,13 +341,19 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         region_index.y >= MAX_REGIONS.y)
         return;
 
-    if (isRegionLoaded(region_index))
+    std::optional<bool> loaded = isRegionLoaded(region_index);
+    if (loaded.has_value())
+    {
+        if (loaded.value() == true)
+            return;
+    }
+    else
         return;
 
     std::string path = MAPS_FOLDER + metadata.name + "/regions/r." + std::to_string(region_index.x) + "." +
                        std::to_string(region_index.y) + ".region";
 
-    if (!isRegionLoaded(region_index) && !std::filesystem::exists(path))
+    if (!loaded.value() && !std::filesystem::exists(path))
     {
         terrainGenerator->generateRegion(region_index);
         loadedRegions[region_index.x][region_index.y] = true;
@@ -420,7 +433,16 @@ void Map::unloadRegion(const sf::Vector2i &region_index)
 {
     std::lock_guard<std::mutex> lock(mutex);
 
-    if (!isReady() || !isRegionLoaded(region_index))
+    if (!isReady())
+        return;
+
+    std::optional<bool> loaded = isRegionLoaded(region_index);
+    if (loaded.has_value())
+    {
+        if (loaded.value() == false)
+            return;
+    }
+    else
         return;
 
     const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;
@@ -542,13 +564,11 @@ const std::string &Map::getFolderName() const
     return folderName;
 }
 
-const bool Map::isRegionLoaded(const sf::Vector2i &region_index)
+const std::optional<bool> Map::isRegionLoaded(const sf::Vector2i &region_index)
 {
     if (region_index.x < 0 || region_index.x >= MAX_REGIONS.x || region_index.y < 0 || region_index.y >= MAX_REGIONS.y)
-    {
-        logger.logError("Cannot check if region is loaded: region out of bounds (" + std::to_string(region_index.x) +
-                        ", " + std::to_string(region_index.y) + ")");
-    }
+        logger.logWarning("Region (" + std::to_string(region_index.x) + ", " + std::to_string(region_index.y) +
+                          ") out of bounds.");
 
     return loadedRegions[region_index.x][region_index.y];
 }

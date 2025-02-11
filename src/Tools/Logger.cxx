@@ -29,14 +29,12 @@ void Logger::logWarning(const std::string &log)
 
 void Logger::logError(const std::string &log, const bool &throw_runtime_err)
 {
+    TerminalColor::set(Red);
+
+    std::cerr << "[ " << logger << " ] -> ERROR: " << log << "\n";
+
     if (throw_runtime_err)
         throw std::runtime_error("[ " + logger + " ] -> ERROR: " + log + "\n");
-    else
-    {
-        TerminalColor::set(Red);
 
-        std::cerr << "[ " << logger << " ] -> ERROR: " << log << "\n";
-
-        TerminalColor::reset();
-    }
+    TerminalColor::reset();
 }

@@ -239,7 +239,8 @@ class Map
     /**
      * @brief Checks if a specific region is loaded.
      * @param region_index The index of the region to check.
-     * @return True if the region is loaded, otherwise false.
+     * @return True if the region is loaded, false if not, `std::nullopt`
+     * if region is out of bounds.
      */
-    const bool isRegionLoaded(const sf::Vector2i &region_index);
+    const std::optional<bool> isRegionLoaded(const sf::Vector2i &region_index);
 };
