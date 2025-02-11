@@ -10,6 +10,8 @@
 #include "Entities/Playable/Player.hxx"
 #include "GUI/Chat.hxx"
 #include "GUI/GUI.hxx"
+#include "Game/Commands/CommandInterpreter.hxx"
+#include "Game/GameContext.hxx"
 #include "Map/EntitySpatialGridPartition.hxx"
 #include "Map/Map.hxx"
 #include "Map/TerrainGenerator.hxx"
@@ -30,16 +32,16 @@
 class GameState : public State
 {
   private:
+    GameContext ctx;
+
+    std::unique_ptr<CommandInterpreter> cmd;
+
     std::unique_ptr<gui::PauseMenu> pauseMenu; ///< Pointer to the pause menu GUI.
 
-    std::vector<std::shared_ptr<Entity>> globalEntities; ///< List of all non-player entities in the game world.
-
-    std::unordered_map<std::string, std::shared_ptr<Player>> players; ///< Map of players, identified by UUID.
-    std::shared_ptr<Player> thisPlayer;                               ///< Pointer to the current player.
+    std::shared_ptr<Player> thisPlayer; ///< Pointer to the current player.
 
     std::unique_ptr<EntitySpatialGridPartition>
-        entitySpacialGridPartition;           ///< Partition grid for entities' spatial organization.
-    std::queue<Cell *> spatialGridCellBuffer; ///< Buffer for spatial grid cells.
+        entitySpacialGridPartition; ///< Partition grid for entities' spatial organization
 
     EntityRenderPriorityQueue
         entityRenderPriorityQueue; ///< A priority queue that manages the entity's order of rendering.
@@ -47,8 +49,6 @@ class GameState : public State
     sf::View playerCamera; ///< Camera view for the player.
 
     std::unique_ptr<PlayerGUI> playerGUI; ///< Player's GUI interface.
-
-    std::unique_ptr<Map> map; ///< The game's map, including terrain and other world data.
 
     sf::RectangleShape loadingBg;          ///< Background rectangle for the loading screen.
     std::unique_ptr<sf::Text> loadingText; ///< Text for loading status.
@@ -110,6 +110,11 @@ class GameState : public State
      * @brief Initializes the chat interface.
      */
     void initChat();
+
+    /**
+     * @brief Initializes the game command interpreter;
+     */
+    void initCommandInterpreter();
 
     /**
      * @brief Initializes debugging settings and displays.

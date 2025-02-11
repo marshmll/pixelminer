@@ -47,7 +47,8 @@ class Chat
          * @param char_size The character size of the text.
          */
         Message(const std::string &author, const std::string &content, const sf::Vector2f &position, const float &width,
-                const float &padding, sf::Font &font, const unsigned int &char_size)
+                const float &padding, sf::Font &font, const unsigned int &char_size,
+                const sf::Color &color = sf::Color::White)
             : opacity(100.f)
         {
             container.setSize(sf::Vector2f(width, 0.f));
@@ -59,7 +60,7 @@ class Chat
             text = std::make_unique<sf::Text>(font, text_content, char_size);
             text->setPosition(sf::Vector2f(static_cast<int>(container.getPosition().x + padding),
                                            static_cast<int>(container.getPosition().y + padding)));
-            text->setFillColor(sf::Color::White);
+            text->setFillColor(color);
 
             // Break string to fit container
             for (int i = 0; i < text_content.getSize(); i++)
@@ -239,8 +240,28 @@ class Chat
      *
      * @param author The author of the message.
      * @param content The content of the message.
+     * @param color The color of the message (default is White).
      */
-    void displayMessage(const std::string &author, const std::string &content);
+    void displayMessage(const std::string &author, const std::string &content,
+                        const sf::Color &color = sf::Color::White);
+
+    /**
+     * @brief Displays a game log in the chat.
+     *
+     * Adds a new info message in the chat with the yellow collor.
+     *
+     * @param log The log message content.
+     */
+    void displayGameLog(const std::string &log);
+
+    /**
+     * @brief Displays a game error in the chat.
+     *
+     * Adds a new error message in the chat with the error collor.
+     *
+     * @param log The log message content.
+     */
+    void displayGameError(const std::string &log);
 
     /**
      * @brief Checks if the chat is active (visible).
@@ -257,8 +278,20 @@ class Chat
     void setActive(const bool &active);
 
     /**
+     * @brief Gets the current value of the chat input as a string.
+     *
+     * @return The value of the chat input as a string.
+     */
+    std::string getInputValue();
+
+    /**
      * @brief Sends a message from the input field to the chat.
      */
     void sendMessageFromInput();
+
+    /**
+     * @brief Clears the chat's input.
+     */
+    void clearInput();
 };
 } // namespace gui

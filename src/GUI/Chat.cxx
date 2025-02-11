@@ -65,7 +65,7 @@ void Chat::render(sf::RenderTarget &target)
     target.setView(target.getDefaultView());
 }
 
-void Chat::displayMessage(const std::string &author, const std::string &content)
+void Chat::displayMessage(const std::string &author, const std::string &content, const sf::Color &color)
 {
     sf::Vector2f next_pos = messages.empty()
                                 ? chatContainer->getPosition()
@@ -74,12 +74,22 @@ void Chat::displayMessage(const std::string &author, const std::string &content)
                                                                                    gui::percent(vm.size.y, 1.f));
 
     messages.push_back(std::make_unique<Message>(author, content, next_pos, chatContainer->getSize().x,
-                                                 gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125)));
+                                                 gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
 
     chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
                                      gui::percent(chatContainer->getSize().y, 2.f));
 
     chatContainer->scrollToBottom();
+}
+
+void Chat::displayGameLog(const std::string &log)
+{
+    displayMessage("", log, sf::Color::Yellow);
+}
+
+void Chat::displayGameError(const std::string &log)
+{
+    displayMessage("", log, sf::Color::Red);
 }
 
 const bool &Chat::isActive() const
@@ -96,8 +106,21 @@ void Chat::setActive(const bool &active)
         chatContainer->scrollToBottom();
 }
 
+std::string Chat::getInputValue()
+{
+    return input->getValue();
+}
+
 void Chat::sendMessageFromInput()
 {
-    displayMessage(thisAuthor, input->getValue());
+    if (input->getValue().size() > 0)
+    {
+        displayMessage(thisAuthor, input->getValue());
+        input->clear();
+    }
+}
+
+void Chat::clearInput()
+{
     input->clear();
 }
