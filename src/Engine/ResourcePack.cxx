@@ -74,6 +74,8 @@ const bool ResourcePack::load(const std::string &name)
                             false);
             return false;
         }
+
+        this->fonts[key].setSmooth(false);
     }
 
     /* Default textures +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */

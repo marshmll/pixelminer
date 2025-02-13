@@ -206,8 +206,12 @@ void Map::save(const std::string &name)
     {
         for (int j = 0; j < MAX_REGIONS.y; j++)
         {
-            if (isRegionLoaded({i, j}))
-                saveRegion({i, j});
+            const auto loaded = isRegionLoaded({i, j});
+            if (loaded.has_value())
+            {
+                if (loaded.value())
+                    saveRegion({i, j});
+            }
         }
     }
 }
@@ -228,7 +232,11 @@ void Map::saveRegion(const sf::Vector2i &region_index)
         region_index.y >= MAX_REGIONS.y)
         return;
 
-    if (!isRegionLoaded(region_index))
+    const auto loaded = isRegionLoaded(region_index);
+    if (!loaded.has_value())
+        return;
+
+    if (!loaded.value())
         return;
 
     const int CHUNK_START_X = region_index.x * REGION_SIZE_IN_CHUNKS.x;

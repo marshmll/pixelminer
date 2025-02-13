@@ -55,9 +55,8 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
         scrollBar.setPosition(sf::Vector2f(scrollBar.getPosition().x, newScrollBarY));
 
         // Calculate scroll percentage based on scrollbar position
-        float percent = (newScrollBarY + scrollBarHeight - (containerTop + scrollBarHeight)) /
-                        (containerBottom - scrollBarHeight * 2.f);
-        setViewScrollPercent(percent);
+        float percent = (newScrollBarY - containerTop) / (containerBottom - containerTop - scrollBarHeight);
+        setScrollPercent(percent);
     }
     else if (scrollBar.getGlobalBounds().contains(mouse_pos) && scrollBarVisibility)
     {
@@ -81,7 +80,7 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
 
         // Update scrollbar position based on view position
         float scrollPercent = (newViewCenterY - (containerTop + container.getSize().y / 2.f)) / maxScrollDelta;
-        setScrollBarPercent(scrollPercent);
+        setScrollPercent(scrollPercent);
     }
 }
 

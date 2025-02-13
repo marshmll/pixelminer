@@ -10,13 +10,16 @@ void GameState::initLoadingScreen()
 
     loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
                                              gui::charSize(*data.vm, 80));
-    loadingText->setPosition(sf::Vector2f(data.vm->size.x / 2.f - loadingText->getGlobalBounds().size.x / 2.f,
-                                          gui::percent(data.vm->size.y, 45.f)));
+
+    loadingText->setPosition(
+        sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingText->getGlobalBounds().size.x / 2.f),
+                     static_cast<int>(gui::percent(data.vm->size.y, 45.f))));
 
     loadingMsg =
         std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "", gui::charSize(*data.vm, 80));
-    loadingMsg->setPosition(sf::Vector2f(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f,
-                                         gui::percent(data.vm->size.y, 50.f)));
+    loadingMsg->setPosition(
+        sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
+                     static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
 }
 
 void GameState::initMap()
@@ -164,8 +167,10 @@ void GameState::update(const float &dt)
     if (!ctx.map->isReady())
     {
         loadingMsg->setString(ctx.map->getMessage());
-        loadingMsg->setPosition(sf::Vector2f(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f,
-                                             gui::percent(data.vm->size.y, 50.f)));
+
+        loadingMsg->setPosition(
+            sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
+                         static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
         return;
     }
 

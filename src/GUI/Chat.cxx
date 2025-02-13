@@ -67,11 +67,11 @@ void Chat::render(sf::RenderTarget &target)
 
 void Chat::displayMessage(const std::string &author, const std::string &content, const sf::Color &color)
 {
-    sf::Vector2f next_pos = messages.empty()
-                                ? chatContainer->getPosition()
-                                : sf::Vector2f(chatContainer->getPosition().x, messages.back()->getPosition().y +
-                                                                                   messages.back()->getSize().y -
-                                                                                   gui::percent(vm.size.y, 1.f));
+    sf::Vector2f next_pos =
+        messages.empty()
+            ? chatContainer->getPosition()
+            : sf::Vector2f((chatContainer->getPosition().x),
+                           static_cast<int>(messages.back()->getPosition().y + messages.back()->getSize().y));
 
     messages.push_back(std::make_unique<Message>(author, content, next_pos, chatContainer->getSize().x,
                                                  gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
