@@ -7,7 +7,7 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
 
     if (tokens.size() <= 2)
     {
-        return "Usage: " + COMMAND_INVOKER + "tp [<targets...>] [<x y> OR <target>]";
+        return "Usage: " + COMMAND_INVOKER + "tp [{targets...}] [{x y} OR {target}]";
     }
 
     // Split tokens into source and destination parts

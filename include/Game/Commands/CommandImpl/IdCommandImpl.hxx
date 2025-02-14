@@ -14,7 +14,7 @@ namespace CommandImpl
 /**
  * @brief Executes the id command.
  *
- * Usage: id <target>
+ * Usage: id [target]
  *
  * @param ctx The game context providing entity access.
  * @param cmd The command context providing command caller information.

@@ -14,7 +14,7 @@ namespace CommandImpl
 /**
  * @brief Executes the tp command.
  *
- * Usage: tp [targets...] [<x y> OR <target>]
+ * Usage: tp [targets...] [{x y} OR {target}]
  *
  * @param ctx The game context providing entity access.
  * @param cmd The command context providing command caller information.

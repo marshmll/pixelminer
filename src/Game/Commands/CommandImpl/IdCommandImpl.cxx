@@ -7,7 +7,7 @@ const std::string CommandImpl::id(GameContext &ctx, CommandContext &cmd)
 
     if (tokens.size() < 2 || tokens.size() > 3)
     {
-        return "Usage: " + COMMAND_INVOKER + "id <target>";
+        return "Usage: " + COMMAND_INVOKER + "id [target]";
     }
 
     std::vector<Token> target_tokens(tokens.begin() + 1, tokens.end());
