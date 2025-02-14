@@ -7,12 +7,10 @@ MovementFunctionality::MovementFunctionality(std::map<std::string, std::shared_p
                                              const uint8_t &movement_state)
     : layers(layers), velocity(0.f, 0.f), maxVelocity(max_velocity), scale(scale), flags(movement_flags),
       state(movement_state), direction(movement_direction)
-{
-}
+{}
 
 MovementFunctionality::~MovementFunctionality()
-{
-}
+{}
 
 void MovementFunctionality::update()
 {
@@ -86,18 +84,10 @@ const std::string MovementFunctionality::getDirectionAsString() const
 
     switch (direction)
     {
-    case Up:
-        str = "Up";
-        break;
-    case Down:
-        str = "Down";
-        break;
-    case Left:
-        str = "Left";
-        break;
-    case Right:
-        str = "Right";
-        break;
+    case Up: str = "Up"; break;
+    case Down: str = "Down"; break;
+    case Left: str = "Left"; break;
+    case Right: str = "Right"; break;
     }
 
     return str;

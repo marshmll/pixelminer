@@ -2,8 +2,7 @@
 #include "stdafx.hxx"
 
 ResourcePack::ResourcePack() : logger("ResourcePack")
-{
-}
+{}
 
 const bool ResourcePack::load(const std::string &name)
 {

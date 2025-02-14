@@ -29,9 +29,7 @@ Button::Button(const sf::Vector2f position, const sf::Vector2f size, const sf::C
     darkShadow.setOutlineColor(sf::Color(50, 50, 50, 140));
 }
 
-Button::~Button()
-{
-}
+Button::~Button() = default;
 
 void Button::update(const sf::Vector2f &mouse_pos)
 {

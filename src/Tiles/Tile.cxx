@@ -13,12 +13,10 @@ Tile::Tile(const std::string name, const std::string &id, sf::Texture &texture, 
 }
 
 Tile::~Tile()
-{
-}
+{}
 
 void Tile::update()
-{
-}
+{}
 
 void Tile::render(sf::RenderTarget &target)
 {

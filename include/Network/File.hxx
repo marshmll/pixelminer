@@ -15,56 +15,56 @@
 
 namespace File
 {
-/**
- * @struct FileDescriptor
- * @brief Represents metadata of a file for file transfer purposes.
- *
- * This structure holds the necessary information for transferring a file in parts over the network.
- * It includes the file's name, size, transfer mode, and information about its partitioning into multiple parts.
- */
-struct FileDescriptor
-{
     /**
-     * @brief The filename of the file being transferred.
+     * @struct FileDescriptor
+     * @brief Represents metadata of a file for file transfer purposes.
+     *
+     * This structure holds the necessary information for transferring a file in parts over the network.
+     * It includes the file's name, size, transfer mode, and information about its partitioning into multiple parts.
      */
-    std::string filename;
+    struct FileDescriptor
+    {
+        /**
+         * @brief The filename of the file being transferred.
+         */
+        std::string filename;
+
+        /**
+         * @brief The size of the file in bytes.
+         */
+        std::uintmax_t filesize;
+
+        /**
+         * @brief The mode in which the file is being transferred (e.g., binary or text mode).
+         */
+        int mode;
+
+        /**
+         * @brief The current part of the file being transferred.
+         * @note This is used when the file is split into multiple parts.
+         */
+        unsigned short part;
+
+        /**
+         * @brief The total number of parts the file has been divided into for transfer.
+         */
+        unsigned short total_parts;
+    };
 
     /**
-     * @brief The size of the file in bytes.
+     * @brief Creates a `FileDescriptor` for the given file.
+     * @param path The path to the file to be transferred.
+     * @param mode The mode in which the file will be transferred (e.g., binary mode or text mode).
+     * @return A `FileDescriptor` containing information about the file, such as its name, size, and transfer details.
      */
-    std::uintmax_t filesize;
+    FileDescriptor createFileDescriptor(std::filesystem::path path, std::ios::openmode mode);
 
     /**
-     * @brief The mode in which the file is being transferred (e.g., binary or text mode).
+     * @brief Validates if the given file path exists.
+     * @param path The path to be validated.
+     * @return True if the file exists, false otherwise.
      */
-    int mode;
-
-    /**
-     * @brief The current part of the file being transferred.
-     * @note This is used when the file is split into multiple parts.
-     */
-    unsigned short part;
-
-    /**
-     * @brief The total number of parts the file has been divided into for transfer.
-     */
-    unsigned short total_parts;
-};
-
-/**
- * @brief Creates a `FileDescriptor` for the given file.
- * @param path The path to the file to be transferred.
- * @param mode The mode in which the file will be transferred (e.g., binary mode or text mode).
- * @return A `FileDescriptor` containing information about the file, such as its name, size, and transfer details.
- */
-FileDescriptor createFileDescriptor(std::filesystem::path path, std::ios::openmode mode);
-
-/**
- * @brief Validates if the given file path exists.
- * @param path The path to be validated.
- * @return True if the file exists, false otherwise.
- */
-const bool validatePath(const std::filesystem::path &path);
+    const bool validatePath(const std::filesystem::path &path);
 }; // namespace File
 
 /**

@@ -381,7 +381,6 @@ void Map::loadRegion(const sf::Vector2i &region_index)
            region_file.read(reinterpret_cast<char *>(&flags), sizeof(uint8_t)) &&
            region_file.read(reinterpret_cast<char *>(&tile_amount), sizeof(unsigned short)))
     {
-
         if (chunk_x < 0 || chunk_x >= MAX_CHUNKS.x || chunk_y < 0 || chunk_y >= MAX_CHUNKS.y)
             logger.logError("Corrupted region file: Chunk index out of bounds");
 

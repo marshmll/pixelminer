@@ -71,8 +71,7 @@ PerlinNoise::PerlinNoise(const unsigned int &seed)
 }
 
 PerlinNoise::~PerlinNoise()
-{
-}
+{}
 
 const NoiseMap PerlinNoise::generateNoiseMap(const unsigned int &width, const unsigned int &height, const float &scale,
                                              const std::vector<Wave> &waves, const sf::Vector2f &offset)

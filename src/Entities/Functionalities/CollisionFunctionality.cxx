@@ -3,8 +3,7 @@
 
 CollisionFunctionality::CollisionFunctionality(sf::Sprite &sprite)
     : logger("CollisionFunctionality"), sprite(sprite), collisionEnabled(true)
-{
-}
+{}
 
 CollisionFunctionality::~CollisionFunctionality() = default;
 

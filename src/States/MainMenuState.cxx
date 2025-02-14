@@ -58,9 +58,7 @@ MainMenuState::MainMenuState(EngineData &data) : State(data)
     initGUI();
 }
 
-MainMenuState::~MainMenuState()
-{
-}
+MainMenuState::~MainMenuState() = default;
 
 void MainMenuState::update(const float &dt)
 {

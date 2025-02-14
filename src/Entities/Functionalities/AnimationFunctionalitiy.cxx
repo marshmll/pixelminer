@@ -7,12 +7,10 @@ AnimationFunctionality::AnimationFunctionality(const std::string &entity_name, c
 
     : logger("AnimationFunctionality"), entityName(entity_name), entityId(entity_id), layers(layers),
       spriteSheet(sprite_sheet)
-{
-}
+{}
 
 AnimationFunctionality::~AnimationFunctionality()
-{
-}
+{}
 
 void AnimationFunctionality::addAnimation(const std::string &layer, const std::string name,
                                           const std::int32_t &frametime_as_ms, const sf::Vector2u &frame_size,

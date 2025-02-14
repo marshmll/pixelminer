@@ -171,8 +171,8 @@ class Server
      * @param path The path to the file to send.
      * @param mode The mode in which to open the file (e.g., binary or text).
      */
-    void sendFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &path,
-                  std::ios::openmode mode);
+    void
+    sendFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &path, std::ios::openmode mode);
 
     /**
      * @brief Receives a file from a client and saves it to the specified folder.
@@ -181,8 +181,8 @@ class Server
      * @param folder The folder where the received file should be saved.
      * @param packet The packet containing the file data.
      */
-    void receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder,
-                     sf::Packet &packet);
+    void
+    receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder, sf::Packet &packet);
 
     /**
      * @brief Shuts down the server and disconnects all clients.

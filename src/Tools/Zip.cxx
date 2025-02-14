@@ -139,8 +139,8 @@ const bool Zip::compress(const std::filesystem::path &src, const std::filesystem
 /* PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
 // Helper function to add a file to the ZIP archive
-const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
-                             const std::filesystem::path &zip_entry_name)
+const bool
+Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path, const std::filesystem::path &zip_entry_name)
 {
     Logger logger("Zip");
 
@@ -178,8 +178,8 @@ const bool Zip::addFileToZip(zipFile zf, const std::filesystem::path &file_path,
     return true;
 }
 
-const bool Zip::addFolderToZip(zipFile zf, const std::filesystem::path &folder_path,
-                               const std::filesystem::path &base_folder)
+const bool
+Zip::addFolderToZip(zipFile zf, const std::filesystem::path &folder_path, const std::filesystem::path &base_folder)
 {
     for (const auto &entry : std::filesystem::recursive_directory_iterator(folder_path))
     {

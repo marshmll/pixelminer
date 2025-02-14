@@ -14,8 +14,7 @@ PlayerGUI::PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pac
 }
 
 PlayerGUI::~PlayerGUI()
-{
-}
+{}
 
 void PlayerGUI::update(const float &dt)
 {

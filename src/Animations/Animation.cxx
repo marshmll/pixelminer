@@ -22,8 +22,7 @@ Animation::Animation(sf::Sprite &sprite, sf::Texture &sprite_sheet, const std::i
 }
 
 Animation::~Animation()
-{
-}
+{}
 
 void Animation::play()
 {

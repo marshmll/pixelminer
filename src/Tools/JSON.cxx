@@ -207,32 +207,15 @@ std::string JSON::parseString(const std::string &json, size_t &pos)
                 throw std::runtime_error(generateErrorMessage(json, pos, "Unexpected end of input in string"));
             switch (json[pos])
             {
-            case '"':
-                result += '"';
-                break;
-            case '\\':
-                result += '\\';
-                break;
-            case '/':
-                result += '/';
-                break;
-            case 'b':
-                result += '\b';
-                break;
-            case 'f':
-                result += '\f';
-                break;
-            case 'n':
-                result += '\n';
-                break;
-            case 'r':
-                result += '\r';
-                break;
-            case 't':
-                result += '\t';
-                break;
-            default:
-                throw std::runtime_error(generateErrorMessage(json, pos, "Invalid escape character in string"));
+            case '"': result += '"'; break;
+            case '\\': result += '\\'; break;
+            case '/': result += '/'; break;
+            case 'b': result += '\b'; break;
+            case 'f': result += '\f'; break;
+            case 'n': result += '\n'; break;
+            case 'r': result += '\r'; break;
+            case 't': result += '\t'; break;
+            default: throw std::runtime_error(generateErrorMessage(json, pos, "Invalid escape character in string"));
             }
         }
         else

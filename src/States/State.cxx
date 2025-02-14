@@ -9,16 +9,13 @@ State::State(EngineData &data)
 }
 
 State::~State()
-{
-}
+{}
 
 void State::update(const float &dt)
-{
-}
+{}
 
 void State::render(sf::RenderTarget &target)
-{
-}
+{}
 
 void State::updateMousePositions(std::optional<sf::View> view)
 {

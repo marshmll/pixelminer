@@ -9,8 +9,7 @@ TileBase::TileBase(const std::string name, const std::string &id, sf::Texture &t
 }
 
 TileBase::~TileBase()
-{
-}
+{}
 
 void TileBase::render(sf::RenderTarget &target)
 {

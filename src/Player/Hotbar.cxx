@@ -63,8 +63,7 @@ Hotbar::Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<Resour
 }
 
 Hotbar::~Hotbar()
-{
-}
+{}
 
 void Hotbar::update(const float &dt)
 {

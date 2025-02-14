@@ -60,8 +60,8 @@ class Zip
      *
      * @return `true` if the file was successfully added, `false` otherwise.
      */
-    static const bool addFileToZip(zipFile zf, const std::filesystem::path &file_path,
-                                   const std::filesystem::path &zip_entry_name);
+    static const bool
+    addFileToZip(zipFile zf, const std::filesystem::path &file_path, const std::filesystem::path &zip_entry_name);
 
     /**
      * @brief Adds a folder and its contents to the ZIP archive.
@@ -75,6 +75,6 @@ class Zip
      *
      * @return `true` if the folder and its contents were successfully added, `false` otherwise.
      */
-    static const bool addFolderToZip(zipFile zf, const std::filesystem::path &folder_path,
-                                     const std::filesystem::path &base_folder = "");
+    static const bool
+    addFolderToZip(zipFile zf, const std::filesystem::path &folder_path, const std::filesystem::path &base_folder = "");
 };

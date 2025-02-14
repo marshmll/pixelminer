@@ -101,8 +101,7 @@ std::vector<Token> CommandInterpreter::tokenize(std::string_view command)
 }
 
 CommandInterpreter::CommandInterpreter(GameContext &ctx) : ctx(ctx)
-{
-}
+{}
 
 CommandInterpreter::~CommandInterpreter() = default;
 

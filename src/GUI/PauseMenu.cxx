@@ -59,9 +59,7 @@ PauseMenu::PauseMenu(EngineData &data) : active(false), quit(false), data(data)
         sf::Color::Black);
 }
 
-PauseMenu::~PauseMenu()
-{
-}
+PauseMenu::~PauseMenu() = default;
 
 void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
 {

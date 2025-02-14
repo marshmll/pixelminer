@@ -2,12 +2,10 @@
 #include "stdafx.hxx"
 
 Logger::Logger(const std::string logger) : logger(logger)
-{
-}
+{}
 
 Logger::~Logger()
-{
-}
+{}
 
 void Logger::logInfo(const std::string &log)
 {

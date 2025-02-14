@@ -3,12 +3,10 @@
 
 AttributeFunctionality::AttributeFunctionality(const uint8_t &max_health, const uint8_t &max_hunger)
     : health(max_health), maxHealth(max_health), hunger(max_hunger), maxHunger(max_hunger)
-{
-}
+{}
 
 AttributeFunctionality::~AttributeFunctionality()
-{
-}
+{}
 
 /* ACCESSORS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 

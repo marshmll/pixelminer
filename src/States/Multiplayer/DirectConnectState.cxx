@@ -37,8 +37,7 @@ DirectConnectState::DirectConnectState(EngineData &data) : State(data)
 }
 
 DirectConnectState::~DirectConnectState()
-{
-}
+{}
 
 void DirectConnectState::update(const float &dt)
 {

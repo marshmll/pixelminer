@@ -5,30 +5,14 @@ void Biome::setBiomeName()
 {
     switch (type)
     {
-    case Desert:
-        name = "Desert";
-        break;
-    case Forest:
-        name = "Forest";
-        break;
-    case Grassland:
-        name = "Grassland";
-        break;
-    case Jungle:
-        name = "Jungle";
-        break;
-    case Mountains:
-        name = "Mountains";
-        break;
-    case Ocean:
-        name = "Ocean";
-        break;
-    case Tundra:
-        name = "Tundra";
-        break;
-    default:
-        name = "Unknown";
-        break;
+    case Desert: name = "Desert"; break;
+    case Forest: name = "Forest"; break;
+    case Grassland: name = "Grassland"; break;
+    case Jungle: name = "Jungle"; break;
+    case Mountains: name = "Mountains"; break;
+    case Ocean: name = "Ocean"; break;
+    case Tundra: name = "Tundra"; break;
+    default: name = "Unknown"; break;
     }
 }
 
@@ -39,8 +23,7 @@ Biome::Biome(const BiomeType type, const float &ideal_height, const float &ideal
 }
 
 Biome::~Biome()
-{
-}
+{}
 
 const float Biome::calculateWeight(const float &height, const float &moisture, const float &heat) const
 {

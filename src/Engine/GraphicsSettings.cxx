@@ -2,8 +2,7 @@
 #include "stdafx.hxx"
 
 GraphicsSettings::GraphicsSettings() : logger("GraphicsSettings")
-{
-}
+{}
 
 GraphicsSettings::~GraphicsSettings() = default;
 

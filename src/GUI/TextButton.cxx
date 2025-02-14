@@ -24,8 +24,7 @@ TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, con
 }
 
 TextButton::~TextButton()
-{
-}
+{}
 
 void TextButton::update(const sf::Vector2f &mouse_pos)
 {

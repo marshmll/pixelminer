@@ -15,9 +15,9 @@
 namespace CommandImpl
 {
 
-/**
- * @brief A look-up table associating a command call string with its respective handler.
- */
-static const std::unordered_map<std::string, std::function<const std::string(GameContext &, CommandContext &)>>
-    commandHandlersTable = {{COMMAND_INVOKER + "id", id}, {COMMAND_INVOKER + "tp", tp}};
+    /**
+     * @brief A look-up table associating a command call string with its respective handler.
+     */
+    static const std::unordered_map<std::string, std::function<const std::string(GameContext &, CommandContext &)>>
+        commandHandlersTable = {{COMMAND_INVOKER + "id", id}, {COMMAND_INVOKER + "tp", tp}};
 }; // namespace CommandImpl

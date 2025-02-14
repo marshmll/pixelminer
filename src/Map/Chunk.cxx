@@ -14,12 +14,10 @@ Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, cons
 }
 
 Chunk::~Chunk()
-{
-}
+{}
 
 void Chunk::update(const float &dt)
-{
-}
+{}
 
 void Chunk::render(sf::RenderTarget &target, const bool &debug)
 {

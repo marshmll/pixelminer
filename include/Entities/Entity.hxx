@@ -48,8 +48,8 @@ class Entity
     Logger logger; ///< Logger instance for logging messages.
 
     std::string name; ///< Name of the entity.
-    uint8_t type; ///< Type of entity (e.g., inanimated, mob, etc.).
-    uint64_t id; ///< Unique session identifier for the entity.
+    uint8_t type;     ///< Type of entity (e.g., inanimated, mob, etc.).
+    uint64_t id;      ///< Unique session identifier for the entity.
 
     sf::Vector2f spawnGridPosition; ///< Spawn position of the entity in grid coordinates.
 

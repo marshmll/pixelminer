@@ -1,13 +1,15 @@
 #include "Game/Commands/CommandImpl/TargetResolver.hxx"
 #include "stdafx.hxx"
 
-std::vector<Entity *> CommandImpl::resolveEntities(const std::vector<Token> &tokens, GameContext &ctx, CommandContext &cmd)
+std::vector<Entity *>
+CommandImpl::resolveEntities(const std::vector<Token> &tokens, GameContext &ctx, CommandContext &cmd)
 {
     std::vector<Entity *> entities;
 
     for (size_t i = 0; i < tokens.size(); ++i)
     {
-        if (tokens[i].type == TokenType::Target && tokens[i].literal == "@p" && i + 1 < tokens.size() && tokens[i + 1].type == TokenType::String)
+        if (tokens[i].type == TokenType::Target && tokens[i].literal == "@p" && i + 1 < tokens.size() &&
+            tokens[i + 1].type == TokenType::String)
         {
             // Resolve @p with player name
             auto resolved = CommandImpl::resolveTargetWithName(tokens[i], tokens[i + 1], ctx, cmd);
