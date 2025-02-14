@@ -1,0 +1,10 @@
+[
+    {
+        "address": "192.168.100.80:55000",
+        "name": "Pixelminer Server"
+    },
+    {
+        "address": "192.168.18.53:55000",
+        "name": "Another one"
+    }
+]

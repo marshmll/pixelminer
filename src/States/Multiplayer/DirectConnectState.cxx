@@ -1,4 +1,4 @@
-#include "States/DirectConnectState.hxx"
+#include "States/Multiplayer/DirectConnectState.hxx"
 #include "stdafx.hxx"
 
 void DirectConnectState::initGUI()
@@ -6,7 +6,6 @@ void DirectConnectState::initGUI()
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setTexture(&data.activeResourcePack->textures.at("Background"));
-    background.setFillColor(sf::Color(255, 255, 255, 100));
 
     addrInput = std::make_unique<gui::Input>(
         sf::Vector2f(background.getGeometricCenter().x - gui::percent(data.vm->size.x, 40.f) / 2.f,

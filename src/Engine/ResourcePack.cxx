@@ -80,6 +80,12 @@ const bool ResourcePack::load(const std::string &name)
 
     /* Default textures +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
+    if (!textures["Default"].loadFromFile(root_path / "Images/Icons/default.png"))
+    {
+        logger.logError("Missing texture \"background.png\" in resource pack: " + name, false);
+        return false;
+    }
+
     if (!textures["Background"].loadFromFile(root_path / "Images/Backgrounds/background.png"))
     {
         logger.logError("Missing texture \"background.png\" in resource pack: " + name, false);

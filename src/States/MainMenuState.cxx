@@ -6,7 +6,6 @@ void MainMenuState::initGUI()
     bgShape.setPosition({0.f, 0.f});
     bgShape.setSize(sf::Vector2f(data.vm->size.x, data.vm->size.y));
     bgShape.setTexture(&data.activeResourcePack->textures.at("Background"));
-    bgShape.setFillColor({255, 255, 255, 90});
 
     // TITLE
     title = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), "PIXELMINER",

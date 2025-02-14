@@ -1,4 +1,4 @@
-#include "States/GameState.hxx"
+#include "States/Singleplayer/GameState.hxx"
 #include "stdafx.hxx"
 
 void GameState::initLoadingScreen()
@@ -6,7 +6,6 @@ void GameState::initLoadingScreen()
     loadingBg.setSize(sf::Vector2f(data.vm->size));
     loadingBg.setPosition({0, 0});
     loadingBg.setTexture(&data.activeResourcePack->getTexture("Background"));
-    loadingBg.setFillColor(sf::Color(255, 255, 255, 80));
 
     loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
                                              gui::charSize(*data.vm, 80));
@@ -137,26 +136,6 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
 
     ctx.globalEntities.emplace_back(std::make_shared<PineTree>(
         ctx.map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
-    entitySpacialGridPartition->put(ctx.globalEntities.back());
-
-    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint() + sf::Vector2f(2.f, 2.f),
-                                                               data.activeResourcePack->getTexture("PineTree"),
-                                                               data.scale));
-    entitySpacialGridPartition->put(ctx.globalEntities.back());
-
-    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint() + sf::Vector2f(4.f, 4.f),
-                                                               data.activeResourcePack->getTexture("PineTree"),
-                                                               data.scale));
-    entitySpacialGridPartition->put(ctx.globalEntities.back());
-
-    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint() + sf::Vector2f(6.f, 6.f),
-                                                               data.activeResourcePack->getTexture("PineTree"),
-                                                               data.scale));
-    entitySpacialGridPartition->put(ctx.globalEntities.back());
-
-    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint() + sf::Vector2f(8.f, 8.f),
-                                                               data.activeResourcePack->getTexture("PineTree"),
-                                                               data.scale));
     entitySpacialGridPartition->put(ctx.globalEntities.back());
 }
 

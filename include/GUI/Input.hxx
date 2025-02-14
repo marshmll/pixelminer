@@ -39,6 +39,8 @@ class Input
     char32_t lastKeyPressed; ///< The last char32_t read from the keyboard.
     bool repeat;             ///< Flag indicating whether a key is being held down for repetition.
 
+    bool focus; ///< Flag indicating whether the input is on focus and keyboard input should be colleted.
+
     /**
      * @brief Toggles the visibility of the blinking cursor.
      *
@@ -94,7 +96,7 @@ class Input
      */
     Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &body_color, sf::Font &font,
           const unsigned int &char_size, const float &padding, const float &outline_thickness,
-          const sf::Color outline_color, const std::string label = "");
+          const sf::Color outline_color, const std::string label = "", const bool &focus = false);
 
     /** Destructor for Input */
     ~Input();
@@ -128,6 +130,22 @@ class Input
      * @return The current string entered by the user.
      */
     const std::string getValue() const;
+
+    /**
+     * @brief Returns if the input is on focus and should be updated.
+     *
+     * @return True if the input is on focus, false otherwise.
+     */
+    const bool &getFocus() const;
+
+    /**
+     * @brief Sets a new value for the focus flag.
+     *
+     * The focus flag tells if the input should be updated.
+     *
+     * @param focus The new value for focus flag.
+     */
+    void setFocus(const bool &focus);
 
     /**
      * @brief Clears the text from the input field.

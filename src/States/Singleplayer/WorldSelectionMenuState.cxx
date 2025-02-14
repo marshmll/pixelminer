@@ -1,4 +1,4 @@
-#include "States/WorldSelectionMenuState.hxx"
+#include "States/Singleplayer/WorldSelectionMenuState.hxx"
 #include "stdafx.hxx"
 
 void WorldSelectionMenuState::initGUI()
@@ -6,7 +6,6 @@ void WorldSelectionMenuState::initGUI()
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setTexture(&data.activeResourcePack->getTexture("Background"));
-    background.setFillColor(sf::Color(255, 255, 255, 100));
 
     header.setSize(sf::Vector2f(data.vm->size.x, gui::percent(data.vm->size.y, 15.f)));
     header.setPosition(sf::Vector2f(0.f, 0.f));
@@ -128,9 +127,7 @@ WorldSelectionMenuState::WorldSelectionMenuState(EngineData &data) : State(data)
     initWorldSelectors();
 }
 
-WorldSelectionMenuState::~WorldSelectionMenuState()
-{
-}
+WorldSelectionMenuState::~WorldSelectionMenuState() = default;
 
 void WorldSelectionMenuState::update(const float &dt)
 {

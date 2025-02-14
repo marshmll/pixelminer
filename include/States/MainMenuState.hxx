@@ -7,9 +7,8 @@
 #pragma once
 
 #include "GUI/GUI.hxx"
-#include "States/GameState.hxx"
-#include "States/MultiplayerState.hxx"
-#include "States/WorldSelectionMenuState.hxx"
+#include "States/Multiplayer/MultiplayerState.hxx"
+#include "States/Singleplayer/WorldSelectionMenuState.hxx"
 
 /**
  * @class MainMenuState

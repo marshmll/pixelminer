@@ -5,8 +5,9 @@ using namespace gui;
 
 Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &body_color, sf::Font &font,
              const unsigned int &char_size, const float &padding, const float &outline_thickness,
-             const sf::Color outline_color, const std::string label)
-    : charSize(char_size), padding(padding), cursorTimer(0.f), cursorTimerMax(.2f), cursorIndex(0), repeat(false)
+             const sf::Color outline_color, const std::string label, const bool &focus)
+    : charSize(char_size), padding(padding), cursorTimer(0.f), cursorTimerMax(.2f), cursorIndex(0), repeat(false),
+      focus(focus)
 {
     body.setSize(size);
     body.setPosition(position);
@@ -31,6 +32,7 @@ Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::C
     blinkerCursor.setFillColor(sf::Color::White);
 
     keyTimer.restart();
+    setFocus(focus);
 }
 
 Input::~Input() = default;
@@ -74,6 +76,22 @@ void Input::handleArrowKey(sf::Keyboard::Key key)
 
 void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Event> &event)
 {
+    if (!focus)
+    {
+        if (this->body.getGlobalBounds().contains(mouse_pos))
+        {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                setFocus(true);
+        }
+
+        return;
+    }
+    else if (!this->body.getGlobalBounds().contains(mouse_pos))
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            setFocus(false);
+    }
+
     cursorTimer += dt;
     if (cursorTimer >= cursorTimerMax)
         toggleCursorVisibility();
@@ -182,12 +200,28 @@ void Input::render(sf::RenderTarget &target)
     target.draw(body);
     target.draw(*text);
     target.draw(*label);
-    target.draw(blinkerCursor);
+
+    if (focus)
+        target.draw(blinkerCursor);
 }
 
 const std::string Input::getValue() const
 {
     return text->getString();
+}
+
+const bool &Input::getFocus() const
+{
+    return focus;
+}
+
+void Input::setFocus(const bool &focus)
+{
+    this->focus = focus;
+    if (focus)
+        body.setOutlineThickness(2.f);
+    else
+        body.setOutlineThickness(0.f);
 }
 
 void Input::clear()
