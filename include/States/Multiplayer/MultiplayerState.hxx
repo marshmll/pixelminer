@@ -157,9 +157,13 @@ class MultiplayerState : public State
     std::vector<std::shared_ptr<ServerSelector>> serverSelectors;
     std::optional<std::shared_ptr<ServerSelector>> selectedServer;
 
+    sf::UdpSocket socket;
+
     void initGUI();
 
     void initServerSelectors();
+
+    void initSocket();
 
   public:
     MultiplayerState(EngineData &data);

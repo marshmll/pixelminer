@@ -6,7 +6,7 @@ void MultiplayerState::initGUI()
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setTexture(&data.activeResourcePack->textures.at("Background"));
-    
+
     header.setSize(sf::Vector2f(data.vm->size.x, gui::percent(data.vm->size.y, 15.f)));
     header.setPosition(sf::Vector2f(0.f, 0.f));
     header.setFillColor(sf::Color(0, 0, 0, 80));
@@ -113,6 +113,23 @@ void MultiplayerState::initServerSelectors()
     {
         JObject obj = val.getAs<JObject>();
 
+        sf::Packet packet;
+        packet << "INFO";
+        if (socket.send(packet, sf::IpAddress(127, 0, 0, 1), 55000) != sf::Socket::Status::Done)
+        {
+            std::cerr << "Error sending packet" << "\n";
+        }
+
+        sf::Packet result;
+        std::optional<sf::IpAddress> ip;
+        unsigned short port;
+        if (socket.receive(result, ip, port) == sf::Socket::Status::Done)
+        {
+            std::string header, data;
+            result << header << data;
+            std::cout << data << "\n";
+        }
+
         ServerMetadata metadata;
 
         metadata.serverName = obj.at("name").getAs<std::string>();
@@ -138,13 +155,23 @@ void MultiplayerState::initServerSelectors()
     }
 }
 
+void MultiplayerState::initSocket()
+{
+    if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
+        throw std::runtime_error("Failed to bind to a port.");
+}
+
 MultiplayerState::MultiplayerState(EngineData &data) : State(data)
 {
     initGUI();
     initServerSelectors();
+    initSocket();
 }
 
-MultiplayerState::~MultiplayerState() = default;
+MultiplayerState::~MultiplayerState()
+{
+    socket.unbind();
+}
 
 void MultiplayerState::update(const float &dt)
 {
@@ -175,7 +202,7 @@ void MultiplayerState::updateGUI(const float &dt)
         data.states->push(std::make_shared<DirectConnectState>(data));
 
     updateMousePositions(serverSelectorsList->getView());
-    if (mouseButtonPressedWithin(1200.f * dt, sf::Mouse::Button::Left) && !serverSelectorsList->isScrollLocked())
+    if (mouseButtonPressedWithin(200, sf::Mouse::Button::Left) && !serverSelectorsList->isScrollLocked())
     {
         for (auto &selector : serverSelectors)
         {

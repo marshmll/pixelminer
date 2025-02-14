@@ -172,9 +172,7 @@ Client::Client(const std::string &uuid)
     socketSelector.add(socket);
 }
 
-Client::~Client()
-{
-}
+Client::~Client() = default;
 
 void Client::connect(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {

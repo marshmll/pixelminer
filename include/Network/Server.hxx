@@ -7,6 +7,7 @@
 
 #include "Network/File.hxx"
 #include "Network/PacketAddress.hxx"
+#include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
 
 /**
@@ -94,6 +95,8 @@ class Server
      * @param port The port number of the client.
      */
     void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, unsigned short port);
+
+    void sendServerInfo(const sf::IpAddress &ip, unsigned short port);
 
     /**
      * @brief Sets the server's online status.

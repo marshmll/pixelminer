@@ -156,7 +156,7 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
         replaceSelf(std::make_shared<GameState>(data, selectedWorld.value()->metadata.folderName));
 
     updateMousePositions(worldSelectorsList->getView());
-    if (mouseButtonPressedWithin(1200.f * dt, sf::Mouse::Button::Left) && !worldSelectorsList->isScrollLocked())
+    if (mouseButtonPressedWithin(200, sf::Mouse::Button::Left) && !worldSelectorsList->isScrollLocked())
     {
         for (auto &selector : worldSelectors)
         {

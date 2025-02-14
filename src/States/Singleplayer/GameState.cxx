@@ -134,6 +134,9 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initCommandInterpreter();
     initDebugging();
 
+    server.listen(55000);
+    client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
+
     ctx.globalEntities.emplace_back(std::make_shared<PineTree>(
         ctx.map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
     entitySpacialGridPartition->put(ctx.globalEntities.back());

@@ -49,6 +49,10 @@ void Server::handler()
         {
             handleAskUuid(uuid, pkt_addr.ip, pkt_addr.port);
         }
+        else if (header == "INFO")
+        {
+            sendServerInfo(pkt_addr.ip, pkt_addr.port);
+        }
         else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
         {
             continue;
@@ -89,12 +93,12 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short port)
 {
-    if (uuid == myUuid)
-    {
-        logger.logError("Connecting to self is not allowed.", false);
-        sendControlMessage("RFS", ip, port);
-        return;
-    }
+    // if (uuid == myUuid)
+    // {
+    //     logger.logError("Connecting to self is not allowed.", false);
+    //     sendControlMessage("RFS", ip, port);
+    //     return;
+    // }
 
     auto it = connections.find(uuid);
     if (it != connections.end())
@@ -118,6 +122,22 @@ void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, con
     {
         sendControlMessage("ACK", ip, port);
     }
+}
+
+void Server::sendServerInfo(const sf::IpAddress &ip, unsigned short port)
+{
+    JObject server_info_obj(
+        {{"name", "Pixelminer Server"},
+         {"description", "The first server ever!"},
+         {"address", sf::IpAddress::getLocalAddress()->toString() + ":" + std::to_string(this->socket.getLocalPort())},
+         {"connections", static_cast<long long>(connections.size())}});
+
+    sf::Packet packet;
+
+    std::cout << JSON::stringify(server_info_obj) << "\n";
+    packet << "ACK+INFO" << JSON::stringify(server_info_obj);
+
+    send(packet, ip, port);
 }
 
 void Server::setOnline(bool online)
