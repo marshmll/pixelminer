@@ -6,10 +6,14 @@
 
 #pragma once
 
-/* The char value of the symbol that invokes a command call. */
+/**
+ * @brief The char value of the symbol that invokes a command call.
+ */
 #define COMMAND_INVOKER_CHAR '\\'
 
-/* The command invoker char casted to a string. */
+/**
+ * @brief The command invoker char casted to a string.
+ */
 #define COMMAND_INVOKER static_cast<std::string>("\\")
 
 /**

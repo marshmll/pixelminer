@@ -93,6 +93,7 @@ class Input
      * @param outline_thickness The thickness of the input field's border.
      * @param outline_color The color of the border around the input field.
      * @param label The label displayed above the input field (optional).
+     * @param focus If the input should start already on focus (default is false).
      */
     Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::Color &body_color, sf::Font &font,
           const unsigned int &char_size, const float &padding, const float &outline_thickness,
