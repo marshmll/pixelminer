@@ -5,7 +5,7 @@
 
 void Server::listenerThread()
 {
-    logger.logInfo("[ Server::listenerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+    logger.logInfo("Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
                    std::to_string(socket.getLocalPort()) + ") online.");
 
     sf::Packet pktBuf;
@@ -32,7 +32,7 @@ void Server::listenerThread()
         }
     }
 
-    logger.logInfo("[ Server::listenerThread ] -> Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+    logger.logInfo("Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
                    std::to_string(socket.getLocalPort()) + ") offline.");
 }
 
@@ -93,12 +93,12 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short port)
 {
-    // if (uuid == myUuid)
-    // {
-    //     logger.logError("Connecting to self is not allowed.", false);
-    //     sendControlMessage("RFS", ip, port);
-    //     return;
-    // }
+    if (uuid == myUuid)
+    {
+        logger.logError("Connecting to self is not allowed.", false);
+        sendControlMessage("RFS", ip, port);
+        return;
+    }
 
     auto it = connections.find(uuid);
     if (it != connections.end())
@@ -142,6 +142,7 @@ void Server::sendServerInfo(const sf::IpAddress &ip, unsigned short port)
 
 void Server::setOnline(bool online)
 {
+    std::lock_guard<std::mutex> lock(mutex);
     this->online = online;
 }
 
@@ -359,7 +360,7 @@ void Server::shutdown()
         sendControlMessage("KIL", conn.ip, conn.port);
     }
 
-    online = false;
+    setOnline(false);
     socket.unbind();
     socketSelector.clear();
     logger.logInfo("Server is down");
