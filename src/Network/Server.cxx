@@ -129,12 +129,12 @@ void Server::sendServerInfo(const sf::IpAddress &ip, unsigned short port)
     JObject server_info_obj(
         {{"name", "Pixelminer Server"},
          {"description", "The first server ever!"},
+         {"gameVersion", GAME_VERSION},
          {"address", sf::IpAddress::getLocalAddress()->toString() + ":" + std::to_string(this->socket.getLocalPort())},
-         {"connections", static_cast<long long>(connections.size())}});
+         {"connections", static_cast<long long>(connections.size() + 1)},
+         {"maxConnections", static_cast<long long>(maxConnections)}});
 
     sf::Packet packet;
-
-    std::cout << JSON::stringify(server_info_obj) << "\n";
     packet << "ACK+INFO" << JSON::stringify(server_info_obj);
 
     send(packet, ip, port);
@@ -147,7 +147,7 @@ void Server::setOnline(bool online)
 
 /* CONSTRUCTOR ============================================================================================== */
 
-Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), online(false)
+Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), maxConnections(8), online(false)
 {
     socket.setBlocking(true);
 }
@@ -175,9 +175,16 @@ void Server::listen(const unsigned short port)
 
 bool Server::createConnection(const sf::IpAddress &ip, const unsigned short port, const std::string &uuid)
 {
+    if (connections.size() + 1 >= maxConnections)
+    {
+        logger.logWarning("Maximum number of connections reached. Refused connection with Client: " + ip.toString());
+
+        return false;
+    }
+
     if (connections.find(uuid) != connections.end())
     {
-        logger.logError("Client with IP is already connected: " + ip.toString(), false);
+        logger.logWarning("Client with IP is already connected: " + ip.toString());
         return false;
     }
 

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Engine/Configuration.hxx"
 #include "Network/File.hxx"
 #include "Network/PacketAddress.hxx"
 #include "Tools/JSON.hxx"
@@ -70,6 +71,7 @@ class Server
     sf::SocketSelector socketSelector;                            ///< Selector used to monitor multiple sockets.
     sf::UdpSocket socket;                                         ///< The UDP socket used by the server.
     std::unordered_map<std::string, Connection> connections;      ///< A map of connected clients by UUID.
+    unsigned int maxConnections;                                  ///< Maximum of connections accepted.
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue; ///< A queue for received packets.
     std::atomic_bool online;                                      ///< Flag indicating whether the server is online.
 
