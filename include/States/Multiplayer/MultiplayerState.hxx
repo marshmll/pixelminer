@@ -55,44 +55,115 @@ class MultiplayerState : public State
          * @param metadata Server metadata.
          * @param y_position Vertical position of the server selector in the menu.
          */
-        ServerSelector(EngineData &data, ServerMetadata metadata, const float y_position);
+        ServerSelector(EngineData &data, ServerMetadata metadata, const float y_position)
+            : data(data), metadata(metadata), selected(false)
+        {
+            container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 18.f)));
+            container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
+                                               static_cast<int>(y_position)));
+            container.setFillColor(sf::Color(0, 0, 0, 80));
+            container.setOutlineColor(sf::Color::White);
+
+            iconTexture = data.activeResourcePack->getTexture("Default");
+            icon.setSize(sf::Vector2f(sf::Vector2f(container.getSize().y, container.getSize().y)));
+            icon.setPosition(container.getPosition());
+            icon.setTexture(&iconTexture);
+
+            name = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), metadata.serverName,
+                                              gui::charSize(*data.vm, 100));
+
+            name->setPosition(sf::Vector2f(
+                static_cast<int>(icon.getPosition().x + icon.getSize().x + gui::percent(data.vm->size.x, 1.f)),
+                static_cast<int>(icon.getPosition().y + gui::percent(data.vm->size.y, 1.f))));
+
+            name->setFillColor(sf::Color::White);
+
+            description = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"),
+                                                     metadata.serverDescription + "\nStatus: " + metadata.status +
+                                                         "\nGame Version: " + metadata.gameVersion +
+                                                         "\nPlayers: " + std::to_string(metadata.connections) + "/" +
+                                                         std::to_string(metadata.maxConnections),
+                                                     gui::charSize(*data.vm, 100));
+
+            description->setPosition(
+                sf::Vector2f(static_cast<int>(name->getPosition().x),
+                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 4.f))));
+
+            description->setFillColor(sf::Color(200, 200, 200, 255));
+        }
 
         /**
          * @brief Updates the state of the server selector based on user interaction.
          * @param dt Delta time for frame-based updates.
          * @param mouse_pos Current mouse position.
          */
-        void update(const float &dt, const sf::Vector2f &mouse_pos);
+        inline void update(const float &dt, const sf::Vector2f &mouse_pos)
+        {
+            if (!selected)
+                container.setOutlineThickness(0.f);
+
+            if (container.getGlobalBounds().contains(mouse_pos))
+            {
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+                {
+                    selected = true;
+                    container.setOutlineThickness(1.f);
+                }
+            }
+        }
 
         /**
          * @brief Renders the server selector to the target.
          * @param target Render target where the server selector will be drawn.
          */
-        void render(sf::RenderTarget &target);
+        inline void render(sf::RenderTarget &target)
+        {
+            target.draw(container);
+            target.draw(icon);
+            target.draw(*name);
+            target.draw(*description);
+        }
 
         /**
          * @brief Gets the position of the server selector container.
          * @return Position of the server selector container.
          */
-        const sf::Vector2f getPosition() const;
+        inline const sf::Vector2f getPosition() const
+        {
+            return container.getPosition();
+        }
 
         /**
          * @brief Gets the size of the server selector container.
          * @return Size of the server selector container.
          */
-        const sf::Vector2f getSize() const;
+        inline const sf::Vector2f getSize() const
+        {
+            return container.getSize();
+        }
 
         /**
          * @brief Checks if the server selector is selected.
          * @return True if selected, false otherwise.
          */
-        const bool isSelected() const;
+        inline const bool isSelected() const
+        {
+            return selected;
+        }
 
         /**
          * @brief Sets the selection state of the server selector.
          * @param selected New selection state.
          */
-        void setSelected(const bool selected);
+        inline void setSelected(const bool selected)
+        {
+            this->selected = selected;
+
+            if (!selected)
+                container.setOutlineThickness(0.f);
+            else
+                container.setOutlineThickness(1.f);
+        }
     };
 
     sf::RectangleShape background;      ///< Background UI element.

@@ -67,7 +67,7 @@ class WorldSelectionMenuState : public State
             container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 18.f)));
             container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
                                                static_cast<int>(y_position)));
-            container.setFillColor(sf::Color::Transparent);
+            container.setFillColor(sf::Color(0, 0, 0, 80));
             container.setOutlineColor(sf::Color::White);
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))

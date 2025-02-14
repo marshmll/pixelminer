@@ -14,14 +14,12 @@ Chat::Chat(const std::string &this_author, const sf::Vector2f &size, const sf::V
     input = std::make_unique<gui::Input>(sf::Vector2f(padding, vm.size.y - gui::percent(vm.size.y, 5.f) - padding),
                                          sf::Vector2f(vm.size.x - padding * 2.f, gui::percent(vm.size.y, 5.f)),
                                          sf::Color(0, 0, 0, 80), font, gui::charSize(vm, 120), padding, 1.f,
-                                         sf::Color(200, 200, 200, 200));
+                                         sf::Color(200, 200, 200, 200), "", true);
 
     setActive(false);
 }
 
-Chat::~Chat()
-{
-}
+Chat::~Chat() = default;
 
 void Chat::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
                   sf::Event::MouseWheelScrolled &mouse_data)
