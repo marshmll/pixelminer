@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file
  * @brief Includes the necessary GUI components for the game's interface.
@@ -11,6 +9,19 @@
  * Each component is designed to be used for managing and handling user input in the game,
  * enabling the game's menus and interface to function properly.
  */
+
+#pragma once
+
+/**
+ * @namespace GUI
+ * @brief The GUI namespace aggregates common user interface artifacts such as lists, buttons, menus
+ * and similar others.
+ *
+ * This namespace implements the UI artifacts only with resources provided by SFML.
+ */
+namespace GUI
+{
+};
 
 /**
  * @brief Includes the Button class for handling clickable buttons in the GUI.
