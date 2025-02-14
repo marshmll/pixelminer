@@ -19,9 +19,6 @@
  *
  * This namespace implements the UI artifacts only with resources provided by SFML.
  */
-namespace GUI
-{
-};
 
 /**
  * @brief Includes the Button class for handling clickable buttons in the GUI.
