@@ -79,6 +79,14 @@ void MultiplayerState::initGUI()
     buttons.at("Delete")->setState(gui::ButtonState::Disabled);
 }
 
+void MultiplayerState::initSocket()
+{
+    if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
+        throw std::runtime_error("Failed to bind to a port.");
+
+    socketSelector.add(socket);
+}
+
 void MultiplayerState::initServerSelectors()
 {
     serverSelectorsList = std::make_unique<gui::ScrollableContainer>(
@@ -115,7 +123,7 @@ void MultiplayerState::initServerSelectors()
 
         sf::Packet packet;
         packet << "INFO";
-        if (socket.send(packet, sf::IpAddress(127, 0, 0, 1), 55000) != sf::Socket::Status::Done)
+        if (socket.send(packet, sf::IpAddress(192, 168, 100, 178), 55000) != sf::Socket::Status::Done)
         {
             std::cerr << "Error sending packet" << "\n";
         }
@@ -123,20 +131,37 @@ void MultiplayerState::initServerSelectors()
         sf::Packet result;
         std::optional<sf::IpAddress> ip;
         unsigned short port;
-        if (socket.receive(result, ip, port) == sf::Socket::Status::Done)
+        std::string status = "Unreacheable";
+
+        if (socketSelector.wait(sf::seconds(2.f)))
         {
-            std::string header, data;
-            result << header << data;
-            std::cout << data << "\n";
+            if (socketSelector.isReady(socket))
+            {
+                if (socket.receive(result, ip, port) == sf::Socket::Status::Done)
+                {
+                    std::string header, json;
+                    result >> header >> json;
+                    if (header == "ACK+INFO")
+                    {
+                        obj = JSON::parse(json).getAs<JObject>();
+                        status = "Online";
+                    }
+                }
+            }
         }
 
         ServerMetadata metadata;
 
         metadata.serverName = obj.at("name").getAs<std::string>();
         metadata.serverAddress = obj.at("address").getAs<std::string>();
-        metadata.serverDescription = "A PixelMiner Server.";
-        metadata.gameVersion = GAME_VERSION;
-        metadata.status = "Online";
+        metadata.serverDescription =
+            status == "Online" ? obj.at("description").getAs<std::string>() : "A Pixelminer Server.";
+        metadata.gameVersion = status == "Online" ? obj.at("gameVersion").getAs<std::string>() : "Unknown";
+        metadata.status = status;
+        metadata.connections =
+            status == "Online" ? static_cast<unsigned int>(obj.at("connections").getAs<long long>()) : 0;
+        metadata.maxConnections =
+            status == "Online" ? static_cast<unsigned int>(obj.at("maxConnections").getAs<long long>()) : 0;
 
         if (serverSelectors.empty())
             serverSelectors.push_back(
@@ -155,17 +180,11 @@ void MultiplayerState::initServerSelectors()
     }
 }
 
-void MultiplayerState::initSocket()
-{
-    if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
-        throw std::runtime_error("Failed to bind to a port.");
-}
-
 MultiplayerState::MultiplayerState(EngineData &data) : State(data)
 {
     initGUI();
-    initServerSelectors();
     initSocket();
+    initServerSelectors();
 }
 
 MultiplayerState::~MultiplayerState()

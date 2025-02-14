@@ -12,6 +12,8 @@ struct ServerMetadata
     std::string serverDescription; ///< A short description of the server,
     std::string gameVersion;       ///< Version of the game associated with the server.
     std::string status;            ///< Version of the game associated with the server.
+    unsigned int connections;      ///< How may players connected to the server.
+    unsigned int maxConnections;   ///< Limit of connections.
 };
 
 class MultiplayerState : public State
@@ -60,13 +62,15 @@ class MultiplayerState : public State
             name->setFillColor(sf::Color::White);
 
             description = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"),
-                                                     "\"" + metadata.serverDescription + "\"" + "\nGame Version: " +
-                                                         metadata.gameVersion + "\nStatus: " + metadata.status,
+                                                     metadata.serverDescription + "\nStatus: " + metadata.status +
+                                                         "\nGame Version: " + metadata.gameVersion +
+                                                         "\nPlayers: " + std::to_string(metadata.connections) + "/" +
+                                                         std::to_string(metadata.maxConnections),
                                                      gui::charSize(*data.vm, 100));
 
             description->setPosition(
                 sf::Vector2f(static_cast<int>(name->getPosition().x),
-                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 5.f))));
+                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 4.f))));
 
             description->setFillColor(sf::Color(200, 200, 200, 255));
         }
@@ -158,12 +162,13 @@ class MultiplayerState : public State
     std::optional<std::shared_ptr<ServerSelector>> selectedServer;
 
     sf::UdpSocket socket;
+    sf::SocketSelector socketSelector;
 
     void initGUI();
 
-    void initServerSelectors();
-
     void initSocket();
+
+    void initServerSelectors();
 
   public:
     MultiplayerState(EngineData &data);
