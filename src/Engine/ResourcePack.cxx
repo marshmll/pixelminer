@@ -4,6 +4,8 @@
 ResourcePack::ResourcePack() : logger("ResourcePack")
 {}
 
+ResourcePack::~ResourcePack() = default;
+
 const bool ResourcePack::load(const std::string &name)
 {
     if (!std::filesystem::exists(CACHE_FOLDER + "ResourcePacks/"))
@@ -185,8 +187,8 @@ const bool ResourcePack::load(const std::string &name)
         }
     }
 
-    logger.logInfo("Resource pack \"" + name + "\" sucessfully loaded:\n    - " + std::to_string(textures.size()) +
-                   " textures loaded\n    - " + std::to_string(fonts.size()) + " fonts loaded");
+    logger.logInfo("Sucessfully loaded resource pack \"" + name + "\": " + std::to_string(textures.size()) +
+                   " textures, " + std::to_string(fonts.size()) + " fonts.");
 
     return true;
 }

@@ -26,6 +26,11 @@ class ResourcePack
      */
     ResourcePack();
 
+    /**
+     * @brief Default destructor for ResourcePack
+     */
+    ~ResourcePack();
+
     std::string name;        ///< Name of the resource pack.
     std::string description; ///< Description of the resource pack.
     sf::Texture icon;        ///< Icon representing the resource pack.
