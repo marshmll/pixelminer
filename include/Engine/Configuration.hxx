@@ -67,7 +67,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * this will generate a compile-time error.
  */
 #ifndef GLOBAL_FOLDER
-#error "UNSUPPORTED TARGET MACHINE: WILL NOT COMPILE"
+#error "UNSUPPORTED TARGET MACHINE: WILL NOT COMPILE!"
 #endif
 
 /**
@@ -77,7 +77,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef SETTINGS_FOLDER
-#define SETTINGS_FOLDER GLOBAL_FOLDER + "Settings/"
+#define SETTINGS_FOLDER std::string(GLOBAL_FOLDER + "Settings/")
 #endif
 
 /**
@@ -87,7 +87,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef MAPS_FOLDER
-#define MAPS_FOLDER GLOBAL_FOLDER + "Maps/"
+#define MAPS_FOLDER std::string(GLOBAL_FOLDER + "Maps/")
 #endif
 
 /**
@@ -97,7 +97,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef RESOURCES_FOLDER
-#define RESOURCES_FOLDER GLOBAL_FOLDER + "ResourcePacks/"
+#define RESOURCES_FOLDER std::string(GLOBAL_FOLDER + "ResourcePacks/")
 #endif
 
 /**
@@ -107,5 +107,15 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef CACHE_FOLDER
-#define CACHE_FOLDER GLOBAL_FOLDER + ".cache/"
+#define CACHE_FOLDER std::string(GLOBAL_FOLDER + ".cache/")
+#endif
+
+/**
+ * @brief Defines the locales path for storing locales data.
+ *
+ * The `CACHE_FOLDER` defines the directory path locales (translations) will be stored.
+ * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
+ */
+#ifndef LOCALES_FOLDER
+#define LOCALES_FOLDER std::string(GLOBAL_FOLDER + "Locales/")
 #endif

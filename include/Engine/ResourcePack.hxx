@@ -6,10 +6,12 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/Languages.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
 #include "Tools/Zip.hxx"
+#include "Engine/Languages.hxx"
 
 /**
  * @class ResourcePack

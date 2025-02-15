@@ -25,12 +25,12 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
 
         resourcePack = obj.at("resourcePack").getAs<std::string>();
 
-        logger.logInfo("Loaded settings from file: " + path.string());
+        logger.logInfo(_("Loaded settings from file: ") + path.string());
         return true;
     }
     catch (std::runtime_error e)
     {
-        logger.logWarning("Failed to load settings from file " + path.string() + "\n" + e.what());
+        logger.logWarning(_("Failed to load settings from file ") + path.string() + "\n" + e.what());
     }
 
     return false;
@@ -42,7 +42,7 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
 
     if (!out.is_open())
     {
-        logger.logWarning("Failed to save settings to file " + path.string());
+        logger.logWarning(_("Failed to save settings to file ") + path.string());
         return false;
     }
 
@@ -59,11 +59,11 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
     catch (std::runtime_error e)
     {
         out.close();
-        logger.logWarning("Error while saving to file: \"" + static_cast<std::string>(e.what()) + "\"");
+        logger.logWarning(_("Error while saving to file: ") + static_cast<std::string>(e.what()));
         return false;
     }
 
     out.close();
-    logger.logInfo("Saved settings to file: " + path.string());
+    logger.logInfo(_("Saved settings to file: ") + path.string());
     return true;
 }

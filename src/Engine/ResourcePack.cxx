@@ -17,20 +17,20 @@ const bool ResourcePack::load(const std::string &name)
     {
         if (!std::filesystem::exists(RESOURCES_FOLDER + name + ".zip"))
         {
-            logger.logError("Inexistent resouce pack: " + root_path.string(), false);
+            logger.logError(_("Inexistent resouce pack: ") + root_path.string(), false);
             return false;
         }
 
         if (!Zip::extract(RESOURCES_FOLDER + name + ".zip", CACHE_FOLDER + "ResourcePacks/"))
         {
-            logger.logError("Failed to cache resource pack: " + name, false);
+            logger.logError(_("Failed to cache resource pack: ") + name, false);
             return false;
         }
     }
 
     if (!std::filesystem::exists(root_path / "pack.json"))
     {
-        logger.logError("Resource pack \"" + root_path.string() + "\" does not have a \"pack.json\" file.", false);
+        logger.logError(_("Resource pack ") + root_path.string() + _(" does not have a \"pack.json\" file."), false);
         return false;
     }
 
@@ -38,7 +38,7 @@ const bool ResourcePack::load(const std::string &name)
 
     if (!packFile.is_open())
     {
-        logger.logError("Failed to open \"pack.json\" file in resource pack: " + root_path.string(), false);
+        logger.logError(_("Failed to open \"pack.json\" file in resource pack: ") + root_path.string(), false);
         return false;
     }
 
@@ -58,7 +58,7 @@ const bool ResourcePack::load(const std::string &name)
 
     if (!this->icon.loadFromFile(root_path / "icon.png"))
     {
-        logger.logError("Missing texture \"icon.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"icon.png\" in resource pack: ") + name, false);
         return false;
     }
 
@@ -71,7 +71,7 @@ const bool ResourcePack::load(const std::string &name)
 
         if (!this->fonts[key].openFromFile(entry.path()))
         {
-            logger.logError("Failed to open font file: " + entry.path().string() + " from resource pack: " + name,
+            logger.logError(_("Failed to open font file: ") + entry.path().string() + _(" from resource pack: ") + name,
                             false);
             return false;
         }
@@ -83,73 +83,73 @@ const bool ResourcePack::load(const std::string &name)
 
     if (!textures["Default"].loadFromFile(root_path / "Images/Icons/default.png"))
     {
-        logger.logError("Missing texture \"background.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"background.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["Background"].loadFromFile(root_path / "Images/Backgrounds/background.png"))
     {
-        logger.logError("Missing texture \"background.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"background.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["Loader"].loadFromFile(root_path / "Images/Sprites/UI/loader.png"))
     {
-        logger.logError("Missing texture \"loader.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"loader.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["Player1"].loadFromFile(root_path / "Images/Sprites/Entities/Player/player_1.png"))
     {
-        logger.logError("Missing texture \"player_1.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"player_1.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["PineTree"].loadFromFile(root_path / "Images/Sprites/Entities/Tree/pine_tree.png"))
     {
-        logger.logError("Missing texture \"pine_tree.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"pine_tree.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["TileSheet"].loadFromFile(root_path / "Images/Tiles/tile_sheet.png"))
     {
-        logger.logError("Missing texture \"tile_sheet.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"tile_sheet.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["HeartEmpty"].loadFromFile(root_path / "Images/Icons/heart_empty.png"))
     {
-        logger.logError("Missing texture \"heart_empty.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"heart_empty.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["HeartHalf"].loadFromFile(root_path / "Images/Icons/heart_half.png"))
     {
-        logger.logError("Missing texture \"heart_half.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"heart_half.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["HeartFull"].loadFromFile(root_path / "Images/Icons/heart_full.png"))
     {
-        logger.logError("Missing texture \"heart_full.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"heart_full.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["BreadEmpty"].loadFromFile(root_path / "Images/Icons/bread_empty.png"))
     {
-        logger.logError("Missing texture \"bread_empty.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"bread_empty.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["BreadHalf"].loadFromFile(root_path / "Images/Icons/bread_half.png"))
     {
-        logger.logError("Missing texture \"bread_half.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"bread_half.png\" in resource pack: ") + name, false);
         return false;
     }
 
     if (!textures["BreadFull"].loadFromFile(root_path / "Images/Icons/bread_full.png"))
     {
-        logger.logError("Missing texture \"bread_full.png\" in resource pack: " + name, false);
+        logger.logError(_("Missing texture \"bread_full.png\" in resource pack: ") + name, false);
         return false;
     }
 
@@ -162,7 +162,7 @@ const bool ResourcePack::load(const std::string &name)
     std::ifstream tileDataFile(root_path / "tiledata.json");
 
     if (!tileDataFile.is_open())
-        logger.logError("Failed to open \"tiledata.json\" file in resource pack: " + name, false);
+        logger.logError(_("Failed to open \"tiledata.json\" file in resource pack: ") + name, false);
 
     std::stringstream tileDataStream;
     tileDataStream << tileDataFile.rdbuf();
@@ -188,13 +188,13 @@ const bool ResourcePack::load(const std::string &name)
         }
         catch (std::runtime_error &e)
         {
-            logger.logError("Error while reading tile database: " + static_cast<std::string>(e.what()), false);
+            logger.logError(_("Error while reading tile database: ") + static_cast<std::string>(e.what()), false);
             return false;
         }
     }
 
-    logger.logInfo("Sucessfully loaded resource pack \"" + name + "\": " + std::to_string(textures.size()) +
-                   " textures, " + std::to_string(fonts.size()) + " fonts.");
+    logger.logInfo(_("Sucessfully loaded resource pack ") + name + ": " + std::to_string(textures.size()) +
+                   _(" textures, ") + std::to_string(fonts.size()) + _(" fonts."));
 
     return true;
 }
@@ -207,7 +207,7 @@ sf::Texture &ResourcePack::getTexture(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError("Inexistent texture \"" + key + "\" in resource pack" + name);
+        logger.logError(_("Inexistent texture ") + key + _(" in resource pack") + name);
     }
 
     return textures.at(key); // SHOULD NEVER REACH HERE!

@@ -27,7 +27,7 @@ void MainMenuState::initGUI()
                          gui::percent(data.vm->size.x, 45.f) / 2.f,
                      gui::percent(data.vm->size.y, 38.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 45.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Singleplayer", data.activeResourcePack->fonts.at("Regular"),
+        sf::Color(200, 200, 200, 200), _("Singleplayer"), data.activeResourcePack->fonts.at("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Multiplayer"] = std::make_unique<gui::TextButton>(
@@ -35,13 +35,13 @@ void MainMenuState::initGUI()
                          gui::percent(data.vm->size.x, 45.f) / 2.f,
                      gui::percent(data.vm->size.y, 46.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 45.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Multiplayer", data.activeResourcePack->fonts.at("Regular"),
+        sf::Color(200, 200, 200, 200), _("Multiplayer"), data.activeResourcePack->fonts.at("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Options"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttons["Multiplayer"]->getPosition().x, gui::percent(data.vm->size.y, 54.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 21.8f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Options", data.activeResourcePack->fonts.at("Regular"),
+        sf::Color(200, 200, 200, 200), _("Options"), data.activeResourcePack->fonts.at("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Quit"] = std::make_unique<gui::TextButton>(
@@ -49,7 +49,7 @@ void MainMenuState::initGUI()
                          gui::percent(data.vm->size.x, 21.8f),
                      gui::percent(data.vm->size.y, 54.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 21.8f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Quit", data.activeResourcePack->fonts.at("Regular"),
+        sf::Color(200, 200, 200, 200), _("Quit"), data.activeResourcePack->fonts.at("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 }
 

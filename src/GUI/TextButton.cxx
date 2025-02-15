@@ -8,14 +8,14 @@ TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, con
                        const sf::Color text_color, const float outline_thickness, const sf::Color outline_color)
     : Button(position, size, fill_color, outline_thickness, outline_color), textColor(text_color)
 {
-    text = std::make_unique<sf::Text>(font, str, char_size);
+    text = std::make_unique<sf::Text>(font, sf::String::fromUtf8(str.begin(), str.end()), char_size);
     text->setFillColor(text_color);
     text->setPosition(sf::Vector2f(
         static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f),
         static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f -
                          char_size / 6.f)));
 
-    textShadow = std::make_unique<sf::Text>(font, str, char_size);
+    textShadow = std::make_unique<sf::Text>(font, sf::String::fromUtf8(str.begin(), str.end()), char_size);
     textShadow->setFillColor(sf::Color(0, 0, 0, 170));
     textShadow->setPosition(sf::Vector2f(
         static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f - 2.f),

@@ -50,6 +50,7 @@ target_sources(pixelminer PRIVATE
 ./Player/Hotbar.cxx
 ./Player/PlayerGUI.cxx
 ./Engine/ResourcePack.cxx
+./Engine/Languages.cxx
 ./Engine/GraphicsSettings.cxx
 ./Engine/Engine.cxx
 )

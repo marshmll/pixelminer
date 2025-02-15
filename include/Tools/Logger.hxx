@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Tools/TerminalColor.hxx"
+#include "Engine/Languages.hxx"
 
 /**
  * @brief A logger class for logging messages with different severity levels.

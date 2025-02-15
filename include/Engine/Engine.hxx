@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/Languages.hxx"
 #include "Engine/GraphicsSettings.hxx"
 #include "Engine/ResourcePack.hxx"
 #include "States/MainMenuState.hxx"
@@ -45,6 +46,8 @@ class Engine
      * @brief Seeds the random number generator.
      */
     void seedRandom();
+
+    void initLocale();
 
     /**
      * @brief Verifies the existence of the global folder and creates it if necessary.

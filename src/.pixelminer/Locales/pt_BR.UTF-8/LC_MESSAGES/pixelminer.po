@@ -1,0 +1,230 @@
+# Portuguese translations for pixelminer package.
+# Copyright (C) 2025 THE pixelminer'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the pixelminer package.
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: pixelminer 1.0\n"
+"Report-Msgid-Bugs-To: renandasilvaolivieraandrade@gmail.com\n"
+"POT-Creation-Date: 2025-02-15 18:41-0300\n"
+"PO-Revision-Date: 2025-02-15 18:09-0300\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: src/Tools/Logger.cxx:13
+msgid "INFO"
+msgstr "INFO"
+
+#: src/Tools/Logger.cxx:24
+msgid "WARNING"
+msgstr "AVISO"
+
+#: src/Tools/Logger.cxx:35
+msgid "ERROR"
+msgstr "ERRO"
+
+#: src/States/MainMenuState.cxx:30
+msgid "Singleplayer"
+msgstr "Um Jogador"
+
+#: src/States/MainMenuState.cxx:38
+msgid "Multiplayer"
+msgstr "Multijogador"
+
+#: src/States/MainMenuState.cxx:44
+msgid "Options"
+msgstr "Opções"
+
+#: src/States/MainMenuState.cxx:52
+msgid "Quit"
+msgstr "Sair"
+
+#: src/Engine/ResourcePack.cxx:20
+msgid "Inexistent resouce pack: "
+msgstr "Criando diretório de pacotes de recursos: "
+
+#: src/Engine/ResourcePack.cxx:26
+msgid "Failed to cache resource pack: "
+msgstr "Copiando pacote de recursos Vanilla para: "
+
+#: src/Engine/ResourcePack.cxx:33
+msgid "Resource pack "
+msgstr "Pacote de recursos"
+
+#: src/Engine/ResourcePack.cxx:33
+msgid " does not have a \"pack.json\" file."
+msgstr " não possui um arquivo \"pack.json\"."
+
+#: src/Engine/ResourcePack.cxx:41
+msgid "Failed to open \"pack.json\" file in resource pack: "
+msgstr "Falha ao abrir o arquivo \"pack.json\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:61
+msgid "Missing texture \"icon.png\" in resource pack: "
+msgstr "Faltando textura \"icon.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:74
+msgid "Failed to open font file: "
+msgstr "Falha ao abrir arquivo de fonte: "
+
+#: src/Engine/ResourcePack.cxx:74
+msgid " from resource pack: "
+msgstr "Criando diretório de pacotes de recursos: "
+
+#: src/Engine/ResourcePack.cxx:86 src/Engine/ResourcePack.cxx:92
+msgid "Missing texture \"background.png\" in resource pack: "
+msgstr "Faltando textura \"background.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:98
+msgid "Missing texture \"loader.png\" in resource pack: "
+msgstr "Faltando textura \"loader.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:104
+msgid "Missing texture \"player_1.png\" in resource pack: "
+msgstr "Faltando textura \"player_1.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:110
+msgid "Missing texture \"pine_tree.png\" in resource pack: "
+msgstr "Faltando textura \"pine_tree.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:116
+msgid "Missing texture \"tile_sheet.png\" in resource pack: "
+msgstr "Faltando textura \"tile_sheet.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:122
+msgid "Missing texture \"heart_empty.png\" in resource pack: "
+msgstr "Faltando textura \"heart_empty.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:128
+msgid "Missing texture \"heart_half.png\" in resource pack: "
+msgstr "Faltando textura \"heart_half.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:134
+msgid "Missing texture \"heart_full.png\" in resource pack: "
+msgstr "Faltando textura \"heart_full.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:140
+msgid "Missing texture \"bread_empty.png\" in resource pack: "
+msgstr "Faltando textura \"bread_empty.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:146
+msgid "Missing texture \"bread_half.png\" in resource pack: "
+msgstr "Faltando textura \"bread_half.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:152
+msgid "Missing texture \"bread_full.png\" in resource pack: "
+msgstr "Faltando textura \"bread_full.png\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:165
+msgid "Failed to open \"tiledata.json\" file in resource pack: "
+msgstr "Falha ao abrir \"tiledata.json\" no pacote de recursos: "
+
+#: src/Engine/ResourcePack.cxx:191
+msgid "Error while reading tile database: "
+msgstr "Erro durante a leitura do banco de dados de tiles: "
+
+#: src/Engine/ResourcePack.cxx:196
+msgid "Sucessfully loaded resource pack "
+msgstr "Criando diretório de pacotes de recursos: "
+
+#: src/Engine/ResourcePack.cxx:197
+msgid " textures, "
+msgstr " texturas, "
+
+#: src/Engine/ResourcePack.cxx:197
+msgid " fonts."
+msgstr " fontes."
+
+#: src/Engine/ResourcePack.cxx:210
+msgid "Inexistent texture "
+msgstr "Textura inexistente: "
+
+#: src/Engine/ResourcePack.cxx:210
+msgid " in resource pack"
+msgstr " no pacotes de recursos: "
+
+#: src/Engine/GraphicsSettings.cxx:28
+msgid "Loaded settings from file: "
+msgstr "Carregado configurações do arquivo: "
+
+#: src/Engine/GraphicsSettings.cxx:33
+msgid "Failed to load settings from file "
+msgstr "Falha ao carregar configurações do arquivo: "
+
+#: src/Engine/GraphicsSettings.cxx:45
+msgid "Failed to save settings to file "
+msgstr "Falha ao salvar configurações para o arquivo: "
+
+#: src/Engine/GraphicsSettings.cxx:62
+msgid "Error while saving to file: "
+msgstr "Erro durante o salvamento para o arquivo: "
+
+#: src/Engine/GraphicsSettings.cxx:67
+msgid "Saved settings to file: "
+msgstr "Salvo configurações para o arquivo: "
+
+#: src/Engine/Engine.cxx:16
+msgid "Current locale: "
+msgstr "Localidade atual: "
+
+#: src/Engine/Engine.cxx:17
+msgid "Text domain: "
+msgstr "Domínio de texto: "
+
+#: src/Engine/Engine.cxx:18
+msgid "Locale path: "
+msgstr "Caminho das localidades: "
+
+#: src/Engine/Engine.cxx:25
+msgid "Found global folder: "
+msgstr "Encontrado diretório global: "
+
+#: src/Engine/Engine.cxx:29
+msgid "Creating global folder: "
+msgstr "Criando diretório global: "
+
+#: src/Engine/Engine.cxx:32
+msgid "Creating settings folder: "
+msgstr "Criando diretório de configurações: "
+
+#: src/Engine/Engine.cxx:35
+msgid "Creating maps folder: "
+msgstr "Criando diretório de mapas: "
+
+#: src/Engine/Engine.cxx:38
+msgid "Creating resource packs folder: "
+msgstr "Criando diretório de pacotes de recursos: "
+
+#: src/Engine/Engine.cxx:41
+msgid "Copying Vanilla resource pack to: "
+msgstr "Copiando pacote de recursos Vanilla para: "
+
+#: src/Engine/Engine.cxx:44
+msgid "Creating cache folder: "
+msgstr "Criando diretório de cache: "
+
+#: src/Engine/Engine.cxx:47
+msgid "Creating Locales folder: "
+msgstr "Criando diretórios de localidades: "
+
+#: src/Engine/Engine.cxx:58 src/Engine/Engine.cxx:70
+msgid "Could not identificate self."
+msgstr "Não foi possível se identificar."
+
+#: src/Engine/Engine.cxx:88
+msgid "Invalid resolution for fullscreen. Using windowed mode."
+msgstr "Resolução inválida para tela cheia. Usando modo de janela."
+
+#: src/Engine/Engine.cxx:108
+msgid "Using default graphics settings."
+msgstr "Usando configurações gráficas padrão."
+
+#: src/Engine/Engine.cxx:125
+msgid "Failed to load window icon. Using OS default icon instead."
+msgstr "Falha ao carregar o ícone da janela. Usando o ícone padrão do SO."

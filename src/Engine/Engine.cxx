@@ -8,31 +8,44 @@ void Engine::seedRandom()
     std::srand(std::time(0));
 }
 
+void Engine::initLocale()
+{
+    setup_i18n("pt_BR.UTF-8");
+
+    // Debugging output
+    logger.logInfo(_("Current locale: ") + setlocale(LC_ALL, nullptr));
+    logger.logInfo(_("Text domain: ") + textdomain(nullptr));
+    logger.logInfo(_("Locale path: ") + bindtextdomain(DOMAIN, nullptr));
+}
+
 void Engine::verifyGlobalFolder()
 {
     if (std::filesystem::exists(GLOBAL_FOLDER))
     {
-        logger.logInfo("Found global folder: " + GLOBAL_FOLDER);
+        logger.logInfo(_("Found global folder: ") + GLOBAL_FOLDER);
     }
     else
     {
-        logger.logInfo("Creating global folder: " + GLOBAL_FOLDER);
+        logger.logInfo(_("Creating global folder: ") + GLOBAL_FOLDER);
         std::filesystem::create_directory(GLOBAL_FOLDER);
 
-        logger.logInfo("Creating settings folder: " + SETTINGS_FOLDER);
+        logger.logInfo(_("Creating settings folder: ") + SETTINGS_FOLDER);
         std::filesystem::create_directory(SETTINGS_FOLDER);
 
-        logger.logInfo("Creating maps folder: " + MAPS_FOLDER);
+        logger.logInfo(_("Creating maps folder: ") + MAPS_FOLDER);
         std::filesystem::create_directory(MAPS_FOLDER);
 
-        logger.logInfo("Creating resource packs folder: " + RESOURCES_FOLDER);
+        logger.logInfo(_("Creating resource packs folder: ") + RESOURCES_FOLDER);
         std::filesystem::create_directory(RESOURCES_FOLDER);
 
-        logger.logInfo("Copying Vanilla resource pack to: " + RESOURCES_FOLDER);
+        logger.logInfo(_("Copying Vanilla resource pack to: ") + RESOURCES_FOLDER);
         std::filesystem::copy(".pixelminer/Default/Vanilla.zip", RESOURCES_FOLDER);
 
-        logger.logInfo("Creating cache folder: " + CACHE_FOLDER);
+        logger.logInfo(_("Creating cache folder: ") + CACHE_FOLDER);
         std::filesystem::create_directory(CACHE_FOLDER);
+
+        logger.logInfo(_("Creating Locales folder: ") + LOCALES_FOLDER);
+        std::filesystem::create_directory(LOCALES_FOLDER);
     }
 }
 
@@ -42,7 +55,7 @@ void Engine::identificateSelf()
     {
         std::ifstream fUuid(SETTINGS_FOLDER + "uuid.bin", std::ios::binary);
         if (!fUuid.is_open())
-            logger.logError("Could not identificate self.");
+            logger.logError(_("Could not identificate self."));
 
         char uuid[37];
         fUuid.read(uuid, sizeof(uuid));
@@ -54,7 +67,7 @@ void Engine::identificateSelf()
     {
         std::ofstream fUuid(SETTINGS_FOLDER + "uuid.bin", std::ios::binary);
         if (!fUuid.is_open())
-            logger.logError("Could not identificate self.");
+            logger.logError(_("Could not identificate self."));
 
         myUuid = UUID::generate();
         char *uuid = myUuid.data();
@@ -72,7 +85,7 @@ void Engine::initGraphicsSettings()
 
         if (!vm.isValid() && gfx.fullscreen)
         {
-            logger.logInfo("Invalid resolution for fullscreen. Using windowed mode.");
+            logger.logInfo(_("Invalid resolution for fullscreen. Using windowed mode."));
             gfx.fullscreen = false;
         }
 
@@ -92,7 +105,7 @@ void Engine::initGraphicsSettings()
     }
     else
     {
-        logger.logInfo("Using default graphics settings.");
+        logger.logInfo(_("Using default graphics settings."));
 
         vm = sf::VideoMode::getDesktopMode();
         window = sf::RenderWindow(vm, "PixelMiner " + static_cast<std::string>(GAME_VERSION), sf::State::Fullscreen);
@@ -109,7 +122,7 @@ void Engine::initGraphicsSettings()
     sf::Image icon;
 
     if (!icon.loadFromFile((GLOBAL_FOLDER + "Default/icon_5x.png")))
-        logger.logWarning("Failed to load window icon. Using OS default icon instead.");
+        logger.logWarning(_("Failed to load window icon. Using OS default icon instead."));
 
     else
         window.setIcon(icon);
@@ -207,6 +220,7 @@ void Engine::render()
 Engine::Engine() : logger("Engine")
 {
     seedRandom();
+    initLocale();
     verifyGlobalFolder();
     identificateSelf();
     initGraphicsSettings();
