@@ -15,9 +15,11 @@ target_sources(pixelminer PRIVATE
 ./States/MainMenuState.cxx
 ./States/Singleplayer/GameState.cxx
 ./States/Singleplayer/WorldSelectionMenuState.cxx
+./States/MessageState.cxx
 ./States/State.cxx
+./States/Multiplayer/ServerSelectionState.cxx
 ./States/Multiplayer/DirectConnectState.cxx
-./States/Multiplayer/MultiplayerState.cxx
+./States/Multiplayer/ClientGameState.cxx
 ./States/Multiplayer/AddServerState.cxx
 ./Entities/EntityRenderPriorityQueue.cxx
 ./Entities/Playable/Player.cxx

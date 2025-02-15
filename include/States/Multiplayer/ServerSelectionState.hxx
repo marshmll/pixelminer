@@ -1,6 +1,6 @@
 /**
- * @file MultiplayerState.hxx
- * @brief Declares the  MultiplayerState class that manages server connection, add, delete,
+ * @file ServerSelectionState.hxx
+ * @brief Declares the ServerSelectionState class that manages server connection, add, delete,
  * direct connect and other funcionalities.
  */
 
@@ -9,6 +9,7 @@
 #include "GUI/GUI.hxx"
 #include "States/Multiplayer/AddServerState.hxx"
 #include "States/Multiplayer/DirectConnectState.hxx"
+#include "States/Multiplayer/ClientGameState.hxx"
 #include "States/State.hxx"
 
 /**
@@ -27,10 +28,10 @@ struct ServerMetadata
 };
 
 /**
- * @class MultiplayerState
+ * @class ServerSelectionState
  * @brief Represents the multiplayer server selection state in the game.
  */
-class MultiplayerState : public State
+class ServerSelectionState : public State
 {
   private:
     /**
@@ -197,15 +198,15 @@ class MultiplayerState : public State
 
   public:
     /**
-     * @brief Constructs the MultiplayerState object.
+     * @brief Constructs the ServerSelectionState object.
      * @param data Reference to engine data.
      */
-    MultiplayerState(EngineData &data);
+    ServerSelectionState(EngineData &data);
 
     /**
-     * @brief Destructor for MultiplayerState.
+     * @brief Destructor for ServerSelectionState.
      */
-    ~MultiplayerState();
+    ~ServerSelectionState();
 
     /**
      * @brief Updates the multiplayer state.

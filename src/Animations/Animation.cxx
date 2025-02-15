@@ -21,8 +21,7 @@ Animation::Animation(sf::Sprite &sprite, sf::Texture &sprite_sheet, const std::i
     animationClock.restart();
 }
 
-Animation::~Animation()
-{}
+Animation::~Animation() = default;
 
 void Animation::play()
 {
@@ -45,7 +44,7 @@ void Animation::play()
                     {
                         currentDirection = AnimationDirection::Backwards;
                         currentFrameRect.position.x = endFrameRect.position.x - frameSize.x;
-                        currentFrameRect.position.y = endFrameRect.position.y - frameSize.y;
+                        currentFrameRect.position.y = endFrameRect.position.y;
                     }
                     else
                     {
@@ -69,7 +68,7 @@ void Animation::play()
                     {
                         currentDirection = AnimationDirection::Fowards;
                         currentFrameRect.position.x = startFrameRect.position.x + frameSize.x;
-                        currentFrameRect.position.y = startFrameRect.position.y + frameSize.y;
+                        currentFrameRect.position.y = startFrameRect.position.y;
                     }
                     else
                     {

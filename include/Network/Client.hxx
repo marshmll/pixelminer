@@ -72,12 +72,12 @@ class Client
     /**
      * @brief Flag indicating if the client is ready for communication.
      */
-    bool ready;
+    std::atomic_bool ready;
 
     /**
      * @brief Flag indicating if the client is connected to the server.
      */
-    bool connected;
+    std::atomic_bool connected;
 
     /**
      * @brief Temporary IP address buffer used during connection attempts.

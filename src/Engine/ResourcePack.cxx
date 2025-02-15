@@ -93,6 +93,12 @@ const bool ResourcePack::load(const std::string &name)
         return false;
     }
 
+    if (!textures["Loader"].loadFromFile(root_path / "Images/Sprites/UI/loader.png"))
+    {
+        logger.logError("Missing texture \"loader.png\" in resource pack: " + name, false);
+        return false;
+    }
+
     if (!textures["Player1"].loadFromFile(root_path / "Images/Sprites/Entities/Player/player_1.png"))
     {
         logger.logError("Missing texture \"player_1.png\" in resource pack: " + name, false);

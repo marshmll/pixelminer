@@ -71,7 +71,7 @@ void MainMenuState::update(const float &dt)
         data.states->push(std::make_shared<WorldSelectionMenuState>(data));
 
     else if (buttons.at("Multiplayer")->isPressed())
-        data.states->push(std::make_shared<MultiplayerState>(data));
+        data.states->push(std::make_shared<ServerSelectionState>(data));
 
     else if (buttons.at("Quit")->isPressed())
         killSelf();

@@ -8,14 +8,14 @@ void GameState::initLoadingScreen()
     loadingBg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
     loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
-                                             gui::charSize(*data.vm, 80));
+                                             gui::charSize(*data.vm, 85));
 
     loadingText->setPosition(
         sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingText->getGlobalBounds().size.x / 2.f),
                      static_cast<int>(gui::percent(data.vm->size.y, 45.f))));
 
     loadingMsg =
-        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "", gui::charSize(*data.vm, 80));
+        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "", gui::charSize(*data.vm, 85));
     loadingMsg->setPosition(
         sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
                      static_cast<int>(gui::percent(data.vm->size.y, 50.f))));

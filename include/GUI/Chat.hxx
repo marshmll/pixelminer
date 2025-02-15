@@ -63,12 +63,17 @@ namespace gui
                 text->setFillColor(color);
 
                 // Break string to fit container
-                for (int i = 0; i < text_content.getSize(); i++)
+                for (int i = 0; i < text->getString().getSize(); i++)
                 {
                     if (text->findCharacterPos(i).x >= container.getPosition().x + container.getSize().x - padding)
                     {
                         sf::String str = text->getString();
-                        str.insert(i, "\n");
+                        int j = i;
+
+                        while (j > 0 && str[j] != ' ')
+                            j--;
+
+                        str.replace(j, 1, "\n");
                         text->setString(str);
                     }
                 }

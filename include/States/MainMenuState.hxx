@@ -7,7 +7,7 @@
 #pragma once
 
 #include "GUI/GUI.hxx"
-#include "States/Multiplayer/MultiplayerState.hxx"
+#include "States/Multiplayer/ServerSelectionState.hxx"
 #include "States/Singleplayer/WorldSelectionMenuState.hxx"
 
 /**

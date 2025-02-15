@@ -1,7 +1,7 @@
-#include "States/Multiplayer/MultiplayerState.hxx"
+#include "States/Multiplayer/ServerSelectionState.hxx"
 #include "stdafx.hxx"
 
-void MultiplayerState::initGUI()
+void ServerSelectionState::initGUI()
 {
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
@@ -79,7 +79,7 @@ void MultiplayerState::initGUI()
     buttons.at("Delete")->setState(gui::ButtonState::Disabled);
 }
 
-void MultiplayerState::initSocket()
+void ServerSelectionState::initSocket()
 {
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
         throw std::runtime_error("Failed to bind to a port.");
@@ -87,7 +87,7 @@ void MultiplayerState::initSocket()
     socketSelector.add(socket);
 }
 
-void MultiplayerState::initServerSelectors()
+void ServerSelectionState::initServerSelectors()
 {
     serverSelectorsList = std::make_unique<gui::ScrollableContainer>(
         *data.vm, sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 61.f)),
@@ -121,9 +121,14 @@ void MultiplayerState::initServerSelectors()
     {
         JObject obj = val.getAs<JObject>();
 
+        std::string address = obj.at("address").getAs<std::string>();
+        size_t colon_pos = address.find(':');
+        const sf::IpAddress ipAddress = sf::IpAddress::resolve(address.substr(0, colon_pos)).value();
+        const unsigned short portAddress = std::stoi(address.substr(colon_pos + 1));
+
         sf::Packet packet;
         packet << "INFO";
-        if (socket.send(packet, sf::IpAddress(192, 168, 100, 178), 55000) != sf::Socket::Status::Done)
+        if (socket.send(packet, ipAddress, portAddress) != sf::Socket::Status::Done)
         {
             std::cerr << "Error sending packet" << "\n";
         }
@@ -180,30 +185,30 @@ void MultiplayerState::initServerSelectors()
     }
 }
 
-MultiplayerState::MultiplayerState(EngineData &data) : State(data)
+ServerSelectionState::ServerSelectionState(EngineData &data) : State(data)
 {
     initGUI();
     initSocket();
     initServerSelectors();
 }
 
-MultiplayerState::~MultiplayerState()
+ServerSelectionState::~ServerSelectionState()
 {
     socket.unbind();
 }
 
-void MultiplayerState::update(const float &dt)
+void ServerSelectionState::update(const float &dt)
 {
     updateMousePositions();
     updateGUI(dt);
 }
 
-void MultiplayerState::render(sf::RenderTarget &target)
+void ServerSelectionState::render(sf::RenderTarget &target)
 {
     renderGUI(target);
 }
 
-void MultiplayerState::updateGUI(const float &dt)
+void ServerSelectionState::updateGUI(const float &dt)
 {
     serverSelectorsList->update(dt, mousePosView, *data.event, data.mouseData);
 
@@ -214,11 +219,27 @@ void MultiplayerState::updateGUI(const float &dt)
         button->update(mousePosView);
 
     if (buttons.at("Cancel")->isPressed())
+    {
         killSelf();
+    }
     else if (buttons.at("AddServer")->isPressed())
+    {
         data.states->push(std::make_shared<AddServerState>(data));
+    }
     else if (buttons.at("DirectConnect")->isPressed())
-        data.states->push(std::make_shared<DirectConnectState>(data));
+    {
+        replaceSelf(std::make_shared<DirectConnectState>(data));
+    }
+    else if (buttons.at("JoinServer")->isPressed() && selectedServer.has_value())
+    {
+        std::string address = selectedServer.value()->metadata.serverAddress;
+        size_t colon_pos = address.find(':');
+
+        const sf::IpAddress ip = sf::IpAddress::resolve(address.substr(0, colon_pos)).value();
+        const unsigned short port = std::stoi(address.substr(colon_pos + 1));
+
+        replaceSelf(std::make_shared<ClientGameState>(data, ip, port));
+    }
 
     updateMousePositions(serverSelectorsList->getView());
     if (mouseButtonPressedWithin(200, sf::Mouse::Button::Left) && !serverSelectorsList->isScrollLocked())
@@ -247,7 +268,7 @@ void MultiplayerState::updateGUI(const float &dt)
     updateMousePositions();
 }
 
-void MultiplayerState::renderGUI(sf::RenderTarget &target)
+void ServerSelectionState::renderGUI(sf::RenderTarget &target)
 {
     target.draw(background);
     target.draw(header);
