@@ -20,6 +20,7 @@
 #include "Player/PlayerGUI.hxx"
 #include "States/State.hxx"
 #include "Tools/UUID.hxx"
+#include "Engine/Languages.hxx"
 
 /**
  * @class GameState

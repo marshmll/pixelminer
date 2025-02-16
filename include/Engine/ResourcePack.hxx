@@ -50,9 +50,18 @@ class ResourcePack
     const bool load(const std::string &name);
 
     /**
+     * @brief Retrieves a font from the resource pack.
+     * @param key Key of the font to retrieve.
+     * @return Reference to the requested font.
+     * @throws Exception if the font is not found.
+     */
+    sf::Font &getFont(const std::string &key);
+
+    /**
      * @brief Retrieves a texture from the resource pack.
      * @param key Key of the texture to retrieve.
      * @return Reference to the requested texture.
+     * @throws Exception if the texture is not found.
      */
     sf::Texture &getTexture(const std::string &key);
 };

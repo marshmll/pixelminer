@@ -3,8 +3,8 @@
 
 void TerrainGenerator::initPerlinWaves()
 {
-    logger.logInfo("Initializing perlin waves.");
-    msg = "Initializing perlin waves...";
+    logger.logInfo(_("Initializing perlin waves..."));
+    msg = _("Initializing perlin waves...");
 
     heightWaves = {{120.f, .08f, 8.f}};
     moistureWaves = {{622.f, .06f, 6.f}, {344.f, .02f, 2.f}};
@@ -13,8 +13,8 @@ void TerrainGenerator::initPerlinWaves()
 
 void TerrainGenerator::initNoiseMaps()
 {
-    logger.logInfo("Loading noise maps.");
-    msg = "Generating noise maps...";
+    logger.logInfo(_("Generating noise maps..."));
+    msg = _("Generating noise maps...");
 
     heightMap =
         perlinNoise.generateNoiseMap(MAX_WORLD_GRID_SIZE.x, MAX_WORLD_GRID_SIZE.y, .06f, heightWaves, {0.f, 0.f});
@@ -25,8 +25,8 @@ void TerrainGenerator::initNoiseMaps()
 
 void TerrainGenerator::initBiomes()
 {
-    logger.logInfo("Initializing biomes.");
-    msg = "Precomputing biomes...";
+    logger.logInfo(_("Precomputing biomes..."));
+    msg = _("Precomputing biomes...");
 
     biomes = {
         {BiomeType::Desert, .2f, .1f, .85f},     {BiomeType::Forest, .4f, .85f, .8f},
@@ -35,7 +35,7 @@ void TerrainGenerator::initBiomes()
         {BiomeType::Tundra, .65f, .4f, .1f},
     };
 
-    sf::Image mapImg(sf::Vector2u(MAX_WORLD_GRID_SIZE.x / 4, MAX_WORLD_GRID_SIZE.y / 4));
+    // sf::Image mapImg(sf::Vector2u(MAX_WORLD_GRID_SIZE.x / 4, MAX_WORLD_GRID_SIZE.y / 4));
 
     for (int x = 0; x < MAX_WORLD_GRID_SIZE.x; ++x)
     {
@@ -61,31 +61,31 @@ void TerrainGenerator::initBiomes()
             {
             case BiomeType::Desert:
                 biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
-                biomeMap[x][y].baseTileId = "sand_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:sand_tile";
                 break;
             case BiomeType::Forest:
                 biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
-                biomeMap[x][y].baseTileId = "grass_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
                 break;
             case BiomeType::Grassland:
                 biomeMap[x][y].color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
-                biomeMap[x][y].baseTileId = "grass_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
                 break;
             case BiomeType::Jungle:
                 biomeMap[x][y].color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
-                biomeMap[x][y].baseTileId = "grass_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
                 break;
             case BiomeType::Mountains:
                 biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
-                biomeMap[x][y].baseTileId = "stone_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:stone_tile";
                 break;
             case BiomeType::Ocean:
                 biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                biomeMap[x][y].baseTileId = "water_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:water_tile";
                 break;
             case BiomeType::Tundra:
                 biomeMap[x][y].color = sf::Color(255, 255, 255, 255);
-                biomeMap[x][y].baseTileId = "snowy_grass_tile";
+                biomeMap[x][y].baseTileId = "pixelminer:snowy_grass_tile";
                 break;
             default:
                 biomeMap[x][y].color = sf::Color::White;
@@ -93,12 +93,12 @@ void TerrainGenerator::initBiomes()
                 break;
             }
 
-            mapImg.setPixel(sf::Vector2u(x / 4, y / 4), biomeMap[x][y].color);
+            // mapImg.setPixel(sf::Vector2u(x / 4, y / 4), biomeMap[x][y].color);
         }
     }
 
-    if (!mapImg.saveToFile(GLOBAL_FOLDER + "map.png"))
-        logger.logError("Failed to save map image.", false);
+    // if (!mapImg.saveToFile(GLOBAL_FOLDER + "map.png"))
+    //     logger.logError(_("Failed to save map image."), false);
 }
 
 void TerrainGenerator::initRandomGrid()
@@ -171,7 +171,7 @@ TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMa
     initBiomes();
     initRandomGrid();
 
-    msg = "Done!";
+    msg = _("Done!");
     std::this_thread::sleep_for(200ms);
 }
 
@@ -182,7 +182,7 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
     if (region_index.x > MAX_REGIONS.x - 1 || region_index.y > MAX_REGIONS.y - 1 || region_index.x < 0 ||
         region_index.y < 0)
     {
-        logger.logError("Failed to generate region: Indexes are out of bounds.", false);
+        logger.logError(_("Failed to generate region: Indexes are out of bounds."), false);
         return;
     }
 

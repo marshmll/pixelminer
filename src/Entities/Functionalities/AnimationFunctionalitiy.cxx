@@ -9,8 +9,7 @@ AnimationFunctionality::AnimationFunctionality(const std::string &entity_name, c
       spriteSheet(sprite_sheet)
 {}
 
-AnimationFunctionality::~AnimationFunctionality()
-{}
+AnimationFunctionality::~AnimationFunctionality() = default;
 
 void AnimationFunctionality::addAnimation(const std::string &layer, const std::string name,
                                           const std::int32_t &frametime_as_ms, const sf::Vector2u &frame_size,
@@ -19,7 +18,7 @@ void AnimationFunctionality::addAnimation(const std::string &layer, const std::s
 {
     if (layers.count(layer) == 0)
     {
-        logger.logError("Invalid layer \"" + layer + "\" for entity " + entityName +
+        logger.logError(_("Invalid layer \"") + layer + _("\" for entity ") + entityName +
                             " (ID: " + std::to_string(entityId) + ")",
                         false);
 
@@ -47,7 +46,7 @@ void AnimationFunctionality::play(const std::string &name, const bool reset_othe
     }
     catch (std::exception e)
     {
-        logger.logError("Invalid animation \"" + name + "\" for entity " + entityName +
+        logger.logError(_("Invalid animation \"") + name + _("\" for entity ") + entityName +
                             " (ID: " + std::to_string(entityId) + "): " + e.what(),
                         false);
     }
@@ -61,7 +60,7 @@ void AnimationFunctionality::reset(const std::string &name)
     }
     catch (std::exception e)
     {
-        logger.logError("Invalid animation \"" + name + "\" for entity " + entityName +
+        logger.logError(_("Invalid animation \"") + name + _("\" for entity ") + entityName +
                             " (ID: " + std::to_string(entityId) + ")",
                         false);
     }

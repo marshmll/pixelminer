@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/Languages.hxx"
 #include "Map/Biome.hxx"
 #include "Map/Chunk.hxx"
 #include "Map/Metadata.hxx"

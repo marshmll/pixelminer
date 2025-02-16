@@ -3,6 +3,8 @@
  * @brief Declares the Date class to handle UNIX timestamps conversions.
  */
 
+#include "Engine/Languages.hxx"
+
 #pragma once
 
 /**

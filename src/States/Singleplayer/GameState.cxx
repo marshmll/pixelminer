@@ -7,7 +7,7 @@ void GameState::initLoadingScreen()
     loadingBg.setPosition({0, 0});
     loadingBg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
-    loadingText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Loading world",
+    loadingText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), _("Loading world"),
                                              gui::charSize(*data.vm, 85));
 
     loadingText->setPosition(
@@ -15,7 +15,7 @@ void GameState::initLoadingScreen()
                      static_cast<int>(gui::percent(data.vm->size.y, 45.f))));
 
     loadingMsg =
-        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "", gui::charSize(*data.vm, 85));
+        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), "", gui::charSize(*data.vm, 85));
     loadingMsg->setPosition(
         sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
                      static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
@@ -71,7 +71,7 @@ void GameState::initChat()
     chat = std::make_unique<gui::Chat>(
         thisPlayer->getName(), sf::Vector2f(gui::percent(data.vm->size.x, 35.f), gui::percent(data.vm->size.y, 25.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 2.f), gui::percent(data.vm->size.y, 2.f)),
-        data.activeResourcePack->fonts.at("Regular"), *data.vm);
+        data.activeResourcePack->getFont("Regular"), *data.vm);
 }
 
 void GameState::initCommandInterpreter()
@@ -83,7 +83,7 @@ void GameState::initDebugging()
 {
     debugChunks = debugInfo = debugHitBoxes = false;
     debugText =
-        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Italic"), "", gui::charSize(*data.vm, 130));
+        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), "", gui::charSize(*data.vm, 130));
     debugText->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 1.f), gui::percent(data.vm->size.y, 1.f)));
 }
 
@@ -148,8 +148,9 @@ void GameState::update(const float &dt)
 {
     if (!ctx.map->isReady())
     {
-        loadingMsg->setString(ctx.map->getMessage());
+        std::string msg = ctx.map->getMessage();
 
+        loadingMsg->setString(sf::String::fromUtf8(msg.begin(), msg.end()));
         loadingMsg->setPosition(
             sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
                          static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
@@ -350,33 +351,32 @@ void GameState::updateChat(const float &dt)
 
 void GameState::updateDebugText(const float &dt)
 {
-    std::stringstream sstream;
-    sstream << static_cast<int>(1.f / dt) << " fps\n"
-            << std::fixed << std::setprecision(5) << dt << " ms\n"
-            << "grid x, y: " << thisPlayer->getCenterGridPosition().x << " | " << thisPlayer->getCenterGridPosition().y
-            << "\n"
-            << "velocity x, y: " << std::round(thisPlayer->getVelocity().x / data.scale / dt) << " | "
-            << std::round(thisPlayer->getVelocity().y / data.scale / dt) << "\n"
-            << "chunk: ["
-            << static_cast<unsigned int>(thisPlayer->getCenter().x /
-                                         (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
-            << ", "
-            << static_cast<unsigned int>(thisPlayer->getCenter().y /
-                                         (CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
-            << "]\n"
-            << "region: ["
-            << static_cast<unsigned int>(thisPlayer->getCenter().x /
-                                         (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
-            << ", "
-            << static_cast<unsigned int>(thisPlayer->getCenter().y /
-                                         (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
-            << "]\n"
-            << "biome: " << ctx.map->getBiomeAt(sf::Vector2i(thisPlayer->getCenterGridPosition())).name << "\n"
-            << "height: " << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition()))
-            << ", moisture: " << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition()))
-            << ", heat: " << ctx.map->getHeatAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << "\n";
+    std::stringstream ss;
+    ss << static_cast<int>(1.f / dt) << " fps\n"
+       << std::fixed << std::setprecision(5) << dt << " ms\n"
+       << _("grid x, y: ") << thisPlayer->getCenterGridPosition().x << " | " << thisPlayer->getCenterGridPosition().y
+       << "\n"
+       << _("velocity x, y: ") << std::round(thisPlayer->getVelocity().x / data.scale / dt) << " | "
+       << std::round(thisPlayer->getVelocity().y / data.scale / dt) << "\n"
+       << _("chunk:") << " ["
+       << static_cast<unsigned int>(thisPlayer->getCenter().x / (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+       << ", "
+       << static_cast<unsigned int>(thisPlayer->getCenter().y / (CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+       << "]\n"
+       << _("region:") << " ["
+       << static_cast<unsigned int>(thisPlayer->getCenter().x /
+                                    (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+       << ", "
+       << static_cast<unsigned int>(thisPlayer->getCenter().y /
+                                    (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+       << "]\n"
+       << _("biome:") << " " << ctx.map->getBiomeAt(sf::Vector2i(thisPlayer->getCenterGridPosition())).name << "\n"
+       << _("height: ") << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", moisture: ")
+       << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", heat: ")
+       << ctx.map->getHeatAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << "\n";
 
-    debugText->setString(sstream.str());
+    std::string str = ss.str();
+    debugText->setString(sf::String::fromUtf8(str.begin(), str.end()));
 }
 
 void GameState::render(sf::RenderTarget &target)

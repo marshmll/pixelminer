@@ -116,13 +116,13 @@ const std::string CommandInterpreter::interpret(std::string_view caller_name, st
 
     if (cmd.tokens.empty())
     {
-        return "Error: Empty command.";
+        return _("Error: Empty command.");
     }
 
     auto it = CommandImpl::commandHandlersTable.find(cmd.tokens[0].literal);
     if (it == CommandImpl::commandHandlersTable.end())
     {
-        return "Unknown command: \"" + std::string(command) + "\"";
+        return _("Unknown command: \"") + std::string(command) + "\"";
     }
 
     return it->second(ctx, cmd);

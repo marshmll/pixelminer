@@ -5,14 +5,14 @@ void Biome::setBiomeName()
 {
     switch (type)
     {
-    case Desert: name = "Desert"; break;
-    case Forest: name = "Forest"; break;
-    case Grassland: name = "Grassland"; break;
-    case Jungle: name = "Jungle"; break;
-    case Mountains: name = "Mountains"; break;
-    case Ocean: name = "Ocean"; break;
-    case Tundra: name = "Tundra"; break;
-    default: name = "Unknown"; break;
+    case Desert: name = _("Desert"); break;
+    case Forest: name = _("Forest"); break;
+    case Grassland: name = _("Grassland"); break;
+    case Jungle: name = _("Jungle"); break;
+    case Mountains: name = _("Mountains"); break;
+    case Ocean: name = _("Ocean"); break;
+    case Tundra: name = _("Tundra"); break;
+    default: name = _("Unknown"); break;
     }
 }
 

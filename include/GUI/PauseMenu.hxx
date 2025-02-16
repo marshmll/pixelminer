@@ -8,6 +8,7 @@
 #include "GUI/TextButton.hxx"
 #include "Map/Map.hxx"
 #include "States/State.hxx"
+#include "Engine/Languages.hxx"
 
 namespace gui
 {

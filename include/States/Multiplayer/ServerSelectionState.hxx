@@ -70,7 +70,7 @@ class ServerSelectionState : public State
             icon.setPosition(container.getPosition());
             icon.setTexture(&iconTexture);
 
-            name = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), metadata.serverName,
+            name = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"), metadata.serverName,
                                               gui::charSize(*data.vm, 100));
 
             name->setPosition(sf::Vector2f(
@@ -79,12 +79,12 @@ class ServerSelectionState : public State
 
             name->setFillColor(sf::Color::White);
 
-            description = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"),
-                                                     metadata.serverDescription + "\nStatus: " + metadata.status +
-                                                         "\nGame Version: " + metadata.gameVersion +
-                                                         "\nPlayers: " + std::to_string(metadata.connections) + "/" +
-                                                         std::to_string(metadata.maxConnections),
-                                                     gui::charSize(*data.vm, 100));
+            description = std::make_unique<sf::Text>(
+                data.activeResourcePack->getFont("Regular"),
+                metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" + _("Game Version: ") +
+                    metadata.gameVersion + "\n" + _("Players: ") + std::to_string(metadata.connections) + "/" +
+                    std::to_string(metadata.maxConnections),
+                gui::charSize(*data.vm, 100));
 
             description->setPosition(
                 sf::Vector2f(static_cast<int>(name->getPosition().x),

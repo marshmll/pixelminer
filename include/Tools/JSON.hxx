@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "Engine/Languages.hxx"
+
 struct JValue;
 
 /**

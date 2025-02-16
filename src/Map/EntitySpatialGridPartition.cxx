@@ -12,10 +12,8 @@ EntitySpatialGridPartition::~EntitySpatialGridPartition() = default;
 Cell &EntitySpatialGridPartition::getCell(const int &x, const int &y)
 {
     if (x < 0 || x >= SPATIAL_GRID_PARTITION_DIMENSIONS.x || y < 0 || y >= SPATIAL_GRID_PARTITION_DIMENSIONS.y)
-    {
-        logger.logError("Cell out of bounds: " + std::to_string(x) + ", " + std::to_string(y));
-        throw std::out_of_range("Cell coordinates out of bounds");
-    }
+        logger.logError(_("Cell out of bounds: ") + std::to_string(x) + ", " + std::to_string(y), true);
+
     return cells[x][y];
 }
 
@@ -29,8 +27,8 @@ const sf::Vector2i EntitySpatialGridPartition::getEntityCellGridCoords(const std
     const auto it = entitySpacialGridLookUpTable.find(entity->getId());
     if (it == entitySpacialGridLookUpTable.end())
     {
-        logger.logWarning("Entity " + entity->getName() + " with id " + std::to_string(entity->getId()) +
-                          " was not found in the spatial grid partition.");
+        logger.logWarning(_("Entity ") + entity->getName() + _(" with id ") + std::to_string(entity->getId()) +
+                          _(" was not found in the spatial grid partition."));
         return sf::Vector2i(-1, -1);
     }
     return it->second;

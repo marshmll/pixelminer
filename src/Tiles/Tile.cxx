@@ -12,8 +12,7 @@ Tile::Tile(const std::string name, const std::string &id, sf::Texture &texture, 
     sprite.setColor(color);
 }
 
-Tile::~Tile()
-{}
+Tile::~Tile() = default;
 
 void Tile::update()
 {}

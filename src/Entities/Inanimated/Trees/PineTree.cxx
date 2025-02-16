@@ -13,7 +13,7 @@ void PineTree::initHitBoxes()
 }
 
 PineTree::PineTree(const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
-    : Tree("Pine Tree", spawn_grid_position, sprite_sheet, scale)
+    : Tree(_("Pine Tree"), spawn_grid_position, sprite_sheet, scale)
 {
     addSpriteLayer("Top");
 

@@ -5,11 +5,15 @@
 
 #pragma once
 
+#include "Engine/Languages.hxx"
 #include "Tools/Logger.hxx"
 #include "compat/unzip.h"
 #include "compat/zip.h"
 
-static constexpr size_t BUFFER_SIZE = 2048;
+/**
+ * @brief Buffer size for reading and compressing zip archives.
+ */
+constexpr size_t ZIP_BUFFER_SIZE = 4096;
 
 /**
  * @class Zip
@@ -30,10 +34,12 @@ class Zip
      *
      * @param src The path to the source ZIP file.
      * @param dst The path to the destination directory.
+     * @param verbose Extract with verbose logs (default false)
      *
      * @return `true` if extraction was successful, `false` otherwise.
      */
-    static const bool extract(const std::filesystem::path &src, const std::filesystem::path &dst);
+    static const bool
+    extract(const std::filesystem::path &src, const std::filesystem::path &dst, const bool &verbose = false);
 
     /**
      * @brief Compresses a file or directory into a ZIP archive.
@@ -43,10 +49,12 @@ class Zip
      *
      * @param src The path to the file or directory to be compressed.
      * @param dst The path to the destination ZIP file.
+     * @param verbose Compress with verbose logs (default false)
      *
      * @return `true` if compression was successful, `false` otherwise.
      */
-    static const bool compress(const std::filesystem::path &src, const std::filesystem::path &dst);
+    static const bool
+    compress(const std::filesystem::path &src, const std::filesystem::path &dst, const bool &verbose = false);
 
   private:
     /**
@@ -57,11 +65,12 @@ class Zip
      * @param zf The `zipFile` handle for the archive.
      * @param file_path The path to the file to be added.
      * @param zip_entry_name The name of the file in the ZIP archive.
+     * @param verbose Compress with verbose logs (default false)
      *
      * @return `true` if the file was successfully added, `false` otherwise.
      */
-    static const bool
-    addFileToZip(zipFile zf, const std::filesystem::path &file_path, const std::filesystem::path &zip_entry_name);
+    static const bool addFileToZip(zipFile zf, const std::filesystem::path &file_path,
+                                   const std::filesystem::path &zip_entry_name, const bool &verbose = false);
 
     /**
      * @brief Adds a folder and its contents to the ZIP archive.
@@ -71,10 +80,11 @@ class Zip
      *
      * @param zf The `zipFile` handle for the archive.
      * @param folder_path The path to the folder to be added.
-     * @param base_folder The base folder name to be used inside the ZIP archive.
+     * @param base_folder The base folder name to be used inside the ZIP archive (default "").
+     * @param verbose Compress with verbose logs (default false)
      *
      * @return `true` if the folder and its contents were successfully added, `false` otherwise.
      */
-    static const bool
-    addFolderToZip(zipFile zf, const std::filesystem::path &folder_path, const std::filesystem::path &base_folder = "");
+    static const bool addFolderToZip(zipFile zf, const std::filesystem::path &folder_path,
+                                     const std::filesystem::path &base_folder = "", const bool &verbose = false);
 };

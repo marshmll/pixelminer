@@ -6,6 +6,16 @@
 #pragma once
 
 /**
+ * @brief An array of all the 16 hex digits.
+ */
+constexpr char hex_digits[] = "0123456789abcdef";
+
+/**
+ * @brief An array of bools with the UUID dash pattern.
+ */
+constexpr bool dash[] = {0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
+
+/**
  * @class UUID
  * @brief A utility class for generating universally unique identifiers (UUIDs).
  *

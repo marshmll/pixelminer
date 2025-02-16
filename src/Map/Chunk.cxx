@@ -13,8 +13,7 @@ Chunk::Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, cons
     chunkBorders.setOutlineColor(sf::Color::Green);
 }
 
-Chunk::~Chunk()
-{}
+Chunk::~Chunk() = default;
 
 void Chunk::update(const float &dt)
 {}

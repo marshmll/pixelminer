@@ -12,16 +12,13 @@ const std::string UUID::generate()
 
     std::uniform_int_distribution<int> dist(0, 15);
 
-    const char *v = "0123456789abcdef";
-    const bool dash[] = {0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0};
-
     std::string uuid;
     for (int i = 0; i < 16; i++)
     {
         if (dash[i])
             uuid += "-";
-        uuid += v[dist(rng)];
-        uuid += v[dist(rng)];
+        uuid += hex_digits[dist(rng)];
+        uuid += hex_digits[dist(rng)];
     }
 
     return uuid;

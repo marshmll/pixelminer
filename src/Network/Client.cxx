@@ -13,7 +13,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
 
     if (!send(pktBuf, ip, port))
     {
-        logger.logError("Could not connect to " + ip.toString() + ":" + std::to_string(port) + "");
+        logger.logError(_("Could not connect to ") + ip.toString() + ":" + std::to_string(port) + "");
         setReady(true);
         setConnected(false);
         return;
@@ -51,7 +51,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     }
     else
     {
-        logger.logError("Connection timeout: " + ip.toString() + ":" + std::to_string(port), false);
+        logger.logError(_("Connection timeout: ") + ip.toString() + ":" + std::to_string(port), false);
         setReady(true);
         setConnected(false);
     }
@@ -88,7 +88,7 @@ void Client::listenerThread()
         }
         else
         {
-            logger.logInfo("Connection with server " + serverIp.toString() + " timed out after 5 seconds.");
+            logger.logInfo(_("Connection with server ") + serverIp.toString() + _(" timed out after 5 seconds."));
             disconnect();
         }
     }
@@ -117,7 +117,7 @@ void Client::handler()
 
 void Client::handleServerAck(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logInfo("Connected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
+    logger.logInfo(_("Connected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
 
@@ -129,7 +129,7 @@ void Client::handleServerAck(const sf::IpAddress &ip, const unsigned short &port
 
 void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logInfo("Reconnected to server: " + ip.toString() + ":" + std::to_string(port) + ".");
+    logger.logInfo(_("Reconnected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
 
@@ -141,13 +141,13 @@ void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port
 
 void Client::handleServerRfs(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logError("Connection refused by server " + ip.toString() + ":" + std::to_string(port) + ".", false);
+    logger.logError(_("Connection refused by server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
     setConnected(false);
 }
 
 void Client::handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logError("Bad response from server " + ip.toString() + ":" + std::to_string(port) + ".", false);
+    logger.logError(_("Bad response from server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
     setConnected(false);
 }
 
@@ -167,7 +167,7 @@ Client::Client(const std::string &uuid)
     socket.setBlocking(false);
 
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
-        logger.logError("Could not bind to a port");
+        logger.logError(_("Could not bind to a port."));
 
     socketSelector.add(socket);
 }
@@ -177,7 +177,7 @@ Client::~Client() = default;
 void Client::connect(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {
     if (connected)
-        logger.logError("Already connected to " + serverIp.toString() + ":" + std::to_string(serverPort), false);
+        logger.logError(_("Already connected to ") + serverIp.toString() + ":" + std::to_string(serverPort), false);
     else
         std::thread(&Client::connectorThread, this, ip, port, timeout).detach();
 }
@@ -186,7 +186,7 @@ void Client::disconnect()
 {
     if (!connected)
     {
-        logger.logError("Not connected to any server.", false);
+        logger.logError(_("Not connected to any server."), false);
         return;
     }
 
@@ -195,10 +195,10 @@ void Client::disconnect()
     pktBuf << "KIL" << myUuid;
 
     if (!send(pktBuf))
-        logger.logError("Failed to communicate with server. Disconnecting anyway.");
+        logger.logError(_("Failed to communicate with server. Disconnecting anyway."));
 
     setConnected(false);
-    logger.logInfo("Disconnected from server " + serverIp.toString() + ":" + std::to_string(serverPort) + ".");
+    logger.logInfo(_("Disconnected from server ") + serverIp.toString() + ":" + std::to_string(serverPort) + ".");
 
     serverIp = sf::IpAddress(0, 0, 0, 0);
     serverPort = 0;
@@ -218,7 +218,7 @@ const bool Client::send(sf::Packet &packet)
 {
     if (socket.send(packet, serverIp, serverPort) != sf::Socket::Status::Done)
     {
-        logger.logError("Error sending packet to " + serverIp.toString() + ":" + std::to_string(serverPort), false);
+        logger.logError(_("Error sending packet to ") + serverIp.toString() + ":" + std::to_string(serverPort), false);
         return false;
     }
     packet.clear();
@@ -229,7 +229,7 @@ const bool Client::send(sf::Packet &packet, const sf::IpAddress &ip, const unsig
 {
     if (socket.send(packet, ip, port) != sf::Socket::Status::Done)
     {
-        logger.logError("Error sending packet to " + ip.toString() + ":" + std::to_string(port), false);
+        logger.logError(_("Error sending packet to ") + ip.toString() + ":" + std::to_string(port), false);
 
         return false;
     }
@@ -241,10 +241,10 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
     using namespace std::chrono_literals;
 
     if (!isConnected())
-        logger.logError("Not connected to any server.");
+        logger.logError(_("Not connected to any server."));
 
     if (!File::validatePath(path))
-        logger.logError("File \"" + path.string() + "\" does not exist.");
+        logger.logError(_("File \"") + path.string() + _("\" does not exist."));
 
     File::FileDescriptor fd = File::createFileDescriptor(path, mode);
     const size_t HEADER_SIZE = sizeof("FILE") + sizeof(fd);
@@ -284,14 +284,14 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
 
         if (!send(packet, serverIp, serverPort))
         {
-            logger.logError("Error sending file part " + std::to_string(fd.part) + "/" +
-                            std::to_string(fd.total_parts) + " (" + std::to_string(bytes) + " bytes) of file " +
-                            fd.filename + "to: " + serverIp.toString() + ":" + std::to_string(serverPort));
+            logger.logError(_("Error sending file part ") + std::to_string(fd.part) + "/" +
+                            std::to_string(fd.total_parts) + " (" + std::to_string(bytes) + _(" B) of file ") +
+                            fd.filename + _("to: ") + serverIp.toString() + ":" + std::to_string(serverPort));
         }
         else
         {
-            logger.logInfo("Sent file part: " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) + " (" +
-                           std::to_string(bytes) + " bytes) of file " + fd.filename);
+            logger.logInfo(_("Sent file part: ") + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) +
+                           " (" + std::to_string(bytes) + _(" B) of file ") + fd.filename);
             ++fd.part;
             std::this_thread::sleep_for(20ms); // Reduce network congestion
         }
@@ -314,7 +314,7 @@ void Client::receiveFile(const std::filesystem::path &folder, sf::Packet &packet
     std::ofstream file(folder / fd.filename, modes);
     if (!file.is_open())
     {
-        logger.logError("Could not write to file: \"" + (folder / fd.filename).string() + "\"");
+        logger.logError(_("Could not write to file: \"") + (folder / fd.filename).string() + "\"");
     }
 
     if (static_cast<std::ios::openmode>(fd.mode) == std::ios::binary)
@@ -335,8 +335,8 @@ void Client::receiveFile(const std::filesystem::path &folder, sf::Packet &packet
     }
 
     file.close();
-    logger.logInfo("Received file part " + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) +
-                   " of file: " + fd.filename);
+    logger.logInfo(_("Received file part ") + std::to_string(fd.part) + "/" + std::to_string(fd.total_parts) +
+                   _(" of file: ") + fd.filename);
 }
 
 std::optional<std::pair<PacketAddress, sf::Packet>> Client::consumePacket()

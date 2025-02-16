@@ -23,39 +23,39 @@ PauseMenu::PauseMenu(EngineData &data) : active(false), quit(false), data(data)
 
     buttons["BackToGame"] = std::make_unique<gui::TextButton>(
         buttonContainer.getPosition(), sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200),
-        "Back to Game", data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
+        _("Back to Game"), data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
         2.f, sf::Color::Black);
 
     buttons["Achievements"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Achievements",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), _("Achievements"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons["Statistics"] =
         std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
                                                        buttonContainer.getPosition().y + btn_height + gap),
                                           sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200),
-                                          "Statistics", data.activeResourcePack->fonts.at("Regular"),
+                                          _("Statistics"), data.activeResourcePack->getFont("Regular"),
                                           gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["Options"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 3),
-        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), "Options",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200), _("Options"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons["OpenToLAN"] =
         std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_in + gap,
                                                        buttonContainer.getPosition().y + (btn_height + gap) * 3),
                                           sf::Vector2f(btn_width_in, btn_height), sf::Color(200, 200, 200, 200),
-                                          "Open To LAN", data.activeResourcePack->fonts.at("Regular"),
+                                          _("Open To LAN"), data.activeResourcePack->getFont("Regular"),
                                           gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["SaveAndQuit"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + (btn_height + gap) * 4),
-        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), "Save And Quit To Main Menu",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_out, btn_height), sf::Color(200, 200, 200, 200), _("Save And Quit To Main Menu"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 }
 

@@ -7,7 +7,7 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
 
     if (tokens.size() <= 2)
     {
-        return "Usage: " + COMMAND_INVOKER + "tp [{targets...}] [{x y} OR {target}]";
+        return _("Usage: ") + COMMAND_INVOKER + _("tp [(targets...)] [(x y) OR (target)]");
     }
 
     // Split tokens into source and destination parts
@@ -50,14 +50,14 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
 
     if (sourceTokens.empty())
     {
-        return "Error: No targets to teleport specified.";
+        return _("Error: No targets to teleport specified.");
     }
 
     // Resolve source entities
     std::vector<Entity *> sourceEntities = resolveEntities(sourceTokens, ctx, cmd);
     if (sourceEntities.empty())
     {
-        return "Error: No targets to teleport found.";
+        return _("Error: No targets to teleport found.");
     }
 
     // Resolve destination
@@ -71,11 +71,11 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
 
             if (destPos.x < 0.f || destPos.y < 0.f || destPos.x >= MAX_WORLD_GRID_SIZE.x ||
                 destPos.y >= MAX_WORLD_GRID_SIZE.y)
-                return "Error: World coordinate out of bounds.";
+                return _("Error: World coordinate out of bounds.");
         }
         catch (const std::invalid_argument &)
         {
-            return "Error: Invalid coordinate format.";
+            return _("Error: Invalid coordinate format.");
         }
     }
     else
@@ -84,11 +84,11 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
         std::vector<Entity *> destEntities = resolveEntities(destTokens, ctx, cmd);
         if (destEntities.size() == 0)
         {
-            return "Error: No destination target found.";
+            return _("Error: No destination target found.");
         }
         else if (destEntities.size() != 1)
         {
-            return "Error: Destination must resolve to exactly one target.";
+            return _("Error: Destination must resolve to exactly one target.");
         }
         destPos = destEntities[0]->getGridPosition();
     }
@@ -100,15 +100,15 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
     }
 
     // Build response message
-    std::string message = "Teleported " + std::to_string(sourceEntities.size()) + " entit" +
-                          (sourceEntities.size() == 1 ? "y" : "ies") + " to ";
+    std::string message = _("Teleported ") + std::to_string(sourceEntities.size()) + _(" entit") +
+                          (sourceEntities.size() == 1 ? _("y") : _("ies")) + _(" to ");
     if (destIsCoords)
     {
         message += "x: " + std::to_string(destPos.x) + ", y: " + std::to_string(destPos.y);
     }
     else
     {
-        message += "position of " + destTokens[0].literal;
+        message += _("position of ") + destTokens[0].literal;
         if (destTokens.size() > 1)
         {
             message += " " + destTokens[1].literal;

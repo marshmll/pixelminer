@@ -95,8 +95,9 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initAnimations();
         initHitBoxes();
 
-        logger.logInfo("Player \"" + name + "\" with id " + std::to_string(id) + " loaded from file. Spawned at x: " +
-                       std::to_string(getCenterGridPosition().x) + ", y: " + std::to_string(getCenterGridPosition().y));
+        logger.logInfo(_("Player \"") + name + _("\" with id ") + std::to_string(id) +
+                       _(" loaded from file. Spawned at x: ") + std::to_string(getCenterGridPosition().x) +
+                       ", y: " + std::to_string(getCenterGridPosition().y));
     }
     else
     {
@@ -107,7 +108,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
         initAnimations();
         initHitBoxes();
 
-        logger.logInfo("Player \"" + name + "\" with id " + std::to_string(id) + " spawned at x: " +
+        logger.logInfo(_("Player \"") + name + _("\" with id ") + std::to_string(id) + _(" spawned at x: ") +
                        std::to_string(getCenterGridPosition().x) + ", y: " + std::to_string(getCenterGridPosition().y));
     }
 }
@@ -230,7 +231,7 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     const std::filesystem::path root = MAPS_FOLDER + folder_name;
 
     if (!std::filesystem::exists(root))
-        logger.logError("Failed to save " + name + " to map " + folder_name + ": Folder does not exist.");
+        logger.logError(_("Failed to save ") + name + _(" to world ") + folder_name + _(": Folder does not exist."));
 
     if (!std::filesystem::exists(root / "players/"))
         std::filesystem::create_directory(root / "players/");
@@ -240,7 +241,7 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     std::ofstream player_data_file(root / "players" / (uuid + ".dat"));
 
     if (!player_data_file.is_open())
-        throw std::runtime_error("Failed to save player data: " + name);
+        throw std::runtime_error(_("Failed to save player data: ") + name);
 
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.x), sizeof(float));
     player_data_file.write(reinterpret_cast<char *>(&playerData.currentGridPosition.y), sizeof(float));
@@ -260,10 +261,10 @@ void Player::save(const std::string &folder_name, const std::string &uuid)
     if (player_data_file.bad())
     {
         player_data_file.close();
-        logger.logError("Something went wrong while saving player data: " + name + " (bad bit was set).");
+        logger.logError(_("Something went wrong while saving player data: ") + name + _(" (bad bit was set)."));
     }
 
     player_data_file.close();
 
-    logger.logInfo("Player data saved to player: " + name);
+    logger.logInfo(_("Player data saved to player: ") + name);
 }

@@ -8,7 +8,7 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
     bg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
     messageText =
-        std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), message, gui::charSize(*data.vm, 85));
+        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), message, gui::charSize(*data.vm, 85));
 
     messageText->setPosition(
         sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - messageText->getGlobalBounds().size.x / 2.f,
@@ -16,7 +16,7 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
 
     messageText->setFillColor(sf::Color(200, 200, 200, 255));
 
-    descriptionText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), description,
+    descriptionText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), description,
                                                  gui::charSize(*data.vm, 85));
 
     descriptionText->setPosition(sf::Vector2f(0.f, 0.f));
@@ -31,7 +31,7 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
 
             while (j > 0 && str[j] != ' ')
                 j--;
-            
+
             str.replace(j, 1, "\n");
             descriptionText->setString(str);
         }
@@ -48,8 +48,8 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
                          gui::percent(data.vm->size.x, 45.f) / 2.f,
                      gui::percent(data.vm->size.y, 60.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 45.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Back", data.activeResourcePack->fonts.at("Regular"),
-        gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+        sf::Color(200, 200, 200, 200), "Back", data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95),
+        sf::Color::White, 2.f, sf::Color::Black);
 }
 
 MessageState::~MessageState() = default;

@@ -10,6 +10,7 @@
 #include "States/State.hxx"
 #include "Tools/Date.hxx"
 #include "Tools/JSON.hxx"
+#include "Engine/Languages.hxx"
 
 /**
  * @struct WorldMetadata
@@ -71,14 +72,17 @@ class WorldSelectionMenuState : public State
             container.setOutlineColor(sf::Color::White);
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))
-                std::cerr << "Error while loading image: " << MAPS_FOLDER + metadata.folderName + "/icon.png" << "\n";
+                std::cerr << _("Error while loading image: ") << MAPS_FOLDER + metadata.folderName + "/icon.png"
+                          << "\n";
 
             icon.setSize(sf::Vector2f(sf::Vector2f(container.getSize().y, container.getSize().y)));
             icon.setPosition(container.getPosition());
             icon.setTexture(&iconTexture);
 
-            name = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Bold"), metadata.worldName,
-                                              gui::charSize(*data.vm, 100));
+            name =
+                std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"),
+                                           sf::String::fromUtf8(metadata.worldName.begin(), metadata.worldName.end()),
+                                           gui::charSize(*data.vm, 100));
 
             name->setPosition(sf::Vector2f(
                 static_cast<int>(icon.getPosition().x + icon.getSize().x + gui::percent(data.vm->size.x, 1.f)),
@@ -86,12 +90,13 @@ class WorldSelectionMenuState : public State
 
             name->setFillColor(sf::Color::White);
 
-            description = std::make_unique<sf::Text>(
-                data.activeResourcePack->fonts.at("Regular"),
-                metadata.folderName + " (" + Date::toLocaleString(metadata.creationDate) +
-                    "\nLast Played: " + Date::toLocaleString(metadata.lastPlayed) +
-                    ")\nGame Version: " + metadata.gameVersion + ", Difficulty: " + metadata.difficulty,
-                gui::charSize(*data.vm, 100));
+            std::string str = metadata.folderName + " (" + Date::toLocaleString(metadata.creationDate) + ")\n" +
+                              _("Last Played: ") + Date::toLocaleString(metadata.lastPlayed) + "\n" +
+                              _("Game Version: ") + metadata.gameVersion + _(", Difficulty: ") + metadata.difficulty;
+
+            description =
+                std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                           sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 100));
 
             description->setPosition(
                 sf::Vector2f(static_cast<int>(name->getPosition().x),

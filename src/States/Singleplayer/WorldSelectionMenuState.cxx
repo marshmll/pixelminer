@@ -31,40 +31,40 @@ void WorldSelectionMenuState::initGUI()
 
     buttons["PlaySelectedWorld"] = std::make_unique<gui::TextButton>(
         buttonContainer.getPosition(), sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200),
-        "Play Selected World", data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95),
+        _("Play Selected World"), data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95),
         sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["CreateNewWorld"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x + btn_width_top + gap, buttonContainer.getPosition().y),
-        sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200), "Create New World",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200), _("Create New World"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons["Edit"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), "Edit",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Edit"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons["Delete"] =
         std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_bottom + gap,
                                                        buttonContainer.getPosition().y + btn_height + gap),
                                           sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200),
-                                          "Delete", data.activeResourcePack->fonts.at("Regular"),
+                                          _("Delete"), data.activeResourcePack->getFont("Regular"),
                                           gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 
     buttons["ReCreate"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 2) + (gap * 2),
                      buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), "Re-Create",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Re-Create"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons["Cancel"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 3) + (gap * 3),
                      buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), "Cancel",
-        data.activeResourcePack->fonts.at("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
+        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Cancel"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
         sf::Color::Black);
 
     buttons.at("PlaySelectedWorld")->setState(gui::ButtonState::Disabled);

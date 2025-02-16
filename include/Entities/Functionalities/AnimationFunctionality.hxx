@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Engine/Languages.hxx"
 #include "Animations/Animation.hxx"
 #include "Tools/Logger.hxx"
 

@@ -38,7 +38,7 @@ HitBox &CollisionFunctionality::getFirstHitBox()
     }
     catch (std::exception &)
     {
-        logger.logError("Failed to acesss first hitbox of entity.");
+        logger.logError(_("Failed to acesss first hitbox of entity."));
     }
 
     return hitBoxes.begin()->second; // SHOULD NEVER REACH HERE!

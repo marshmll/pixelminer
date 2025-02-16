@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
-"Report-Msgid-Bugs-To: renandasilvaolivieraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-15 19:06-0300\n"
+"Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
+"POT-Creation-Date: 2025-02-16 12:38-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,327 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: src/Map/Biome.cxx:8
+msgid "Desert"
+msgstr ""
+
+#: src/Map/Biome.cxx:9
+msgid "Forest"
+msgstr ""
+
+#: src/Map/Biome.cxx:10
+msgid "Grassland"
+msgstr ""
+
+#: src/Map/Biome.cxx:11
+msgid "Jungle"
+msgstr ""
+
+#: src/Map/Biome.cxx:12
+msgid "Mountains"
+msgstr ""
+
+#: src/Map/Biome.cxx:13
+msgid "Ocean"
+msgstr ""
+
+#: src/Map/Biome.cxx:14
+msgid "Tundra"
+msgstr ""
+
+#: src/Map/Biome.cxx:15
+msgid "Unknown"
+msgstr ""
+
+#: src/Map/EntitySpatialGridPartition.cxx:15
+msgid "Cell out of bounds: "
+msgstr ""
+
+#: src/Map/EntitySpatialGridPartition.cxx:30 src/Entities/Entity.cxx:166
+#: src/Entities/Entity.cxx:175
+msgid "Entity "
+msgstr ""
+
+#: src/Map/EntitySpatialGridPartition.cxx:30
+msgid " with id "
+msgstr ""
+
+#: src/Map/EntitySpatialGridPartition.cxx:31
+msgid " was not found in the spatial grid partition."
+msgstr ""
+
+#: src/Map/Map.cxx:15
+msgid "Generating world metadata..."
+msgstr ""
+
+#: src/Map/Map.cxx:49 src/Map/Map.cxx:59
+msgid "Preparing to load"
+msgstr ""
+
+#: src/Map/Map.cxx:200
+msgid "Could not write world metadata: "
+msgstr ""
+
+#: src/Map/Map.cxx:256
+msgid "Failed to write region file: "
+msgstr ""
+
+#: src/Map/Map.cxx:311
+msgid "Written "
+msgstr ""
+
+#: src/Map/Map.cxx:311
+msgid " tiles to region: "
+msgstr ""
+
+#: src/Map/Map.cxx:321
+msgid "Inexistent world: "
+msgstr ""
+
+#: src/Map/Map.cxx:323
+msgid "Loading world metadata..."
+msgstr ""
+
+#: src/Map/Map.cxx:327
+msgid "No world metadata found: "
+msgstr ""
+
+#: src/Map/Map.cxx:331 src/Tools/Zip.cxx:157
+msgid "Failed to open file: "
+msgstr ""
+
+#: src/Map/Map.cxx:340
+msgid "Initializing terrain generator..."
+msgstr ""
+
+#: src/Map/Map.cxx:373
+msgid "Failed to read region file: "
+msgstr ""
+
+#: src/Map/Map.cxx:385
+msgid "Corrupted region file: Chunk index out of bounds"
+msgstr ""
+
+#: src/Map/Map.cxx:408
+msgid "Corrupted region file: "
+msgstr ""
+
+#: src/Map/Map.cxx:409
+msgid "out of bounds in Chunk"
+msgstr ""
+
+#: src/Map/Map.cxx:419
+msgid "Invalid tile ID: "
+msgstr ""
+
+#: src/Map/Map.cxx:420
+msgid " in Chunk"
+msgstr ""
+
+#: src/Map/Map.cxx:436
+msgid "Read "
+msgstr ""
+
+#: src/Map/Map.cxx:436
+msgid " tiles from region: "
+msgstr ""
+
+#: src/Map/Map.cxx:473 src/Map/Map.cxx:577
+msgid "Region ("
+msgstr ""
+
+#: src/Map/Map.cxx:474
+msgid ") unloaded from memory."
+msgstr ""
+
+#: src/Map/Map.cxx:578
+msgid ") out of bounds."
+msgstr ""
+
+#: src/Map/TerrainGenerator.cxx:6 src/Map/TerrainGenerator.cxx:7
+msgid "Initializing perlin waves..."
+msgstr ""
+
+#: src/Map/TerrainGenerator.cxx:16 src/Map/TerrainGenerator.cxx:17
+msgid "Generating noise maps..."
+msgstr ""
+
+#: src/Map/TerrainGenerator.cxx:28 src/Map/TerrainGenerator.cxx:29
+msgid "Precomputing biomes..."
+msgstr ""
+
+#: src/Map/TerrainGenerator.cxx:174
+msgid "Done!"
+msgstr ""
+
+#: src/Map/TerrainGenerator.cxx:185
+msgid "Failed to generate region: Indexes are out of bounds."
+msgstr ""
+
+#: src/Tools/JSON.cxx:59
+msgid "Error at line "
+msgstr ""
+
+#: src/Tools/JSON.cxx:59
+msgid ", column "
+msgstr ""
+
+#: src/Tools/JSON.cxx:141
+msgid "Could not open file: "
+msgstr ""
+
+#: src/Tools/JSON.cxx:156
+msgid "Unexpected end of input"
+msgstr ""
+
+#: src/Tools/JSON.cxx:191
+msgid "Invalid JSON value"
+msgstr ""
+
+#: src/Tools/JSON.cxx:197 src/Tools/JSON.cxx:351
+msgid "Expected '\"'"
+msgstr ""
+
+#: src/Tools/JSON.cxx:207
+msgid "Unexpected end of input in string"
+msgstr ""
+
+#: src/Tools/JSON.cxx:218
+msgid "Invalid escape character in string"
+msgstr ""
+
+#: src/Tools/JSON.cxx:229
+msgid "Unterminated string"
+msgstr ""
+
+#: src/Tools/JSON.cxx:289
+msgid "Integer value out of range: "
+msgstr ""
+
+#: src/Tools/JSON.cxx:302
+msgid "Floating-point value out of range: "
+msgstr ""
+
+#: src/Tools/JSON.cxx:319
+msgid "Invalid boolean value"
+msgstr ""
+
+#: src/Tools/JSON.cxx:329
+msgid "Invalid null value"
+msgstr ""
+
+#: src/Tools/JSON.cxx:336
+msgid "Expected '{'"
+msgstr ""
+
+#: src/Tools/JSON.cxx:356
+msgid "Expected ':'"
+msgstr ""
+
+#: src/Tools/JSON.cxx:373
+msgid "Expected ',' or '}'"
+msgstr ""
+
+#: src/Tools/JSON.cxx:382
+msgid "Expected '['"
+msgstr ""
+
+#: src/Tools/JSON.cxx:409
+msgid "Expected ',' or ']'"
+msgstr ""
+
+#: src/Tools/JSON.cxx:425
+msgid "Expected '"
+msgstr ""
+
+#: src/Tools/Zip.cxx:13
+msgid "Failed to open ZIP archive for extraction: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:19
+msgid "Failed to locate first file of ZIP archive: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:28
+msgid "Failed to create output directory \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:34
+msgid "Created output directory \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:47
+msgid "Failed to get file info from ZIP archive: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:56
+msgid "Failed to open file inside ZIP archive: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:65
+msgid "Failed to create directory \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:71
+msgid "Created directory \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:80
+msgid "Failed to create output file: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:96
+msgid "Extracted file \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:107
+msgid "Successfully extracted "
+msgstr ""
+
+#: src/Tools/Zip.cxx:107
+msgid " files ("
+msgstr ""
+
+#: src/Tools/Zip.cxx:108
+msgid " B) from ZIP archive: \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:120
+msgid "Failed to create ZIP file: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:139
+msgid "Successfully compressed \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:139
+msgid "\" to ZIP archive: \""
+msgstr ""
+
+#: src/Tools/Zip.cxx:165
+msgid "Failed to add file to ZIP: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:174
+msgid "Failed to write data to ZIP file: "
+msgstr ""
+
+#: src/Tools/Zip.cxx:183
+msgid "Added file: "
+msgstr ""
+
+#: src/Tools/Date.cxx:8
+msgid "Never"
+msgstr ""
+
+#: src/Tools/Date.cxx:20
+msgid "INVALID TIMESTAMP"
+msgstr ""
+
+#: src/Tools/Date.cxx:31
+msgid "FORMATTING ERROR"
+msgstr ""
 
 #: src/Tools/Logger.cxx:13
 msgid "INFO"
@@ -37,12 +358,472 @@ msgstr ""
 msgid "Multiplayer"
 msgstr ""
 
-#: src/States/MainMenuState.cxx:44
+#: src/States/MainMenuState.cxx:44 src/GUI/PauseMenu.cxx:44
 msgid "Options"
 msgstr ""
 
 #: src/States/MainMenuState.cxx:52
 msgid "Quit"
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:10
+msgid "Loading world"
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:357
+msgid "grid x, y: "
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:359
+msgid "velocity x, y: "
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:361
+msgid "chunk:"
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:366
+msgid "region:"
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:373
+msgid "biome:"
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:374
+msgid "height: "
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:374
+msgid ", moisture: "
+msgstr ""
+
+#: src/States/Singleplayer/GameState.cxx:375
+msgid ", heat: "
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:34
+msgid "Play Selected World"
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:39
+msgid "Create New World"
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:45
+#: src/States/Multiplayer/ServerSelectionState.cxx:52
+msgid "Edit"
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:53
+#: src/States/Multiplayer/ServerSelectionState.cxx:60
+msgid "Delete"
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:59
+msgid "Re-Create"
+msgstr ""
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
+#: src/States/Multiplayer/ServerSelectionState.cxx:73
+msgid "Cancel"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:34
+msgid "Join Server"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:39
+msgid "Direct Connect"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:46
+msgid "Add Server"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:66
+msgid "Refresh"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:139
+msgid "Unreacheable"
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:98 src/Entities/Playable/Player.cxx:111
+msgid "Player \""
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:98 src/Entities/Playable/Player.cxx:111
+msgid "\" with id "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:99
+msgid " loaded from file. Spawned at x: "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:111
+msgid " spawned at x: "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:234
+msgid "Failed to save "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:234
+msgid " to world "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:234
+msgid ": Folder does not exist."
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:244
+msgid "Failed to save player data: "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:264
+msgid "Something went wrong while saving player data: "
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:264
+msgid " (bad bit was set)."
+msgstr ""
+
+#: src/Entities/Playable/Player.cxx:269
+msgid "Player data saved to player: "
+msgstr ""
+
+#: src/Entities/Entity.cxx:47
+msgid " tried to move without an initialized movement component."
+msgstr ""
+
+#: src/Entities/Entity.cxx:65
+msgid "Entity with ID: "
+msgstr ""
+
+#: src/Entities/Entity.cxx:66
+msgid " tried to play an animation without an initialized animation component."
+msgstr ""
+
+#: src/Entities/Entity.cxx:167
+msgid " accessed non-initialized AttributeFunctionality."
+msgstr ""
+
+#: src/Entities/Entity.cxx:175
+msgid " does not have a collision functionality."
+msgstr ""
+
+#: src/Entities/Inanimated/Trees/PineTree.cxx:16
+msgid "Pine Tree"
+msgstr ""
+
+#: src/Entities/Functionalities/CollisionFunctionality.cxx:41
+msgid "Failed to acesss first hitbox of entity."
+msgstr ""
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
+msgid "Invalid layer \""
+msgstr ""
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
+msgid "\" for entity "
+msgstr ""
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
+msgid "Invalid animation \""
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
+msgid "Usage: "
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
+msgid "tp [(targets...)] [(x y) OR (target)]"
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:53
+msgid "Error: No targets to teleport specified."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:60
+msgid "Error: No targets to teleport found."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:74
+msgid "Error: World coordinate out of bounds."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:78
+msgid "Error: Invalid coordinate format."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:87
+msgid "Error: No destination target found."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:91
+msgid "Error: Destination must resolve to exactly one target."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
+msgid "Teleported "
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
+msgid " entit"
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
+msgid "y"
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
+msgid "ies"
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
+msgid " to "
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
+msgid "position of "
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
+msgid "id [target]"
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:20
+msgid "Error: No valid entity found for target \""
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:25
+msgid "Error: Target \""
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:26
+msgid "\" resolved to multiple entities. Please specify a unique target."
+msgstr ""
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:33
+msgid "Entity ID: "
+msgstr ""
+
+#: src/Game/Commands/CommandInterpreter.cxx:119
+msgid "Error: Empty command."
+msgstr ""
+
+#: src/Game/Commands/CommandInterpreter.cxx:125
+msgid "Unknown command: \""
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:26
+msgid "Back to Game"
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:31
+msgid "Achievements"
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:39
+msgid "Statistics"
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:52
+msgid "Open To LAN"
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:57
+msgid "Save And Quit To Main Menu"
+msgstr ""
+
+#: src/Network/Client.cxx:16
+msgid "Could not connect to "
+msgstr ""
+
+#: src/Network/Client.cxx:54
+msgid "Connection timeout: "
+msgstr ""
+
+#: src/Network/Client.cxx:91
+msgid "Connection with server "
+msgstr ""
+
+#: src/Network/Client.cxx:91
+msgid " timed out after 5 seconds."
+msgstr ""
+
+#: src/Network/Client.cxx:120
+msgid "Connected to server: "
+msgstr ""
+
+#: src/Network/Client.cxx:132
+msgid "Reconnected to server: "
+msgstr ""
+
+#: src/Network/Client.cxx:144
+msgid "Connection refused by server "
+msgstr ""
+
+#: src/Network/Client.cxx:150
+msgid "Bad response from server "
+msgstr ""
+
+#: src/Network/Client.cxx:170
+msgid "Could not bind to a port."
+msgstr ""
+
+#: src/Network/Client.cxx:180
+msgid "Already connected to "
+msgstr ""
+
+#: src/Network/Client.cxx:189 src/Network/Client.cxx:244
+msgid "Not connected to any server."
+msgstr ""
+
+#: src/Network/Client.cxx:198
+msgid "Failed to communicate with server. Disconnecting anyway."
+msgstr ""
+
+#: src/Network/Client.cxx:201
+msgid "Disconnected from server "
+msgstr ""
+
+#: src/Network/Client.cxx:221 src/Network/Client.cxx:232
+msgid "Error sending packet to "
+msgstr ""
+
+#: src/Network/Client.cxx:247
+msgid "File \""
+msgstr ""
+
+#: src/Network/Client.cxx:247
+msgid "\" does not exist."
+msgstr ""
+
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:293
+msgid "Error sending file part "
+msgstr ""
+
+#: src/Network/Client.cxx:288 src/Network/Client.cxx:294
+#: src/Network/Server.cxx:294 src/Network/Server.cxx:300
+msgid " B) of file "
+msgstr ""
+
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:295
+msgid "to: "
+msgstr ""
+
+#: src/Network/Client.cxx:293
+msgid "Sent file part: "
+msgstr ""
+
+#: src/Network/Client.cxx:317
+msgid "Could not write to file: \""
+msgstr ""
+
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:349
+msgid "Received file part "
+msgstr ""
+
+#: src/Network/Client.cxx:339
+msgid " of file: "
+msgstr ""
+
+#: src/Network/Server.cxx:35
+msgid "Server's listener thread for ("
+msgstr ""
+
+#: src/Network/Server.cxx:36
+msgid ") is offline."
+msgstr ""
+
+#: src/Network/Server.cxx:82
+msgid "Connection with client "
+msgstr ""
+
+#: src/Network/Server.cxx:82
+msgid " timed out after "
+msgstr ""
+
+#: src/Network/Server.cxx:83
+msgid " seconds."
+msgstr ""
+
+#: src/Network/Server.cxx:98
+msgid "Connecting to self is not allowed."
+msgstr ""
+
+#: src/Network/Server.cxx:108
+msgid "Client with IP reconnected: "
+msgstr ""
+
+#: src/Network/Server.cxx:114 src/Network/Server.cxx:188
+msgid "Client with IP is already connected: "
+msgstr ""
+
+#: src/Network/Server.cxx:131
+msgid "A Pixelminer Server."
+msgstr ""
+
+#: src/Network/Server.cxx:167
+msgid "Could not bind to port "
+msgstr ""
+
+#: src/Network/Server.cxx:181
+msgid "Maximum number of connections reached. Refused connection with client: "
+msgstr ""
+
+#: src/Network/Server.cxx:193 src/Network/Server.cxx:208
+msgid "Client with IP "
+msgstr ""
+
+#: src/Network/Server.cxx:193
+msgid " connected."
+msgstr ""
+
+#: src/Network/Server.cxx:202
+msgid "Client with UUID "
+msgstr ""
+
+#: src/Network/Server.cxx:202
+msgid " is not connected."
+msgstr ""
+
+#: src/Network/Server.cxx:208
+msgid " is now disconnected."
+msgstr ""
+
+#: src/Network/Server.cxx:222
+msgid "Could not send packet to: "
+msgstr ""
+
+#: src/Network/Server.cxx:234
+msgid "Error while sending control message to: "
+msgstr ""
+
+#: src/Network/Server.cxx:245 src/Network/Server.cxx:314
+msgid "Client is not connected: "
+msgstr ""
+
+#: src/Network/Server.cxx:251
+msgid "Invalid file: "
+msgstr ""
+
+#: src/Network/Server.cxx:328
+msgid "Could not write file: "
+msgstr ""
+
+#: src/Network/Server.cxx:350
+msgid "of file: "
+msgstr ""
+
+#: src/Network/Server.cxx:366
+msgid "Server is down"
 msgstr ""
 
 #: src/Engine/ResourcePack.cxx:20
@@ -122,7 +903,7 @@ msgid "Missing texture \"bread_full.png\" in resource pack: "
 msgstr ""
 
 #: src/Engine/ResourcePack.cxx:165
-msgid "Failed to open \"tiledata.json\" file in resource pack: "
+msgid "Failed to open \"tile_db.json\" file in resource pack: "
 msgstr ""
 
 #: src/Engine/ResourcePack.cxx:191
@@ -142,11 +923,15 @@ msgid " fonts."
 msgstr ""
 
 #: src/Engine/ResourcePack.cxx:210
-msgid "Inexistent texture "
+msgid "Inexistent font "
 msgstr ""
 
-#: src/Engine/ResourcePack.cxx:210
+#: src/Engine/ResourcePack.cxx:210 src/Engine/ResourcePack.cxx:224
 msgid " in resource pack"
+msgstr ""
+
+#: src/Engine/ResourcePack.cxx:224
+msgid "Inexistent texture "
 msgstr ""
 
 #: src/Engine/GraphicsSettings.cxx:28
@@ -227,4 +1012,29 @@ msgstr ""
 
 #: src/Engine/Engine.cxx:125
 msgid "Failed to load window icon. Using OS default icon instead."
+msgstr ""
+
+#: include/States/Singleplayer/WorldSelectionMenuState.hxx:75
+msgid "Error while loading image: "
+msgstr ""
+
+#: include/States/Singleplayer/WorldSelectionMenuState.hxx:94
+msgid "Last Played: "
+msgstr ""
+
+#: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
+#: include/States/Multiplayer/ServerSelectionState.hxx:84
+msgid "Game Version: "
+msgstr ""
+
+#: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
+msgid ", Difficulty: "
+msgstr ""
+
+#: include/States/Multiplayer/ServerSelectionState.hxx:84
+msgid "Status: "
+msgstr ""
+
+#: include/States/Multiplayer/ServerSelectionState.hxx:85
+msgid "Players: "
 msgstr ""

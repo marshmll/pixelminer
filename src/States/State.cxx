@@ -8,8 +8,7 @@ State::State(EngineData &data)
     mouseClock.restart();
 }
 
-State::~State()
-{}
+State::~State() = default;
 
 void State::update(const float &dt)
 {}

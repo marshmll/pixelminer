@@ -44,7 +44,7 @@ void Entity::move(const float &dt, const MovementDirection &direction)
         movementFunctionality->move(dt, direction);
     else
         logger.logWarning("Entity with ID: " + std::to_string(id) +
-                          " tried to move without an initialized movement component.");
+                          _(" tried to move without an initialized movement component."));
 }
 
 void Entity::move(const sf::Vector2f &offset)
@@ -62,8 +62,8 @@ void Entity::playAnimation(const std::string &name)
         animationFunctionality->play(name);
 
     else
-        logger.logWarning("Entity with ID: " + std::to_string(id) +
-                          " tried to play an animation without an initialized animation component.");
+        logger.logWarning(_("Entity with ID: ") + std::to_string(id) +
+                          _(" tried to play an animation without an initialized animation component."));
 }
 
 const std::string &Entity::getName() const
@@ -163,8 +163,8 @@ const sf::Vector2f Entity::getCenterGridPosition() const
 AttributeFunctionality &Entity::getAttributeFunctionality()
 {
     if (!attributeFunctionality.has_value())
-        logger.logError("Entity " + name + " ID: " + std::to_string(id) +
-                        " accessed non-initialized AttributeFunctionality.");
+        logger.logError(_("Entity ") + name + " ID: " + std::to_string(id) +
+                        _(" accessed non-initialized AttributeFunctionality."));
 
     return *attributeFunctionality;
 }
@@ -172,7 +172,7 @@ AttributeFunctionality &Entity::getAttributeFunctionality()
 std::map<std::string, HitBox> &Entity::getHitBoxes()
 {
     if (!collisionFunctionality.has_value())
-        logger.logError("Entity " + name + " does not have a collision functionality.");
+        logger.logError(_("Entity ") + name + _(" does not have a collision functionality."));
 
     return collisionFunctionality->getHitBoxes();
 }

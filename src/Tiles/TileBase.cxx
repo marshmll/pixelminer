@@ -8,8 +8,7 @@ TileBase::TileBase(const std::string name, const std::string &id, sf::Texture &t
     sprite.setScale(sf::Vector2f(scale, scale));
 }
 
-TileBase::~TileBase()
-{}
+TileBase::~TileBase() = default;
 
 void TileBase::render(sf::RenderTarget &target)
 {

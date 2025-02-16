@@ -4,8 +4,8 @@
 mkdir -p "src/.pixelminer/Locales/pt_BR.UTF-8/LC_MESSAGES"
 
 # Extract strings from source files and generate the .pot file
-find src -type f -regex '.*\.\(cxx\|hxx\|cc\|c\|h\)' | \
-xargs xgettext --keyword="_" --from-code=utf-8 -d "pixelminer" --output="src/.pixelminer/Locales/pixelminer.pot" --package-name="pixelminer" --package-version="1.0" --msgid-bugs-address="renandasilvaolivieraandrade@gmail.com"
+find src include -type f -regex '.*\.\(cxx\|hxx\|cc\|c\|h\)' | \
+xargs xgettext --keyword="_" --from-code=utf-8 -d "pixelminer" --output="src/.pixelminer/Locales/pixelminer.pot" --package-name="pixelminer" --package-version="1.0" --msgid-bugs-address="renandasilvaoliveiraandrade@gmail.com"
 
 # Check if the .po file exists
 if [ ! -f "src/.pixelminer/Locales/pt_BR.UTF-8/LC_MESSAGES/pixelminer.po" ]

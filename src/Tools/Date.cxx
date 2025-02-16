@@ -5,7 +5,7 @@ std::string Date::toLocaleString(long long int unix_timestamp)
 {
     if (unix_timestamp <= 0)
     {
-        return "Never";
+        return _("Never");
     }
 
     // Convert the Unix timestamp to time_t
@@ -17,7 +17,7 @@ std::string Date::toLocaleString(long long int unix_timestamp)
     // Check if local_time is valid
     if (!local_time)
     {
-        return "Invalid timestamp";
+        return _("INVALID TIMESTAMP");
     }
 
     // Format the time into a readable string
@@ -28,6 +28,6 @@ std::string Date::toLocaleString(long long int unix_timestamp)
     }
     else
     {
-        return "Formatting error";
+        return _("FORMATTING ERROR");
     }
 }

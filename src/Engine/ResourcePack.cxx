@@ -76,7 +76,7 @@ const bool ResourcePack::load(const std::string &name)
             return false;
         }
 
-        this->fonts[key].setSmooth(false);
+        this->fonts.at(key).setSmooth(false);
     }
 
     /* Default textures +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -157,12 +157,12 @@ const bool ResourcePack::load(const std::string &name)
     for (auto &[_, texture] : textures)
         texture.setSmooth(false);
 
-    /* Tile Data ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* Tile Database ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    std::ifstream tileDataFile(root_path / "tiledata.json");
+    std::ifstream tileDataFile(root_path / "tile_db.json");
 
     if (!tileDataFile.is_open())
-        logger.logError(_("Failed to open \"tiledata.json\" file in resource pack: ") + name, false);
+        logger.logError(_("Failed to open \"tile_db.json\" file in resource pack: ") + name, false);
 
     std::stringstream tileDataStream;
     tileDataStream << tileDataFile.rdbuf();
@@ -197,6 +197,20 @@ const bool ResourcePack::load(const std::string &name)
                    _(" textures, ") + std::to_string(fonts.size()) + _(" fonts."));
 
     return true;
+}
+
+sf::Font &ResourcePack::getFont(const std::string &key)
+{
+    try
+    {
+        return fonts.at(key);
+    }
+    catch (std::out_of_range &)
+    {
+        logger.logError(_("Inexistent font ") + key + _(" in resource pack") + name);
+    }
+
+    return fonts.at(key); // SHOULD NEVER REACH HERE!
 }
 
 sf::Texture &ResourcePack::getTexture(const std::string &key)

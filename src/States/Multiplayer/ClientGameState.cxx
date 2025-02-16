@@ -7,13 +7,13 @@ void ClientGameState::initFeedbackScreen()
     feedbackBg.setPosition(sf::Vector2f(0.f, 0.f));
     feedbackBg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
-    feedbackText = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"), "Joining server",
+    feedbackText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), "Joining server",
                                               gui::charSize(*data.vm, 85));
     feedbackText->setPosition(sf::Vector2f(
         static_cast<int>(gui::percent(data.vm->size.x, 50.f) - feedbackText->getGlobalBounds().size.x / 2.f),
         static_cast<int>(gui::percent(data.vm->size.y, 45.f))));
 
-    feedbackMsg = std::make_unique<sf::Text>(data.activeResourcePack->fonts.at("Regular"),
+    feedbackMsg = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
                                              "Attempting to establish connection...", gui::charSize(*data.vm, 85));
     feedbackMsg->setPosition(sf::Vector2f(
         static_cast<int>(gui::percent(data.vm->size.x, 50.f) - feedbackMsg->getGlobalBounds().size.x / 2.f),

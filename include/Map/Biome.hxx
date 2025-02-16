@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Tiles/TileData.hxx"
+#include "Engine/Languages.hxx"
 
 /**
  * @enum BiomeType

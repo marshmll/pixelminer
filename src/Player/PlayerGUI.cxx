@@ -13,8 +13,7 @@ PlayerGUI::PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pac
     initGUI();
 }
 
-PlayerGUI::~PlayerGUI()
-{}
+PlayerGUI::~PlayerGUI() = default;
 
 void PlayerGUI::update(const float &dt)
 {
