@@ -15,7 +15,7 @@ Input::Input(const sf::Vector2f &position, const sf::Vector2f &size, const sf::C
     body.setOutlineThickness(outline_thickness);
     body.setOutlineColor(outline_color);
 
-    this->label = std::make_unique<sf::Text>(font, label, char_size);
+    this->label = std::make_unique<sf::Text>(font, sf::String::fromUtf8(label.begin(), label.end()), char_size);
     this->label->setPosition(
         sf::Vector2f(static_cast<int>(body.getPosition().x),
                      static_cast<int>(body.getPosition().y - this->label->getGlobalBounds().size.y - char_size)));

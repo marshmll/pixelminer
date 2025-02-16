@@ -7,14 +7,19 @@ void ClientGameState::initFeedbackScreen()
     feedbackBg.setPosition(sf::Vector2f(0.f, 0.f));
     feedbackBg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
-    feedbackText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), "Joining server",
-                                              gui::charSize(*data.vm, 85));
+    std::string str = _("Joining server");
+
+    feedbackText =
+        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                   sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 85));
     feedbackText->setPosition(sf::Vector2f(
         static_cast<int>(gui::percent(data.vm->size.x, 50.f) - feedbackText->getGlobalBounds().size.x / 2.f),
         static_cast<int>(gui::percent(data.vm->size.y, 45.f))));
 
+    str = _("Attempting to establish connection...");
+
     feedbackMsg = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
-                                             "Attempting to establish connection...", gui::charSize(*data.vm, 85));
+                                             sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 85));
     feedbackMsg->setPosition(sf::Vector2f(
         static_cast<int>(gui::percent(data.vm->size.x, 50.f) - feedbackMsg->getGlobalBounds().size.x / 2.f),
         static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
@@ -49,9 +54,9 @@ void ClientGameState::update(const float &dt)
         else if (!client.isConnected())
         {
             replaceSelf(std::make_shared<MessageState>(
-                data, "Connection error",
-                "The server did not respond after 10 seconds. Check if the "
-                "server exists and if it is online, and if your internet connectivity is ok."));
+                data, _("Connection error"),
+                _("The server did not respond after 10 seconds. Check if the server exists and if it is online, and if "
+                  "your internet connectivity is ok.")));
             return;
         }
         else
@@ -62,7 +67,7 @@ void ClientGameState::update(const float &dt)
 
     if (!client.isConnected())
     {
-        replaceSelf(std::make_shared<MessageState>(data, "Connection error", "Disconnected."));
+        replaceSelf(std::make_shared<MessageState>(data, _("Connection error"), _("Disconnected.")));
         return;
     }
 }

@@ -19,6 +19,14 @@ void GameState::initLoadingScreen()
     loadingMsg->setPosition(
         sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
                      static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
+
+    loaderSprite = std::make_unique<sf::Sprite>(data.activeResourcePack->getTexture("Loader"));
+    loaderSprite->setScale(sf::Vector2f(data.scale, data.scale));
+    loaderSprite->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - (16.f * data.scale) / 2.f,
+                                           gui::percent(data.vm->size.y, 60.f)));
+
+    loaderAnimation = std::make_unique<Animation>(*loaderSprite, data.activeResourcePack->getTexture("Loader"), 100,
+                                                  sf::Vector2u(19, 7), sf::Vector2u(0, 0), sf::Vector2u(5, 0), true);
 }
 
 void GameState::initMap()
@@ -104,7 +112,7 @@ void GameState::resolveCollision(std::shared_ptr<Entity> &first_entity, std::sha
         first_entity->move(sf::Vector2f(0.f, (first_pos.y < second_pos.y ? -overlapY : overlapY)));
 }
 
-GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(data.uuid)
+GameState::GameState(EngineData &data) : State(data)
 {
     ctx.currentState = this;
     initLoadingScreen();
@@ -119,8 +127,7 @@ GameState::GameState(EngineData &data) : State(data), client(data.uuid), server(
     initDebugging();
 }
 
-GameState::GameState(EngineData &data, const std::string &map_folder_name)
-    : State(data), client(data.uuid), server(data.uuid)
+GameState::GameState(EngineData &data, const std::string &map_folder_name) : State(data)
 {
     ctx.currentState = this;
     initLoadingScreen();
@@ -133,9 +140,6 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name)
     initChat();
     initCommandInterpreter();
     initDebugging();
-
-    server.listen(55000);
-    client.connect(sf::IpAddress(127, 0, 0, 1), 55000);
 
     ctx.globalEntities.emplace_back(std::make_shared<PineTree>(
         ctx.map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
@@ -154,6 +158,7 @@ void GameState::update(const float &dt)
         loadingMsg->setPosition(
             sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingMsg->getGlobalBounds().size.x / 2.f),
                          static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
+        loaderAnimation->play();
         return;
     }
 
@@ -388,6 +393,7 @@ void GameState::render(sf::RenderTarget &target)
         target.draw(loadingBg);
         target.draw(*loadingText);
         target.draw(*loadingMsg);
+        target.draw(*loaderSprite);
         return;
     }
 

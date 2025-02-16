@@ -8,7 +8,8 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
     bg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
     messageText =
-        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), message, gui::charSize(*data.vm, 85));
+        std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                   sf::String::fromUtf8(message.begin(), message.end()), gui::charSize(*data.vm, 85));
 
     messageText->setPosition(
         sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - messageText->getGlobalBounds().size.x / 2.f,
@@ -16,7 +17,8 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
 
     messageText->setFillColor(sf::Color(200, 200, 200, 255));
 
-    descriptionText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), description,
+    descriptionText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                                 sf::String::fromUtf8(description.begin(), description.end()),
                                                  gui::charSize(*data.vm, 85));
 
     descriptionText->setPosition(sf::Vector2f(0.f, 0.f));
@@ -48,8 +50,8 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
                          gui::percent(data.vm->size.x, 45.f) / 2.f,
                      gui::percent(data.vm->size.y, 60.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 45.f), gui::percent(data.vm->size.y, 6.f)),
-        sf::Color(200, 200, 200, 200), "Back", data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95),
-        sf::Color::White, 2.f, sf::Color::Black);
+        sf::Color(200, 200, 200, 200), _("Back"), data.activeResourcePack->getFont("Regular"),
+        gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
 }
 
 MessageState::~MessageState() = default;

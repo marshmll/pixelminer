@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "Animations/Animation.hxx"
 #include "Entities/EntityRenderPriorityQueue.hxx"
 #include "Entities/Inanimated/Trees/PineTree.hxx"
 #include "Entities/Playable/Player.hxx"
@@ -61,8 +62,8 @@ class GameState : public State
     bool debugChunks;   ///< Flag to toggle displaying debug chunk data.
     bool debugHitBoxes; ///< Flag to toggle displaying hitboxes for entities.
 
-    Client client; ///< The client-side networking component.
-    Server server; ///< The server-side networking component.
+    std::unique_ptr<sf::Sprite> loaderSprite;   ///< The sprite of the loader animation.
+    std::unique_ptr<Animation> loaderAnimation; ///< The loader animation.
 
     std::unique_ptr<gui::Chat> chat; ///< Chat interface.
 

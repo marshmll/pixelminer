@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 12:37-0300\n"
-"PO-Revision-Date: 2025-02-16 12:38-0300\n"
+"POT-Creation-Date: 2025-02-16 13:19-0300\n"
+"PO-Revision-Date: 2025-02-16 13:19-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -135,23 +135,23 @@ msgstr "ID de tile inválido: "
 msgid " in Chunk"
 msgstr " no Chunk"
 
-#: src/Map/Map.cxx:436
+#: src/Map/Map.cxx:447
 msgid "Read "
 msgstr "Lidos(as) "
 
-#: src/Map/Map.cxx:436
+#: src/Map/Map.cxx:447
 msgid " tiles from region: "
 msgstr " tiles da região: "
 
-#: src/Map/Map.cxx:473 src/Map/Map.cxx:577
+#: src/Map/Map.cxx:484 src/Map/Map.cxx:588
 msgid "Region ("
 msgstr "Região ("
 
-#: src/Map/Map.cxx:474
+#: src/Map/Map.cxx:485
 msgid ") unloaded from memory."
 msgstr ") descarregada da memória."
 
-#: src/Map/Map.cxx:578
+#: src/Map/Map.cxx:589
 msgid ") out of bounds."
 msgstr ") fora dos limites."
 
@@ -427,10 +427,17 @@ msgstr "Re-Criar"
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
+#: src/States/Multiplayer/DirectConnectState.cxx:28
+#: src/States/Multiplayer/AddServerState.cxx:35
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: src/States/MessageState.cxx:53
+msgid "Back"
+msgstr ""
+
 #: src/States/Multiplayer/ServerSelectionState.cxx:34
+#: src/States/Multiplayer/DirectConnectState.cxx:21
 msgid "Join Server"
 msgstr "Entrar no Servidor"
 
@@ -449,6 +456,48 @@ msgstr "Atualizar"
 #: src/States/Multiplayer/ServerSelectionState.cxx:139
 msgid "Unreacheable"
 msgstr "Inalcançável"
+
+#: src/States/Multiplayer/DirectConnectState.cxx:15
+#: src/States/Multiplayer/AddServerState.cxx:22
+msgid "Server Address"
+msgstr "Endereço do Servidor"
+
+#: src/States/Multiplayer/ClientGameState.cxx:10
+msgid "Joining server"
+msgstr "Entrando no servidor"
+
+#: src/States/Multiplayer/ClientGameState.cxx:19
+msgid "Attempting to establish connection..."
+msgstr "Tentando estabelecer conexão..."
+
+#: src/States/Multiplayer/ClientGameState.cxx:57
+#: src/States/Multiplayer/ClientGameState.cxx:70
+msgid "Connection error"
+msgstr "Erro de conexão"
+
+#: src/States/Multiplayer/ClientGameState.cxx:58
+msgid ""
+"The server did not respond after 10 seconds. Check if the server exists and "
+"if it is online, and if your internet connectivity is ok."
+msgstr ""
+"O servidor não respondeu depois de 10 segundos. Verifique se o servidor "
+"existe e está online, e sua conectividade de internet está boa."
+
+#: src/States/Multiplayer/ClientGameState.cxx:70
+msgid "Disconnected."
+msgstr "Desconectado."
+
+#: src/States/Multiplayer/AddServerState.cxx:15
+msgid "Server Name (optional)"
+msgstr "Nome do Servidor (opcional)"
+
+#: src/States/Multiplayer/AddServerState.cxx:28
+msgid "Add"
+msgstr "Adicionar"
+
+#: src/States/Multiplayer/AddServerState.cxx:66
+msgid "Pixelminer Server"
+msgstr "Servidor Pixelminer"
 
 #: src/Entities/Playable/Player.cxx:98 src/Entities/Playable/Player.cxx:111
 msgid "Player \""
@@ -504,7 +553,8 @@ msgstr "Entidade com ID: "
 
 #: src/Entities/Entity.cxx:66
 msgid " tried to play an animation without an initialized animation component."
-msgstr " tentou reproduzir uma animação sem um componente de animação inicializado."
+msgstr ""
+" tentou reproduzir uma animação sem um componente de animação inicializado."
 
 #: src/Entities/Entity.cxx:167
 msgid " accessed non-initialized AttributeFunctionality."
@@ -608,7 +658,8 @@ msgstr "Erro: Alvo \""
 
 #: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:26
 msgid "\" resolved to multiple entities. Please specify a unique target."
-msgstr "\" resolveu em múltiplas entidades. Por favor especifique um alvo único."
+msgstr ""
+"\" resolveu em múltiplas entidades. Por favor especifique um alvo único."
 
 #: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:33
 msgid "Entity ID: "
@@ -1024,7 +1075,7 @@ msgid "Last Played: "
 msgstr "Jogou por último: "
 
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
-#: include/States/Multiplayer/ServerSelectionState.hxx:84
+#: include/States/Multiplayer/ServerSelectionState.hxx:85
 msgid "Game Version: "
 msgstr "Versão do jogo: "
 

@@ -3,7 +3,6 @@
 
 void setup_i18n(const std::string_view locale)
 {
-    // std::cout << "Setting locale to: " << locale << std::endl;
 #if WIN32
     // LocaleNameToLCID requires a LPCWSTR so we need to convert from char to wchar_t
     const auto wStringSize =

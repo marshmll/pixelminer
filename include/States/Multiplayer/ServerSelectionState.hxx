@@ -70,8 +70,10 @@ class ServerSelectionState : public State
             icon.setPosition(container.getPosition());
             icon.setTexture(&iconTexture);
 
-            name = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"), metadata.serverName,
-                                              gui::charSize(*data.vm, 100));
+            name =
+                std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"),
+                                           sf::String::fromUtf8(metadata.serverName.begin(), metadata.serverName.end()),
+                                           gui::charSize(*data.vm, 100));
 
             name->setPosition(sf::Vector2f(
                 static_cast<int>(icon.getPosition().x + icon.getSize().x + gui::percent(data.vm->size.x, 1.f)),
@@ -79,12 +81,13 @@ class ServerSelectionState : public State
 
             name->setFillColor(sf::Color::White);
 
-            description = std::make_unique<sf::Text>(
-                data.activeResourcePack->getFont("Regular"),
-                metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" + _("Game Version: ") +
-                    metadata.gameVersion + "\n" + _("Players: ") + std::to_string(metadata.connections) + "/" +
-                    std::to_string(metadata.maxConnections),
-                gui::charSize(*data.vm, 100));
+            std::string str = metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" +
+                              _("Game Version: ") + metadata.gameVersion + "\n" + _("Players: ") +
+                              std::to_string(metadata.connections) + "/" + std::to_string(metadata.maxConnections);
+
+            description =
+                std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                           sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 100));
 
             description->setPosition(
                 sf::Vector2f(static_cast<int>(name->getPosition().x),

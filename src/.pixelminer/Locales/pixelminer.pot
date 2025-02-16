@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 12:38-0300\n"
+"POT-Creation-Date: 2025-02-16 13:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,23 +134,23 @@ msgstr ""
 msgid " in Chunk"
 msgstr ""
 
-#: src/Map/Map.cxx:436
+#: src/Map/Map.cxx:447
 msgid "Read "
 msgstr ""
 
-#: src/Map/Map.cxx:436
+#: src/Map/Map.cxx:447
 msgid " tiles from region: "
 msgstr ""
 
-#: src/Map/Map.cxx:473 src/Map/Map.cxx:577
+#: src/Map/Map.cxx:484 src/Map/Map.cxx:588
 msgid "Region ("
 msgstr ""
 
-#: src/Map/Map.cxx:474
+#: src/Map/Map.cxx:485
 msgid ") unloaded from memory."
 msgstr ""
 
-#: src/Map/Map.cxx:578
+#: src/Map/Map.cxx:589
 msgid ") out of bounds."
 msgstr ""
 
@@ -426,10 +426,17 @@ msgstr ""
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
+#: src/States/Multiplayer/DirectConnectState.cxx:28
+#: src/States/Multiplayer/AddServerState.cxx:35
 msgid "Cancel"
 msgstr ""
 
+#: src/States/MessageState.cxx:53
+msgid "Back"
+msgstr ""
+
 #: src/States/Multiplayer/ServerSelectionState.cxx:34
+#: src/States/Multiplayer/DirectConnectState.cxx:21
 msgid "Join Server"
 msgstr ""
 
@@ -447,6 +454,46 @@ msgstr ""
 
 #: src/States/Multiplayer/ServerSelectionState.cxx:139
 msgid "Unreacheable"
+msgstr ""
+
+#: src/States/Multiplayer/DirectConnectState.cxx:15
+#: src/States/Multiplayer/AddServerState.cxx:22
+msgid "Server Address"
+msgstr ""
+
+#: src/States/Multiplayer/ClientGameState.cxx:10
+msgid "Joining server"
+msgstr ""
+
+#: src/States/Multiplayer/ClientGameState.cxx:19
+msgid "Attempting to establish connection..."
+msgstr ""
+
+#: src/States/Multiplayer/ClientGameState.cxx:57
+#: src/States/Multiplayer/ClientGameState.cxx:70
+msgid "Connection error"
+msgstr ""
+
+#: src/States/Multiplayer/ClientGameState.cxx:58
+msgid ""
+"The server did not respond after 10 seconds. Check if the server exists and "
+"if it is online, and if your internet connectivity is ok."
+msgstr ""
+
+#: src/States/Multiplayer/ClientGameState.cxx:70
+msgid "Disconnected."
+msgstr ""
+
+#: src/States/Multiplayer/AddServerState.cxx:15
+msgid "Server Name (optional)"
+msgstr ""
+
+#: src/States/Multiplayer/AddServerState.cxx:28
+msgid "Add"
+msgstr ""
+
+#: src/States/Multiplayer/AddServerState.cxx:66
+msgid "Pixelminer Server"
 msgstr ""
 
 #: src/Entities/Playable/Player.cxx:98 src/Entities/Playable/Player.cxx:111
@@ -1023,7 +1070,7 @@ msgid "Last Played: "
 msgstr ""
 
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
-#: include/States/Multiplayer/ServerSelectionState.hxx:84
+#: include/States/Multiplayer/ServerSelectionState.hxx:85
 msgid "Game Version: "
 msgstr ""
 
