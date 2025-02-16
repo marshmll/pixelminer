@@ -37,10 +37,12 @@ class ResourcePack
     std::string description; ///< Description of the resource pack.
     sf::Texture icon;        ///< Icon representing the resource pack.
 
-    std::unordered_map<std::string, sf::Font> fonts;               ///< Loaded fonts.
-    std::unordered_map<std::string, sf::Texture> textures;         ///< Loaded textures.
-    std::unordered_map<std::string, sf::SoundBuffer> soundBuffers; ///< Loaded sound buffers.
-    std::unordered_map<std::string, TileData> tileDB;              ///< Tile data mappings.
+    std::unordered_map<std::string, sf::Font> fonts;                    ///< Loaded fonts.
+    std::unordered_map<std::string, sf::Texture> textures;              ///< Loaded textures.
+    std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;      ///< Loaded sound buffers.
+    std::unordered_map<std::string, std::shared_ptr<sf::Sound>> sounds; ///< Loaded sounds.
+    std::unordered_map<std::string, std::shared_ptr<sf::Music>> musics; ///< Loaded musics.
+    std::unordered_map<std::string, TileData> tileDB;                   ///< Tile data mappings.
 
     /**
      * @brief Loads the resource pack by name.
@@ -64,4 +66,20 @@ class ResourcePack
      * @throws Exception if the texture is not found.
      */
     sf::Texture &getTexture(const std::string &key);
+
+    /**
+     * @brief Retrieves a sound from the resource pack.
+     * @param key Key of the sound to retrieve.
+     * @return Reference to the requested sound.
+     * @throws Exception if the sound is not found.
+     */
+    sf::Sound &getSound(const std::string &key);
+
+    /**
+     * @brief Retrieves a music from the resource pack.
+     * @param key Key of the music to retrieve.
+     * @return Reference to the requested music.
+     * @throws Exception if the music is not found.
+     */
+    sf::Music &getMusic(const std::string &key);
 };

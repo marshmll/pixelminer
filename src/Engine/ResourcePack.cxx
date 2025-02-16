@@ -89,11 +89,11 @@ const bool ResourcePack::load(const std::string &name)
         return false;
     }
 
-    std::stringstream ss;
-    ss << images_file.rdbuf();
+    std::stringstream images_ss;
+    images_ss << images_file.rdbuf();
     images_file.close();
 
-    JArray images_array = JSON::parse(ss.str()).getAs<JArray>();
+    JArray images_array = JSON::parse(images_ss.str()).getAs<JArray>();
 
     // Load textures from images.json
     for (auto &val : images_array)
@@ -106,6 +106,44 @@ const bool ResourcePack::load(const std::string &name)
 
         // Ensure that texture smoothing is off
         textures.at(key).setSmooth(false);
+    }
+
+    /* Default Sounds +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    std::ifstream sounds_file(root_path / "Assets/Sounds/sounds.json");
+
+    if (!sounds_file.is_open())
+    {
+        logger.logError(_("Failed to open \"sounds.json\" file in resource pack: ") + root_path.string(), false);
+        return false;
+    }
+
+    std::stringstream sounds_ss;
+    sounds_ss << sounds_file.rdbuf();
+    sounds_file.close();
+
+    JObject sounds_obj = JSON::parse(sounds_ss.str()).getAs<JObject>();
+
+    // Sounds
+    for (auto &val : sounds_obj.at("effects").getAs<JArray>())
+    {
+        JObject obj = val.getAs<JObject>();
+        std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
+
+        if (!soundBuffers[key].loadFromFile(root_path / path))
+            logger.logWarning(_("Missing sound ") + path + _(" in resource pack: ") + name);
+        else
+            sounds[key] = std::make_shared<sf::Sound>(soundBuffers.at(key));
+    }
+
+    // Music
+    for (auto &val : sounds_obj.at("musics").getAs<JArray>())
+    {
+        JObject obj = val.getAs<JObject>();
+        std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
+
+        if (!musics[key]->openFromFile(root_path / path))
+            logger.logWarning(_("Missing music ") + path + _(" in resource pack: ") + name);
     }
 
     /* Tile Database ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -145,7 +183,8 @@ const bool ResourcePack::load(const std::string &name)
     }
 
     logger.logInfo(_("Sucessfully loaded resource pack ") + name + ": " + std::to_string(textures.size()) +
-                   _(" textures, ") + std::to_string(fonts.size()) + _(" fonts."));
+                   _(" textures, ") + std::to_string(fonts.size()) + _(" fonts, ") + std::to_string(sounds.size()) +
+                   _(" sounds, ") + std::to_string(musics.size()) + _(" musics."));
 
     return true;
 }
@@ -176,4 +215,32 @@ sf::Texture &ResourcePack::getTexture(const std::string &key)
     }
 
     return textures.at(key); // SHOULD NEVER REACH HERE!
+}
+
+sf::Sound &ResourcePack::getSound(const std::string &key)
+{
+    try
+    {
+        return *sounds.at(key);
+    }
+    catch (std::out_of_range &)
+    {
+        logger.logError(_("Inexistent sound ") + key + _(" in resource pack") + name);
+    }
+
+    return *sounds.at(key); // SHOULD NEVER REACH HERE!
+}
+
+sf::Music &ResourcePack::getMusic(const std::string &key)
+{
+    try
+    {
+        return *musics.at(key);
+    }
+    catch (std::out_of_range &)
+    {
+        logger.logError(_("Inexistent music ") + key + _(" in resource pack") + name);
+    }
+
+    return *musics.at(key); // SHOULD NEVER REACH HERE!
 }

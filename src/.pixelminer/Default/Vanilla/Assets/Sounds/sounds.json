@@ -1,0 +1,25 @@
+{
+    "musics": [],
+    "effects": [
+        {
+            "key": "GrassWalk1",
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_1.ogg"
+        },
+        {
+            "key": "GrassWalk2",
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_2.ogg"
+        },
+        {
+            "key": "GrassWalk3",
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_3.ogg"
+        },
+        {
+            "key": "GrassWalk4",
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_4.ogg"
+        },
+        {
+            "key": "GrassWalk5",
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_5.ogg"
+        }
+    ]
+}

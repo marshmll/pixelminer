@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 13:19-0300\n"
-"PO-Revision-Date: 2025-02-16 13:19-0300\n"
+"POT-Creation-Date: 2025-02-16 19:04-0300\n"
+"PO-Revision-Date: 2025-02-16 19:06-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -371,35 +371,35 @@ msgstr "Sair"
 msgid "Loading world"
 msgstr "Carregando mundo"
 
-#: src/States/Singleplayer/GameState.cxx:357
+#: src/States/Singleplayer/GameState.cxx:362
 msgid "grid x, y: "
 msgstr "grid x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:359
+#: src/States/Singleplayer/GameState.cxx:364
 msgid "velocity x, y: "
 msgstr "velocidade x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:361
+#: src/States/Singleplayer/GameState.cxx:366
 msgid "chunk:"
 msgstr "chunk:"
 
-#: src/States/Singleplayer/GameState.cxx:366
+#: src/States/Singleplayer/GameState.cxx:371
 msgid "region:"
 msgstr "região:"
 
-#: src/States/Singleplayer/GameState.cxx:373
+#: src/States/Singleplayer/GameState.cxx:378
 msgid "biome:"
 msgstr "bioma:"
 
-#: src/States/Singleplayer/GameState.cxx:374
+#: src/States/Singleplayer/GameState.cxx:379
 msgid "height: "
 msgstr "altura: "
 
-#: src/States/Singleplayer/GameState.cxx:374
+#: src/States/Singleplayer/GameState.cxx:379
 msgid ", moisture: "
 msgstr ", umidade: "
 
-#: src/States/Singleplayer/GameState.cxx:375
+#: src/States/Singleplayer/GameState.cxx:380
 msgid ", heat: "
 msgstr ", calor: "
 
@@ -434,7 +434,7 @@ msgstr "Cancelar"
 
 #: src/States/MessageState.cxx:53
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: src/States/Multiplayer/ServerSelectionState.cxx:34
 #: src/States/Multiplayer/DirectConnectState.cxx:21
@@ -910,81 +910,79 @@ msgstr "Falha ao abrir arquivo de fonte: "
 msgid " from resource pack: "
 msgstr " do pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:86 src/Engine/ResourcePack.cxx:92
-msgid "Missing texture \"background.png\" in resource pack: "
-msgstr "Faltando textura \"background.png\" no pacote de recursos: "
+#: src/Engine/ResourcePack.cxx:88
+msgid "Failed to open \"textures.json\" file in resource pack: "
+msgstr "Falha ao abrir \"textures.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:98
-msgid "Missing texture \"loader.png\" in resource pack: "
-msgstr "Faltando textura \"loader.png\" no pacote de recursos: "
+#: src/Engine/ResourcePack.cxx:105
+msgid "Missing texture "
+msgstr "Textura faltando: "
 
-#: src/Engine/ResourcePack.cxx:104
-msgid "Missing texture \"player_1.png\" in resource pack: "
-msgstr "Faltando textura \"player_1.png\" no pacote de recursos: "
+#: src/Engine/ResourcePack.cxx:105 src/Engine/ResourcePack.cxx:134
+#: src/Engine/ResourcePack.cxx:146
+msgid " in resource pack: "
+msgstr " no pacote de recursos "
 
-#: src/Engine/ResourcePack.cxx:110
-msgid "Missing texture \"pine_tree.png\" in resource pack: "
-msgstr "Faltando textura \"pine_tree.png\" no pacote de recursos: "
-
-#: src/Engine/ResourcePack.cxx:116
-msgid "Missing texture \"tile_sheet.png\" in resource pack: "
-msgstr "Faltando textura \"tile_sheet.png\" no pacote de recursos: "
-
-#: src/Engine/ResourcePack.cxx:122
-msgid "Missing texture \"heart_empty.png\" in resource pack: "
-msgstr "Faltando textura \"heart_empty.png\" no pacote de recursos: "
-
-#: src/Engine/ResourcePack.cxx:128
-msgid "Missing texture \"heart_half.png\" in resource pack: "
-msgstr "Faltando textura \"heart_half.png\" no pacote de recursos: "
+#: src/Engine/ResourcePack.cxx:117
+msgid "Failed to open \"sounds.json\" file in resource pack: "
+msgstr "Falha ao abrir o arquivo \"sounds.json\" no pacote de recursos: "
 
 #: src/Engine/ResourcePack.cxx:134
-msgid "Missing texture \"heart_full.png\" in resource pack: "
-msgstr "Faltando textura \"heart_full.png\" no pacote de recursos: "
-
-#: src/Engine/ResourcePack.cxx:140
-msgid "Missing texture \"bread_empty.png\" in resource pack: "
-msgstr "Faltando textura \"bread_empty.png\" no pacote de recursos: "
+msgid "Missing sound "
+msgstr "Som faltando: "
 
 #: src/Engine/ResourcePack.cxx:146
-msgid "Missing texture \"bread_half.png\" in resource pack: "
-msgstr "Faltando textura \"bread_half.png\" no pacote de recursos: "
+msgid "Missing music "
+msgstr "Música faltando: "
 
-#: src/Engine/ResourcePack.cxx:152
-msgid "Missing texture \"bread_full.png\" in resource pack: "
-msgstr "Faltando textura \"bread_full.png\" no pacote de recursos: "
-
-#: src/Engine/ResourcePack.cxx:165
+#: src/Engine/ResourcePack.cxx:154
 msgid "Failed to open \"tile_db.json\" file in resource pack: "
 msgstr "Falha ao abrir \"tile_db.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:191
+#: src/Engine/ResourcePack.cxx:180
 msgid "Error while reading tile database: "
 msgstr "Erro durante a leitura do banco de dados de tiles: "
 
-#: src/Engine/ResourcePack.cxx:196
+#: src/Engine/ResourcePack.cxx:185
 msgid "Sucessfully loaded resource pack "
 msgstr "Pacote de recursos carregado com sucesso: "
 
-#: src/Engine/ResourcePack.cxx:197
+#: src/Engine/ResourcePack.cxx:186
 msgid " textures, "
 msgstr " texturas, "
 
-#: src/Engine/ResourcePack.cxx:197
-msgid " fonts."
-msgstr " fontes."
+#: src/Engine/ResourcePack.cxx:186
+msgid " fonts, "
+msgstr " fontes, "
 
-#: src/Engine/ResourcePack.cxx:210
+#: src/Engine/ResourcePack.cxx:187
+msgid " sounds, "
+msgstr " sons, "
+
+#: src/Engine/ResourcePack.cxx:187
+msgid " musics."
+msgstr " músicas."
+
+#: src/Engine/ResourcePack.cxx:200
 msgid "Inexistent font "
 msgstr "Fonte inexistente: "
 
-#: src/Engine/ResourcePack.cxx:210 src/Engine/ResourcePack.cxx:224
+#: src/Engine/ResourcePack.cxx:200 src/Engine/ResourcePack.cxx:214
+#: src/Engine/ResourcePack.cxx:228 src/Engine/ResourcePack.cxx:242
 msgid " in resource pack"
 msgstr " no pacote de recursos"
 
-#: src/Engine/ResourcePack.cxx:224
+#: src/Engine/ResourcePack.cxx:214
 msgid "Inexistent texture "
 msgstr "Textura inexistente: "
+
+#: src/Engine/ResourcePack.cxx:228
+msgid "Inexistent sound "
+msgstr "Som inexistente: "
+
+#: src/Engine/ResourcePack.cxx:242
+msgid "Inexistent music "
+msgstr "Música inexistente: "
 
 #: src/Engine/GraphicsSettings.cxx:28
 msgid "Loaded settings from file: "
@@ -1090,3 +1088,36 @@ msgstr "Status: "
 #: include/States/Multiplayer/ServerSelectionState.hxx:85
 msgid "Players: "
 msgstr "Jogadores: "
+
+#~ msgid "Missing texture \"background.png\" in resource pack: "
+#~ msgstr "Faltando textura \"background.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"loader.png\" in resource pack: "
+#~ msgstr "Faltando textura \"loader.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"player_1.png\" in resource pack: "
+#~ msgstr "Faltando textura \"player_1.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"pine_tree.png\" in resource pack: "
+#~ msgstr "Faltando textura \"pine_tree.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"tile_sheet.png\" in resource pack: "
+#~ msgstr "Faltando textura \"tile_sheet.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"heart_empty.png\" in resource pack: "
+#~ msgstr "Faltando textura \"heart_empty.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"heart_half.png\" in resource pack: "
+#~ msgstr "Faltando textura \"heart_half.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"heart_full.png\" in resource pack: "
+#~ msgstr "Faltando textura \"heart_full.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"bread_empty.png\" in resource pack: "
+#~ msgstr "Faltando textura \"bread_empty.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"bread_half.png\" in resource pack: "
+#~ msgstr "Faltando textura \"bread_half.png\" no pacote de recursos: "
+
+#~ msgid "Missing texture \"bread_full.png\" in resource pack: "
+#~ msgstr "Faltando textura \"bread_full.png\" no pacote de recursos: "
