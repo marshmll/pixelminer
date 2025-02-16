@@ -35,7 +35,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
     }
 
     int files_extracted = 0;
-    int total_size;
+    unsigned long int total_size;
 
     do
     {
@@ -105,7 +105,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
     } while (unzGoToNextFile(zip_file) == UNZ_OK);
 
     logger.logInfo(_("Successfully extracted ") + std::to_string(files_extracted) + _(" files (") +
-                   std::to_string(total_size) + _(" B) from ZIP archive: \"") + src.string());
+                   std::to_string(total_size / 1024) + _(" KB) from ZIP archive: \"") + src.string());
 
     return true;
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 19:06-0300\n"
+"POT-Creation-Date: 2025-02-16 19:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -299,7 +299,7 @@ msgid " files ("
 msgstr ""
 
 #: src/Tools/Zip.cxx:108
-msgid " B) from ZIP archive: \""
+msgid " KB) from ZIP archive: \""
 msgstr ""
 
 #: src/Tools/Zip.cxx:120

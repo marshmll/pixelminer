@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 19:04-0300\n"
-"PO-Revision-Date: 2025-02-16 19:06-0300\n"
+"POT-Creation-Date: 2025-02-16 19:48-0300\n"
+"PO-Revision-Date: 2025-02-16 19:48-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -300,8 +300,8 @@ msgid " files ("
 msgstr " arquivos ("
 
 #: src/Tools/Zip.cxx:108
-msgid " B) from ZIP archive: \""
-msgstr " B) do arquivo ZIP: \""
+msgid " KB) from ZIP archive: \""
+msgstr " KB) do arquivo ZIP: \""
 
 #: src/Tools/Zip.cxx:120
 msgid "Failed to create ZIP file: "
