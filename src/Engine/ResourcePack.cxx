@@ -64,7 +64,7 @@ const bool ResourcePack::load(const std::string &name)
 
     /* Fonts ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    for (auto const &entry : std::filesystem::directory_iterator{root_path / "Fonts"})
+    for (auto const &entry : std::filesystem::directory_iterator{root_path / "Assets/Fonts"})
     {
         std::string filename = entry.path().filename();
         std::string key = filename.substr(0, filename.size() - 4);
@@ -79,97 +79,48 @@ const bool ResourcePack::load(const std::string &name)
         this->fonts.at(key).setSmooth(false);
     }
 
-    /* Default textures +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* Default images +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    if (!textures["Default"].loadFromFile(root_path / "Images/Icons/default.png"))
+    std::ifstream images_file(root_path / "Assets/Textures/textures.json");
+
+    if (!images_file.is_open())
     {
-        logger.logError(_("Missing texture \"background.png\" in resource pack: ") + name, false);
+        logger.logError(_("Failed to open \"textures.json\" file in resource pack: ") + root_path.string(), false);
         return false;
     }
 
-    if (!textures["Background"].loadFromFile(root_path / "Images/Backgrounds/background.png"))
-    {
-        logger.logError(_("Missing texture \"background.png\" in resource pack: ") + name, false);
-        return false;
-    }
+    std::stringstream ss;
+    ss << images_file.rdbuf();
+    images_file.close();
 
-    if (!textures["Loader"].loadFromFile(root_path / "Images/Sprites/UI/loader.png"))
-    {
-        logger.logError(_("Missing texture \"loader.png\" in resource pack: ") + name, false);
-        return false;
-    }
+    JArray images_array = JSON::parse(ss.str()).getAs<JArray>();
 
-    if (!textures["Player1"].loadFromFile(root_path / "Images/Sprites/Entities/Player/player_1.png"))
+    // Load textures from images.json
+    for (auto &val : images_array)
     {
-        logger.logError(_("Missing texture \"player_1.png\" in resource pack: ") + name, false);
-        return false;
-    }
+        JObject entry = val.getAs<JObject>();
+        std::string key = entry.at("key").getAs<std::string>(), path = entry.at("path").getAs<std::string>();
 
-    if (!textures["PineTree"].loadFromFile(root_path / "Images/Sprites/Entities/Tree/pine_tree.png"))
-    {
-        logger.logError(_("Missing texture \"pine_tree.png\" in resource pack: ") + name, false);
-        return false;
-    }
+        if (!textures[key].loadFromFile(root_path / path))
+            logger.logWarning(_("Missing texture ") + path + _(" in resource pack: ") + name);
 
-    if (!textures["TileSheet"].loadFromFile(root_path / "Images/Tiles/tile_sheet.png"))
-    {
-        logger.logError(_("Missing texture \"tile_sheet.png\" in resource pack: ") + name, false);
-        return false;
+        // Ensure that texture smoothing is off
+        textures.at(key).setSmooth(false);
     }
-
-    if (!textures["HeartEmpty"].loadFromFile(root_path / "Images/Icons/heart_empty.png"))
-    {
-        logger.logError(_("Missing texture \"heart_empty.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    if (!textures["HeartHalf"].loadFromFile(root_path / "Images/Icons/heart_half.png"))
-    {
-        logger.logError(_("Missing texture \"heart_half.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    if (!textures["HeartFull"].loadFromFile(root_path / "Images/Icons/heart_full.png"))
-    {
-        logger.logError(_("Missing texture \"heart_full.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    if (!textures["BreadEmpty"].loadFromFile(root_path / "Images/Icons/bread_empty.png"))
-    {
-        logger.logError(_("Missing texture \"bread_empty.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    if (!textures["BreadHalf"].loadFromFile(root_path / "Images/Icons/bread_half.png"))
-    {
-        logger.logError(_("Missing texture \"bread_half.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    if (!textures["BreadFull"].loadFromFile(root_path / "Images/Icons/bread_full.png"))
-    {
-        logger.logError(_("Missing texture \"bread_full.png\" in resource pack: ") + name, false);
-        return false;
-    }
-
-    // Ensure that texture smoothing is off
-    for (auto &[_, texture] : textures)
-        texture.setSmooth(false);
 
     /* Tile Database ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    std::ifstream tileDataFile(root_path / "tile_db.json");
+    std::ifstream tile_data_file(root_path / "tile_db.json");
 
-    if (!tileDataFile.is_open())
+    if (!tile_data_file.is_open())
         logger.logError(_("Failed to open \"tile_db.json\" file in resource pack: ") + name, false);
 
-    std::stringstream tileDataStream;
-    tileDataStream << tileDataFile.rdbuf();
+    std::stringstream tile_data_stream;
+    tile_data_stream << tile_data_file.rdbuf();
 
-    JArray tileDataArray = JSON::parse(tileDataStream.str()).getAs<JArray>();
+    JArray tile_data_array = JSON::parse(tile_data_stream.str()).getAs<JArray>();
 
-    for (auto &entry : tileDataArray)
+    for (auto &entry : tile_data_array)
     {
         try
         {
@@ -184,7 +135,7 @@ const bool ResourcePack::load(const std::string &name)
             rect_y = static_cast<int>(obj.at("rectY").getAs<long long>());
             size = static_cast<int>(obj.at("size").getAs<long long>());
 
-            this->tileDB[id] = TileData{id, name, sf::IntRect({rect_x * size, rect_y * size}, {size, size}), size};
+            tileDB[id] = TileData{id, name, sf::IntRect({rect_x * size, rect_y * size}, {size, size}), size};
         }
         catch (std::runtime_error &e)
         {

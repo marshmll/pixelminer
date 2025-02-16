@@ -1,0 +1,50 @@
+[
+    {
+        "key": "Default",
+        "path": "Assets/Textures/Icons/default.png"
+    },
+    {
+        "key": "Background",
+        "path": "Assets/Textures/Backgrounds/background.png"
+    },
+    {
+        "key": "Loader",
+        "path": "Assets/Textures/Sprites/UI/loader.png"
+    },
+    {
+        "key": "Player1",
+        "path": "Assets/Textures/Sprites/Entities/Player/player_1.png"
+    },
+    {
+        "key": "PineTree",
+        "path": "Assets/Textures/Sprites/Entities/Trees/pine_tree.png"
+    },
+    {
+        "key": "TileSheet",
+        "path": "Assets/Textures/Tiles/tile_sheet.png"
+    },
+    {
+        "key": "HeartEmpty",
+        "path": "Assets/Textures/Icons/heart_empty.png"
+    },
+    {
+        "key": "HeartHalf",
+        "path": "Assets/Textures/Icons/heart_half.png"
+    },
+    {
+        "key": "HeartFull",
+        "path": "Assets/Textures/Icons/heart_full.png"
+    },
+    {
+        "key": "BreadEmpty",
+        "path": "Assets/Textures/Icons/bread_empty.png"
+    },
+    {
+        "key": "BreadHalf",
+        "path": "Assets/Textures/Icons/bread_half.png"
+    },
+    {
+        "key": "BreadFull",
+        "path": "Assets/Textures/Icons/bread_full.png"
+    }
+]

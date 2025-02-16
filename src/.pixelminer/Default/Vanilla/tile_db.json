@@ -1,0 +1,121 @@
+[
+    {
+        "id": "unknown",
+        "name": "Unknown",
+        "rectX": 0,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:dirt_tile",
+        "name": "Dirt",
+        "rectX": 1,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:grass_tile",
+        "name": "Grass",
+        "rectX": 2,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:stone_tile",
+        "name": "Stone",
+        "rectX": 3,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:water_tile",
+        "name": "Water",
+        "rectX": 4,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:sand_tile",
+        "name": "Sand",
+        "rectX": 5,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:gravel_tile",
+        "name": "Gravel",
+        "rectX": 6,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:snow_tile",
+        "name": "Snow",
+        "rectX": 7,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:snowy_grass_tile",
+        "name": "Grass",
+        "rectX": 8,
+        "rectY": 0,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:bush_1",
+        "name": "Bush",
+        "rectX": 0,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:bush_2",
+        "name": "Bush",
+        "rectX": 1,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:bush_3",
+        "name": "Bush",
+        "rectX": 2,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:bush_4",
+        "name": "Bush",
+        "rectX": 3,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:arbust_1",
+        "name": "Arbust",
+        "rectX": 4,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:arbust_2",
+        "name": "Arbust",
+        "rectX": 5,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:arbust_3",
+        "name": "Arbust",
+        "rectX": 6,
+        "rectY": 7,
+        "size": 16
+    },
+    {
+        "id": "pixelminer:short_grass",
+        "name": "Grass",
+        "rectX": 7,
+        "rectY": 7,
+        "size": 16
+    }
+]
