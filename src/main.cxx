@@ -7,5 +7,5 @@ int main(void)
 
     engine.run();
 
-    exit(EXIT_SUCCESS);
+    return 0;
 }

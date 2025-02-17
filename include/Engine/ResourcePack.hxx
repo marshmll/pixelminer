@@ -40,7 +40,6 @@ class ResourcePack
     std::unordered_map<std::string, sf::Font> fonts;                    ///< Loaded fonts.
     std::unordered_map<std::string, sf::Texture> textures;              ///< Loaded textures.
     std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;      ///< Loaded sound buffers.
-    std::unordered_map<std::string, std::shared_ptr<sf::Sound>> sounds; ///< Loaded sounds.
     std::unordered_map<std::string, std::shared_ptr<sf::Music>> musics; ///< Loaded musics.
     std::unordered_map<std::string, TileData> tileDB;                   ///< Tile data mappings.
 
@@ -50,6 +49,11 @@ class ResourcePack
      * @return True if the resource pack was successfully loaded, false otherwise.
      */
     const bool load(const std::string &name);
+
+    /**
+     * @brief Deletes the resource pack cache files.
+     */
+    void deleteCache();
 
     /**
      * @brief Retrieves a font from the resource pack.
@@ -68,12 +72,12 @@ class ResourcePack
     sf::Texture &getTexture(const std::string &key);
 
     /**
-     * @brief Retrieves a sound from the resource pack.
-     * @param key Key of the sound to retrieve.
-     * @return Reference to the requested sound.
-     * @throws Exception if the sound is not found.
+     * @brief Retrieves a sound buffer from the resource pack.
+     * @param key Key of the sound buffer to retrieve.
+     * @return Reference to the requested sound buffer.
+     * @throws Exception if the sound buffer is not found.
      */
-    sf::Sound &getSound(const std::string &key);
+    sf::SoundBuffer &getSoundBuffer(const std::string &key);
 
     /**
      * @brief Retrieves a music from the resource pack.

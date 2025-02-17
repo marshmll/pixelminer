@@ -230,11 +230,7 @@ Engine::Engine() : logger("Engine")
     initMainMenuState();
 }
 
-Engine::~Engine()
-{
-    while (!states.empty())
-        states.pop();
-}
+Engine::~Engine() = default;
 
 /* PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 

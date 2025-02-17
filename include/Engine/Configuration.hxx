@@ -15,7 +15,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * it will be set to the given value.
  */
 #ifndef GAME_VERSION
-#define GAME_VERSION "alpha 1.1.0"
+#define GAME_VERSION "alpha 1.1.1"
 #endif
 
 /**

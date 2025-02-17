@@ -34,8 +34,8 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
             logger.logInfo(_("Created output directory \"") + dst.string() + "\"");
     }
 
-    int files_extracted = 0;
-    unsigned long int total_size;
+    unsigned int files_extracted = 0;
+    unsigned long long int total_size;
 
     do
     {

@@ -4,7 +4,10 @@
 ResourcePack::ResourcePack() : logger("ResourcePack")
 {}
 
-ResourcePack::~ResourcePack() = default;
+ResourcePack::~ResourcePack()
+{
+    deleteCache();
+}
 
 const bool ResourcePack::load(const std::string &name)
 {
@@ -34,25 +37,25 @@ const bool ResourcePack::load(const std::string &name)
         return false;
     }
 
-    std::ifstream packFile(root_path / "pack.json");
+    std::ifstream pack_file(root_path / "pack.json");
 
-    if (!packFile.is_open())
+    if (!pack_file.is_open())
     {
         logger.logError(_("Failed to open \"pack.json\" file in resource pack: ") + root_path.string(), false);
         return false;
     }
 
-    std::stringstream packStream;
-    packStream << packFile.rdbuf();
+    std::stringstream pack_stream;
+    pack_stream << pack_file.rdbuf();
 
-    JObject packObj = JSON::parse(packStream.str()).getAs<JObject>();
+    JObject pack_obj = JSON::parse(pack_stream.str()).getAs<JObject>();
 
-    packFile.close();
+    pack_file.close();
 
     /* Name and description +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    this->name = packObj.at("name").getAs<std::string>();
-    this->description = packObj.at("description").getAs<std::string>();
+    this->name = pack_obj.at("name").getAs<std::string>();
+    this->description = pack_obj.at("description").getAs<std::string>();
 
     /* Icon +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
@@ -132,8 +135,6 @@ const bool ResourcePack::load(const std::string &name)
 
         if (!soundBuffers[key].loadFromFile(root_path / path))
             logger.logWarning(_("Missing sound ") + path + _(" in resource pack: ") + name);
-        else
-            sounds[key] = std::make_shared<sf::Sound>(soundBuffers.at(key));
     }
 
     // Music
@@ -183,10 +184,17 @@ const bool ResourcePack::load(const std::string &name)
     }
 
     logger.logInfo(_("Sucessfully loaded resource pack ") + name + ": " + std::to_string(textures.size()) +
-                   _(" textures, ") + std::to_string(fonts.size()) + _(" fonts, ") + std::to_string(sounds.size()) +
-                   _(" sounds, ") + std::to_string(musics.size()) + _(" musics."));
+                   _(" textures, ") + std::to_string(fonts.size()) + _(" fonts, ") +
+                   std::to_string(soundBuffers.size()) + _(" sounds, ") + std::to_string(musics.size()) +
+                   _(" musics."));
 
     return true;
+}
+
+void ResourcePack::deleteCache()
+{
+    if (name.size() != 0 && std::filesystem::exists(CACHE_FOLDER + "ResourcePacks/" + name))
+        std::filesystem::remove_all(CACHE_FOLDER + "ResourcePacks/" + name);
 }
 
 sf::Font &ResourcePack::getFont(const std::string &key)
@@ -217,18 +225,18 @@ sf::Texture &ResourcePack::getTexture(const std::string &key)
     return textures.at(key); // SHOULD NEVER REACH HERE!
 }
 
-sf::Sound &ResourcePack::getSound(const std::string &key)
+sf::SoundBuffer &ResourcePack::getSoundBuffer(const std::string &key)
 {
     try
     {
-        return *sounds.at(key);
+        return soundBuffers.at(key);
     }
     catch (std::out_of_range &)
     {
         logger.logError(_("Inexistent sound ") + key + _(" in resource pack") + name);
     }
 
-    return *sounds.at(key); // SHOULD NEVER REACH HERE!
+    return soundBuffers.at(key); // SHOULD NEVER REACH HERE!
 }
 
 sf::Music &ResourcePack::getMusic(const std::string &key)
