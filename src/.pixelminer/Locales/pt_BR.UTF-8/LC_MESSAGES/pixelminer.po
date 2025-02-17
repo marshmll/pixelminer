@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-17 09:24-0300\n"
-"PO-Revision-Date: 2025-02-17 09:24-0300\n"
+"POT-Creation-Date: 2025-02-17 12:52-0300\n"
+"PO-Revision-Date: 2025-02-17 12:53-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -71,87 +71,87 @@ msgstr " não foi encontrado(a) na partição de grade de espaço."
 msgid "Generating world metadata..."
 msgstr "Gerando metadata do mundo..."
 
-#: src/Map/Map.cxx:49 src/Map/Map.cxx:59
+#: src/Map/Map.cxx:49 src/Map/Map.cxx:58
 msgid "Preparing to load"
 msgstr "Preparando para carregar"
 
-#: src/Map/Map.cxx:200
+#: src/Map/Map.cxx:199
 msgid "Could not write world metadata: "
 msgstr "Não foi possível escrever metadata para o mundo: "
 
-#: src/Map/Map.cxx:256
+#: src/Map/Map.cxx:255
 msgid "Failed to write region file: "
 msgstr "Falha ao escrever arquivo de região: "
 
-#: src/Map/Map.cxx:311
+#: src/Map/Map.cxx:308
 msgid "Written "
 msgstr "Escrito: "
 
-#: src/Map/Map.cxx:311
+#: src/Map/Map.cxx:308
 msgid " tiles to region: "
 msgstr " tiles para a região: "
 
-#: src/Map/Map.cxx:321
+#: src/Map/Map.cxx:318
 msgid "Inexistent world: "
 msgstr "Mundo inexistente: "
 
-#: src/Map/Map.cxx:323
+#: src/Map/Map.cxx:320
 msgid "Loading world metadata..."
 msgstr "Carregando metadata do mundo..."
 
-#: src/Map/Map.cxx:327
+#: src/Map/Map.cxx:324
 msgid "No world metadata found: "
 msgstr "Não foi encontrado metadata para o mundo: "
 
-#: src/Map/Map.cxx:331 src/Tools/Zip.cxx:157
+#: src/Map/Map.cxx:328 src/Tools/Zip.cxx:157
 msgid "Failed to open file: "
 msgstr "Falha ao abrir arquivo: "
 
-#: src/Map/Map.cxx:340
+#: src/Map/Map.cxx:337
 msgid "Initializing terrain generator..."
 msgstr "Inicializando gerador de terreno..."
 
-#: src/Map/Map.cxx:373
+#: src/Map/Map.cxx:370
 msgid "Failed to read region file: "
 msgstr "Falha ao abrir arquivo de região: "
 
-#: src/Map/Map.cxx:385
+#: src/Map/Map.cxx:382
 msgid "Corrupted region file: Chunk index out of bounds"
 msgstr "Arquivo de região corrompido: Índices de Chunk fora dos limites"
 
-#: src/Map/Map.cxx:408
+#: src/Map/Map.cxx:400
 msgid "Corrupted region file: "
 msgstr "Arquivo de região corrompido: "
 
-#: src/Map/Map.cxx:409
+#: src/Map/Map.cxx:401
 msgid "out of bounds in Chunk"
 msgstr "fora dos limites no Chunk"
 
-#: src/Map/Map.cxx:419
+#: src/Map/Map.cxx:416
 msgid "Invalid tile ID: "
 msgstr "ID de tile inválido: "
 
-#: src/Map/Map.cxx:420
+#: src/Map/Map.cxx:417
 msgid " in Chunk"
 msgstr " no Chunk"
 
-#: src/Map/Map.cxx:447
+#: src/Map/Map.cxx:430
 msgid "Read "
 msgstr "Lidos(as) "
 
-#: src/Map/Map.cxx:447
+#: src/Map/Map.cxx:430
 msgid " tiles from region: "
 msgstr " tiles da região: "
 
-#: src/Map/Map.cxx:484 src/Map/Map.cxx:588
+#: src/Map/Map.cxx:467 src/Map/Map.cxx:571
 msgid "Region ("
 msgstr "Região ("
 
-#: src/Map/Map.cxx:485
+#: src/Map/Map.cxx:468
 msgid ") unloaded from memory."
 msgstr ") descarregada da memória."
 
-#: src/Map/Map.cxx:589
+#: src/Map/Map.cxx:572
 msgid ") out of bounds."
 msgstr ") fora dos limites."
 
@@ -495,7 +495,7 @@ msgstr "Nome do Servidor (opcional)"
 msgid "Add"
 msgstr "Adicionar"
 
-#: src/States/Multiplayer/AddServerState.cxx:66
+#: src/States/Multiplayer/AddServerState.cxx:67
 msgid "Pixelminer Server"
 msgstr "Servidor Pixelminer"
 
@@ -694,8 +694,8 @@ msgid "Save And Quit To Main Menu"
 msgstr "Salvar e Sair para o Menu Principal"
 
 #: src/GUI/PauseMenu.cxx:91
-msgid "Server online at address: "
-msgstr "Servidor online no endereço: "
+msgid "Server online at: "
+msgstr "Servidor online em: "
 
 #: src/GUI/PauseMenu.cxx:95
 msgid "Failed to start server."
@@ -1085,6 +1085,10 @@ msgstr "Usando configurações gráficas padrão."
 msgid "Failed to load window icon. Using OS default icon instead."
 msgstr "Falha ao carregar o ícone da janela. Usando o ícone padrão do SO."
 
+#: src/Engine/Engine.cxx:149
+msgid "An error occured while loading resource pack "
+msgstr "Um erro ocorreu durante o carregamento do pacote de recursos "
+
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:75
 msgid "Error while loading image: "
 msgstr "Erro durante carregamento de imagem: "
@@ -1112,9 +1116,6 @@ msgstr "Jogadores: "
 
 #~ msgid "Missing texture \"background.png\" in resource pack: "
 #~ msgstr "Faltando textura \"background.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"loader.png\" in resource pack: "
-#~ msgstr "Faltando textura \"loader.png\" no pacote de recursos: "
 
 #~ msgid "Missing texture \"player_1.png\" in resource pack: "
 #~ msgstr "Faltando textura \"player_1.png\" no pacote de recursos: "

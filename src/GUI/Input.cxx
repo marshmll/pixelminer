@@ -49,19 +49,20 @@ void Input::handleKeyPress(char32_t c)
     if (std::iscntrl(c))
         return;
 
-    sf::String currStr = text->getString();
-    currStr.insert(cursorIndex, c);
-    text->setString(currStr);
+    sf::String curr_str = text->getString();
+    curr_str.insert(cursorIndex, sf::String(c));
+    text->setString(curr_str);
+
     cursorIndex++;
 }
 
 void Input::handleBackspace()
 {
-    sf::String currStr = text->getString();
+    sf::String curr_str = text->getString();
     if (cursorIndex > 0)
     {
-        currStr.erase(cursorIndex - 1, 1);
-        text->setString(currStr);
+        curr_str.erase(cursorIndex - 1, 1);
+        text->setString(curr_str);
         --cursorIndex;
     }
 }
@@ -168,7 +169,7 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (const auto *text_entered = event->getIf<sf::Event::TextEntered>())
     {
-        sf::String currStr = text->getString();
+        sf::String curr_str = text->getString();
         char32_t unicode = text_entered->unicode;
 
         if (lastKeyPressed == unicode && keyTimer.getElapsedTime().asSeconds() > .5f)
@@ -205,7 +206,7 @@ void Input::render(sf::RenderTarget &target)
         target.draw(blinkerCursor);
 }
 
-const std::string Input::getValue() const
+const sf::String Input::getValue() const
 {
     return text->getString();
 }

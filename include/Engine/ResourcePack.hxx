@@ -7,7 +7,7 @@
 
 #include "Engine/Configuration.hxx"
 #include "Engine/Languages.hxx"
-#include "Tiles/TileData.hxx"
+#include "Tiles/TileDatabase.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
 #include "Tools/Zip.hxx"
@@ -42,7 +42,7 @@ class ResourcePack
     std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;            ///< Loaded sound buffers.
     std::unordered_map<std::string, std::shared_ptr<sf::Sound>> globalSounds; ///< Sounds that are preloaded by default.
     std::unordered_map<std::string, std::shared_ptr<sf::Music>> musics;       ///< Loaded musics.
-    std::unordered_map<std::string, TileData> tileDB;                         ///< Tile data mappings.
+    TileDatabase tileDb;                                                      ///< Tile database.
 
     /**
      * @brief Loads the resource pack by name.

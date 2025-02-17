@@ -12,16 +12,24 @@
  * @brief A structure that holds data for a tile.
  *
  * This structure is used to store information about a tile, such as its unique identifier, name,
- * texture rectangle, and size. It is typically used for managing tile properties in tile-based games.
+ * texture rectangle, and size.
  */
 struct TileData
 {
     /**
-     * @brief The unique identifier of the tile.
+     * @brief The unique tag of the tile.
      *
-     * This is a string used to uniquely identify each tile.
+     * This is a string used to uniquely identify each tile, structured as `domain:name`
      */
-    std::string id;
+    std::string tag;
+
+    /**
+     * @brief The unique id of the tile.
+     *
+     * This is a 8 bytes long number used to uniquely identify each tile. The id is automatically
+     * calculated by the hash of the tag.
+     */
+    uint64_t id;
 
     /**
      * @brief The name of the tile.
@@ -43,5 +51,5 @@ struct TileData
      *
      * This is an integer that represents the size of the tile (e.g., width/height or tile size in pixels).
      */
-    int size;
+    int sizeInPixels;
 };

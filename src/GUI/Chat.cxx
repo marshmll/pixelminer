@@ -3,7 +3,7 @@
 
 using namespace gui;
 
-Chat::Chat(const std::string &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
+Chat::Chat(const sf::String &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
            sf::VideoMode &vm)
     : thisAuthor(this_author), font(font), vm(vm), active(false)
 {
@@ -63,7 +63,7 @@ void Chat::render(sf::RenderTarget &target)
     target.setView(target.getDefaultView());
 }
 
-void Chat::displayMessage(const std::string &author, const std::string &content, const sf::Color &color)
+void Chat::displayMessage(const sf::String &author, const sf::String &content, const sf::Color &color)
 {
     sf::Vector2f next_pos =
         messages.empty()
@@ -80,12 +80,12 @@ void Chat::displayMessage(const std::string &author, const std::string &content,
     chatContainer->scrollToBottom();
 }
 
-void Chat::displayGameLog(const std::string &log)
+void Chat::displayGameLog(const sf::String &log)
 {
     displayMessage("", log, sf::Color::Yellow);
 }
 
-void Chat::displayGameError(const std::string &log)
+void Chat::displayGameError(const sf::String &log)
 {
     displayMessage("", log, sf::Color::Red);
 }
@@ -104,14 +104,14 @@ void Chat::setActive(const bool &active)
         chatContainer->scrollToBottom();
 }
 
-std::string Chat::getInputValue()
+sf::String Chat::getInputValue()
 {
     return input->getValue();
 }
 
 void Chat::sendMessageFromInput()
 {
-    if (input->getValue().size() > 0)
+    if (input->getValue().getSize() > 0)
     {
         displayMessage(thisAuthor, input->getValue());
         input->clear();

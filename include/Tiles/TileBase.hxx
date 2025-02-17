@@ -20,7 +20,8 @@ class TileBase
 {
   protected:
     std::string name;        ///< The name of the tile.
-    std::string id;          ///< The unique identifier of the tile.
+    std::string tag;         ///< The tag of the tile in the format `domain:name`.
+    uint64_t id;             ///< The unique identifier of the tile.
     sf::Texture &texture;    ///< The texture used for rendering the tile.
     sf::IntRect textureRect; ///< The portion of the texture to use for the tile.
     sf::Sprite sprite;       ///< The sprite used to render the tile.
@@ -30,13 +31,14 @@ class TileBase
      * @brief Construct a new TileBase object.
      *
      * @param name The name of the tile.
+     * @param tag The tag of the tile, in the format `domain:name`.
      * @param id The unique identifier of the tile.
      * @param texture The texture to be used for the tile.
      * @param texture_rect The portion of the texture to be used.
-     * @param scale The scale factor for the tile (default is 1).
+     * @param scale The scale factor for the tile (default is 1.f).
      */
-    TileBase(const std::string name, const std::string &id, sf::Texture &texture, const sf::IntRect &texture_rect,
-             const unsigned int &scale = 1);
+    TileBase(const std::string &name, const std::string &tag, const uint64_t &id, sf::Texture &texture,
+             const sf::IntRect &texture_rect, const float &scale = 1.f);
 
     /**
      * @brief Destroy the TileBase object.
@@ -51,51 +53,58 @@ class TileBase
     virtual void render(sf::RenderTarget &target);
 
     /**
-     * @brief Get the unique identifier of the tile.
-     *
-     * @return const std::string& The unique identifier of the tile.
-     */
-    const std::string &getId() const;
-
-    /**
      * @brief Get the name of the tile.
      *
-     * @return const std::string& The name of the tile.
+     * @return The name of the tile.
      */
     const std::string &getName() const;
 
     /**
+     * @brief Get the unique tag of the tile.
+     *
+     * @return The unique tag of the tile.
+     */
+    const std::string &getTag() const;
+
+    /**
+     * @brief Get the unique id of the tile.
+     *
+     * @return The unique id of the tile.
+     */
+    const uint64_t &getId() const;
+
+    /**
      * @brief Get the position of the tile.
      *
-     * @return const sf::Vector2f The position of the tile.
+     * @return The position of the tile.
      */
     const sf::Vector2f getPosition() const;
 
     /**
      * @brief Get the grid position of the tile (in grid units).
      *
-     * @return const sf::Vector2u The grid position of the tile.
+     * @return The grid position of the tile.
      */
     const sf::Vector2u getGridPosition() const;
 
     /**
      * @brief Get the color of the tile.
      *
-     * @return sf::Color The color of the tile.
+     * @return color of the tile.
      */
     sf::Color getColor() const;
 
     /**
      * @brief Get the global bounds of the tile.
      *
-     * @return const sf::FloatRect The global bounds of the tile.
+     * @return The global bounds of the tile.
      */
     const sf::FloatRect getGlobalBounds() const;
 
     /**
      * @brief Get the center position of the tile.
      *
-     * @return const sf::Vector2f The center position of the tile.
+     * @return The center position of the tile.
      */
     const sf::Vector2f getCenter() const;
 

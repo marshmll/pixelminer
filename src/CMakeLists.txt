@@ -46,6 +46,7 @@ target_sources(pixelminer PRIVATE
 ./Network/Server.cxx
 ./main.cxx
 ./Tiles/Tile.cxx
+./Tiles/TileDatabase.cxx
 ./Tiles/TileBase.cxx
 ./Player/Hotbar.cxx
 ./Player/PlayerGUI.cxx

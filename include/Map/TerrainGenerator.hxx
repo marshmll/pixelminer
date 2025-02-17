@@ -11,6 +11,7 @@
 #include "Map/Chunk.hxx"
 #include "Map/Metadata.hxx"
 #include "Tiles/TileData.hxx"
+#include "Tiles/TileDatabase.hxx"
 #include "Tools/Logger.hxx"
 #include "Tools/PerlinNoise.hxx"
 
@@ -37,24 +38,26 @@ using BiomeMap = std::array<std::array<BiomePreset, MAX_WORLD_GRID_SIZE.y>, MAX_
 class TerrainGenerator
 {
   private:
-    Logger logger;                                     ///< Logger used for debugging and messages.
-    std::string &msg;                                  ///< String to store messages for reporting progress.
-    Metadata &metadata;                                ///< Metadata related to world generation.
-    ChunkMatrix &chunks;                               ///< Matrix storing chunks of the world.
-    long int seed;                                     ///< Seed for random number generation and Perlin noise.
-    sf::Texture &texturePack;                          ///< Texture pack for tile rendering.
-    std::unordered_map<std::string, TileData> &tileDB; ///< Tile database mapping tile IDs to tile data.
-    unsigned int gridSize;                             ///< Size of the world grid.
-    float scale;                                       ///< Scale for terrain generation.
-    Random rng;                                        ///< Random number generator.
-    PerlinNoise perlinNoise;                           ///< Perlin noise generator for terrain features.
+    Logger logger;      ///< Logger used for debugging and messages.
+    std::string &msg;   ///< String to store messages for reporting progress.
+    Metadata &metadata; ///< Metadata related to world generation.
 
-    std::vector<Wave> heightWaves;              ///< Waves for heightmap generation.
-    std::vector<Wave> moistureWaves;            ///< Waves for moisture map generation.
-    std::vector<Wave> heatWaves;                ///< Waves for heatmap generation.
-    NoiseMap heightMap;                         ///< Height map of the world.
-    NoiseMap moistureMap;                       ///< Moisture map of the world.
-    NoiseMap heatMap;                           ///< Heat map of the world.
+    ChunkMatrix &chunks;      ///< Matrix storing chunks of the world.
+    long int seed;            ///< Seed for random number generation and Perlin noise.
+    sf::Texture &texturePack; ///< Texture pack for tile rendering.
+    TileDatabase &tileDb;     ///< Tile database mapping tile tags to tile data.
+    unsigned int gridSize;    ///< Size of the world grid.
+    float scale;              ///< Scale for terrain generation.
+
+    Random rng;                      ///< Random number generator.
+    PerlinNoise perlinNoise;         ///< Perlin noise generator for terrain features.
+    std::vector<Wave> heightWaves;   ///< Waves for heightmap generation.
+    std::vector<Wave> moistureWaves; ///< Waves for moisture map generation.
+    std::vector<Wave> heatWaves;     ///< Waves for heatmap generation.
+    NoiseMap heightMap;              ///< Height map of the world.
+    NoiseMap moistureMap;            ///< Moisture map of the world.
+    NoiseMap heatMap;                ///< Heat map of the world.
+
     std::vector<Biome> biomes;                  ///< List of biomes available for the world.
     BiomeMap biomeMap;                          ///< Map of biomes for the world grid.
     std::vector<std::vector<float>> randomGrid; ///< Precomputed random values for the entire world.
@@ -93,8 +96,8 @@ class TerrainGenerator
      * @param scale Scale factor for terrain generation.
      */
     TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, long int seed,
-                     sf::Texture &texture_pack, std::unordered_map<std::string, TileData> &tile_db,
-                     const unsigned int &grid_size, const float &scale);
+                     sf::Texture &texture_pack, TileDatabase &tile_db, const unsigned int &grid_size,
+                     const float &scale);
 
     /// Destructor for TerrainGenerator.
     ~TerrainGenerator();

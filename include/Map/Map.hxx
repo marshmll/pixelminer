@@ -7,6 +7,7 @@
 
 #include "Map/TerrainGenerator.hxx"
 #include "Tiles/Tile.hxx"
+#include "Tiles/TileDatabase.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/LinearCongruentialGenerator.hxx"
 #include "Tools/Logger.hxx"
@@ -35,8 +36,8 @@ class Map
 
     std::unique_ptr<TerrainGenerator> terrainGenerator; ///< Unique pointer to the terrain generator.
 
-    std::unordered_map<std::string, TileData> &tileDB; ///< Reference to the tile database.
-    sf::Texture &texturePack;                          ///< Reference to the texture pack used for tiles.
+    TileDatabase &tileDb;     ///< Reference to the tile database.
+    sf::Texture &texturePack; ///< Reference to the texture pack used for tiles.
 
     unsigned int gridSize; ///< Size of the grid (e.g., how many tiles per chunk).
     float scale;           ///< Scaling factor for rendering the map.
@@ -85,8 +86,8 @@ class Map
      * @param grid_size Size of the grid (number of tiles per chunk).
      * @param scale Scaling factor for rendering the map.
      */
-    Map(const std::string &name, const long int &seed, std::unordered_map<std::string, TileData> &tile_db,
-        sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
+    Map(const std::string &name, const long int &seed, TileDatabase &tile_db, sf::Texture &texture_pack,
+        const unsigned int &grid_size, const float &scale);
 
     /**
      * @brief Constructor that initializes an empty map.
@@ -95,8 +96,7 @@ class Map
      * @param grid_size Size of the grid (number of tiles per chunk).
      * @param scale Scaling factor for rendering the map.
      */
-    Map(std::unordered_map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
-        const float &scale);
+    Map(TileDatabase &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
 
     /**
      * @brief Destructor for cleaning up the map.

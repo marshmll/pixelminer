@@ -88,7 +88,7 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
         if (server.listen(sf::Socket::AnyPort))
         {
             buttons.at("OpenToLAN")->setState(gui::ButtonState::Disabled);
-            chat.displayGameLog(_("Server online at address: ") + server.getFullAddress());
+            chat.displayGameLog(_("Server online at: ") + server.getFullAddress());
         }
         else
         {

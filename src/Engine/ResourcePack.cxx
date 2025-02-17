@@ -172,16 +172,16 @@ const bool ResourcePack::load(const std::string &name)
         {
             JObject obj = entry.getAs<JObject>();
 
-            std::string id, name;
+            std::string tag, name;
             int rect_x, rect_y, size;
 
-            id = obj.at("id").getAs<std::string>();
+            tag = obj.at("tag").getAs<std::string>();
             name = obj.at("name").getAs<std::string>();
             rect_x = static_cast<int>(obj.at("rectX").getAs<long long>());
             rect_y = static_cast<int>(obj.at("rectY").getAs<long long>());
             size = static_cast<int>(obj.at("size").getAs<long long>());
 
-            tileDB[id] = TileData{id, name, sf::IntRect({rect_x * size, rect_y * size}, {size, size}), size};
+            tileDb.insert(tag, name, rect_x, rect_y, size);
         }
         catch (std::runtime_error &e)
         {

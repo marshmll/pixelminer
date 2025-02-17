@@ -63,8 +63,10 @@ const bool AddServerState::addServer()
         }
     }
 
-    array.push_back(JObject({{"name", nameInput->getValue().empty() ? _("Pixelminer Server") : nameInput->getValue()},
-                             {"address", addressInput->getValue()}}));
+    array.push_back(
+        JObject({{"name", nameInput->getValue().isEmpty() ? _("Pixelminer Server")
+                                                          : static_cast<std::string>(nameInput->getValue())},
+                 {"address", addressInput->getValue()}}));
 
     std::ofstream new_servers_file(SETTINGS_FOLDER + "servers.json");
 
@@ -90,7 +92,7 @@ void AddServerState::update(const float &dt)
     nameInput->update(dt, mousePosView, *data.event);
     addressInput->update(dt, mousePosView, *data.event);
 
-    if (!addressInput->getValue().empty())
+    if (!addressInput->getValue().isEmpty())
         buttons.at("Add")->setState(gui::ButtonState::Idle);
     else
         buttons.at("Add")->setState(gui::ButtonState::Disabled);

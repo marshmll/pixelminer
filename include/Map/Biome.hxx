@@ -37,7 +37,7 @@ struct BiomePreset
     std::string name = "Unknown";             ///< Name of the biome.
     BiomeType type = BiomeType::UnknownBiome; ///< Type of the biome (from BiomeType enum).
     sf::Color color = sf::Color::White;       ///< Color representation of the biome.
-    std::string baseTileId = "unknown";       ///< Base tile ID associated with the biome.
+    std::string baseTileTag = "unknown";      ///< Base tile tag associated with the biome.
 };
 
 /**

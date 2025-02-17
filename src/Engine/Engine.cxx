@@ -139,8 +139,15 @@ void Engine::initVariables()
 
 void Engine::initResourcePacks()
 {
-    resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
-    activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+    try
+    {
+        resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
+        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+    }
+    catch (std::exception &e)
+    {
+        logger.logError(_("An error occured while loading resource pack ") + gfx.resourcePack + ": " + e.what());
+    }
 }
 
 void Engine::initEngineData()

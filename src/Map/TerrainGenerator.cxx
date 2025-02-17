@@ -61,35 +61,35 @@ void TerrainGenerator::initBiomes()
             {
             case BiomeType::Desert:
                 biomeMap[x][y].color = sf::Color(194, 178, 128, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:sand_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:sand_tile";
                 break;
             case BiomeType::Forest:
                 biomeMap[x][y].color = sf::Color(24 * std::pow(3.f, (1.f - moisture + heat)), 110, 20, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:grass_tile";
                 break;
             case BiomeType::Grassland:
                 biomeMap[x][y].color = sf::Color(26 * std::pow(3.2f, (1.f - moisture + heat)), 148, 24, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:grass_tile";
                 break;
             case BiomeType::Jungle:
                 biomeMap[x][y].color = sf::Color(25 * std::pow(3.2f, (1.f - moisture + heat)), 130, 20, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:grass_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:grass_tile";
                 break;
             case BiomeType::Mountains:
                 biomeMap[x][y].color = sf::Color(150, 150, 150, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:stone_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:stone_tile";
                 break;
             case BiomeType::Ocean:
                 biomeMap[x][y].color = sf::Color(16, 51, 163, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:water_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:water_tile";
                 break;
             case BiomeType::Tundra:
                 biomeMap[x][y].color = sf::Color(255, 255, 255, 255);
-                biomeMap[x][y].baseTileId = "pixelminer:snowy_grass_tile";
+                biomeMap[x][y].baseTileTag = "pixelminer:snowy_grass_tile";
                 break;
             default:
                 biomeMap[x][y].color = sf::Color::White;
-                biomeMap[x][y].baseTileId = "unknown";
+                biomeMap[x][y].baseTileTag = "unknown";
                 break;
             }
 
@@ -159,10 +159,10 @@ Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int 
 }
 
 TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, long int seed,
-                                   sf::Texture &texture_pack, std::unordered_map<std::string, TileData> &tile_db,
-                                   const unsigned int &grid_size, const float &scale)
+                                   sf::Texture &texture_pack, TileDatabase &tile_db, const unsigned int &grid_size,
+                                   const float &scale)
     : logger("TerrainGenerator"), msg(msg), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
-      tileDB(tile_db), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
+      tileDb(tile_db), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
 {
     using namespace std::chrono_literals;
 
@@ -196,39 +196,44 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
         for (int y = REGION_GRID_START_Y; y <= REGION_GRID_END_Y; ++y)
         {
             const BiomePreset &biome = biomeMap[x][y];
-            TileData tile_data = tileDB.at(biome.baseTileId);
+            TileData tile_data = tileDb.getByTag(biome.baseTileTag);
 
-            putTile(Tile(tile_data.name, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale, biome.color),
+            putTile(Tile(tile_data.name, tile_data.tag, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
+                         biome.color),
                     x, y, 0);
 
-            if (tile_data.id == "grass_tile")
+            if (tile_data.tag == "pixelminer:grass_tile")
             {
                 float randomValue = randomGrid[x][y];
 
                 if (randomValue < 0.005f)
                 {
-                    TileData td = tileDB.at("short_grass");
-                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                    TileData td = tileDb.getByTag("pixelminer:short_grass");
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                            1);
                 }
                 if (randomValue < 0.002f)
                 {
-                    TileData td = tileDB.at("arbust_1");
-                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                    TileData td = tileDb.getByTag("pixelminer:arbust_1");
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                            1);
                 }
                 if (randomValue < 0.001f)
                 {
-                    TileData td = tileDB.at("arbust_2");
-                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                    TileData td = tileDb.getByTag("pixelminer:arbust_2");
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                            1);
                 }
             }
-            else if (tile_data.id == "snowy_grass_tile")
+            else if (tile_data.tag == "pixelminer:snowy_grass_tile")
             {
                 float randomValue = randomGrid[x][y];
 
                 if (randomValue < 0.01f)
                 {
-                    TileData td = tileDB.at("snow_tile");
-                    putTile(Tile(td.name, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y, 1);
+                    TileData td = tileDb.getByTag("pixelminer:snow_tile");
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
+                            1);
                 }
             }
         }

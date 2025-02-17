@@ -1,9 +1,9 @@
 #include "Tiles/TileBase.hxx"
 #include "stdafx.hxx"
 
-TileBase::TileBase(const std::string name, const std::string &id, sf::Texture &texture, const sf::IntRect &texture_rect,
-                   const unsigned int &scale)
-    : name(name), id(id), texture(texture), textureRect(texture_rect), sprite(texture, textureRect)
+TileBase::TileBase(const std::string &name, const std::string &tag, const uint64_t &id, sf::Texture &texture,
+                   const sf::IntRect &texture_rect, const float &scale)
+    : name(name), tag(tag), id(id), texture(texture), textureRect(texture_rect), sprite(texture, textureRect)
 {
     sprite.setScale(sf::Vector2f(scale, scale));
 }
@@ -15,14 +15,19 @@ void TileBase::render(sf::RenderTarget &target)
     target.draw(sprite);
 }
 
-const std::string &TileBase::getId() const
-{
-    return id;
-}
-
 const std::string &TileBase::getName() const
 {
     return name;
+}
+
+const std::string &TileBase::getTag() const
+{
+    return tag;
+}
+
+const uint64_t &TileBase::getId() const
+{
+    return id;
 }
 
 const sf::Vector2f TileBase::getPosition() const

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-17 09:25-0300\n"
+"POT-Creation-Date: 2025-02-17 12:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,87 +70,87 @@ msgstr ""
 msgid "Generating world metadata..."
 msgstr ""
 
-#: src/Map/Map.cxx:49 src/Map/Map.cxx:59
+#: src/Map/Map.cxx:49 src/Map/Map.cxx:58
 msgid "Preparing to load"
 msgstr ""
 
-#: src/Map/Map.cxx:200
+#: src/Map/Map.cxx:199
 msgid "Could not write world metadata: "
 msgstr ""
 
-#: src/Map/Map.cxx:256
+#: src/Map/Map.cxx:255
 msgid "Failed to write region file: "
 msgstr ""
 
-#: src/Map/Map.cxx:311
+#: src/Map/Map.cxx:308
 msgid "Written "
 msgstr ""
 
-#: src/Map/Map.cxx:311
+#: src/Map/Map.cxx:308
 msgid " tiles to region: "
 msgstr ""
 
-#: src/Map/Map.cxx:321
+#: src/Map/Map.cxx:318
 msgid "Inexistent world: "
 msgstr ""
 
-#: src/Map/Map.cxx:323
+#: src/Map/Map.cxx:320
 msgid "Loading world metadata..."
 msgstr ""
 
-#: src/Map/Map.cxx:327
+#: src/Map/Map.cxx:324
 msgid "No world metadata found: "
 msgstr ""
 
-#: src/Map/Map.cxx:331 src/Tools/Zip.cxx:157
+#: src/Map/Map.cxx:328 src/Tools/Zip.cxx:157
 msgid "Failed to open file: "
 msgstr ""
 
-#: src/Map/Map.cxx:340
+#: src/Map/Map.cxx:337
 msgid "Initializing terrain generator..."
 msgstr ""
 
-#: src/Map/Map.cxx:373
+#: src/Map/Map.cxx:370
 msgid "Failed to read region file: "
 msgstr ""
 
-#: src/Map/Map.cxx:385
+#: src/Map/Map.cxx:382
 msgid "Corrupted region file: Chunk index out of bounds"
 msgstr ""
 
-#: src/Map/Map.cxx:408
+#: src/Map/Map.cxx:400
 msgid "Corrupted region file: "
 msgstr ""
 
-#: src/Map/Map.cxx:409
+#: src/Map/Map.cxx:401
 msgid "out of bounds in Chunk"
 msgstr ""
 
-#: src/Map/Map.cxx:419
+#: src/Map/Map.cxx:416
 msgid "Invalid tile ID: "
 msgstr ""
 
-#: src/Map/Map.cxx:420
+#: src/Map/Map.cxx:417
 msgid " in Chunk"
 msgstr ""
 
-#: src/Map/Map.cxx:447
+#: src/Map/Map.cxx:430
 msgid "Read "
 msgstr ""
 
-#: src/Map/Map.cxx:447
+#: src/Map/Map.cxx:430
 msgid " tiles from region: "
 msgstr ""
 
-#: src/Map/Map.cxx:484 src/Map/Map.cxx:588
+#: src/Map/Map.cxx:467 src/Map/Map.cxx:571
 msgid "Region ("
 msgstr ""
 
-#: src/Map/Map.cxx:485
+#: src/Map/Map.cxx:468
 msgid ") unloaded from memory."
 msgstr ""
 
-#: src/Map/Map.cxx:589
+#: src/Map/Map.cxx:572
 msgid ") out of bounds."
 msgstr ""
 
@@ -492,7 +492,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: src/States/Multiplayer/AddServerState.cxx:66
+#: src/States/Multiplayer/AddServerState.cxx:67
 msgid "Pixelminer Server"
 msgstr ""
 
@@ -689,7 +689,7 @@ msgid "Save And Quit To Main Menu"
 msgstr ""
 
 #: src/GUI/PauseMenu.cxx:91
-msgid "Server online at address: "
+msgid "Server online at: "
 msgstr ""
 
 #: src/GUI/PauseMenu.cxx:95
@@ -1078,6 +1078,10 @@ msgstr ""
 
 #: src/Engine/Engine.cxx:125
 msgid "Failed to load window icon. Using OS default icon instead."
+msgstr ""
+
+#: src/Engine/Engine.cxx:149
+msgid "An error occured while loading resource pack "
 msgstr ""
 
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:75

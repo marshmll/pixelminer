@@ -130,7 +130,7 @@ namespace gui
          *
          * @return The current string entered by the user.
          */
-        const std::string getValue() const;
+        const sf::String getValue() const;
 
         /**
          * @brief Returns if the input is on focus and should be updated.

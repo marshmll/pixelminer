@@ -16,7 +16,7 @@ void setup_i18n(const std::string_view locale)
     SetThreadLocale(localeId);
     std::wcout << "Locale ID: " << localeId << std::endl;
 #else
-    setlocale(LC_ALL, locale.data());
+    setlocale(LC_MESSAGES, locale.data());
 #endif
 
     // Bind the text domain

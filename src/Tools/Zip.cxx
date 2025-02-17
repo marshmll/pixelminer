@@ -35,7 +35,7 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
     }
 
     unsigned int files_extracted = 0;
-    unsigned long long int total_size;
+    unsigned long long int total_size = 0;
 
     do
     {

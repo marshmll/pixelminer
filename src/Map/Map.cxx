@@ -34,7 +34,7 @@ void Map::initTerrainGenerator(const long int &seed)
 {
     std::lock_guard<std::mutex> lock(mutex);
     terrainGenerator =
-        std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDB, gridSize, scale);
+        std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDb, gridSize, scale);
     setReady(true);
     clock.restart();
 }
@@ -44,9 +44,9 @@ void Map::setReady(const bool ready)
     this->ready = ready;
 }
 
-Map::Map(const std::string &name, const long int &seed, std::unordered_map<std::string, TileData> &tile_db,
-         sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
-    : logger("Map"), ready(false), msg(_("Preparing to load")), folderName(name), tileDB(tile_db),
+Map::Map(const std::string &name, const long int &seed, TileDatabase &tile_db, sf::Texture &texture_pack,
+         const unsigned int &grid_size, const float &scale)
+    : logger("Map"), ready(false), msg(_("Preparing to load")), folderName(name), tileDb(tile_db),
       texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
 {
     initRegionStatusArray();
@@ -54,9 +54,8 @@ Map::Map(const std::string &name, const long int &seed, std::unordered_map<std::
     std::thread(&Map::initTerrainGenerator, this, seed).detach();
 }
 
-Map::Map(std::unordered_map<std::string, TileData> &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size,
-         const float &scale)
-    : logger("Map"), ready(false), msg(_("Preparing to load")), folderName("ERROR"), tileDB(tile_db),
+Map::Map(TileDatabase &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
+    : logger("Map"), ready(false), msg(_("Preparing to load")), folderName("ERROR"), tileDb(tile_db),
       texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
 {
     initRegionStatusArray();
@@ -293,11 +292,9 @@ void Map::saveRegion(const sf::Vector2i &region_index)
                         if (!chunks[c_x][c_y]->tiles[x][y][z])
                             continue;
 
-                        std::string id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
-                        uint8_t id_size = id.size();
+                        uint64_t id = chunks[c_x][c_y]->tiles[x][y][z]->getId();
 
-                        region_file.write(reinterpret_cast<char *>(&id_size), sizeof(uint8_t));
-                        region_file.write(id.data(), id.size());
+                        region_file.write(reinterpret_cast<char *>(&id), sizeof(uint64_t));
                         region_file.write(reinterpret_cast<char *>(&x), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&y), sizeof(unsigned short));
                         region_file.write(reinterpret_cast<char *>(&z), sizeof(unsigned short));
@@ -392,49 +389,35 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         for (int i = 0; i < tile_amount; i++)
         {
             unsigned short x = 0, y = 0, z = 0;
-            std::string id;
-            uint8_t id_size;
-            char buf[256];
+            uint64_t id;
 
-            region_file.read(reinterpret_cast<char *>(&id_size), sizeof(uint8_t));
-            region_file.read(buf, id_size);
+            region_file.read(reinterpret_cast<char *>(&id), sizeof(uint64_t));
             region_file.read(reinterpret_cast<char *>(&x), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&y), sizeof(unsigned short));
             region_file.read(reinterpret_cast<char *>(&z), sizeof(unsigned short));
-
-            id = std::string(buf, id_size);
 
             if (x > CHUNK_SIZE_IN_TILES.x || y > CHUNK_SIZE_IN_TILES.y || z > CHUNK_SIZE_IN_TILES.z)
                 logger.logError(_("Corrupted region file: ") + "Tile[" + std::to_string(x) + "][" + std::to_string(y) +
                                 "][" + std::to_string(z) + "] " + _("out of bounds in Chunk") + "[" +
                                 std::to_string(chunk_x) + "][" + std::to_string(chunk_y) + "]");
 
-            TileData td;
-            try
-            {
-                td = tileDB.at(id);
-            }
-            catch (std::out_of_range &)
-            {
-                logger.logError(_("Invalid tile ID: ") + id + " Tile[" + std::to_string(x) + "][" + std::to_string(y) +
-                                    "][" + std::to_string(z) + "]" + _(" in Chunk") + "[" + std::to_string(chunk_x) +
-                                    "][" + std::to_string(chunk_y) + "]",
-                                false);
-
-                td = tileDB.at("unknown");
-            }
+            TileData td = tileDb.getById(id);
 
             sf::Vector2u grid_pos(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
             BiomePreset biome_data = terrainGenerator->getBiomeData(grid_pos);
 
-            if (td.id != "unknown")
+            if (td.tag != "unknown")
             {
-                Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
+                Tile tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
                 chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
             }
             else
             {
-                Tile tile(td.name, id, texturePack, td.rect, gridSize, grid_pos, scale);
+                logger.logWarning(_("Invalid tile ID: ") + std::to_string(id) + " Tile[" + std::to_string(x) + "][" +
+                                  std::to_string(y) + "][" + std::to_string(z) + "]" + _(" in Chunk") + "[" +
+                                  std::to_string(chunk_x) + "][" + std::to_string(chunk_y) + "]");
+
+                Tile tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, grid_pos, scale);
                 chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
             }
         }
