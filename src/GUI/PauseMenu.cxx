@@ -3,7 +3,8 @@
 
 using namespace gui;
 
-PauseMenu::PauseMenu(EngineData &data) : active(false), quit(false), data(data)
+PauseMenu::PauseMenu(EngineData &data, Server &server, Chat &chat)
+    : active(false), quit(false), data(data), server(server), chat(chat)
 {
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setSize((sf::Vector2f(data.vm->size)));
@@ -67,7 +68,12 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
         return;
 
     for (auto &[key, button] : buttons)
+    {
         button->update(mouse_pos);
+
+        if (button->isPressed() && data.activeResourcePack->getSound("Click").getStatus() != sf::Sound::Status::Playing)
+            data.activeResourcePack->getSound("Click").play();
+    }
 
     if (buttons.at("BackToGame")->isPressed())
     {
@@ -76,6 +82,20 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
     else if (buttons.at("SaveAndQuit")->isPressed())
     {
         setQuit(true);
+    }
+    else if (buttons.at("OpenToLAN")->isPressed())
+    {
+        if (server.listen(sf::Socket::AnyPort))
+        {
+            buttons.at("OpenToLAN")->setState(gui::ButtonState::Disabled);
+            chat.displayGameLog(_("Server online at address: ") + server.getFullAddress());
+        }
+        else
+        {
+            chat.displayGameError(_("Failed to start server."));
+        }
+
+        setActive(false);
     }
 }
 

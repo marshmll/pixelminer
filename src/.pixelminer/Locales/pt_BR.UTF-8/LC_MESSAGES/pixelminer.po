@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-16 19:48-0300\n"
-"PO-Revision-Date: 2025-02-16 19:48-0300\n"
+"POT-Creation-Date: 2025-02-17 09:24-0300\n"
+"PO-Revision-Date: 2025-02-17 09:24-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -359,7 +359,7 @@ msgstr "Um Jogador"
 msgid "Multiplayer"
 msgstr "Multijogador"
 
-#: src/States/MainMenuState.cxx:44 src/GUI/PauseMenu.cxx:44
+#: src/States/MainMenuState.cxx:44 src/GUI/PauseMenu.cxx:45
 msgid "Options"
 msgstr "Opções"
 
@@ -481,7 +481,7 @@ msgid ""
 "if it is online, and if your internet connectivity is ok."
 msgstr ""
 "O servidor não respondeu depois de 10 segundos. Verifique se o servidor "
-"existe e está online, e sua conectividade de internet está boa."
+"existe e está online, e se sua conectividade de internet está boa."
 
 #: src/States/Multiplayer/ClientGameState.cxx:70
 msgid "Disconnected."
@@ -673,25 +673,33 @@ msgstr "Erro: Comando vazio."
 msgid "Unknown command: \""
 msgstr "Comando desconhecido: \""
 
-#: src/GUI/PauseMenu.cxx:26
+#: src/GUI/PauseMenu.cxx:27
 msgid "Back to Game"
 msgstr "Voltar ao Jogo"
 
-#: src/GUI/PauseMenu.cxx:31
+#: src/GUI/PauseMenu.cxx:32
 msgid "Achievements"
 msgstr "Conquistas"
 
-#: src/GUI/PauseMenu.cxx:39
+#: src/GUI/PauseMenu.cxx:40
 msgid "Statistics"
 msgstr "Estatísticas"
 
-#: src/GUI/PauseMenu.cxx:52
+#: src/GUI/PauseMenu.cxx:53
 msgid "Open To LAN"
 msgstr "Abrir para a LAN"
 
-#: src/GUI/PauseMenu.cxx:57
+#: src/GUI/PauseMenu.cxx:58
 msgid "Save And Quit To Main Menu"
 msgstr "Salvar e Sair para o Menu Principal"
+
+#: src/GUI/PauseMenu.cxx:91
+msgid "Server online at address: "
+msgstr "Servidor online no endereço: "
+
+#: src/GUI/PauseMenu.cxx:95
+msgid "Failed to start server."
+msgstr "Falha ao iniciar servidor."
 
 #: src/Network/Client.cxx:16
 msgid "Could not connect to "
@@ -757,16 +765,16 @@ msgstr "Arquivo \""
 msgid "\" does not exist."
 msgstr "\" não existe."
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:293
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:308
 msgid "Error sending file part "
 msgstr "Erro ao enviar parte de arquivo "
 
 #: src/Network/Client.cxx:288 src/Network/Client.cxx:294
-#: src/Network/Server.cxx:294 src/Network/Server.cxx:300
+#: src/Network/Server.cxx:309 src/Network/Server.cxx:315
 msgid " B) of file "
 msgstr " B) do arquivo "
 
-#: src/Network/Client.cxx:289 src/Network/Server.cxx:295
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:310
 msgid "to: "
 msgstr "para: "
 
@@ -778,7 +786,7 @@ msgstr "Enviado parte de arquivo: "
 msgid "Could not write to file: \""
 msgstr "Não foi possivel escrever no arquivo: \""
 
-#: src/Network/Client.cxx:338 src/Network/Server.cxx:349
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:364
 msgid "Received file part "
 msgstr "Recebido parte de arquivo "
 
@@ -786,201 +794,214 @@ msgstr "Recebido parte de arquivo "
 msgid " of file: "
 msgstr " do arquivo: "
 
-#: src/Network/Server.cxx:35
+#: src/Network/Server.cxx:37
 msgid "Server's listener thread for ("
 msgstr "Thread ouvidora de servidor para ("
 
-#: src/Network/Server.cxx:36
+#: src/Network/Server.cxx:38
 msgid ") is offline."
 msgstr ") está offline."
 
-#: src/Network/Server.cxx:82
+#: src/Network/Server.cxx:84
 msgid "Connection with client "
 msgstr "Conexão com cliente "
 
-#: src/Network/Server.cxx:82
+#: src/Network/Server.cxx:84
 msgid " timed out after "
 msgstr " expirou depois de "
 
-#: src/Network/Server.cxx:83
+#: src/Network/Server.cxx:85
 msgid " seconds."
 msgstr " segundos."
 
-#: src/Network/Server.cxx:98
+#: src/Network/Server.cxx:100
 msgid "Connecting to self is not allowed."
 msgstr "Conectar à si mesmo não é permitido."
 
-#: src/Network/Server.cxx:108
+#: src/Network/Server.cxx:110
 msgid "Client with IP reconnected: "
 msgstr "Cliente com IP reconectou-se: "
 
-#: src/Network/Server.cxx:114 src/Network/Server.cxx:188
+#: src/Network/Server.cxx:116 src/Network/Server.cxx:198
 msgid "Client with IP is already connected: "
 msgstr "Cliente com IP já está conectado: "
 
-#: src/Network/Server.cxx:131
+#: src/Network/Server.cxx:133
 msgid "A Pixelminer Server."
 msgstr "Um Servidor Pixelminer."
 
-#: src/Network/Server.cxx:167
+#: src/Network/Server.cxx:170
+msgid "Already listening on port "
+msgstr "Já escutando na porta "
+
+#: src/Network/Server.cxx:176
 msgid "Could not bind to port "
 msgstr "Não foi possivel se vincular à porta: "
 
-#: src/Network/Server.cxx:181
+#: src/Network/Server.cxx:191
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr "Número máximo de conexões atingido. Recusada a conexão com o cliente: "
 
-#: src/Network/Server.cxx:193 src/Network/Server.cxx:208
+#: src/Network/Server.cxx:203 src/Network/Server.cxx:218
 msgid "Client with IP "
 msgstr "Cliente com IP "
 
-#: src/Network/Server.cxx:193
+#: src/Network/Server.cxx:203
 msgid " connected."
 msgstr " conectado."
 
-#: src/Network/Server.cxx:202
+#: src/Network/Server.cxx:212
 msgid "Client with UUID "
 msgstr "Cliente com UUID "
 
-#: src/Network/Server.cxx:202
+#: src/Network/Server.cxx:212
 msgid " is not connected."
 msgstr " conectou-se."
 
-#: src/Network/Server.cxx:208
+#: src/Network/Server.cxx:218
 msgid " is now disconnected."
 msgstr "   desconectou-se."
 
-#: src/Network/Server.cxx:222
+#: src/Network/Server.cxx:237
 msgid "Could not send packet to: "
 msgstr "Não foi possível enviar pacote para: "
 
-#: src/Network/Server.cxx:234
+#: src/Network/Server.cxx:249
 msgid "Error while sending control message to: "
 msgstr "Erro durante o envio de mensagem de controle para: "
 
-#: src/Network/Server.cxx:245 src/Network/Server.cxx:314
+#: src/Network/Server.cxx:260 src/Network/Server.cxx:329
 msgid "Client is not connected: "
 msgstr "Cliente não está conectado: "
 
-#: src/Network/Server.cxx:251
+#: src/Network/Server.cxx:266
 msgid "Invalid file: "
 msgstr "Arquivo inválido: "
 
-#: src/Network/Server.cxx:328
+#: src/Network/Server.cxx:343
 msgid "Could not write file: "
 msgstr "Não foi possivel escrever arquivo: "
 
-#: src/Network/Server.cxx:350
+#: src/Network/Server.cxx:365
 msgid "of file: "
 msgstr "do arquivo: "
 
-#: src/Network/Server.cxx:366
+#: src/Network/Server.cxx:381
 msgid "Server is down"
 msgstr "Servidor desligado"
 
-#: src/Engine/ResourcePack.cxx:20
+#: src/Engine/ResourcePack.cxx:23
 msgid "Inexistent resouce pack: "
 msgstr "Pacote de recursos inexistente: "
 
-#: src/Engine/ResourcePack.cxx:26
+#: src/Engine/ResourcePack.cxx:29
 msgid "Failed to cache resource pack: "
 msgstr "Falha ao armazenar pacote de recursos em cache: "
 
-#: src/Engine/ResourcePack.cxx:33
+#: src/Engine/ResourcePack.cxx:36
 msgid "Resource pack "
 msgstr "Pacote de recursos "
 
-#: src/Engine/ResourcePack.cxx:33
+#: src/Engine/ResourcePack.cxx:36
 msgid " does not have a \"pack.json\" file."
 msgstr " não possui um arquivo \"pack.json\"."
 
-#: src/Engine/ResourcePack.cxx:41
+#: src/Engine/ResourcePack.cxx:44
 msgid "Failed to open \"pack.json\" file in resource pack: "
 msgstr "Falha ao abrir o arquivo \"pack.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:61
+#: src/Engine/ResourcePack.cxx:64
 msgid "Missing texture \"icon.png\" in resource pack: "
 msgstr "Faltando textura \"icon.png\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:74
+#: src/Engine/ResourcePack.cxx:77
 msgid "Failed to open font file: "
 msgstr "Falha ao abrir arquivo de fonte: "
 
-#: src/Engine/ResourcePack.cxx:74
+#: src/Engine/ResourcePack.cxx:77
 msgid " from resource pack: "
 msgstr " do pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:88
+#: src/Engine/ResourcePack.cxx:91
 msgid "Failed to open \"textures.json\" file in resource pack: "
 msgstr "Falha ao abrir \"textures.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:105
+#: src/Engine/ResourcePack.cxx:108
 msgid "Missing texture "
 msgstr "Textura faltando: "
 
-#: src/Engine/ResourcePack.cxx:105 src/Engine/ResourcePack.cxx:134
-#: src/Engine/ResourcePack.cxx:146
+#: src/Engine/ResourcePack.cxx:108 src/Engine/ResourcePack.cxx:139
+#: src/Engine/ResourcePack.cxx:154
 msgid " in resource pack: "
 msgstr " no pacote de recursos "
 
-#: src/Engine/ResourcePack.cxx:117
+#: src/Engine/ResourcePack.cxx:120
 msgid "Failed to open \"sounds.json\" file in resource pack: "
 msgstr "Falha ao abrir o arquivo \"sounds.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:134
+#: src/Engine/ResourcePack.cxx:139
 msgid "Missing sound "
 msgstr "Som faltando: "
 
-#: src/Engine/ResourcePack.cxx:146
+#: src/Engine/ResourcePack.cxx:154
 msgid "Missing music "
 msgstr "Música faltando: "
 
-#: src/Engine/ResourcePack.cxx:154
+#: src/Engine/ResourcePack.cxx:162
 msgid "Failed to open \"tile_db.json\" file in resource pack: "
 msgstr "Falha ao abrir \"tile_db.json\" no pacote de recursos: "
 
-#: src/Engine/ResourcePack.cxx:180
+#: src/Engine/ResourcePack.cxx:188
 msgid "Error while reading tile database: "
 msgstr "Erro durante a leitura do banco de dados de tiles: "
 
-#: src/Engine/ResourcePack.cxx:185
+#: src/Engine/ResourcePack.cxx:193
 msgid "Sucessfully loaded resource pack "
 msgstr "Pacote de recursos carregado com sucesso: "
 
-#: src/Engine/ResourcePack.cxx:186
+#: src/Engine/ResourcePack.cxx:194
 msgid " textures, "
 msgstr " texturas, "
 
-#: src/Engine/ResourcePack.cxx:186
+#: src/Engine/ResourcePack.cxx:194
 msgid " fonts, "
 msgstr " fontes, "
 
-#: src/Engine/ResourcePack.cxx:187
+#: src/Engine/ResourcePack.cxx:195
+msgid " sound buffers, "
+msgstr " buffers de som, "
+
+#: src/Engine/ResourcePack.cxx:196
 msgid " sounds, "
 msgstr " sons, "
 
-#: src/Engine/ResourcePack.cxx:187
+#: src/Engine/ResourcePack.cxx:196
 msgid " musics."
 msgstr " músicas."
 
-#: src/Engine/ResourcePack.cxx:200
+#: src/Engine/ResourcePack.cxx:215
 msgid "Inexistent font "
 msgstr "Fonte inexistente: "
 
-#: src/Engine/ResourcePack.cxx:200 src/Engine/ResourcePack.cxx:214
-#: src/Engine/ResourcePack.cxx:228 src/Engine/ResourcePack.cxx:242
+#: src/Engine/ResourcePack.cxx:215 src/Engine/ResourcePack.cxx:229
+#: src/Engine/ResourcePack.cxx:243 src/Engine/ResourcePack.cxx:257
+#: src/Engine/ResourcePack.cxx:271
 msgid " in resource pack"
 msgstr " no pacote de recursos"
 
-#: src/Engine/ResourcePack.cxx:214
+#: src/Engine/ResourcePack.cxx:229
 msgid "Inexistent texture "
 msgstr "Textura inexistente: "
 
-#: src/Engine/ResourcePack.cxx:228
+#: src/Engine/ResourcePack.cxx:243
+msgid "Inexistent sound buffer"
+msgstr "Buffer de som inexistente"
+
+#: src/Engine/ResourcePack.cxx:257
 msgid "Inexistent sound "
 msgstr "Som inexistente: "
 
-#: src/Engine/ResourcePack.cxx:242
+#: src/Engine/ResourcePack.cxx:271
 msgid "Inexistent music "
 msgstr "Música inexistente: "
 

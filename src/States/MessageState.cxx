@@ -13,7 +13,7 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
 
     messageText->setPosition(
         sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - messageText->getGlobalBounds().size.x / 2.f,
-                     gui::percent(data.vm->size.y, 45.f)));
+                     gui::percent(data.vm->size.y, 40.f)));
 
     messageText->setFillColor(sf::Color(200, 200, 200, 255));
 
@@ -48,7 +48,7 @@ MessageState::MessageState(EngineData &data, const std::string &message, const s
     backButton = std::make_unique<gui::TextButton>(
         sf::Vector2f(descriptionText->getPosition().x + descriptionText->getGlobalBounds().size.x / 2.f -
                          gui::percent(data.vm->size.x, 45.f) / 2.f,
-                     gui::percent(data.vm->size.y, 60.f)),
+                     gui::percent(data.vm->size.y, 80.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 45.f), gui::percent(data.vm->size.y, 6.f)),
         sf::Color(200, 200, 200, 200), _("Back"), data.activeResourcePack->getFont("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
@@ -63,7 +63,10 @@ void MessageState::update(const float &dt)
     backButton->update(mousePosView);
 
     if (backButton->isPressed())
+    {
+        data.activeResourcePack->getSound("Click").play();
         killSelf();
+    }
 }
 
 void MessageState::render(sf::RenderTarget &target)

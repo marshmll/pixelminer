@@ -96,7 +96,12 @@ void AddServerState::update(const float &dt)
         buttons.at("Add")->setState(gui::ButtonState::Disabled);
 
     for (auto &[_, button] : buttons)
+    {
         button->update(mousePosView);
+
+        if (button->isPressed() && data.activeResourcePack->getSound("Click").getStatus() != sf::Sound::Status::Playing)
+            data.activeResourcePack->getSound("Click").play();
+    }
 
     if (buttons.at("Cancel")->isPressed())
     {

@@ -2,24 +2,34 @@
     "musics": [],
     "effects": [
         {
+            "key": "Click",
+            "path": "Assets/Sounds/Effects/UI/click.ogg",
+            "global": true
+        },
+        {
             "key": "GrassWalk1",
-            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_1.ogg"
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_1.ogg",
+            "global": false
         },
         {
             "key": "GrassWalk2",
-            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_2.ogg"
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_2.ogg",
+            "global": false
         },
         {
             "key": "GrassWalk3",
-            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_3.ogg"
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_3.ogg",
+            "global": false
         },
         {
             "key": "GrassWalk4",
-            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_4.ogg"
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_4.ogg",
+            "global": false
         },
         {
             "key": "GrassWalk5",
-            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_5.ogg"
+            "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_5.ogg",
+            "global": false
         }
     ]
 }

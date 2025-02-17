@@ -96,9 +96,9 @@ class Server
      * @param ip The IP address of the client.
      * @param port The port number of the client.
      */
-    void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, unsigned short port);
+    void handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port);
 
-    void sendServerInfo(const sf::IpAddress &ip, unsigned short port);
+    void sendServerInfo(const sf::IpAddress &ip, const unsigned short &port);
 
     /**
      * @brief Sets the server's online status.
@@ -121,8 +121,9 @@ class Server
     /**
      * @brief Starts listening for incoming connections on the specified port.
      * @param port The port to bind the server socket to.
+     * @return True if the socket was bound successfully, false otherwise.
      */
-    void listen(unsigned short port);
+    const bool listen(const unsigned short &port);
 
     /**
      * @brief Creates a connection with a client.
@@ -131,7 +132,7 @@ class Server
      * @param uuid The UUID of the client.
      * @return true if the connection is successfully created, false otherwise.
      */
-    bool createConnection(const sf::IpAddress &ip, unsigned short port, const std::string &uuid);
+    bool createConnection(const sf::IpAddress &ip, const unsigned short &port, const std::string &uuid);
 
     /**
      * @brief Disconnects a client by their UUID.
@@ -145,7 +146,14 @@ class Server
      * @param port The port number of the client.
      * @return true if the client is connected, false otherwise.
      */
-    bool isClientConnected(const sf::IpAddress &ip, unsigned short port) const;
+    bool isClientConnected(const sf::IpAddress &ip, const unsigned short &port) const;
+
+    /**
+     * @brief Retrieves the full server address in the format `ip:address`.
+     *
+     * @return The full server address as a string.
+     */
+    const std::string getFullAddress();
 
     /**
      * @brief Sends a packet to a client.
@@ -154,7 +162,7 @@ class Server
      * @param port The port number of the client.
      * @return true if the packet was successfully sent, false otherwise.
      */
-    bool send(sf::Packet &packet, const sf::IpAddress &ip, unsigned short port);
+    bool send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port);
 
     /**
      * @brief Sends a control message to a client.
@@ -162,7 +170,7 @@ class Server
      * @param ip The IP address of the client.
      * @param port The port number of the client.
      */
-    void sendControlMessage(const std::string &header, const sf::IpAddress &ip, unsigned short port);
+    void sendControlMessage(const std::string &header, const sf::IpAddress &ip, const unsigned short &port);
 
     /**
      * @brief Sends a file to a client.
@@ -171,8 +179,8 @@ class Server
      * @param path The path to the file to send.
      * @param mode The mode in which to open the file (e.g., binary or text).
      */
-    void
-    sendFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &path, std::ios::openmode mode);
+    void sendFile(const sf::IpAddress &ip, const unsigned short &port, const std::filesystem::path &path,
+                  std::ios::openmode mode);
 
     /**
      * @brief Receives a file from a client and saves it to the specified folder.
@@ -181,8 +189,8 @@ class Server
      * @param folder The folder where the received file should be saved.
      * @param packet The packet containing the file data.
      */
-    void
-    receiveFile(const sf::IpAddress &ip, unsigned short port, const std::filesystem::path &folder, sf::Packet &packet);
+    void receiveFile(const sf::IpAddress &ip, const unsigned short &port, const std::filesystem::path &folder,
+                     sf::Packet &packet);
 
     /**
      * @brief Shuts down the server and disconnects all clients.

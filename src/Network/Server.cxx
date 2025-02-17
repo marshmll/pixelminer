@@ -32,6 +32,8 @@ void Server::listenerThread()
         }
     }
 
+    std::cout << std::flush;
+
     logger.logInfo(_("Server's listener thread for (") + sf::IpAddress::getLocalAddress()->toString() +
                    _(") is offline."));
 }
@@ -91,7 +93,7 @@ void Server::handleTimedOutConnections()
     }
 }
 
-void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short port)
+void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port)
 {
     if (uuid == myUuid)
     {
@@ -124,7 +126,7 @@ void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, con
     }
 }
 
-void Server::sendServerInfo(const sf::IpAddress &ip, unsigned short port)
+void Server::sendServerInfo(const sf::IpAddress &ip, const unsigned short &port)
 {
     JObject server_info_obj(
         {{"name", "Pixelminer Server"},
@@ -151,6 +153,7 @@ void Server::setOnline(bool online)
 Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), maxConnections(8), online(false)
 {
     socket.setBlocking(true);
+    socketSelector.add(socket);
 }
 
 Server::~Server()
@@ -160,21 +163,28 @@ Server::~Server()
 
 /* PUBLIC METHODS =========================================================================================== */
 
-void Server::listen(const unsigned short port)
+const bool Server::listen(const unsigned short &port)
 {
+    if (online)
+    {
+        logger.logWarning(_("Already listening on port ") + std::to_string(socket.getLocalPort()));
+        return false;
+    }
+
     if (socket.bind(port) != sf::Socket::Status::Done)
     {
         logger.logError(_("Could not bind to port ") + std::to_string(port));
-        return;
+        return false;
     }
 
-    socketSelector.add(socket);
     setOnline(true);
 
     std::thread(&Server::listenerThread, this).detach();
+
+    return true;
 }
 
-bool Server::createConnection(const sf::IpAddress &ip, const unsigned short port, const std::string &uuid)
+bool Server::createConnection(const sf::IpAddress &ip, const unsigned short &port, const std::string &uuid)
 {
     if (connections.size() + 1 >= maxConnections)
     {
@@ -208,14 +218,19 @@ void Server::disconnectClient(const std::string &uuid)
     logger.logInfo(_("Client with IP ") + it->second.ip.toString() + _(" is now disconnected."));
 }
 
-bool Server::isClientConnected(const sf::IpAddress &ip, const unsigned short port) const
+bool Server::isClientConnected(const sf::IpAddress &ip, const unsigned short &port) const
 {
     return std::find_if(connections.begin(), connections.end(), [&](const auto &pair) {
                return pair.second.ip == ip && pair.second.port == port;
            }) != connections.end();
 }
 
-bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short port)
+const std::string Server::getFullAddress()
+{
+    return sf::IpAddress::getLocalAddress()->toString() + ":" + std::to_string(socket.getLocalPort());
+}
+
+bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port)
 {
     if (socket.send(packet, ip, port) != sf::Socket::Status::Done)
     {
@@ -225,7 +240,7 @@ bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned sh
     return true;
 }
 
-void Server::sendControlMessage(const std::string &header, const sf::IpAddress &ip, const unsigned short port)
+void Server::sendControlMessage(const std::string &header, const sf::IpAddress &ip, const unsigned short &port)
 {
     sf::Packet packet;
     packet << header;
@@ -235,7 +250,7 @@ void Server::sendControlMessage(const std::string &header, const sf::IpAddress &
     }
 }
 
-void Server::sendFile(const sf::IpAddress &ip, const unsigned short port, const std::filesystem::path &path,
+void Server::sendFile(const sf::IpAddress &ip, const unsigned short &port, const std::filesystem::path &path,
                       std::ios::openmode mode)
 {
     using namespace std::chrono_literals;
@@ -306,7 +321,7 @@ void Server::sendFile(const sf::IpAddress &ip, const unsigned short port, const 
     file.close();
 }
 
-void Server::receiveFile(const sf::IpAddress &ip, const unsigned short port, const std::filesystem::path &folder,
+void Server::receiveFile(const sf::IpAddress &ip, const unsigned short &port, const std::filesystem::path &folder,
                          sf::Packet &packet)
 {
     if (!isClientConnected(ip, port))

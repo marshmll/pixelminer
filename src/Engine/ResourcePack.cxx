@@ -132,9 +132,16 @@ const bool ResourcePack::load(const std::string &name)
     {
         JObject obj = val.getAs<JObject>();
         std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
+        const bool global = obj.at("global").getAs<bool>();
 
         if (!soundBuffers[key].loadFromFile(root_path / path))
+        {
             logger.logWarning(_("Missing sound ") + path + _(" in resource pack: ") + name);
+            continue;
+        }
+
+        if (global)
+            globalSounds[key] = std::make_shared<sf::Sound>(soundBuffers.at(key));
     }
 
     // Music
@@ -185,8 +192,8 @@ const bool ResourcePack::load(const std::string &name)
 
     logger.logInfo(_("Sucessfully loaded resource pack ") + name + ": " + std::to_string(textures.size()) +
                    _(" textures, ") + std::to_string(fonts.size()) + _(" fonts, ") +
-                   std::to_string(soundBuffers.size()) + _(" sounds, ") + std::to_string(musics.size()) +
-                   _(" musics."));
+                   std::to_string(soundBuffers.size()) + _(" sound buffers, ") + std::to_string(globalSounds.size()) +
+                   _(" sounds, ") + std::to_string(musics.size()) + _(" musics."));
 
     return true;
 }
@@ -233,10 +240,24 @@ sf::SoundBuffer &ResourcePack::getSoundBuffer(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent sound ") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent sound buffer") + key + _(" in resource pack") + name);
     }
 
     return soundBuffers.at(key); // SHOULD NEVER REACH HERE!
+}
+
+sf::Sound &ResourcePack::getSound(const std::string &key)
+{
+    try
+    {
+        return *globalSounds.at(key);
+    }
+    catch (std::out_of_range &)
+    {
+        logger.logError(_("Inexistent sound ") + key + _(" in resource pack") + name);
+    }
+
+    return *globalSounds.at(key); // SHOULD NEVER REACH HERE!
 }
 
 sf::Music &ResourcePack::getMusic(const std::string &key)

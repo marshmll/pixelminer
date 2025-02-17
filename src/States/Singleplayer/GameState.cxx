@@ -69,17 +69,17 @@ void GameState::initPlayerCamera()
     playerCamera.setCenter(thisPlayer->getCenter());
 }
 
-void GameState::initPauseMenu()
-{
-    pauseMenu = std::make_unique<gui::PauseMenu>(data);
-}
-
 void GameState::initChat()
 {
     chat = std::make_unique<gui::Chat>(
         thisPlayer->getName(), sf::Vector2f(gui::percent(data.vm->size.x, 35.f), gui::percent(data.vm->size.y, 25.f)),
         sf::Vector2f(gui::percent(data.vm->size.x, 2.f), gui::percent(data.vm->size.y, 2.f)),
         data.activeResourcePack->getFont("Regular"), *data.vm);
+}
+
+void GameState::initPauseMenu()
+{
+    pauseMenu = std::make_unique<gui::PauseMenu>(data, server, *chat);
 }
 
 void GameState::initCommandInterpreter()
@@ -112,7 +112,7 @@ void GameState::resolveCollision(std::shared_ptr<Entity> &first_entity, std::sha
         first_entity->move(sf::Vector2f(0.f, (first_pos.y < second_pos.y ? -overlapY : overlapY)));
 }
 
-GameState::GameState(EngineData &data) : State(data)
+GameState::GameState(EngineData &data) : State(data), server(data.uuid)
 {
     ctx.currentState = this;
     initLoadingScreen();
@@ -121,13 +121,13 @@ GameState::GameState(EngineData &data) : State(data)
     initThisPlayer();
     initPlayerGUI();
     initPlayerCamera();
-    initPauseMenu();
     initChat();
+    initPauseMenu();
     initCommandInterpreter();
     initDebugging();
 }
 
-GameState::GameState(EngineData &data, const std::string &map_folder_name) : State(data)
+GameState::GameState(EngineData &data, const std::string &map_folder_name) : State(data), server(data.uuid)
 {
     ctx.currentState = this;
     initLoadingScreen();
@@ -136,8 +136,8 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name) : Sta
     initThisPlayer();
     initPlayerGUI();
     initPlayerCamera();
-    initPauseMenu();
     initChat();
+    initPauseMenu();
     initCommandInterpreter();
     initDebugging();
 

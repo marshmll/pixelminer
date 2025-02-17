@@ -5,10 +5,12 @@
 
 #pragma once
 
+#include "GUI/Chat.hxx"
 #include "GUI/TextButton.hxx"
 #include "Map/Map.hxx"
 #include "States/State.hxx"
 #include "Engine/Languages.hxx"
+#include "Network/Server.hxx"
 
 namespace gui
 {
@@ -28,13 +30,17 @@ namespace gui
       private:
         sf::RectangleShape background;      ///< The background rectangle of the pause menu.
         sf::RectangleShape buttonContainer; ///< The container holding the buttons of the pause menu.
-        std::map<std::string, std::unique_ptr<gui::TextButton>>
+        std::unordered_map<std::string, std::unique_ptr<gui::TextButton>>
             buttons; ///< A map of buttons with their respective keys.
 
         bool active; ///< Flag to track whether the pause menu is active or not.
         bool quit;   ///< Flag to track whether the user wants to quit.
 
         EngineData &data; ///< The reference to the engine's data, providing access to resources and data.
+
+        Server &server;
+
+        Chat &chat;
 
       public:
         /**
@@ -46,7 +52,7 @@ namespace gui
          *
          * @param data The engine data used to fetch necessary resources and settings.
          */
-        PauseMenu(EngineData &data);
+        PauseMenu(EngineData &data, Server &server, Chat &chat);
 
         /** Destructor for PauseMenu */
         ~PauseMenu();

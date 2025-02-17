@@ -67,6 +67,8 @@ class GameState : public State
 
     std::unique_ptr<gui::Chat> chat; ///< Chat interface.
 
+    Server server;
+
     /**
      * @brief Initializes the loading screen.
      */
@@ -104,14 +106,14 @@ class GameState : public State
     void initPlayerCamera();
 
     /**
-     * @brief Initializes the pause menu.
-     */
-    void initPauseMenu();
-
-    /**
      * @brief Initializes the chat interface.
      */
     void initChat();
+
+    /**
+     * @brief Initializes the pause menu.
+     */
+    void initPauseMenu();
 
     /**
      * @brief Initializes the game command interpreter;

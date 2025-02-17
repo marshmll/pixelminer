@@ -216,7 +216,12 @@ void ServerSelectionState::updateGUI(const float &dt)
         return;
 
     for (auto &[_, button] : buttons)
+    {
         button->update(mousePosView);
+
+        if (button->isPressed() && data.activeResourcePack->getSound("Click").getStatus() != sf::Sound::Status::Playing)
+            data.activeResourcePack->getSound("Click").play();
+    }
 
     if (buttons.at("Cancel")->isPressed())
     {
