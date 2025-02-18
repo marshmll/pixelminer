@@ -22,6 +22,8 @@ class State;
  */
 struct EngineData
 {
+    std::string *currentLocale;                                   ///< The current locale. Used to select game translation.
+    std::vector<std::string> *availableLocales;                   ///< All avaliable locales.
     std::string uuid;                                             ///< Unique identifier for the engine instance.
     unsigned int gridSize;                                        ///< Size of the grid used for rendering.
     unsigned int scale;                                           ///< Scale factor for rendering.

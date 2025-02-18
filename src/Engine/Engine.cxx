@@ -8,14 +8,28 @@ void Engine::seedRandom()
     std::srand(std::time(0));
 }
 
-void Engine::initLocale()
+void Engine::initLocales()
 {
-    setup_i18n("pt_BR.UTF-8");
+    try
+    {
+        JObject locales_obj = JSON::parse(std::filesystem::path(SETTINGS_FOLDER + "locales.json")).getAs<JObject>();
+        currentLocale = locales_obj.at("current").getAs<std::string>();
 
-    // Debugging output
-    logger.logInfo(_("Current locale: ") + setlocale(LC_ALL, nullptr));
-    logger.logInfo(_("Text domain: ") + textdomain(nullptr));
-    logger.logInfo(_("Locale path: ") + bindtextdomain(DOMAIN, nullptr));
+        for (auto &val : locales_obj.at("available").getAs<JArray>())
+            availableLocales.emplace_back(val.getAs<std::string>());
+
+        setup_i18n(currentLocale);
+
+        // Debugging output
+        logger.logInfo(_("Current locale: ") + setlocale(LC_MESSAGES, nullptr));
+        logger.logInfo(_("Text domain: ") + textdomain(nullptr));
+        logger.logInfo(_("Locale path: ") + bindtextdomain(DOMAIN, nullptr));
+    }
+    catch (std::runtime_error &e)
+    {
+        logger.logWarning(_("Failed to load locales from file \"locales.json\".") + e.what() + +"\n" +
+                          _("Translations might not work correctly."));
+    }
 }
 
 void Engine::verifyGlobalFolder()
@@ -31,6 +45,9 @@ void Engine::verifyGlobalFolder()
 
         logger.logInfo(_("Creating settings folder: ") + SETTINGS_FOLDER);
         std::filesystem::create_directory(SETTINGS_FOLDER);
+
+        logger.logInfo(_("Copying locales.json to: ") + SETTINGS_FOLDER);
+        std::filesystem::copy(".pixelminer/Default/locales.json", SETTINGS_FOLDER);
 
         logger.logInfo(_("Creating maps folder: ") + MAPS_FOLDER);
         std::filesystem::create_directory(MAPS_FOLDER);
@@ -152,6 +169,8 @@ void Engine::initResourcePacks()
 
 void Engine::initEngineData()
 {
+    engineData.currentLocale = &currentLocale;
+    engineData.availableLocales = &availableLocales;
     engineData.uuid = myUuid;
     engineData.gridSize = gridSize;
     engineData.scale = scale;
@@ -227,7 +246,7 @@ void Engine::render()
 Engine::Engine() : logger("Engine")
 {
     seedRandom();
-    initLocale();
+    initLocales();
     verifyGlobalFolder();
     identificateSelf();
     initGraphicsSettings();

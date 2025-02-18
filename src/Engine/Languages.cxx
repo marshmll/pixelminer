@@ -24,3 +24,11 @@ void setup_i18n(const std::string_view locale)
     bind_textdomain_codeset(DOMAIN, "UTF-8");
     textdomain(DOMAIN);
 }
+
+void setup_i18n()
+{
+    // Bind the text domain
+    bindtextdomain(DOMAIN, LOCALES_FOLDER.c_str());
+    bind_textdomain_codeset(DOMAIN, "UTF-8");
+    textdomain(DOMAIN);
+}

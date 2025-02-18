@@ -1,7 +1,9 @@
 {
     "available": [
-        "en_US",
-        "pt_BR"
+        "en_US.UTF-8",
+        "es_ES.UTF-8",
+        "fr_FR.UTF-8",
+        "pt_BR.UTF-8"
     ],
-    "priority": "pt_BR:en_US"
+    "current": "pt_BR.UTF-8"
 }

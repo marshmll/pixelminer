@@ -23,9 +23,11 @@
 class Engine
 {
   private:
-    std::string myUuid;   ///< Unique identifier for the engine instance.
-    Logger logger;        ///< Logger instance for logging messages.
-    GraphicsSettings gfx; ///< Graphics settings configuration.
+    std::string currentLocale;                        ///< The current locale used to game translations.
+    std::vector<std::string> availableLocales; ///< The locales available
+    std::string myUuid;                        ///< Unique identifier for the engine instance.
+    Logger logger;                             ///< Logger instance for logging messages.
+    GraphicsSettings gfx;                      ///< Graphics settings configuration.
 
     sf::VideoMode vm;               ///< Video mode settings.
     sf::RenderWindow window;        ///< Main game window.
@@ -47,7 +49,7 @@ class Engine
      */
     void seedRandom();
 
-    void initLocale();
+    void initLocales();
 
     /**
      * @brief Verifies the existence of the global folder and creates it if necessary.

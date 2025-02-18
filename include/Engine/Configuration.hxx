@@ -15,7 +15,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * it will be set to the given value.
  */
 #ifndef GAME_VERSION
-#define GAME_VERSION "alpha 1.3.0"
+#define GAME_VERSION "alpha 1.4.0"
 #endif
 
 /**
@@ -35,7 +35,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * already defined elsewhere, it will be set to the given value.
  */
 #ifndef TERRAIN_GENERATOR_VERSION
-#define TERRAIN_GENERATOR_VERSION "1.2.1"
+#define TERRAIN_GENERATOR_VERSION "1.2.2"
 #endif
 
 /**
