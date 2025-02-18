@@ -21,12 +21,11 @@ Chat::Chat(const sf::String &this_author, const sf::Vector2f &size, const sf::Ve
 
 Chat::~Chat() = default;
 
-void Chat::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
-                  sf::Event::MouseWheelScrolled &mouse_data)
+void Chat::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event)
 {
     if (active)
     {
-        chatContainer->update(dt, mouse_pos, event, mouse_data);
+        chatContainer->update(dt, mouse_pos, event);
         input->update(dt, mouse_pos, event);
     }
 

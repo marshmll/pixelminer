@@ -8,6 +8,18 @@
         "path": "Assets/Textures/Backgrounds/background.png"
     },
     {
+        "key": "BreadEmpty",
+        "path": "Assets/Textures/Icons/bread_empty.png"
+    },
+    {
+        "key": "BreadHalf",
+        "path": "Assets/Textures/Icons/bread_half.png"
+    },
+    {
+        "key": "BreadFull",
+        "path": "Assets/Textures/Icons/bread_full.png"
+    },
+    {
         "key": "Loader",
         "path": "Assets/Textures/Sprites/UI/loader.png"
     },
@@ -36,15 +48,7 @@
         "path": "Assets/Textures/Icons/heart_full.png"
     },
     {
-        "key": "BreadEmpty",
-        "path": "Assets/Textures/Icons/bread_empty.png"
-    },
-    {
-        "key": "BreadHalf",
-        "path": "Assets/Textures/Icons/bread_half.png"
-    },
-    {
-        "key": "BreadFull",
-        "path": "Assets/Textures/Icons/bread_full.png"
+        "key": "World",
+        "path": "Assets/Textures/Icons/world.png"
     }
 ]

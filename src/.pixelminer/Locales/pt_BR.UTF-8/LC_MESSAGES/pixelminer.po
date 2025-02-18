@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 14:43-0300\n"
-"PO-Revision-Date: 2025-02-18 14:43-0300\n"
+"POT-Creation-Date: 2025-02-18 18:37-0300\n"
+"PO-Revision-Date: 2025-02-18 18:39-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -426,6 +426,7 @@ msgid "Re-Create"
 msgstr "Re-Criar"
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
+#: src/States/LocalesState.cxx:48
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
 #: src/States/Multiplayer/DirectConnectState.cxx:28
 #: src/States/Multiplayer/AddServerState.cxx:35
@@ -435,6 +436,32 @@ msgstr "Cancelar"
 #: src/States/MessageState.cxx:53
 msgid "Back"
 msgstr "Voltar"
+
+#: src/States/LocalesState.cxx:42
+msgid "Done"
+msgstr "Feito"
+
+#: src/States/LocalesState.cxx:89
+msgid "Invalid locales file"
+msgstr "Arquivo de localidades invalido"
+
+#: src/States/LocalesState.cxx:91
+msgid ""
+"The file \"locales.json\" in SETTINGS_FOLDER might be corrupted or ill-"
+"formed."
+msgstr ""
+"O arquivo \"locales.json\" em SETTINGS_FOLDER pode estar corrompido ou mal-"
+"formado."
+
+#: src/States/LocalesState.cxx:107
+msgid "Failed to save locale files"
+msgstr "Falha ao salvar arquivo de localidade"
+
+#: src/States/LocalesState.cxx:108
+msgid "Could not open \"locales.json\" to save the new language preference."
+msgstr ""
+"Não foi possivel abrir \"locales.json\" para salvar a nova preferência de "
+"linguagem."
 
 #: src/States/Multiplayer/ServerSelectionState.cxx:34
 #: src/States/Multiplayer/DirectConnectState.cxx:21
@@ -1025,79 +1052,79 @@ msgstr "Erro durante o salvamento para o arquivo: "
 msgid "Saved settings to file: "
 msgstr "Salvo configurações para o arquivo: "
 
-#: src/Engine/Engine.cxx:24
+#: src/Engine/Engine.cxx:21
 msgid "Current locale: "
 msgstr "Localidade atual: "
 
-#: src/Engine/Engine.cxx:25
+#: src/Engine/Engine.cxx:22
 msgid "Text domain: "
 msgstr "Domínio de texto: "
 
-#: src/Engine/Engine.cxx:26
+#: src/Engine/Engine.cxx:23
 msgid "Locale path: "
 msgstr "Caminho das localidades: "
 
-#: src/Engine/Engine.cxx:30
+#: src/Engine/Engine.cxx:27
 msgid "Failed to load locales from file \"locales.json\"."
 msgstr "Falha ao carregar localizações do arquivo \"locales.json\"."
 
-#: src/Engine/Engine.cxx:31
+#: src/Engine/Engine.cxx:28
 msgid "Translations might not work correctly."
 msgstr "As traduções podem não funcionar corretamente."
 
-#: src/Engine/Engine.cxx:39
+#: src/Engine/Engine.cxx:36
 msgid "Found global folder: "
 msgstr "Encontrado diretório global: "
 
-#: src/Engine/Engine.cxx:43
+#: src/Engine/Engine.cxx:40
 msgid "Creating global folder: "
 msgstr "Criando diretório global: "
 
-#: src/Engine/Engine.cxx:46
+#: src/Engine/Engine.cxx:43
 msgid "Creating settings folder: "
 msgstr "Criando diretório de configurações: "
 
-#: src/Engine/Engine.cxx:49
+#: src/Engine/Engine.cxx:46
 msgid "Copying locales.json to: "
 msgstr "Copiando locales.json para: "
 
-#: src/Engine/Engine.cxx:52
+#: src/Engine/Engine.cxx:49
 msgid "Creating maps folder: "
 msgstr "Criando diretório de mapas: "
 
-#: src/Engine/Engine.cxx:55
+#: src/Engine/Engine.cxx:52
 msgid "Creating resource packs folder: "
 msgstr "Criando diretório de pacotes de recursos: "
 
-#: src/Engine/Engine.cxx:58
+#: src/Engine/Engine.cxx:55
 msgid "Copying Vanilla resource pack to: "
 msgstr "Copiando pacote de recursos Vanilla para: "
 
-#: src/Engine/Engine.cxx:61
+#: src/Engine/Engine.cxx:58
 msgid "Creating cache folder: "
 msgstr "Criando diretório de cache: "
 
-#: src/Engine/Engine.cxx:64
+#: src/Engine/Engine.cxx:61
 msgid "Creating Locales folder: "
 msgstr "Criando diretórios de localidades: "
 
-#: src/Engine/Engine.cxx:75 src/Engine/Engine.cxx:87
+#: src/Engine/Engine.cxx:72 src/Engine/Engine.cxx:84
 msgid "Could not identificate self."
 msgstr "Não foi possível se identificar."
 
-#: src/Engine/Engine.cxx:105
+#: src/Engine/Engine.cxx:102
 msgid "Invalid resolution for fullscreen. Using windowed mode."
 msgstr "Resolução inválida para tela cheia. Usando modo de janela."
 
-#: src/Engine/Engine.cxx:125
+#: src/Engine/Engine.cxx:122
 msgid "Using default graphics settings."
 msgstr "Usando configurações gráficas padrão."
 
-#: src/Engine/Engine.cxx:142
+#: src/Engine/Engine.cxx:139
 msgid "Failed to load window icon. Using OS default icon instead."
 msgstr "Falha ao carregar o ícone da janela. Usando o ícone padrão do SO."
 
-#: src/Engine/Engine.cxx:166
+#: src/Engine/Engine.cxx:163
 msgid "An error occured while loading resource pack "
 msgstr "Um erro ocorreu durante o carregamento do pacote de recursos "
 

@@ -2,7 +2,8 @@
 #include "stdafx.hxx"
 
 State::State(EngineData &data)
-    : data(data), dead(false), replaced(false), renderTexture(data.vm->size), renderSprite(renderTexture.getTexture())
+    : data(data), dead(false), replaced(false), restartAll(false), renderTexture(data.vm->size),
+      renderSprite(renderTexture.getTexture())
 {
     keyClock.restart();
     mouseClock.restart();
@@ -57,10 +58,15 @@ void State::killSelf()
     dead = true;
 }
 
-void State::replaceSelf(std::shared_ptr<State> state)
+void State::replaceSelf(const std::shared_ptr<State> &state)
 {
-    replacerState = state;
+    replacerState = std::move(state);
     replaced = true;
+}
+
+void State::restartStates()
+{
+    restartAll = true;
 }
 
 std::shared_ptr<State> &State::getReplacerState()
@@ -76,4 +82,9 @@ const bool &State::isDead() const
 const bool &State::wasReplaced() const
 {
     return replaced;
+}
+
+const bool &State::askedToRestartAllStates() const
+{
+    return restartAll;
 }

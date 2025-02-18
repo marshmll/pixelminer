@@ -15,9 +15,6 @@ void Engine::initLocales()
         JObject locales_obj = JSON::parse(std::filesystem::path(SETTINGS_FOLDER + "locales.json")).getAs<JObject>();
         currentLocale = locales_obj.at("current").getAs<std::string>();
 
-        for (auto &val : locales_obj.at("available").getAs<JArray>())
-            availableLocales.emplace_back(val.getAs<std::string>());
-
         setup_i18n(currentLocale);
 
         // Debugging output
@@ -27,7 +24,7 @@ void Engine::initLocales()
     }
     catch (std::runtime_error &e)
     {
-        logger.logWarning(_("Failed to load locales from file \"locales.json\".") + e.what() + +"\n" +
+        logger.logWarning(_("Failed to load locales from file \"locales.json\".") + e.what() + "\n" +
                           _("Translations might not work correctly."));
     }
 }
@@ -170,7 +167,6 @@ void Engine::initResourcePacks()
 void Engine::initEngineData()
 {
     engineData.currentLocale = &currentLocale;
-    engineData.availableLocales = &availableLocales;
     engineData.uuid = myUuid;
     engineData.gridSize = gridSize;
     engineData.scale = scale;
@@ -180,7 +176,6 @@ void Engine::initEngineData()
     engineData.window = &window;
     engineData.vm = &vm;
     engineData.event = &event;
-    engineData.mouseData = {};
 }
 
 void Engine::initMainMenuState()
@@ -194,9 +189,6 @@ void Engine::pollWindowEvents()
     {
         if (event->is<sf::Event::Closed>())
             window.close();
-
-        else if (event->is<sf::Event::MouseWheelScrolled>())
-            engineData.mouseData = *event->getIf<sf::Event::MouseWheelScrolled>();
     }
 }
 
@@ -218,9 +210,16 @@ void Engine::update()
         }
         else if (states.top()->wasReplaced())
         {
-            std::shared_ptr<State> replacerState = states.top()->getReplacerState();
+            std::shared_ptr<State> replacerState = std::move(states.top()->getReplacerState());
             states.pop();
             states.push(replacerState);
+        }
+        else if (states.top()->askedToRestartAllStates())
+        {
+            while (!states.empty())
+                states.pop();
+
+            initMainMenuState();
         }
         else
         {
@@ -272,4 +271,7 @@ void Engine::run()
         if (window.hasFocus())
             render();
     }
+
+    while (!states.empty())
+        states.pop();
 }

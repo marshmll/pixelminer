@@ -51,6 +51,14 @@ void MainMenuState::initGUI()
         sf::Vector2f(gui::percent(data.vm->size.x, 21.8f), gui::percent(data.vm->size.y, 6.f)),
         sf::Color(200, 200, 200, 200), _("Quit"), data.activeResourcePack->getFont("Regular"),
         gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+
+    buttons["Lang"] = std::make_unique<gui::ImageButton>(
+        sf::Vector2f(buttons["Options"]->getPosition().x - buttons["Options"]->getSize().y -
+                         gui::percent(buttons["Options"]->getSize().x, 4.f),
+                     buttons["Options"]->getPosition().y),
+        sf::Vector2f(buttons["Options"]->getSize().y, buttons["Options"]->getSize().y), sf::Color(200, 200, 200, 200),
+        data.activeResourcePack->getTexture("World"),
+        sf::Vector2f(data.activeResourcePack->getTexture("World").getSize() * data.scale), 2.f, sf::Color::Black);
 }
 
 MainMenuState::MainMenuState(EngineData &data) : State(data)
@@ -78,6 +86,9 @@ void MainMenuState::update(const float &dt)
     else if (buttons.at("Multiplayer")->isPressed())
         data.states->push(std::make_shared<ServerSelectionState>(data));
 
+    else if (buttons.at("Lang")->isPressed())
+        data.states->push(std::make_shared<LocalesState>(data));
+    
     else if (buttons.at("Quit")->isPressed())
         killSelf();
 }

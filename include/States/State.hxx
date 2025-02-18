@@ -22,19 +22,16 @@ class State;
  */
 struct EngineData
 {
-    std::string *currentLocale;                                   ///< The current locale. Used to select game translation.
-    std::vector<std::string> *availableLocales;                   ///< All avaliable locales.
-    std::string uuid;                                             ///< Unique identifier for the engine instance.
-    unsigned int gridSize;                                        ///< Size of the grid used for rendering.
-    unsigned int scale;                                           ///< Scale factor for rendering.
-    std::stack<std::shared_ptr<State>> *states;                   ///< Stack of the current states in the game.
+    std::string *currentLocale;                 ///< The current locale. Used to select game translation.
+    std::string uuid;                           ///< Unique identifier for the engine instance.
+    unsigned int gridSize;                      ///< Size of the grid used for rendering.
+    unsigned int scale;                         ///< Scale factor for rendering.
+    std::stack<std::shared_ptr<State>> *states; ///< Stack of the current states in the game.
     std::unordered_map<std::string, ResourcePack> *resourcePacks; ///< Map of resource packs available in the game.
     std::shared_ptr<ResourcePack> activeResourcePack;             ///< The currently active resource pack.
     sf::RenderWindow *window;                                     ///< Pointer to the window being used for rendering.
     sf::VideoMode *vm;                                            ///< Pointer to the current video mode (resolution).
     std::optional<sf::Event> *event;                              ///< Pointer to the current event.
-    sf::Event::MouseWheelScrolled
-        mouseData; ///< Data for mouse wheel scroll events (access after checking the event type).
 };
 
 /**
@@ -59,8 +56,9 @@ class State
     sf::Vector2f mousePosView;   ///< Mouse position in view coordinates.
     sf::Vector2i mousePosGrid;   ///< Mouse position in grid coordinates.
 
-    bool dead;     ///< Flag indicating if the state is marked as dead (should be removed).
-    bool replaced; ///< Flag indicating if the state has been replaced by another state.
+    bool dead;       ///< Flag indicating if the state is marked as dead (should be removed).
+    bool replaced;   ///< Flag indicating if the state has been replaced by another state.
+    bool restartAll; ///< Flag to tell engine to restart all states in the stack;
 
     sf::Clock keyClock;   ///< Clock used to track time for key press events.
     sf::Clock mouseClock; ///< Clock used to track time for mouse button press events.
@@ -122,7 +120,12 @@ class State
      * @brief Replaces the current state with another state in the stack.
      * @param state The state that will replace the current state.
      */
-    void replaceSelf(std::shared_ptr<State> state);
+    void replaceSelf(const std::shared_ptr<State> &state);
+
+    /**
+     * @brief Triggers the engine to pop all states in the stack and push a new `MainMenuState`.
+     */
+    void restartStates();
 
     /**
      * @brief Gets the state that will replace the current state.
@@ -141,4 +144,10 @@ class State
      * @return True if the state has been replaced, false otherwise.
      */
     const bool &wasReplaced() const;
+
+    /**
+     * @brief Checks if the current state has asked to restart all states in the engine stack.
+     * @return True if the restart flag is on, false otherwise.
+     */
+    const bool &askedToRestartAllStates() const;
 };

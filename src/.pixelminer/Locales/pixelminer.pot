@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 14:44-0300\n"
+"POT-Creation-Date: 2025-02-18 18:42-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -425,6 +425,7 @@ msgid "Re-Create"
 msgstr ""
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
+#: src/States/LocalesState.cxx:48
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
 #: src/States/Multiplayer/DirectConnectState.cxx:28
 #: src/States/Multiplayer/AddServerState.cxx:35
@@ -433,6 +434,28 @@ msgstr ""
 
 #: src/States/MessageState.cxx:53
 msgid "Back"
+msgstr ""
+
+#: src/States/LocalesState.cxx:42
+msgid "Done"
+msgstr ""
+
+#: src/States/LocalesState.cxx:89
+msgid "Invalid locales file"
+msgstr ""
+
+#: src/States/LocalesState.cxx:91
+msgid ""
+"The file \"locales.json\" in SETTINGS_FOLDER might be corrupted or ill-"
+"formed."
+msgstr ""
+
+#: src/States/LocalesState.cxx:107
+msgid "Failed to save locale files"
+msgstr ""
+
+#: src/States/LocalesState.cxx:108
+msgid "Could not open \"locales.json\" to save the new language preference."
 msgstr ""
 
 #: src/States/Multiplayer/ServerSelectionState.cxx:34
@@ -1020,79 +1043,79 @@ msgstr ""
 msgid "Saved settings to file: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:24
+#: src/Engine/Engine.cxx:21
 msgid "Current locale: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:25
+#: src/Engine/Engine.cxx:22
 msgid "Text domain: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:26
+#: src/Engine/Engine.cxx:23
 msgid "Locale path: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:30
+#: src/Engine/Engine.cxx:27
 msgid "Failed to load locales from file \"locales.json\"."
 msgstr ""
 
-#: src/Engine/Engine.cxx:31
+#: src/Engine/Engine.cxx:28
 msgid "Translations might not work correctly."
 msgstr ""
 
-#: src/Engine/Engine.cxx:39
+#: src/Engine/Engine.cxx:36
 msgid "Found global folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:43
+#: src/Engine/Engine.cxx:40
 msgid "Creating global folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:46
+#: src/Engine/Engine.cxx:43
 msgid "Creating settings folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:49
+#: src/Engine/Engine.cxx:46
 msgid "Copying locales.json to: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:52
+#: src/Engine/Engine.cxx:49
 msgid "Creating maps folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:55
+#: src/Engine/Engine.cxx:52
 msgid "Creating resource packs folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:58
+#: src/Engine/Engine.cxx:55
 msgid "Copying Vanilla resource pack to: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:61
+#: src/Engine/Engine.cxx:58
 msgid "Creating cache folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:64
+#: src/Engine/Engine.cxx:61
 msgid "Creating Locales folder: "
 msgstr ""
 
-#: src/Engine/Engine.cxx:75 src/Engine/Engine.cxx:87
+#: src/Engine/Engine.cxx:72 src/Engine/Engine.cxx:84
 msgid "Could not identificate self."
 msgstr ""
 
-#: src/Engine/Engine.cxx:105
+#: src/Engine/Engine.cxx:102
 msgid "Invalid resolution for fullscreen. Using windowed mode."
 msgstr ""
 
-#: src/Engine/Engine.cxx:125
+#: src/Engine/Engine.cxx:122
 msgid "Using default graphics settings."
 msgstr ""
 
-#: src/Engine/Engine.cxx:142
+#: src/Engine/Engine.cxx:139
 msgid "Failed to load window icon. Using OS default icon instead."
 msgstr ""
 
-#: src/Engine/Engine.cxx:166
+#: src/Engine/Engine.cxx:163
 msgid "An error occured while loading resource pack "
 msgstr ""
 

@@ -36,8 +36,7 @@ ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vect
 
 ScrollableContainer::~ScrollableContainer() = default;
 
-void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
-                                 sf::Event::MouseWheelScrolled &mouse_data)
+void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event)
 {
     if (maxScrollDelta <= 0.f)
         return;
@@ -68,19 +67,22 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
         scrollBarLock = false;
     }
 
-    if (!scrollBarLock && event->is<sf::Event::MouseWheelScrolled>())
+    if (!scrollBarLock)
     {
-        float scrollDelta = 800.f * dt * -mouse_data.delta;
-        float newViewCenterY = scrollView.getCenter().y + scrollDelta;
+        if (const auto *mouse_data = event->getIf<sf::Event::MouseWheelScrolled>())
+        {
+            float scrollDelta = 800.f * dt * -mouse_data->delta;
+            float newViewCenterY = scrollView.getCenter().y + scrollDelta;
 
-        // Clamp view center within scrollable bounds
-        newViewCenterY = std::clamp(newViewCenterY, containerTop + container.getSize().y / 2.f,
-                                    containerTop + container.getSize().y / 2.f + maxScrollDelta);
-        scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, static_cast<int>(newViewCenterY)));
+            // Clamp view center within scrollable bounds
+            newViewCenterY = std::clamp(newViewCenterY, containerTop + container.getSize().y / 2.f,
+                                        containerTop + container.getSize().y / 2.f + maxScrollDelta);
+            scrollView.setCenter(sf::Vector2f(scrollView.getCenter().x, static_cast<int>(newViewCenterY)));
 
-        // Update scrollbar position based on view position
-        float scrollPercent = (newViewCenterY - (containerTop + container.getSize().y / 2.f)) / maxScrollDelta;
-        setScrollPercent(scrollPercent);
+            // Update scrollbar position based on view position
+            float scrollPercent = (newViewCenterY - (containerTop + container.getSize().y / 2.f)) / maxScrollDelta;
+            setScrollPercent(scrollPercent);
+        }
     }
 }
 

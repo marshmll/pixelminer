@@ -17,6 +17,7 @@ target_sources(pixelminer PRIVATE
 ./States/Singleplayer/WorldSelectionMenuState.cxx
 ./States/MessageState.cxx
 ./States/State.cxx
+./States/LocalesState.cxx
 ./States/Multiplayer/ServerSelectionState.cxx
 ./States/Multiplayer/DirectConnectState.cxx
 ./States/Multiplayer/ClientGameState.cxx
@@ -36,6 +37,7 @@ target_sources(pixelminer PRIVATE
 ./Game/Commands/CommandInterpreter.cxx
 ./GUI/PauseMenu.cxx
 ./GUI/ScrollableContainer.cxx
+./GUI/ImageButton.cxx
 ./GUI/Chat.cxx
 ./GUI/TextButton.cxx
 ./GUI/Input.cxx

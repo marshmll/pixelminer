@@ -1,9 +1,21 @@
 {
     "available": [
-        "en_US.UTF-8",
-        "es_ES.UTF-8",
-        "fr_FR.UTF-8",
-        "pt_BR.UTF-8"
+        {
+            "locale": "en_US.UTF-8",
+            "name": "American English"
+        },
+        {
+            "locale": "fr_FR.UTF-8",
+            "name": "Français de France"
+        },
+        {
+            "locale": "es_ES.UTF-8",
+            "name": "Español de España"
+        },
+        {
+            "locale": "pt_BR.UTF-8",
+            "name": "Português do Brasil"
+        }
     ],
-    "current": "pt_BR.UTF-8"
+    "current": "es_ES.UTF-8"
 }

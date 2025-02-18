@@ -66,6 +66,15 @@
 #include "GUI/TextButton.hxx"
 
 /**
+ * @brief Includes the ImageButton class for handling buttons with text in the GUI.
+ *
+ * This header defines the `ImageButton` class, which represents a button with a text label. The
+ * `ImageButton` class allows users to interact with buttons that display a imgae, enabling actions to
+ * be performed when the button is clicked.
+ */
+#include "GUI/ImageButton.hxx"
+
+/**
  * @brief Includes utility functions for GUI-related tasks.
  *
  * This header provides various utility functions for managing and manipulating GUI components.

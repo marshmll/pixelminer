@@ -351,7 +351,7 @@ void GameState::updateChat(const float &dt)
         }
     }
 
-    chat->update(dt, mousePosView, *data.event, data.mouseData);
+    chat->update(dt, mousePosView, *data.event);
 }
 
 void GameState::updateDebugText(const float &dt)

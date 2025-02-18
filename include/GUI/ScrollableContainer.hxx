@@ -57,10 +57,8 @@ namespace gui
          * @param dt The delta time since the last update.
          * @param mouse_pos The current position of the mouse.
          * @param event An optional event that might contain mouse wheel scroll information.
-         * @param mouse_data The data for mouse wheel scrolling, used if the event is a scroll.
          */
-        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
-                    sf::Event::MouseWheelScrolled &mouse_data);
+        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event);
 
         /**
          * @brief Renders the scrollable container to the given render target.
