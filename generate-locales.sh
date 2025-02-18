@@ -1,6 +1,6 @@
 #!/bin/bash
 
-languages=(pt_BR es_ES fr_FR)
+languages=(pt_BR es_ES fr_FR ru_RU)
 
 for lang in ${languages[@]}; do
     echo "Generating locales for ${lang}"

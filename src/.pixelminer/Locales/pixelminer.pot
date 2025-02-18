@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 18:42-0300\n"
+"POT-Creation-Date: 2025-02-18 20:46-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -425,7 +425,8 @@ msgid "Re-Create"
 msgstr ""
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
-#: src/States/LocalesState.cxx:48
+#: src/States/LocalesState.cxx:48 src/States/LocalesState.cxx:181
+#: src/States/LocalesState.cxx:197
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
 #: src/States/Multiplayer/DirectConnectState.cxx:28
 #: src/States/Multiplayer/AddServerState.cxx:35
@@ -436,7 +437,8 @@ msgstr ""
 msgid "Back"
 msgstr ""
 
-#: src/States/LocalesState.cxx:42
+#: src/States/LocalesState.cxx:42 src/States/LocalesState.cxx:176
+#: src/States/LocalesState.cxx:192
 msgid "Done"
 msgstr ""
 
@@ -450,11 +452,11 @@ msgid ""
 "formed."
 msgstr ""
 
-#: src/States/LocalesState.cxx:107
+#: src/States/LocalesState.cxx:106
 msgid "Failed to save locale files"
 msgstr ""
 
-#: src/States/LocalesState.cxx:108
+#: src/States/LocalesState.cxx:107
 msgid "Could not open \"locales.json\" to save the new language preference."
 msgstr ""
 

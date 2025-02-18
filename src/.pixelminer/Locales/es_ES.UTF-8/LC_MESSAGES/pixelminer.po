@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 18:37-0300\n"
+"POT-Creation-Date: 2025-02-18 19:08-0300\n"
 "PO-Revision-Date: 2025-02-18 18:42-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -426,7 +426,8 @@ msgid "Re-Create"
 msgstr "Recrear"
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
-#: src/States/LocalesState.cxx:48
+#: src/States/LocalesState.cxx:48 src/States/LocalesState.cxx:181
+#: src/States/LocalesState.cxx:197
 #: src/States/Multiplayer/ServerSelectionState.cxx:73
 #: src/States/Multiplayer/DirectConnectState.cxx:28
 #: src/States/Multiplayer/AddServerState.cxx:35
@@ -437,7 +438,8 @@ msgstr "Cancelar"
 msgid "Back"
 msgstr "Retroceder"
 
-#: src/States/LocalesState.cxx:42
+#: src/States/LocalesState.cxx:42 src/States/LocalesState.cxx:176
+#: src/States/LocalesState.cxx:192
 msgid "Done"
 msgstr "Finalizar"
 
@@ -453,11 +455,11 @@ msgstr ""
 "El archivo \"locales.json\" en SETTINGS_FOLDER puede estar dañado o tener un "
 "formato incorrecto."
 
-#: src/States/LocalesState.cxx:107
+#: src/States/LocalesState.cxx:106
 msgid "Failed to save locale files"
 msgstr "No se pudieron guardar los archivos de localidades"
 
-#: src/States/LocalesState.cxx:108
+#: src/States/LocalesState.cxx:107
 msgid "Could not open \"locales.json\" to save the new language preference."
 msgstr ""
 "No se pudo abrir \"locales.json\" para guardar la nueva preferencia de "

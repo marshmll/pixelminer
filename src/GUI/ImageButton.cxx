@@ -10,8 +10,8 @@ ImageButton::ImageButton(const sf::Vector2f &position, const sf::Vector2f &size,
 {
     imageRect.setSize(image_size);
     imageRect.setTexture(&image);
-    imageRect.setPosition(sf::Vector2f(getPosition().x + getSize().x / 2.f - imageRect.getSize().x / 2.f,
-                                       getPosition().y + getSize().y / 2.f - imageRect.getSize().y / 2.f));
+    imageRect.setPosition(sf::Vector2f(body.getPosition().x + 1.f + body.getSize().x / 2.f - image_size.x / 2.f,
+                                       body.getPosition().y + 1.f + body.getSize().y / 2.f - image_size.y / 2.f));
 }
 
 ImageButton::~ImageButton() = default;

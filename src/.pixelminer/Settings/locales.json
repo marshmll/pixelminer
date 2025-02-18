@@ -15,7 +15,11 @@
         {
             "locale": "pt_BR.UTF-8",
             "name": "Português do Brasil"
+        },
+        {
+            "locale": "ru_RU.UTF-8",
+            "name": "Русский из России"
         }
     ],
-    "current": "es_ES.UTF-8"
+    "current": "pt_BR.UTF-8"
 }
