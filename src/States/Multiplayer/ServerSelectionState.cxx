@@ -79,7 +79,7 @@ void ServerSelectionState::initSocket()
 {
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
         throw std::runtime_error("Failed to bind to a port.");
-    socket.setBlocking(false);
+
     socketSelector.add(socket);
 }
 

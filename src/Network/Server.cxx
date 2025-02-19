@@ -12,24 +12,31 @@ void Server::listenerThread()
 
     sf::Packet pktBuf;
 
-    while (online && listenerThreadRunning)
+    while (online)
     {
+        if (!listenerThreadRunning)
+            break;
+
         {
             std::lock_guard<std::mutex> lock(mutex);
             handleTimedOutConnections();
         }
 
-        if (socketSelector.wait(sf::seconds(10.f)) && socketSelector.isReady(socket))
+        if (socketSelector.wait(sf::seconds(5.f)))
         {
-            pktBuf.clear();
-            std::optional<sf::IpAddress> ip;
-            unsigned short port;
-
-            if (socket.receive(pktBuf, ip, port) == sf::Socket::Status::Done)
+            std::cout << "here" << "\n";
+            if (socketSelector.isReady(socket))
             {
-                std::lock_guard<std::mutex> lock(mutex);
-                packetQueue.emplace(PacketAddress{*ip, port}, std::move(pktBuf));
-                handler();
+                pktBuf.clear();
+                std::optional<sf::IpAddress> ip;
+                unsigned short port;
+
+                if (socket.receive(pktBuf, ip, port) == sf::Socket::Status::Done)
+                {
+                    std::lock_guard<std::mutex> lock(mutex);
+                    packetQueue.emplace(PacketAddress{*ip, port}, std::move(pktBuf));
+                    handler();
+                }
             }
         }
     }
@@ -42,6 +49,8 @@ void Server::listenerThread()
 
 void Server::handler()
 {
+    std::cout << "here" << "\n";
+
     while (auto opt = consumePacket())
     {
         auto &[pkt_addr, pkt] = *opt;

@@ -211,33 +211,34 @@ class ServerSelector
         packet << "INFO";
 
         clock.restart();
+
+        if (socket.send(packet, ipAddress, portAddress) != sf::Socket::Status::Done)
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            metadata.serverDescription = _("Failed to reach server.");
+            metadata.status = _("Offline");
 
-            if (socket.send(packet, ipAddress, portAddress) != sf::Socket::Status::Done)
-            {
-                metadata.serverDescription = _("Failed to reach server.");
-                metadata.status = _("Offline");
+            std::string str = metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" +
+                              _("Game Version: ") + metadata.gameVersion;
 
-                std::string str = metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" +
-                                  _("Game Version: ") + metadata.gameVersion;
+            description->setString(sf::String::fromUtf8(str.begin(), str.end()));
+            description->setFillColor(sf::Color::Red);
 
-                description->setString(sf::String::fromUtf8(str.begin(), str.end()));
-                description->setFillColor(sf::Color::Red);
+            connSprite.setTextureRect(sf::IntRect({0, 0}, connSprite.getTextureRect().size));
 
-                connSprite.setTextureRect(sf::IntRect({0, 0}, connSprite.getTextureRect().size));
-
-                return;
-            }
+            return;
         }
+
+        std::cout << "sent to " << ipAddress.toString() << ":" << portAddress << "\n";
 
         sf::Packet result;
         std::optional<sf::IpAddress> ip_buffer;
         unsigned short port_buffer;
-        const float timeout = 1.f;
+        const float timeout = 10.f;
 
         if (socketSelector.wait(sf::seconds(timeout)))
         {
+            std::cout << "here?" << "\n";
+
             if (socketSelector.isReady(socket))
             {
                 std::lock_guard<std::mutex> lock(mutex);
@@ -246,6 +247,9 @@ class ServerSelector
                 {
                     std::string header, json;
                     result >> header >> json;
+
+                    std::cout << header << json;
+
                     if (header == "ACK+INFO")
                     {
                         JObject obj = JSON::parse(json).getAs<JObject>();

@@ -85,7 +85,7 @@ void PauseMenu::update(const float &dt, const sf::Vector2f &mouse_pos)
     }
     else if (buttons.at("OpenToLAN")->isPressed())
     {
-        if (server.listen(sf::Socket::AnyPort))
+        if (server.listen(55000))
         {
             buttons.at("OpenToLAN")->setState(gui::ButtonState::Disabled);
             chat.displayGameLog(_("Server online at: ") + server.getFullAddress());
