@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 19:08-0300\n"
-"PO-Revision-Date: 2025-02-18 18:39-0300\n"
+"POT-Creation-Date: 2025-02-19 10:15-0300\n"
+"PO-Revision-Date: 2025-02-19 10:16-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -371,35 +371,35 @@ msgstr "Sair"
 msgid "Loading world"
 msgstr "Carregando mundo"
 
-#: src/States/Singleplayer/GameState.cxx:362
+#: src/States/Singleplayer/GameState.cxx:364
 msgid "grid x, y: "
 msgstr "grid x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:364
+#: src/States/Singleplayer/GameState.cxx:366
 msgid "velocity x, y: "
 msgstr "velocidade x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:366
+#: src/States/Singleplayer/GameState.cxx:368
 msgid "chunk:"
 msgstr "chunk:"
 
-#: src/States/Singleplayer/GameState.cxx:371
+#: src/States/Singleplayer/GameState.cxx:373
 msgid "region:"
 msgstr "região:"
 
-#: src/States/Singleplayer/GameState.cxx:378
+#: src/States/Singleplayer/GameState.cxx:380
 msgid "biome:"
 msgstr "bioma:"
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid "height: "
 msgstr "altura: "
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid ", moisture: "
 msgstr ", umidade: "
 
-#: src/States/Singleplayer/GameState.cxx:380
+#: src/States/Singleplayer/GameState.cxx:382
 msgid ", heat: "
 msgstr ", calor: "
 
@@ -653,21 +653,11 @@ msgstr "Erro: Destino deve resolver para exatamente um algo."
 msgid "Teleported "
 msgstr "Teleportada(s) "
 
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
-msgid " entit"
-msgstr " entidad"
-
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "y"
-msgstr "e"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "ies"
-msgstr "es"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid " to "
-msgstr " para "
+msgid " entity to"
+msgid_plural " entities to"
+msgstr[0] " entidade para"
+msgstr[1] " entidades para"
 
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
 msgid "position of "
@@ -794,16 +784,16 @@ msgstr "Arquivo \""
 msgid "\" does not exist."
 msgstr "\" não existe."
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:308
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:320
 msgid "Error sending file part "
 msgstr "Erro ao enviar parte de arquivo "
 
 #: src/Network/Client.cxx:288 src/Network/Client.cxx:294
-#: src/Network/Server.cxx:309 src/Network/Server.cxx:315
+#: src/Network/Server.cxx:321 src/Network/Server.cxx:327
 msgid " B) of file "
 msgstr " B) do arquivo "
 
-#: src/Network/Client.cxx:289 src/Network/Server.cxx:310
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:322
 msgid "to: "
 msgstr "para: "
 
@@ -815,13 +805,21 @@ msgstr "Enviado parte de arquivo: "
 msgid "Could not write to file: \""
 msgstr "Não foi possivel escrever no arquivo: \""
 
-#: src/Network/Client.cxx:338 src/Network/Server.cxx:364
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:376
 msgid "Received file part "
 msgstr "Recebido parte de arquivo "
 
 #: src/Network/Client.cxx:339
 msgid " of file: "
 msgstr " do arquivo: "
+
+#: src/Network/Server.cxx:10
+msgid "Server"
+msgstr "Servidor"
+
+#: src/Network/Server.cxx:11
+msgid "online."
+msgstr "online."
 
 #: src/Network/Server.cxx:37
 msgid "Server's listener thread for ("
@@ -831,91 +829,95 @@ msgstr "Thread ouvidora de servidor para ("
 msgid ") is offline."
 msgstr ") está offline."
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid "Connection with client "
 msgstr "Conexão com cliente "
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid " timed out after "
 msgstr " expirou depois de "
 
-#: src/Network/Server.cxx:85
+#: src/Network/Server.cxx:87
 msgid " seconds."
 msgstr " segundos."
 
-#: src/Network/Server.cxx:100
+#: src/Network/Server.cxx:102
 msgid "Connecting to self is not allowed."
 msgstr "Conectar à si mesmo não é permitido."
 
-#: src/Network/Server.cxx:110
+#: src/Network/Server.cxx:112
 msgid "Client with IP reconnected: "
 msgstr "Cliente com IP reconectou-se: "
 
-#: src/Network/Server.cxx:116 src/Network/Server.cxx:198
+#: src/Network/Server.cxx:118 src/Network/Server.cxx:210
 msgid "Client with IP is already connected: "
 msgstr "Cliente com IP já está conectado: "
 
-#: src/Network/Server.cxx:133
+#: src/Network/Server.cxx:135
 msgid "A Pixelminer Server."
 msgstr "Um Servidor Pixelminer."
 
-#: src/Network/Server.cxx:170
+#: src/Network/Server.cxx:167
+msgid "Waiting for listener thread..."
+msgstr "Esperando pela thread ouvidora..."
+
+#: src/Network/Server.cxx:182
 msgid "Already listening on port "
 msgstr "Já escutando na porta "
 
-#: src/Network/Server.cxx:176
+#: src/Network/Server.cxx:188
 msgid "Could not bind to port "
 msgstr "Não foi possivel se vincular à porta: "
 
-#: src/Network/Server.cxx:191
+#: src/Network/Server.cxx:203
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr "Número máximo de conexões atingido. Recusada a conexão com o cliente: "
 
-#: src/Network/Server.cxx:203 src/Network/Server.cxx:218
+#: src/Network/Server.cxx:215 src/Network/Server.cxx:230
 msgid "Client with IP "
 msgstr "Cliente com IP "
 
-#: src/Network/Server.cxx:203
+#: src/Network/Server.cxx:215
 msgid " connected."
 msgstr " conectado."
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid "Client with UUID "
 msgstr "Cliente com UUID "
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid " is not connected."
 msgstr " conectou-se."
 
-#: src/Network/Server.cxx:218
+#: src/Network/Server.cxx:230
 msgid " is now disconnected."
 msgstr "   desconectou-se."
 
-#: src/Network/Server.cxx:237
+#: src/Network/Server.cxx:249
 msgid "Could not send packet to: "
 msgstr "Não foi possível enviar pacote para: "
 
-#: src/Network/Server.cxx:249
+#: src/Network/Server.cxx:261
 msgid "Error while sending control message to: "
 msgstr "Erro durante o envio de mensagem de controle para: "
 
-#: src/Network/Server.cxx:260 src/Network/Server.cxx:329
+#: src/Network/Server.cxx:272 src/Network/Server.cxx:341
 msgid "Client is not connected: "
 msgstr "Cliente não está conectado: "
 
-#: src/Network/Server.cxx:266
+#: src/Network/Server.cxx:278
 msgid "Invalid file: "
 msgstr "Arquivo inválido: "
 
-#: src/Network/Server.cxx:343
+#: src/Network/Server.cxx:355
 msgid "Could not write file: "
 msgstr "Não foi possivel escrever arquivo: "
 
-#: src/Network/Server.cxx:365
+#: src/Network/Server.cxx:377
 msgid "of file: "
 msgstr "do arquivo: "
 
-#: src/Network/Server.cxx:381
+#: src/Network/Server.cxx:389
 msgid "Server is down"
 msgstr "Servidor desligado"
 
@@ -1154,33 +1156,3 @@ msgstr "Status: "
 #: include/States/Multiplayer/ServerSelectionState.hxx:85
 msgid "Players: "
 msgstr "Jogadores: "
-
-#~ msgid "Missing texture \"background.png\" in resource pack: "
-#~ msgstr "Faltando textura \"background.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"player_1.png\" in resource pack: "
-#~ msgstr "Faltando textura \"player_1.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"pine_tree.png\" in resource pack: "
-#~ msgstr "Faltando textura \"pine_tree.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"tile_sheet.png\" in resource pack: "
-#~ msgstr "Faltando textura \"tile_sheet.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"heart_empty.png\" in resource pack: "
-#~ msgstr "Faltando textura \"heart_empty.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"heart_half.png\" in resource pack: "
-#~ msgstr "Faltando textura \"heart_half.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"heart_full.png\" in resource pack: "
-#~ msgstr "Faltando textura \"heart_full.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"bread_empty.png\" in resource pack: "
-#~ msgstr "Faltando textura \"bread_empty.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"bread_half.png\" in resource pack: "
-#~ msgstr "Faltando textura \"bread_half.png\" no pacote de recursos: "
-
-#~ msgid "Missing texture \"bread_full.png\" in resource pack: "
-#~ msgstr "Faltando textura \"bread_full.png\" no pacote de recursos: "

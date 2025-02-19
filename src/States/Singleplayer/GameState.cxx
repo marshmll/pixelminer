@@ -7,8 +7,10 @@ void GameState::initLoadingScreen()
     loadingBg.setPosition({0, 0});
     loadingBg.setTexture(&data.activeResourcePack->getTexture("Background"));
 
-    loadingText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"), _("Loading world"),
-                                             gui::charSize(*data.vm, 85));
+    std::string msg = _("Loading world");
+
+    loadingText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
+                                             sf::String::fromUtf8(msg.begin(), msg.end()), gui::charSize(*data.vm, 85));
 
     loadingText->setPosition(
         sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - loadingText->getGlobalBounds().size.x / 2.f),
@@ -377,7 +379,7 @@ void GameState::updateDebugText(const float &dt)
        << "]\n"
        << _("biome:") << " " << ctx.map->getBiomeAt(sf::Vector2i(thisPlayer->getCenterGridPosition())).name << "\n"
        << _("height: ") << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", moisture: ")
-       << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", heat: ")
+       << ctx.map->getMoistureAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", heat: ")
        << ctx.map->getHeatAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << "\n";
 
     std::string str = ss.str();

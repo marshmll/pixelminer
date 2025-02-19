@@ -14,7 +14,7 @@ void Logger::logInfo(const std::string &log)
 
     TerminalColor::reset();
 
-    std::cerr << " [" << logger << "] " << log << "\n";
+    std::cerr << " [" << logger << "] " << log << std::endl;
 }
 
 void Logger::logWarning(const std::string &log)
@@ -25,7 +25,7 @@ void Logger::logWarning(const std::string &log)
 
     TerminalColor::reset();
 
-    std::cout << " [" << logger << "] " << log << "\n";
+    std::cout << " [" << logger << "] " << log << std::endl;
 }
 
 void Logger::logError(const std::string &log, const bool &throw_runtime_err)
@@ -36,7 +36,7 @@ void Logger::logError(const std::string &log, const bool &throw_runtime_err)
 
     TerminalColor::reset();
 
-    std::cerr << " [" << logger << "] " << log << "\n";
+    std::cerr << " [" << logger << "] " << log << std::endl;
 
     if (throw_runtime_err)
         throw std::runtime_error("[ " + logger + " ] => " + log);

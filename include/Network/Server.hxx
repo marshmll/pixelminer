@@ -74,6 +74,7 @@ class Server
     unsigned int maxConnections;                                  ///< Maximum of connections accepted.
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue; ///< A queue for received packets.
     std::atomic_bool online;                                      ///< Flag indicating whether the server is online.
+    std::atomic_bool listenerThreadRunning; ///< Flag that indicates if the listener thread is running.
 
     /**
      * @brief Listens for incoming packets and handles client connections.

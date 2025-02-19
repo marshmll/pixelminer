@@ -28,7 +28,7 @@
  * @param STRING The string (`msgid`) to resolve to a translated string (`msgstr`).
  * @return The translated string if found in the catalog; otherwise, the original `STRING` is returned.
  */
-#define _(STRING) std::string(gettext(STRING))
+#define _(STRING) std::move(std::string(gettext(STRING)))
 
 /**
  * @brief Sets up internationalization (i18n) for the application by configuring the locale and text domain.

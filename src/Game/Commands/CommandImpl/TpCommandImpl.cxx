@@ -100,8 +100,8 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
     }
 
     // Build response message
-    std::string message = _("Teleported ") + std::to_string(sourceEntities.size()) + _(" entit") +
-                          (sourceEntities.size() == 1 ? _("y") : _("ies")) + _(" to ");
+    std::string message = _("Teleported ") + std::to_string(sourceEntities.size()) +
+                          ngettext(" entity to", " entities to", sourceEntities.size());
     if (destIsCoords)
     {
         message += "x: " + std::to_string(destPos.x) + ", y: " + std::to_string(destPos.y);

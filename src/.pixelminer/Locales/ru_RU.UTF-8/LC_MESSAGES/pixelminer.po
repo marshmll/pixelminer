@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 19:08-0300\n"
-"PO-Revision-Date: 2025-02-18 20:45-0300\n"
+"POT-Creation-Date: 2025-02-19 10:15-0300\n"
+"PO-Revision-Date: 2025-02-19 10:25-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: ru\n"
@@ -372,35 +372,35 @@ msgstr "Увольнение"
 msgid "Loading world"
 msgstr "Мир загрузки"
 
-#: src/States/Singleplayer/GameState.cxx:362
+#: src/States/Singleplayer/GameState.cxx:364
 msgid "grid x, y: "
 msgstr "сетка x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:364
+#: src/States/Singleplayer/GameState.cxx:366
 msgid "velocity x, y: "
 msgstr "cкорость x, y: "
 
-#: src/States/Singleplayer/GameState.cxx:366
+#: src/States/Singleplayer/GameState.cxx:368
 msgid "chunk:"
 msgstr "чанк:"
 
-#: src/States/Singleplayer/GameState.cxx:371
+#: src/States/Singleplayer/GameState.cxx:373
 msgid "region:"
 msgstr "регион:"
 
-#: src/States/Singleplayer/GameState.cxx:378
+#: src/States/Singleplayer/GameState.cxx:380
 msgid "biome:"
 msgstr "биом:"
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid "height: "
 msgstr "высота: "
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid ", moisture: "
 msgstr ", влажность: "
 
-#: src/States/Singleplayer/GameState.cxx:380
+#: src/States/Singleplayer/GameState.cxx:382
 msgid ", heat: "
 msgstr ", тепло: "
 
@@ -654,21 +654,12 @@ msgstr "Ошибка: Пункт назначения должен разреш�
 msgid "Teleported "
 msgstr "Телепортироваться "
 
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
-msgid " entit"
-msgstr " организаци"
-
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "y"
-msgstr "я"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "ies"
-msgstr "и"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid " to "
-msgstr " на "
+msgid " entity to"
+msgid_plural " entities to"
+msgstr[0] " сущность к"
+msgstr[1] " сущности к"
+msgstr[2] " сущностей к"
 
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
 msgid "position of "
@@ -692,7 +683,7 @@ msgstr "« разрешено нескольким сущностям. Пожа�
 
 #: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:33
 msgid "Entity ID: "
-msgstr "ID субъекта: "
+msgstr "ID сущность: "
 
 #: src/Game/Commands/CommandInterpreter.cxx:119
 msgid "Error: Empty command."
@@ -794,16 +785,16 @@ msgstr "Файл »"
 msgid "\" does not exist."
 msgstr "« не существует."
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:308
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:320
 msgid "Error sending file part "
 msgstr "Ошибка при отправке части файла "
 
 #: src/Network/Client.cxx:288 src/Network/Client.cxx:294
-#: src/Network/Server.cxx:309 src/Network/Server.cxx:315
+#: src/Network/Server.cxx:321 src/Network/Server.cxx:327
 msgid " B) of file "
 msgstr " B) из файла "
 
-#: src/Network/Client.cxx:289 src/Network/Server.cxx:310
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:322
 msgid "to: "
 msgstr "к: "
 
@@ -815,13 +806,21 @@ msgstr "Отправленная часть файла: "
 msgid "Could not write to file: \""
 msgstr "Не удалось записать в файл: »"
 
-#: src/Network/Client.cxx:338 src/Network/Server.cxx:364
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:376
 msgid "Received file part "
 msgstr "Полученная часть файла "
 
 #: src/Network/Client.cxx:339
 msgid " of file: "
 msgstr " файла: "
+
+#: src/Network/Server.cxx:10
+msgid "Server"
+msgstr "Сервер"
+
+#: src/Network/Server.cxx:11
+msgid "online."
+msgstr "в режиме онлайн."
 
 #: src/Network/Server.cxx:37
 msgid "Server's listener thread for ("
@@ -831,93 +830,97 @@ msgstr "Поток слушателя сервера для ("
 msgid ") is offline."
 msgstr ") не работает."
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid "Connection with client "
 msgstr "Связь с клиентом "
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid " timed out after "
 msgstr " завершился после "
 
-#: src/Network/Server.cxx:85
+#: src/Network/Server.cxx:87
 msgid " seconds."
 msgstr " секунды."
 
-#: src/Network/Server.cxx:100
+#: src/Network/Server.cxx:102
 msgid "Connecting to self is not allowed."
 msgstr "Подключение к себе запрещено."
 
-#: src/Network/Server.cxx:110
+#: src/Network/Server.cxx:112
 msgid "Client with IP reconnected: "
 msgstr "Подключение к себе не разрешено. Клиент с IP переподключился: "
 
-#: src/Network/Server.cxx:116 src/Network/Server.cxx:198
+#: src/Network/Server.cxx:118 src/Network/Server.cxx:210
 msgid "Client with IP is already connected: "
 msgstr "Клиент с IP уже подключен: "
 
-#: src/Network/Server.cxx:133
+#: src/Network/Server.cxx:135
 msgid "A Pixelminer Server."
 msgstr "Сервер Pixelminer."
 
-#: src/Network/Server.cxx:170
+#: src/Network/Server.cxx:167
+msgid "Waiting for listener thread..."
+msgstr "Ожидание потока сервера..."
+
+#: src/Network/Server.cxx:182
 msgid "Already listening on port "
 msgstr "Уже прослушивает порт "
 
-#: src/Network/Server.cxx:176
+#: src/Network/Server.cxx:188
 msgid "Could not bind to port "
 msgstr "Не удалось установить связь с портом "
 
-#: src/Network/Server.cxx:191
+#: src/Network/Server.cxx:203
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr ""
 "Достигнуто максимальное количество соединений. Отказано в соединении с "
 "клиентом: "
 
-#: src/Network/Server.cxx:203 src/Network/Server.cxx:218
+#: src/Network/Server.cxx:215 src/Network/Server.cxx:230
 msgid "Client with IP "
 msgstr "Клиент с IP "
 
-#: src/Network/Server.cxx:203
+#: src/Network/Server.cxx:215
 msgid " connected."
 msgstr " соединены."
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid "Client with UUID "
 msgstr "Клиент с UUID "
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid " is not connected."
 msgstr " не подключен."
 
-#: src/Network/Server.cxx:218
+#: src/Network/Server.cxx:230
 msgid " is now disconnected."
 msgstr " теперь отключен."
 
-#: src/Network/Server.cxx:237
+#: src/Network/Server.cxx:249
 msgid "Could not send packet to: "
 msgstr "Не удалось отправить пакет: "
 
-#: src/Network/Server.cxx:249
+#: src/Network/Server.cxx:261
 msgid "Error while sending control message to: "
 msgstr "Ошибка при отправке управляющего сообщения: "
 
-#: src/Network/Server.cxx:260 src/Network/Server.cxx:329
+#: src/Network/Server.cxx:272 src/Network/Server.cxx:341
 msgid "Client is not connected: "
 msgstr "Клиент не подключен: "
 
-#: src/Network/Server.cxx:266
+#: src/Network/Server.cxx:278
 msgid "Invalid file: "
 msgstr "Недопустимый файл: "
 
-#: src/Network/Server.cxx:343
+#: src/Network/Server.cxx:355
 msgid "Could not write file: "
 msgstr "Не удалось записать файл: "
 
-#: src/Network/Server.cxx:365
+#: src/Network/Server.cxx:377
 msgid "of file: "
 msgstr "файла: "
 
-#: src/Network/Server.cxx:381
+#: src/Network/Server.cxx:389
 msgid "Server is down"
 msgstr "Сервер выключен"
 

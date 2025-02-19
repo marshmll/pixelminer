@@ -5,12 +5,14 @@
 
 void Server::listenerThread()
 {
-    logger.logInfo("Server (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
-                   std::to_string(socket.getLocalPort()) + ") online.");
+    listenerThreadRunning = true;
+
+    logger.logInfo(_("Server") + " (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
+                   std::to_string(socket.getLocalPort()) + ") " + _("online."));
 
     sf::Packet pktBuf;
 
-    while (online)
+    while (online && listenerThreadRunning)
     {
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -32,10 +34,10 @@ void Server::listenerThread()
         }
     }
 
-    std::cout << std::flush;
-
     logger.logInfo(_("Server's listener thread for (") + sf::IpAddress::getLocalAddress()->toString() +
                    _(") is offline."));
+
+    listenerThreadRunning = false;
 }
 
 void Server::handler()
@@ -150,7 +152,8 @@ void Server::setOnline(bool online)
 
 /* CONSTRUCTOR ============================================================================================== */
 
-Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), maxConnections(8), online(false)
+Server::Server(const std::string &uuid)
+    : myUuid(uuid), logger("Server"), maxConnections(8), online(false), listenerThreadRunning(false)
 {
     socket.setBlocking(true);
     socketSelector.add(socket);
@@ -159,6 +162,17 @@ Server::Server(const std::string &uuid) : myUuid(uuid), logger("Server"), maxCon
 Server::~Server()
 {
     shutdown();
+
+    if (listenerThreadRunning)
+    {
+        logger.logInfo(_("Waiting for listener thread..."));
+
+        for (; listenerThreadRunning;)
+            ;
+    }
+
+    socket.unbind();
+    socketSelector.clear();
 }
 
 /* PUBLIC METHODS =========================================================================================== */
@@ -371,13 +385,9 @@ void Server::shutdown()
         return;
 
     for (const auto &[uuid, conn] : connections)
-    {
         sendControlMessage("KIL", conn.ip, conn.port);
-    }
 
     setOnline(false);
-    socket.unbind();
-    socketSelector.clear();
     logger.logInfo(_("Server is down"));
 }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-18 19:08-0300\n"
+"POT-Creation-Date: 2025-02-19 10:15-0300\n"
 "PO-Revision-Date: 2025-02-18 12:10-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -370,35 +370,35 @@ msgstr ""
 msgid "Loading world"
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:362
+#: src/States/Singleplayer/GameState.cxx:364
 msgid "grid x, y: "
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:364
+#: src/States/Singleplayer/GameState.cxx:366
 msgid "velocity x, y: "
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:366
+#: src/States/Singleplayer/GameState.cxx:368
 msgid "chunk:"
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:371
+#: src/States/Singleplayer/GameState.cxx:373
 msgid "region:"
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:378
+#: src/States/Singleplayer/GameState.cxx:380
 msgid "biome:"
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid "height: "
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:379
+#: src/States/Singleplayer/GameState.cxx:381
 msgid ", moisture: "
 msgstr ""
 
-#: src/States/Singleplayer/GameState.cxx:380
+#: src/States/Singleplayer/GameState.cxx:382
 msgid ", heat: "
 msgstr ""
 
@@ -645,21 +645,11 @@ msgstr ""
 msgid "Teleported "
 msgstr ""
 
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
-msgid " entit"
-msgstr ""
-
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "y"
-msgstr ""
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid "ies"
-msgstr ""
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid " to "
-msgstr ""
+msgid " entity to"
+msgid_plural " entities to"
+msgstr[0] ""
+msgstr[1] ""
 
 #: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
 msgid "position of "
@@ -785,16 +775,16 @@ msgstr ""
 msgid "\" does not exist."
 msgstr ""
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:308
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:320
 msgid "Error sending file part "
 msgstr ""
 
 #: src/Network/Client.cxx:288 src/Network/Client.cxx:294
-#: src/Network/Server.cxx:309 src/Network/Server.cxx:315
+#: src/Network/Server.cxx:321 src/Network/Server.cxx:327
 msgid " B) of file "
 msgstr ""
 
-#: src/Network/Client.cxx:289 src/Network/Server.cxx:310
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:322
 msgid "to: "
 msgstr ""
 
@@ -806,12 +796,20 @@ msgstr ""
 msgid "Could not write to file: \""
 msgstr ""
 
-#: src/Network/Client.cxx:338 src/Network/Server.cxx:364
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:376
 msgid "Received file part "
 msgstr ""
 
 #: src/Network/Client.cxx:339
 msgid " of file: "
+msgstr ""
+
+#: src/Network/Server.cxx:10
+msgid "Server"
+msgstr ""
+
+#: src/Network/Server.cxx:11
+msgid "online."
 msgstr ""
 
 #: src/Network/Server.cxx:37
@@ -822,91 +820,95 @@ msgstr ""
 msgid ") is offline."
 msgstr ""
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid "Connection with client "
 msgstr ""
 
-#: src/Network/Server.cxx:84
+#: src/Network/Server.cxx:86
 msgid " timed out after "
 msgstr ""
 
-#: src/Network/Server.cxx:85
+#: src/Network/Server.cxx:87
 msgid " seconds."
 msgstr ""
 
-#: src/Network/Server.cxx:100
+#: src/Network/Server.cxx:102
 msgid "Connecting to self is not allowed."
 msgstr ""
 
-#: src/Network/Server.cxx:110
+#: src/Network/Server.cxx:112
 msgid "Client with IP reconnected: "
 msgstr ""
 
-#: src/Network/Server.cxx:116 src/Network/Server.cxx:198
+#: src/Network/Server.cxx:118 src/Network/Server.cxx:210
 msgid "Client with IP is already connected: "
 msgstr ""
 
-#: src/Network/Server.cxx:133
+#: src/Network/Server.cxx:135
 msgid "A Pixelminer Server."
 msgstr ""
 
-#: src/Network/Server.cxx:170
+#: src/Network/Server.cxx:167
+msgid "Waiting for listener thread..."
+msgstr ""
+
+#: src/Network/Server.cxx:182
 msgid "Already listening on port "
 msgstr ""
 
-#: src/Network/Server.cxx:176
+#: src/Network/Server.cxx:188
 msgid "Could not bind to port "
 msgstr ""
 
-#: src/Network/Server.cxx:191
+#: src/Network/Server.cxx:203
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr ""
 
-#: src/Network/Server.cxx:203 src/Network/Server.cxx:218
+#: src/Network/Server.cxx:215 src/Network/Server.cxx:230
 msgid "Client with IP "
 msgstr ""
 
-#: src/Network/Server.cxx:203
+#: src/Network/Server.cxx:215
 msgid " connected."
 msgstr ""
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid "Client with UUID "
 msgstr ""
 
-#: src/Network/Server.cxx:212
+#: src/Network/Server.cxx:224
 msgid " is not connected."
 msgstr ""
 
-#: src/Network/Server.cxx:218
+#: src/Network/Server.cxx:230
 msgid " is now disconnected."
 msgstr ""
 
-#: src/Network/Server.cxx:237
+#: src/Network/Server.cxx:249
 msgid "Could not send packet to: "
 msgstr ""
 
-#: src/Network/Server.cxx:249
+#: src/Network/Server.cxx:261
 msgid "Error while sending control message to: "
 msgstr ""
 
-#: src/Network/Server.cxx:260 src/Network/Server.cxx:329
+#: src/Network/Server.cxx:272 src/Network/Server.cxx:341
 msgid "Client is not connected: "
 msgstr ""
 
-#: src/Network/Server.cxx:266
+#: src/Network/Server.cxx:278
 msgid "Invalid file: "
 msgstr ""
 
-#: src/Network/Server.cxx:343
+#: src/Network/Server.cxx:355
 msgid "Could not write file: "
 msgstr ""
 
-#: src/Network/Server.cxx:365
+#: src/Network/Server.cxx:377
 msgid "of file: "
 msgstr ""
 
-#: src/Network/Server.cxx:381
+#: src/Network/Server.cxx:389
 msgid "Server is down"
 msgstr ""
 
