@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-19 10:15-0300\n"
+"POT-Creation-Date: 2025-02-19 14:19-0300\n"
 "PO-Revision-Date: 2025-02-18 12:10-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Tundra"
 msgstr ""
 
-#: src/Map/Biome.cxx:15
+#: src/Map/Biome.cxx:15 src/States/Multiplayer/ServerSelectionState.cxx:133
 msgid "Unknown"
 msgstr ""
 
@@ -411,12 +411,12 @@ msgid "Create New World"
 msgstr ""
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:45
-#: src/States/Multiplayer/ServerSelectionState.cxx:52
+#: src/States/Multiplayer/ServerSelectionState.cxx:59
 msgid "Edit"
 msgstr ""
 
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:53
-#: src/States/Multiplayer/ServerSelectionState.cxx:60
+#: src/States/Multiplayer/ServerSelectionState.cxx:63
 msgid "Delete"
 msgstr ""
 
@@ -427,7 +427,7 @@ msgstr ""
 #: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
 #: src/States/LocalesState.cxx:48 src/States/LocalesState.cxx:181
 #: src/States/LocalesState.cxx:197
-#: src/States/Multiplayer/ServerSelectionState.cxx:73
+#: src/States/Multiplayer/ServerSelectionState.cxx:71
 #: src/States/Multiplayer/DirectConnectState.cxx:28
 #: src/States/Multiplayer/AddServerState.cxx:35
 msgid "Cancel"
@@ -460,25 +460,52 @@ msgstr ""
 msgid "Could not open \"locales.json\" to save the new language preference."
 msgstr ""
 
-#: src/States/Multiplayer/ServerSelectionState.cxx:34
+#: src/States/Multiplayer/ServerSelectionState.cxx:49
 #: src/States/Multiplayer/DirectConnectState.cxx:21
 msgid "Join Server"
 msgstr ""
 
-#: src/States/Multiplayer/ServerSelectionState.cxx:39
+#: src/States/Multiplayer/ServerSelectionState.cxx:52
 msgid "Direct Connect"
 msgstr ""
 
-#: src/States/Multiplayer/ServerSelectionState.cxx:46
+#: src/States/Multiplayer/ServerSelectionState.cxx:56
 msgid "Add Server"
 msgstr ""
 
-#: src/States/Multiplayer/ServerSelectionState.cxx:66
+#: src/States/Multiplayer/ServerSelectionState.cxx:67
 msgid "Refresh"
 msgstr ""
 
-#: src/States/Multiplayer/ServerSelectionState.cxx:139
-msgid "Unreacheable"
+#: src/States/Multiplayer/ServerSelectionState.cxx:119
+msgid "Error parsing \"servers.json\": "
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:121
+msgid "Error parsing \"servers.json\" file"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:122
+msgid "The file may be corrupted or ill-formed. Fix or delete the file:"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:132
+#: src/States/Multiplayer/ServerSelectionState.cxx:170
+msgid "Attempting to reach server..."
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:134
+#: src/States/Multiplayer/ServerSelectionState.cxx:171
+#: include/States/Multiplayer/ServerSelectionState.hxx:143
+msgid "Pending"
+msgstr ""
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:190
+#: include/States/Multiplayer/ServerSelectionState.hxx:105
+#: include/States/Multiplayer/ServerSelectionState.hxx:222
+#: include/States/Multiplayer/ServerSelectionState.hxx:265
+#: include/States/Multiplayer/ServerSelectionState.hxx:284
+msgid "Status: "
 msgstr ""
 
 #: src/States/Multiplayer/DirectConnectState.cxx:15
@@ -775,16 +802,16 @@ msgstr ""
 msgid "\" does not exist."
 msgstr ""
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:320
+#: src/Network/Client.cxx:287 src/Network/Server.cxx:322
 msgid "Error sending file part "
 msgstr ""
 
 #: src/Network/Client.cxx:288 src/Network/Client.cxx:294
-#: src/Network/Server.cxx:321 src/Network/Server.cxx:327
+#: src/Network/Server.cxx:323 src/Network/Server.cxx:329
 msgid " B) of file "
 msgstr ""
 
-#: src/Network/Client.cxx:289 src/Network/Server.cxx:322
+#: src/Network/Client.cxx:289 src/Network/Server.cxx:324
 msgid "to: "
 msgstr ""
 
@@ -796,7 +823,7 @@ msgstr ""
 msgid "Could not write to file: \""
 msgstr ""
 
-#: src/Network/Client.cxx:338 src/Network/Server.cxx:376
+#: src/Network/Client.cxx:338 src/Network/Server.cxx:378
 msgid "Received file part "
 msgstr ""
 
@@ -840,7 +867,7 @@ msgstr ""
 msgid "Client with IP reconnected: "
 msgstr ""
 
-#: src/Network/Server.cxx:118 src/Network/Server.cxx:210
+#: src/Network/Server.cxx:118 src/Network/Server.cxx:212
 msgid "Client with IP is already connected: "
 msgstr ""
 
@@ -848,67 +875,67 @@ msgstr ""
 msgid "A Pixelminer Server."
 msgstr ""
 
-#: src/Network/Server.cxx:167
+#: src/Network/Server.cxx:168
 msgid "Waiting for listener thread..."
 msgstr ""
 
-#: src/Network/Server.cxx:182
+#: src/Network/Server.cxx:184
 msgid "Already listening on port "
 msgstr ""
 
-#: src/Network/Server.cxx:188
+#: src/Network/Server.cxx:190
 msgid "Could not bind to port "
 msgstr ""
 
-#: src/Network/Server.cxx:203
+#: src/Network/Server.cxx:205
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr ""
 
-#: src/Network/Server.cxx:215 src/Network/Server.cxx:230
+#: src/Network/Server.cxx:217 src/Network/Server.cxx:232
 msgid "Client with IP "
 msgstr ""
 
-#: src/Network/Server.cxx:215
+#: src/Network/Server.cxx:217
 msgid " connected."
 msgstr ""
 
-#: src/Network/Server.cxx:224
+#: src/Network/Server.cxx:226
 msgid "Client with UUID "
 msgstr ""
 
-#: src/Network/Server.cxx:224
+#: src/Network/Server.cxx:226
 msgid " is not connected."
 msgstr ""
 
-#: src/Network/Server.cxx:230
+#: src/Network/Server.cxx:232
 msgid " is now disconnected."
 msgstr ""
 
-#: src/Network/Server.cxx:249
+#: src/Network/Server.cxx:251
 msgid "Could not send packet to: "
 msgstr ""
 
-#: src/Network/Server.cxx:261
+#: src/Network/Server.cxx:263
 msgid "Error while sending control message to: "
 msgstr ""
 
-#: src/Network/Server.cxx:272 src/Network/Server.cxx:341
+#: src/Network/Server.cxx:274 src/Network/Server.cxx:343
 msgid "Client is not connected: "
 msgstr ""
 
-#: src/Network/Server.cxx:278
+#: src/Network/Server.cxx:280
 msgid "Invalid file: "
 msgstr ""
 
-#: src/Network/Server.cxx:355
+#: src/Network/Server.cxx:357
 msgid "Could not write file: "
 msgstr ""
 
-#: src/Network/Server.cxx:377
+#: src/Network/Server.cxx:379
 msgid "of file: "
 msgstr ""
 
-#: src/Network/Server.cxx:389
+#: src/Network/Server.cxx:391
 msgid "Server is down"
 msgstr ""
 
@@ -1132,7 +1159,8 @@ msgid "Last Played: "
 msgstr ""
 
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
-#: include/States/Multiplayer/ServerSelectionState.hxx:85
+#: include/States/Multiplayer/ServerSelectionState.hxx:223
+#: include/States/Multiplayer/ServerSelectionState.hxx:266
 msgid "Game Version: "
 msgstr ""
 
@@ -1140,10 +1168,16 @@ msgstr ""
 msgid ", Difficulty: "
 msgstr ""
 
-#: include/States/Multiplayer/ServerSelectionState.hxx:84
-msgid "Status: "
+#: include/States/Multiplayer/ServerSelectionState.hxx:219
+#: include/States/Multiplayer/ServerSelectionState.hxx:280
+msgid "Failed to reach server."
 msgstr ""
 
-#: include/States/Multiplayer/ServerSelectionState.hxx:85
-msgid "Players: "
+#: include/States/Multiplayer/ServerSelectionState.hxx:220
+#: include/States/Multiplayer/ServerSelectionState.hxx:281
+msgid "Offline"
+msgstr ""
+
+#: include/States/Multiplayer/ServerSelectionState.hxx:257
+msgid "Online"
 msgstr ""

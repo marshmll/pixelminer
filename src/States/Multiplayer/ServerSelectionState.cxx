@@ -3,10 +3,12 @@
 
 void ServerSelectionState::initGUI()
 {
+    // Initialize background
     background.setSize(sf::Vector2f(data.vm->size));
     background.setPosition(sf::Vector2f(0.f, 0.f));
     background.setTexture(&data.activeResourcePack->textures.at("Background"));
 
+    // Initialize header and footer
     header.setSize(sf::Vector2f(data.vm->size.x, gui::percent(data.vm->size.y, 15.f)));
     header.setPosition(sf::Vector2f(0.f, 0.f));
     header.setFillColor(sf::Color(0, 0, 0, 80));
@@ -15,12 +17,19 @@ void ServerSelectionState::initGUI()
     footer.setPosition(sf::Vector2f(0.f, data.vm->size.y - footer.getSize().y));
     footer.setFillColor(sf::Color(0, 0, 0, 80));
 
+    // Initialize button container
     buttonContainer.setSize(
         sf::Vector2f(gui::percent(footer.getSize().x, 90.f), gui::percent(footer.getSize().y, 60.f)));
     buttonContainer.setPosition(
         sf::Vector2f(footer.getPosition().x + footer.getSize().x / 2.f - buttonContainer.getSize().x / 2.f,
                      footer.getPosition().y + footer.getSize().y / 2.f - buttonContainer.getSize().y / 2.f));
 
+    // Initialize buttons
+    initializeButtons();
+}
+
+void ServerSelectionState::initializeButtons()
+{
     float gap = gui::charSize(*data.vm, 110);
     int rows = 2;
     int cols_top = 3;
@@ -29,50 +38,37 @@ void ServerSelectionState::initGUI()
     float btn_width_bottom = (buttonContainer.getSize().x - (cols_bot - 1) * gap) / cols_bot;
     float btn_height = (buttonContainer.getSize().y - (rows - 1) * gap) / rows;
 
-    buttons["JoinServer"] = std::make_unique<gui::TextButton>(
-        buttonContainer.getPosition(), sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200),
-        _("Join Server"), data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
-        2.f, sf::Color::Black);
+    auto createButton = [&](const std::string &name, const sf::Vector2f &position, const sf::Vector2f &size,
+                            const std::string &label) {
+        buttons[name] = std::make_unique<gui::TextButton>(
+            position, size, sf::Color(200, 200, 200, 200), label, data.activeResourcePack->getFont("Regular"),
+            gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
+    };
 
-    buttons["DirectConnect"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + btn_width_top + gap, buttonContainer.getPosition().y),
-        sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200), _("Direct Connect"),
-        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
-
-    buttons["AddServer"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + (btn_width_top * 2) + (gap * 2),
-                     buttonContainer.getPosition().y),
-        sf::Vector2f(btn_width_top, btn_height), sf::Color(200, 200, 200, 200), _("Add Server"),
-        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
-
-    buttons["Edit"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Edit"),
-        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
-
-    buttons["Delete"] =
-        std::make_unique<gui::TextButton>(sf::Vector2f(buttonContainer.getPosition().x + btn_width_bottom + gap,
-                                                       buttonContainer.getPosition().y + btn_height + gap),
-                                          sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200),
-                                          _("Delete"), data.activeResourcePack->getFont("Regular"),
-                                          gui::charSize(*data.vm, 95), sf::Color::White, 2.f, sf::Color::Black);
-
-    buttons["Refresh"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 2) + (gap * 2),
-                     buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Refresh"),
-        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
-
-    buttons["Cancel"] = std::make_unique<gui::TextButton>(
-        sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 3) + (gap * 3),
-                     buttonContainer.getPosition().y + btn_height + gap),
-        sf::Vector2f(btn_width_bottom, btn_height), sf::Color(200, 200, 200, 200), _("Cancel"),
-        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, 2.f,
-        sf::Color::Black);
+    createButton("JoinServer", buttonContainer.getPosition(), sf::Vector2f(btn_width_top, btn_height),
+                 _("Join Server"));
+    createButton("DirectConnect",
+                 sf::Vector2f(buttonContainer.getPosition().x + btn_width_top + gap, buttonContainer.getPosition().y),
+                 sf::Vector2f(btn_width_top, btn_height), _("Direct Connect"));
+    createButton("AddServer",
+                 sf::Vector2f(buttonContainer.getPosition().x + (btn_width_top * 2) + (gap * 2),
+                              buttonContainer.getPosition().y),
+                 sf::Vector2f(btn_width_top, btn_height), _("Add Server"));
+    createButton("Edit",
+                 sf::Vector2f(buttonContainer.getPosition().x, buttonContainer.getPosition().y + btn_height + gap),
+                 sf::Vector2f(btn_width_bottom, btn_height), _("Edit"));
+    createButton("Delete",
+                 sf::Vector2f(buttonContainer.getPosition().x + btn_width_bottom + gap,
+                              buttonContainer.getPosition().y + btn_height + gap),
+                 sf::Vector2f(btn_width_bottom, btn_height), _("Delete"));
+    createButton("Refresh",
+                 sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 2) + (gap * 2),
+                              buttonContainer.getPosition().y + btn_height + gap),
+                 sf::Vector2f(btn_width_bottom, btn_height), _("Refresh"));
+    createButton("Cancel",
+                 sf::Vector2f(buttonContainer.getPosition().x + (btn_width_bottom * 3) + (gap * 3),
+                              buttonContainer.getPosition().y + btn_height + gap),
+                 sf::Vector2f(btn_width_bottom, btn_height), _("Cancel"));
 
     buttons.at("JoinServer")->setState(gui::ButtonState::Disabled);
     buttons.at("Edit")->setState(gui::ButtonState::Disabled);
@@ -83,7 +79,7 @@ void ServerSelectionState::initSocket()
 {
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
         throw std::runtime_error("Failed to bind to a port.");
-
+    socket.setBlocking(false);
     socketSelector.add(socket);
 }
 
@@ -95,8 +91,12 @@ void ServerSelectionState::initServerSelectors()
                      header.getPosition().y + header.getSize().y),
         0.f, gui::percent(data.vm->size.x, .5f), sf::Color(150, 150, 150, 200));
 
-    std::ifstream servers_file(SETTINGS_FOLDER + "servers.json");
+    loadServersFromFile();
+}
 
+void ServerSelectionState::loadServersFromFile()
+{
+    std::ifstream servers_file(SETTINGS_FOLDER + "servers.json");
     if (!servers_file.is_open())
         return;
 
@@ -104,78 +104,55 @@ void ServerSelectionState::initServerSelectors()
     ss << servers_file.rdbuf();
     servers_file.close();
 
-    JArray servers;
-
     try
     {
-        servers = JSON::parse(ss.str()).getAs<JArray>();
-    }
-    catch (std::runtime_error &)
-    {
-        std::cerr << "error" << "\n";
-        return;
-    }
-
-    int i = 0;
-    for (auto &val : servers)
-    {
-        JObject obj = val.getAs<JObject>();
-
-        std::string address = obj.at("address").getAs<std::string>();
-        size_t colon_pos = address.find(':');
-        const sf::IpAddress ipAddress = sf::IpAddress::resolve(address.substr(0, colon_pos)).value();
-        const unsigned short portAddress = std::stoi(address.substr(colon_pos + 1));
-
-        sf::Packet packet;
-        packet << "INFO";
-        if (socket.send(packet, ipAddress, portAddress) != sf::Socket::Status::Done)
+        JArray servers = JSON::parse(ss.str()).getAs<JArray>();
+        for (auto &val : servers)
         {
-            std::cerr << "Error sending packet" << "\n";
+            JObject obj = val.getAs<JObject>();
+            ServerMetadata metadata = createServerMetadata(obj);
+            addServerSelector(metadata);
         }
+    }
+    catch (std::runtime_error &e)
+    {
+        logger.logError(_("Error parsing \"servers.json\": ") + e.what(), false);
+        replaceSelf(
+            std::make_unique<MessageState>(data, _("Error parsing \"servers.json\" file"),
+                                           _("The file may be corrupted or ill-formed. Fix or delete the file:") +
+                                               "\n" + (SETTINGS_FOLDER + "servers.json")));
+    }
+}
 
-        sf::Packet result;
-        std::optional<sf::IpAddress> ip;
-        unsigned short port;
-        std::string status = _("Unreacheable");
+ServerMetadata ServerSelectionState::createServerMetadata(JObject &obj)
+{
+    ServerMetadata metadata;
+    metadata.serverName = obj.at("name").getAs<std::string>();
+    metadata.serverAddress = obj.at("address").getAs<std::string>();
+    metadata.serverDescription = _("Attempting to reach server...");
+    metadata.gameVersion = _("Unknown");
+    metadata.status = _("Pending");
+    metadata.connections = 0;
+    metadata.maxConnections = 0;
 
-        if (socketSelector.wait(sf::seconds(2.f)))
-        {
-            if (socketSelector.isReady(socket))
-            {
-                if (socket.receive(result, ip, port) == sf::Socket::Status::Done)
-                {
-                    std::string header, json;
-                    result >> header >> json;
-                    if (header == "ACK+INFO")
-                    {
-                        obj = JSON::parse(json).getAs<JObject>();
-                        status = "Online";
-                    }
-                }
-            }
-        }
+    return std::move(metadata);
+}
 
-        ServerMetadata metadata;
-
-        metadata.serverName = obj.at("name").getAs<std::string>();
-        metadata.serverAddress = obj.at("address").getAs<std::string>();
-        metadata.serverDescription =
-            status == "Online" ? obj.at("description").getAs<std::string>() : "A Pixelminer Server.";
-        metadata.gameVersion = status == "Online" ? obj.at("gameVersion").getAs<std::string>() : "Unknown";
-        metadata.status = status;
-        metadata.connections =
-            status == "Online" ? static_cast<unsigned int>(obj.at("connections").getAs<long long>()) : 0;
-        metadata.maxConnections =
-            status == "Online" ? static_cast<unsigned int>(obj.at("maxConnections").getAs<long long>()) : 0;
-
-        if (serverSelectors.empty())
-            serverSelectors.push_back(
-                std::make_unique<ServerSelector>(data, metadata, std::floor(serverSelectorsList->getPosition().y)));
-        else
-            serverSelectors.push_back(std::make_unique<ServerSelector>(
-                data, metadata,
-                std::floor(serverSelectors.back()->getPosition().y + serverSelectors.back()->getSize().y +
-                           gui::percent(data.vm->size.y, 2.f))));
+void ServerSelectionState::addServerSelector(const ServerMetadata &metadata)
+{
+    if (serverSelectors.empty())
+    {
+        serverSelectors.push_back(std::make_unique<ServerSelector>(
+            mutex, data, metadata, std::floor(serverSelectorsList->getPosition().y + 1.f), socket, socketSelector,
+            data.activeResourcePack->getTexture("Conn")));
+    }
+    else
+    {
+        serverSelectors.push_back(std::make_unique<ServerSelector>(
+            mutex, data, metadata,
+            std::floor(serverSelectors.back()->getPosition().y + serverSelectors.back()->getSize().y +
+                       gui::percent(data.vm->size.y, 2.f)),
+            socket, socketSelector, data.activeResourcePack->getTexture("Conn")));
     }
 
     if (!serverSelectors.empty())
@@ -185,15 +162,50 @@ void ServerSelectionState::initServerSelectors()
     }
 }
 
-ServerSelectionState::ServerSelectionState(EngineData &data) : State(data)
+void ServerSelectionState::fetchServerInfo()
+{
+    threadRunning = true;
+    for (auto &selector : serverSelectors)
+    {
+        selector->metadata.serverDescription = _("Attempting to reach server...");
+        selector->metadata.status = _("Pending");
+        updateSelectorDescription(selector);
+    }
+
+    for (int i = 0; i < serverSelectors.size(); i++)
+    {
+        if (abortThread)
+        {
+            threadRunning = false;
+            return;
+        }
+        serverSelectors[i]->fetchData();
+    }
+    threadRunning = false;
+    ready = true;
+}
+
+void ServerSelectionState::updateSelectorDescription(const std::shared_ptr<ServerSelector> &selector)
+{
+    std::string str = selector->metadata.serverDescription + "\n" + _("Status: ") + selector->metadata.status + "\n" +
+                      selector->metadata.serverAddress;
+    selector->description->setString(sf::String::fromUtf8(str.begin(), str.end()));
+    selector->description->setFillColor(sf::Color::Yellow);
+}
+
+ServerSelectionState::ServerSelectionState(EngineData &data)
+    : State(data), logger("ServerSelectionState"), ready(false), threadRunning(false), abortThread(false)
 {
     initGUI();
     initSocket();
     initServerSelectors();
+    std::thread(&ServerSelectionState::fetchServerInfo, this).detach();
 }
 
 ServerSelectionState::~ServerSelectionState()
 {
+    while (threadRunning)
+        ;
     socket.unbind();
 }
 
@@ -211,20 +223,34 @@ void ServerSelectionState::render(sf::RenderTarget &target)
 void ServerSelectionState::updateGUI(const float &dt)
 {
     serverSelectorsList->update(dt, mousePosView, *data.event);
-
     if (serverSelectorsList->isScrollLocked())
         return;
+
+    updateButtons();
+    handleButtonActions();
+    updateServerSelectors(dt);
+}
+
+void ServerSelectionState::updateButtons()
+{
+    if (!ready)
+        buttons.at("Refresh")->setState(gui::ButtonState::Disabled);
+    else
+        buttons.at("Refresh")->setState(gui::ButtonState::Idle);
 
     for (auto &[_, button] : buttons)
     {
         button->update(mousePosView);
-
         if (button->isPressed() && data.activeResourcePack->getSound("Click").getStatus() != sf::Sound::Status::Playing)
             data.activeResourcePack->getSound("Click").play();
     }
+}
 
+void ServerSelectionState::handleButtonActions()
+{
     if (buttons.at("Cancel")->isPressed())
     {
+        abortThread = true;
         killSelf();
     }
     else if (buttons.at("AddServer")->isPressed())
@@ -237,15 +263,26 @@ void ServerSelectionState::updateGUI(const float &dt)
     }
     else if (buttons.at("JoinServer")->isPressed() && selectedServer.has_value())
     {
-        std::string address = selectedServer.value()->metadata.serverAddress;
-        size_t colon_pos = address.find(':');
-
-        const sf::IpAddress ip = sf::IpAddress::resolve(address.substr(0, colon_pos)).value();
-        const unsigned short port = std::stoi(address.substr(colon_pos + 1));
-
-        replaceSelf(std::make_shared<ClientGameState>(data, ip, port));
+        joinSelectedServer();
     }
+    else if (buttons.at("Refresh")->isPressed() && ready)
+    {
+        ready = false;
+        std::thread(&ServerSelectionState::fetchServerInfo, this).detach();
+    }
+}
 
+void ServerSelectionState::joinSelectedServer()
+{
+    std::string address = selectedServer.value()->metadata.serverAddress;
+    size_t colon_pos = address.find(':');
+    const sf::IpAddress ip = sf::IpAddress::resolve(address.substr(0, colon_pos)).value();
+    const unsigned short port = std::stoi(address.substr(colon_pos + 1));
+    replaceSelf(std::make_shared<ClientGameState>(data, ip, port));
+}
+
+void ServerSelectionState::updateServerSelectors(const float &dt)
+{
     updateMousePositions(serverSelectorsList->getView());
     if (mouseButtonPressedWithin(200, sf::Mouse::Button::Left) && !serverSelectorsList->isScrollLocked())
     {
@@ -263,8 +300,6 @@ void ServerSelectionState::updateGUI(const float &dt)
             else if (selector->isSelected())
             {
                 selectedServer = selector;
-
-                // Activate buttons
                 for (auto &[_, button] : buttons)
                     button->setState(gui::ButtonState::Idle);
             }
@@ -278,16 +313,13 @@ void ServerSelectionState::renderGUI(sf::RenderTarget &target)
     target.draw(background);
     target.draw(header);
     target.draw(footer);
-    // target.draw(buttonContainer);
 
     for (auto &[_, button] : buttons)
         button->render(target);
 
     target.setView(serverSelectorsList->getView());
-
     for (auto &selector : serverSelectors)
         selector->render(target);
-
     target.setView(target.getDefaultView());
 
     serverSelectorsList->render(target);

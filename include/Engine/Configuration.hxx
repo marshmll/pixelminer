@@ -15,7 +15,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * it will be set to the given value.
  */
 #ifndef GAME_VERSION
-#define GAME_VERSION "alpha 1.5.1"
+#define GAME_VERSION "alpha 1.6.0"
 #endif
 
 /**
@@ -77,7 +77,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef SETTINGS_FOLDER
-#define SETTINGS_FOLDER std::string(GLOBAL_FOLDER + "Settings/")
+#define SETTINGS_FOLDER static_cast<const std::string>(GLOBAL_FOLDER + "Settings/")
 #endif
 
 /**
@@ -87,7 +87,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef MAPS_FOLDER
-#define MAPS_FOLDER std::string(GLOBAL_FOLDER + "Maps/")
+#define MAPS_FOLDER static_cast<const std::string>(GLOBAL_FOLDER + "Maps/")
 #endif
 
 /**
@@ -97,7 +97,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef RESOURCES_FOLDER
-#define RESOURCES_FOLDER std::string(GLOBAL_FOLDER + "ResourcePacks/")
+#define RESOURCES_FOLDER static_cast<const std::string>(GLOBAL_FOLDER + "ResourcePacks/")
 #endif
 
 /**
@@ -107,7 +107,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef CACHE_FOLDER
-#define CACHE_FOLDER std::string(GLOBAL_FOLDER + ".cache/")
+#define CACHE_FOLDER static_cast<const std::string>(GLOBAL_FOLDER + ".cache/")
 #endif
 
 /**
@@ -117,5 +117,5 @@ constexpr unsigned int GRID_SIZE = 16;
  * This is based on the `GLOBAL_FOLDER` path, which is platform-dependent.
  */
 #ifndef LOCALES_FOLDER
-#define LOCALES_FOLDER std::string(GLOBAL_FOLDER + "Locales/")
+#define LOCALES_FOLDER static_cast<const std::string>(GLOBAL_FOLDER + "Locales/")
 #endif

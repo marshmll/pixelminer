@@ -57,7 +57,7 @@ void Animation::play()
         {
             currentFrameRect.position.x -= frameSize.x;
 
-            if (currentFrameRect.position.x < 0)
+            if (currentFrameRect.position.x < startFrameRect.position.x)
             {
                 currentFrameRect.position.x = endFrameRect.position.x - frameSize.x;
                 currentFrameRect.position.y -= frameSize.y;

@@ -8,6 +8,10 @@
         "path": "Assets/Textures/Backgrounds/background.png"
     },
     {
+        "key": "Conn",
+        "path": "Assets/Textures/Icons/conn.png"
+    },
+    {
         "key": "BreadEmpty",
         "path": "Assets/Textures/Icons/bread_empty.png"
     },
