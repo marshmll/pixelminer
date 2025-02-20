@@ -318,8 +318,6 @@ class ServerSelectionState : public State
     std::atomic_bool threadRunning;
     std::atomic_bool abortThread;
 
-    Server server;
-
     /**
      * @brief Initializes the graphical user interface elements.
      */

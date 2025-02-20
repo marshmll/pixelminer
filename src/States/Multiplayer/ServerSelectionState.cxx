@@ -194,11 +194,8 @@ void ServerSelectionState::updateSelectorDescription(const std::shared_ptr<Serve
 }
 
 ServerSelectionState::ServerSelectionState(EngineData &data)
-    : State(data), logger("ServerSelectionState"), ready(false), threadRunning(false), abortThread(false),
-      server(data.uuid)
+    : State(data), logger("ServerSelectionState"), ready(false), threadRunning(false), abortThread(false)
 {
-    server.listen(55000);
-
     initGUI();
     initSocket();
     initServerSelectors();
