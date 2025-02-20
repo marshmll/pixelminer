@@ -25,7 +25,8 @@ struct ServerMetadata
     std::string status;            ///< Current status of the server (Online/Unreachable).
     unsigned int connections;      ///< Number of players currently connected to the server.
     unsigned int maxConnections;   ///< Maximum number of players allowed on the server.
-    uint32_t latency;              ///< How many milisseconds to a response.
+    uint64_t latency;              ///< How many microsseconds to a response from the server.
+    int8_t sigStrength = 0;        ///< The quality of the connection (0 to 5).
 };
 
 /**
@@ -228,27 +229,21 @@ class ServerSelector
             return;
         }
 
-        std::cout << "sent to " << ipAddress.toString() << ":" << portAddress << "\n";
-
         sf::Packet result;
         std::optional<sf::IpAddress> ip_buffer;
         unsigned short port_buffer;
-        const float timeout = 10.f;
 
-        if (socketSelector.wait(sf::seconds(timeout)))
+        const float TIMEOUT = 2.f;
+        const float MICROSECOND = 1000000.f;
+
+        if (socketSelector.wait(sf::seconds(TIMEOUT)))
         {
-            std::cout << "here?" << "\n";
-
             if (socketSelector.isReady(socket))
             {
-                std::lock_guard<std::mutex> lock(mutex);
-
                 if (socket.receive(result, ip_buffer, port_buffer) == sf::Socket::Status::Done)
                 {
                     std::string header, json;
                     result >> header >> json;
-
-                    std::cout << header << json;
 
                     if (header == "ACK+INFO")
                     {
@@ -262,7 +257,10 @@ class ServerSelector
                         metadata.connections = static_cast<unsigned int>(obj.at("connections").getAs<long long>());
                         metadata.maxConnections =
                             static_cast<unsigned int>(obj.at("maxConnections").getAs<long long>());
-                        metadata.latency = clock.getElapsedTime().asMilliseconds();
+                        metadata.latency = clock.getElapsedTime().asMicroseconds();
+                        metadata.sigStrength = 6 - ((metadata.latency / (TIMEOUT * MICROSECOND)) * 5);
+
+                        std::cout << static_cast<int>(metadata.sigStrength) << "\n";
 
                         name->setString(sf::String::fromUtf8(metadata.serverName.begin(), metadata.serverName.end()));
 
@@ -271,25 +269,25 @@ class ServerSelector
 
                         description->setString(sf::String::fromUtf8(str.begin(), str.end()));
                         description->setFillColor(sf::Color::White);
-
-                        int index = 6 - ((200 / (timeout * 1000.f)) * 5);
-                        connSprite.setTextureRect(sf::IntRect({index * connSprite.getTextureRect().size.x, 0},
-                                                              connSprite.getTextureRect().size));
                     }
                 }
             }
         }
 
-        description->setFillColor(sf::Color::Red);
-        metadata.serverDescription = _("Failed to reach server.");
-        metadata.status = _("Offline");
+        if (metadata.sigStrength == 0)
+        {
+            description->setFillColor(sf::Color::Red);
+            metadata.serverDescription = _("Failed to reach server.");
+            metadata.status = _("Offline");
 
-        std::string str =
-            metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" + metadata.serverAddress;
+            std::string str =
+                metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" + metadata.serverAddress;
 
-        description->setString(sf::String::fromUtf8(str.begin(), str.end()));
+            description->setString(sf::String::fromUtf8(str.begin(), str.end()));
+        }
 
-        connSprite.setTextureRect(sf::IntRect({0, 0}, connSprite.getTextureRect().size));
+        connSprite.setTextureRect(sf::IntRect({metadata.sigStrength * connSprite.getTextureRect().size.x, 0},
+                                              connSprite.getTextureRect().size));
     }
 };
 
@@ -321,6 +319,8 @@ class ServerSelectionState : public State
     std::atomic_bool ready;
     std::atomic_bool threadRunning;
     std::atomic_bool abortThread;
+
+    Server server;
 
     /**
      * @brief Initializes the graphical user interface elements.

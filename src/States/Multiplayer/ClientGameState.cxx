@@ -36,8 +36,17 @@ void ClientGameState::initFeedbackScreen()
 ClientGameState::ClientGameState(EngineData &data, const sf::IpAddress &ip, const unsigned short &port)
     : State(data), client(data.uuid), ready(false)
 {
-    initFeedbackScreen();
-    client.connect(ip, port);
+    if (client.getStatus() == ClientStatus::SockError)
+    {
+        replaceSelf(std::make_shared<MessageState>(data, _("Socket error"),
+                                                   _("Could not bind the client UDP socket to a port. This may be a "
+                                                     "system error or a invalid configuration of the socket.")));
+    }
+    else
+    {
+        initFeedbackScreen();
+        client.connect(ip, port);
+    }
 }
 
 ClientGameState::~ClientGameState() = default;
@@ -51,12 +60,20 @@ void ClientGameState::update(const float &dt)
             updateFeedbackScreen(dt);
             return;
         }
-        else if (!client.isConnected())
+        else if (client.getStatus() == ClientStatus::TimedOut)
         {
             replaceSelf(std::make_shared<MessageState>(
                 data, _("Connection error"),
                 _("The server did not respond after 10 seconds. Check if the server exists and if it is online, and if "
                   "your internet connectivity is ok.")));
+            return;
+        }
+        else if (client.getStatus() == ClientStatus::Refused)
+        {
+            replaceSelf(
+                std::make_shared<MessageState>(data, _("Connection error"),
+                                               _("The server refused to connect with this client. This might be "
+                                                 "because of a attempt to a self-connection or a server ban.")));
             return;
         }
         else
@@ -65,7 +82,7 @@ void ClientGameState::update(const float &dt)
         }
     }
 
-    if (!client.isConnected())
+    if (client.getStatus() == ClientStatus::Disconnected)
     {
         replaceSelf(std::make_shared<MessageState>(data, _("Connection error"), _("Disconnected.")));
         return;

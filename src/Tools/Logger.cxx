@@ -10,11 +10,11 @@ void Logger::logInfo(const std::string &log)
 {
     TerminalColor::set(Green);
 
-    std::cerr << _("INFO");
+    std::cout << _("INFO");
 
     TerminalColor::reset();
 
-    std::cerr << " [" << logger << "] " << log << std::endl;
+    std::cout << " [" << logger << "] " << log << std::endl;
 }
 
 void Logger::logWarning(const std::string &log)

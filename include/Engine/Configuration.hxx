@@ -15,7 +15,7 @@ constexpr unsigned int GRID_SIZE = 16;
  * it will be set to the given value.
  */
 #ifndef GAME_VERSION
-#define GAME_VERSION "alpha 1.6.0"
+#define GAME_VERSION "alpha 1.6.1"
 #endif
 
 /**
@@ -51,13 +51,13 @@ constexpr unsigned int GRID_SIZE = 16;
  * If none of these platforms match, the code will fail to compile.
  */
 #ifdef DEBUG
-#define GLOBAL_FOLDER static_cast<const std::string>(".pixelminer/")
+#define GLOBAL_FOLDER static_cast<const std::string>("pixelminer/")
 
 #elif __linux__
-#define GLOBAL_FOLDER static_cast<const std::string>(getenv("HOME")) + "/.pixelminer/"
+#define GLOBAL_FOLDER static_cast<const std::string>(getenv("HOME")) + "/pixelminer/"
 
 #elif __WIN32__
-#define GLOBAL_FOLDER static_cast<const std::string>(getenv("AppData") + "/.pixelminer/")
+#define GLOBAL_FOLDER static_cast<const std::string>(getenv("AppData") + "/pixelminer/")
 #endif
 
 /**

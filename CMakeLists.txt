@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-project(pixelminer LANGUAGES CXX)
+project(PixelMiner LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -13,27 +13,36 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(pixelminer src/main.cxx)
+add_executable(PixelMiner src/main.cxx)
 
 add_subdirectory(src)
 add_subdirectory(externals/minizip-ng)
 
-target_link_libraries(pixelminer PRIVATE SFML::Graphics SFML::Network SFML::Audio minizip)
+target_link_libraries(PixelMiner PRIVATE SFML::Graphics SFML::Network SFML::Audio minizip)
 
-target_compile_features(pixelminer PRIVATE cxx_std_17)
-target_compile_definitions(pixelminer PRIVATE DEBUG=1)
+target_compile_features(PixelMiner PRIVATE cxx_std_17)
+target_compile_definitions(PixelMiner PRIVATE DEBUG=1)
 
-target_include_directories(pixelminer PRIVATE include/)
-target_include_directories(pixelminer PRIVATE externals/minizip-ng)
+target_include_directories(PixelMiner PRIVATE include/)
+target_include_directories(PixelMiner PRIVATE externals/minizip-ng)
 
-target_precompile_headers(pixelminer PRIVATE include/stdafx.hxx)
+target_precompile_headers(PixelMiner PRIVATE include/stdafx.hxx)
 
 if(WIN32)
     add_custom_command(
-        TARGET pixelminer
+        TARGET PixelMiner
         COMMENT "Copy OpenAL DLL"
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:pixelminer>
         VERBATIM)
 endif()
 
-install(TARGETS pixelminer)
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+        "${CMAKE_SOURCE_DIR}/src/pixelminer/"
+        "${CMAKE_BINARY_DIR}/bin/pixelminer"
+    COMMENT "Copying Assets folder"
+)
+
+add_dependencies(PixelMiner copy_assets)
+
+install(TARGETS PixelMiner)

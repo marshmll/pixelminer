@@ -17,6 +17,21 @@
 #include "Tools/Logger.hxx"
 
 /**
+ * @enum ConnectionStatus
+ * @brief Represents the current client connection status.
+ */
+enum class ClientStatus
+{
+    None,         ///< The client did not perform any operation.
+    SockError,    ///< An error occured in the UDP socket.
+    Connected,    ///< The client is connected to a server.
+    Disconnected, ///< The client was disconnected from a server.
+    Refused,      ///< The server refused  to connect with client.
+    TimedOut,     ///< The connection with the server timed out.
+    Bad           ///< Bad response from server.
+};
+
+/**
  * @class Client
  * @brief Represents a UDP client that communicates with a server.
  *
@@ -75,9 +90,9 @@ class Client
     std::atomic_bool ready;
 
     /**
-     * @brief Flag indicating if the client is connected to the server.
+     * @brief Current client connection status.
      */
-    std::atomic_bool connected;
+    ClientStatus status;
 
     /**
      * @brief Temporary IP address buffer used during connection attempts.
@@ -136,10 +151,10 @@ class Client
     void handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port);
 
     /**
-     * @brief Sets the connected status of the client.
-     * @param connected A flag indicating whether the client is connected.
+     * @brief Sets the status of the client.
+     * @param connected A status from the ClientStatus enum.
      */
-    void setConnected(const bool &connected);
+    void setStatus(const ClientStatus &status);
 
     /**
      * @brief Sets the ready status of the client.
@@ -179,10 +194,10 @@ class Client
     const bool isReady() const;
 
     /**
-     * @brief Checks if the client is connected to a server.
-     * @return True if the client is connected, otherwise false.
+     * @brief Returns the current client status.
+     * @return A status from the ClientStatus enum.
      */
-    const bool isConnected() const;
+    const ClientStatus &getStatus() const;
 
     /**
      * @brief Sends a packet to the server.

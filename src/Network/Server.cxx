@@ -24,7 +24,6 @@ void Server::listenerThread()
 
         if (socketSelector.wait(sf::seconds(5.f)))
         {
-            std::cout << "here" << "\n";
             if (socketSelector.isReady(socket))
             {
                 pktBuf.clear();
@@ -49,8 +48,6 @@ void Server::listenerThread()
 
 void Server::handler()
 {
-    std::cout << "here" << "\n";
-
     while (auto opt = consumePacket())
     {
         auto &[pkt_addr, pkt] = *opt;
@@ -163,10 +160,7 @@ void Server::setOnline(bool online)
 
 Server::Server(const std::string &uuid)
     : myUuid(uuid), logger("Server"), maxConnections(8), online(false), listenerThreadRunning(false)
-{
-    socket.setBlocking(true);
-    socketSelector.add(socket);
-}
+{}
 
 Server::~Server()
 {
@@ -199,6 +193,9 @@ const bool Server::listen(const unsigned short &port)
         logger.logError(_("Could not bind to port ") + std::to_string(port));
         return false;
     }
+
+    socket.setBlocking(true);
+    socketSelector.add(socket);
 
     setOnline(true);
 

@@ -15,7 +15,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     {
         logger.logError(_("Could not connect to ") + ip.toString() + ":" + std::to_string(port) + "");
         setReady(true);
-        setConnected(false);
+        setStatus(ClientStatus::SockError);
+        socket.setBlocking(false);
         return;
     }
 
@@ -23,12 +24,11 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     {
         if (socketSelector.isReady(socket))
         {
+            setReady(true);
             if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
             {
-                setReady(true);
                 std::string header;
                 pktBuf >> header;
-                // std::cout << header << "\n";
 
                 if (header == "ACK")
                 {
@@ -53,7 +53,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     {
         logger.logError(_("Connection timeout: ") + ip.toString() + ":" + std::to_string(port), false);
         setReady(true);
-        setConnected(false);
+        setStatus(ClientStatus::TimedOut);
     }
 
     socket.setBlocking(false);
@@ -63,7 +63,7 @@ void Client::listenerThread()
 {
     sf::Packet pktBuf;
 
-    while (connected)
+    while (status == ClientStatus::Connected)
     {
         std::lock_guard<std::mutex> lock(mutex);
         if (socketSelector.wait(sf::seconds(5.f)))
@@ -120,10 +120,7 @@ void Client::handleServerAck(const sf::IpAddress &ip, const unsigned short &port
     logger.logInfo(_("Connected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
-
-    setReady(true);
-    setConnected(true);
-
+    setStatus(ClientStatus::Connected);
     std::thread(&Client::listenerThread, this).detach();
 }
 
@@ -132,9 +129,7 @@ void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port
     logger.logInfo(_("Reconnected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
     serverIp = ip;
     serverPort = port;
-
-    setReady(true);
-    setConnected(true);
+    setStatus(ClientStatus::Connected);
 
     std::thread(&Client::listenerThread, this).detach();
 }
@@ -142,18 +137,18 @@ void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port
 void Client::handleServerRfs(const sf::IpAddress &ip, const unsigned short &port)
 {
     logger.logError(_("Connection refused by server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
-    setConnected(false);
+    setStatus(ClientStatus::Refused);
 }
 
 void Client::handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port)
 {
     logger.logError(_("Bad response from server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
-    setConnected(false);
+    setStatus(ClientStatus::Bad);
 }
 
-void Client::setConnected(const bool &connected)
+void Client::setStatus(const ClientStatus &status)
 {
-    this->connected = connected;
+    this->status = status;
 }
 
 void Client::setReady(const bool &ready)
@@ -162,29 +157,35 @@ void Client::setReady(const bool &ready)
 }
 
 Client::Client(const std::string &uuid)
-    : myUuid(uuid), logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), ready(true), connected(false)
+    : myUuid(uuid), logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), ready(true), status(ClientStatus::None)
 {
     socket.setBlocking(false);
+    socketSelector.add(socket);
 
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
-        logger.logError(_("Could not bind to a port."));
-
-    socketSelector.add(socket);
+    {
+        logger.logError(_("Could not bind to a port."), false);
+        setStatus(ClientStatus::SockError);
+        return;
+    }
 }
 
 Client::~Client() = default;
 
 void Client::connect(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {
-    if (connected)
-        logger.logError(_("Already connected to ") + serverIp.toString() + ":" + std::to_string(serverPort), false);
-    else
-        std::thread(&Client::connectorThread, this, ip, port, timeout).detach();
+    if (status == ClientStatus::Connected)
+    {
+        logger.logWarning(_("Already connected to ") + serverIp.toString() + ":" + std::to_string(serverPort));
+        return;
+    }
+
+    std::thread(&Client::connectorThread, this, ip, port, timeout).detach();
 }
 
 void Client::disconnect()
 {
-    if (!connected)
+    if (status != ClientStatus::Connected)
     {
         logger.logError(_("Not connected to any server."), false);
         return;
@@ -197,11 +198,8 @@ void Client::disconnect()
     if (!send(pktBuf))
         logger.logError(_("Failed to communicate with server. Disconnecting anyway."));
 
-    setConnected(false);
+    setStatus(ClientStatus::Disconnected);
     logger.logInfo(_("Disconnected from server ") + serverIp.toString() + ":" + std::to_string(serverPort) + ".");
-
-    serverIp = sf::IpAddress(0, 0, 0, 0);
-    serverPort = 0;
 }
 
 const bool Client::isReady() const
@@ -209,9 +207,9 @@ const bool Client::isReady() const
     return ready;
 }
 
-const bool Client::isConnected() const
+const ClientStatus &Client::getStatus() const
 {
-    return connected;
+    return status;
 }
 
 const bool Client::send(sf::Packet &packet)
@@ -240,7 +238,7 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
 {
     using namespace std::chrono_literals;
 
-    if (!isConnected())
+    if (status != ClientStatus::Connected)
         logger.logError(_("Not connected to any server."));
 
     if (!File::validatePath(path))

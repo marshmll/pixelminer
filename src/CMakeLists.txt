@@ -1,4 +1,4 @@
-target_sources(pixelminer PRIVATE
+target_sources(PixelMiner PRIVATE
 ./Map/Biome.cxx
 ./Map/EntitySpatialGridPartition.cxx
 ./Map/Map.cxx
