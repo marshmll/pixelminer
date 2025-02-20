@@ -32,7 +32,6 @@ void Server::listenerThread()
 
                 if (socket.receive(pktBuf, ip, port) == sf::Socket::Status::Done)
                 {
-                    std::lock_guard<std::mutex> lock(mutex);
                     packetQueue.emplace(PacketAddress{*ip, port}, std::move(pktBuf));
                     handler();
                 }
@@ -48,13 +47,15 @@ void Server::listenerThread()
 
 void Server::handler()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     while (auto opt = consumePacket())
     {
         auto &[pkt_addr, pkt] = *opt;
 
         std::string header, uuid;
         pkt >> header >> uuid;
-        std::cout << header << uuid << "\n";
+        std::cout << "received " << header << " " << uuid << std::endl;
 
         if (header == "ASK+UUID")
         {
@@ -104,12 +105,12 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port)
 {
-    if (uuid == myUuid)
-    {
-        logger.logError(_("Connecting to self is not allowed."), false);
-        sendControlMessage("RFS", ip, port);
-        return;
-    }
+    // if (uuid == myUuid)
+    // {
+    //     logger.logError(_("Connecting to self is not allowed."), false);
+    //     sendControlMessage("RFS", ip, port);
+    //     return;
+    // }
 
     auto it = connections.find(uuid);
     if (it != connections.end())
@@ -257,6 +258,12 @@ bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned sh
         logger.logError(_("Could not send packet to: ") + ip.toString() + ":" + std::to_string(port));
         return false;
     }
+
+    std::string str;
+    packet >> str;
+
+    std::cout << str << " packet to " << ip.toString() << ":" << std::to_string(port) << std::endl;
+
     return true;
 }
 

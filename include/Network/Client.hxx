@@ -85,24 +85,9 @@ class Client
     std::queue<std::pair<PacketAddress, sf::Packet>> packetQueue;
 
     /**
-     * @brief Flag indicating if the client is ready for communication.
-     */
-    std::atomic_bool ready;
-
-    /**
      * @brief Current client connection status.
      */
     ClientStatus status;
-
-    /**
-     * @brief Temporary IP address buffer used during connection attempts.
-     */
-    std::optional<sf::IpAddress> ipBuffer;
-
-    /**
-     * @brief Temporary port buffer used during connection attempts.
-     */
-    unsigned short portBuf;
 
     /**
      * @brief Attempts to connect to a server in a separate thread.
@@ -188,16 +173,10 @@ class Client
     void disconnect();
 
     /**
-     * @brief Checks if the client is ready for communication.
-     * @return True if the client is ready, otherwise false.
-     */
-    const bool isReady() const;
-
-    /**
      * @brief Returns the current client status.
      * @return A status from the ClientStatus enum.
      */
-    const ClientStatus &getStatus() const;
+    const ClientStatus getStatus();
 
     /**
      * @brief Sends a packet to the server.

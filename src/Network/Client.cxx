@@ -3,16 +3,15 @@
 
 void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {
-    setReady(false);
+    sf::Packet pkt;
 
-    sf::Packet pktBuf;
+    pkt << "ASK+UUID" << myUuid;
 
-    pktBuf << "ASK+UUID" << myUuid;
-
-    if (!send(pktBuf, ip, port))
+    if (!send(pkt, ip, port))
     {
+        std::lock_guard<std::mutex> lock(mutex);
+
         logger.logError(_("Could not connect to ") + ip.toString() + ":" + std::to_string(port) + "");
-        setReady(true);
         setStatus(ClientStatus::SockError);
         return;
     }
@@ -21,29 +20,32 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     {
         if (socketSelector.isReady(socket))
         {
-            std::lock_guard<std::mutex> lock(mutex);
+            sf::Packet packet;
+            std::optional<sf::IpAddress> ip;
+            unsigned short port;
 
-            setReady(true);
-            if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
+            if (socket.receive(packet, ip, port) == sf::Socket::Status::Done)
             {
                 std::string header;
-                pktBuf >> header;
+                packet >> header;
+
+                std::cout << "client received: " << header << "\n";
 
                 if (header == "ACK")
                 {
-                    handleServerAck(ipBuffer.value(), portBuf);
+                    handleServerAck(*ip, port);
                 }
                 else if (header == "RCN")
                 {
-                    handleServerRcn(ipBuffer.value(), portBuf);
+                    handleServerRcn(*ip, port);
                 }
                 else if (header == "RFS")
                 {
-                    handleServerRfs(ipBuffer.value(), portBuf);
+                    handleServerRfs(*ip, port);
                 }
                 else
                 {
-                    handleServerBadResponse(ipBuffer.value(), portBuf);
+                    handleServerBadResponse(*ip, port);
                 }
             }
         }
@@ -51,33 +53,29 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     else
     {
         logger.logError(_("Connection timeout: ") + ip.toString() + ":" + std::to_string(port), false);
-        setReady(true);
         setStatus(ClientStatus::TimedOut);
     }
 }
 
 void Client::listenerThread()
 {
-    sf::Packet pktBuf;
-
     while (status == ClientStatus::Connected)
     {
-        std::lock_guard<std::mutex> lock(mutex);
         if (socketSelector.wait(sf::seconds(5.f)))
         {
             if (socketSelector.isReady(socket))
             {
                 std::optional<sf::IpAddress> ip;
+                unsigned short port;
+                sf::Packet packet;
 
-                if (socket.receive(pktBuf, ip, portBuf) == sf::Socket::Status::Done)
+                if (socket.receive(packet, ip, port) == sf::Socket::Status::Done)
                 {
-                    if (ip.value() != serverIp || portBuf != serverPort)
+                    if (*ip != serverIp || port != serverPort)
                         continue;
 
-                    std::pair<PacketAddress, sf::Packet> packet({ip.value(), portBuf}, sf::Packet(pktBuf));
-                    packetQueue.push(packet);
-
-                    pktBuf.clear();
+                    std::pair<PacketAddress, sf::Packet> pair({*ip, port}, std::move(packet));
+                    packetQueue.push(std::move(pair));
 
                     handler();
                 }
@@ -114,50 +112,58 @@ void Client::handler()
 
 void Client::handleServerAck(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logInfo(_("Connected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
-    serverIp = ip;
-    serverPort = port;
-    setStatus(ClientStatus::Connected);
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        logger.logInfo(_("Connected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
+        serverIp = ip;
+        serverPort = port;
+        setStatus(ClientStatus::Connected);
+    }
+
     std::thread(&Client::listenerThread, this).detach();
 }
 
 void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logInfo(_("Reconnected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
-    serverIp = ip;
-    serverPort = port;
-    setStatus(ClientStatus::Connected);
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        logger.logInfo(_("Reconnected to server: ") + ip.toString() + ":" + std::to_string(port) + ".");
+        serverIp = ip;
+        serverPort = port;
+        setStatus(ClientStatus::Connected);
+    }
 
     std::thread(&Client::listenerThread, this).detach();
 }
 
 void Client::handleServerRfs(const sf::IpAddress &ip, const unsigned short &port)
 {
+    std::lock_guard<std::mutex> lock(mutex);
     logger.logError(_("Connection refused by server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
     setStatus(ClientStatus::Refused);
 }
 
 void Client::handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port)
 {
-    logger.logError(_("Bad response from server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
-    setStatus(ClientStatus::Bad);
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        logger.logError(_("Bad response from server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
+        setStatus(ClientStatus::Bad);
+    }
 }
 
 void Client::setStatus(const ClientStatus &status)
 {
-    this->status = status;
-}
-
-void Client::setReady(const bool &ready)
-{
-    this->ready = ready;
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        this->status = status;
+    }
 }
 
 Client::Client(const std::string &uuid)
-    : myUuid(uuid), logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), ready(true), status(ClientStatus::None)
+    : myUuid(uuid), logger("Client"), serverIp(0, 0, 0, 0), serverPort(0), status(ClientStatus::None)
 {
     socket.setBlocking(false);
-    socketSelector.add(socket);
 
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Status::Done)
     {
@@ -165,6 +171,8 @@ Client::Client(const std::string &uuid)
         setStatus(ClientStatus::SockError);
         return;
     }
+
+    socketSelector.add(socket);
 }
 
 Client::~Client() = default;
@@ -182,6 +190,8 @@ void Client::connect(const sf::IpAddress &ip, const unsigned short &port, const 
 
 void Client::disconnect()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (status != ClientStatus::Connected)
     {
         logger.logError(_("Not connected to any server."), false);
@@ -199,40 +209,43 @@ void Client::disconnect()
     logger.logInfo(_("Disconnected from server ") + serverIp.toString() + ":" + std::to_string(serverPort) + ".");
 }
 
-const bool Client::isReady() const
+const ClientStatus Client::getStatus()
 {
-    return ready;
-}
-
-const ClientStatus &Client::getStatus() const
-{
+    std::lock_guard<std::mutex> lock(mutex);
     return status;
 }
 
 const bool Client::send(sf::Packet &packet)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (socket.send(packet, serverIp, serverPort) != sf::Socket::Status::Done)
     {
         logger.logError(_("Error sending packet to ") + serverIp.toString() + ":" + std::to_string(serverPort), false);
         return false;
     }
-    packet.clear();
+
     return true;
 }
 
 const bool Client::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned short &port)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (socket.send(packet, ip, port) != sf::Socket::Status::Done)
     {
         logger.logError(_("Error sending packet to ") + ip.toString() + ":" + std::to_string(port), false);
 
         return false;
     }
+
     return true;
 }
 
 void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mode)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     using namespace std::chrono_literals;
 
     if (status != ClientStatus::Connected)
@@ -297,6 +310,8 @@ void Client::sendFile(const std::filesystem::path &path, std::ios::openmode &mod
 
 void Client::receiveFile(const std::filesystem::path &folder, sf::Packet &packet)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (!File::validatePath(folder))
         std::filesystem::create_directory(folder);
 
@@ -336,6 +351,8 @@ void Client::receiveFile(const std::filesystem::path &folder, sf::Packet &packet
 
 std::optional<std::pair<PacketAddress, sf::Packet>> Client::consumePacket()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (packetQueue.empty())
         return std::nullopt;
 
