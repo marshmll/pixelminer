@@ -104,7 +104,7 @@ void WorldSelectionMenuState::initWorldSelectors()
 
         if (worldSelectors.empty())
             worldSelectors.push_back(
-                std::make_unique<WorldSelector>(data, metadata, std::floor(worldSelectorsList->getPosition().y)));
+                std::make_unique<WorldSelector>(data, metadata, std::floor(worldSelectorsList->getPosition().y + 1.f)));
         else
             worldSelectors.push_back(std::make_unique<WorldSelector>(data, metadata,
                                                                      std::floor(worldSelectors.back()->getPosition().y +

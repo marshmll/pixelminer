@@ -260,8 +260,6 @@ class ServerSelector
                         metadata.latency = clock.getElapsedTime().asMicroseconds();
                         metadata.sigStrength = 6 - ((metadata.latency / (TIMEOUT * MICROSECOND)) * 5);
 
-                        std::cout << static_cast<int>(metadata.sigStrength) << "\n";
-
                         name->setString(sf::String::fromUtf8(metadata.serverName.begin(), metadata.serverName.end()));
 
                         std::string str = metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" +
