@@ -10,29 +10,28 @@ void Server::listenerThread()
     logger.logInfo(_("Server") + " (" + sf::IpAddress::getLocalAddress()->toString() + ":" +
                    std::to_string(socket.getLocalPort()) + ") " + _("online."));
 
-    sf::Packet pktBuf;
-
     while (online)
     {
         if (!listenerThreadRunning)
             break;
 
-        {
-            std::lock_guard<std::mutex> lock(mutex);
-            handleTimedOutConnections();
-        }
+        handleTimedOutConnections();
 
         if (socketSelector.wait(sf::seconds(5.f)))
         {
             if (socketSelector.isReady(socket))
             {
-                pktBuf.clear();
+                sf::Packet packet;
                 std::optional<sf::IpAddress> ip;
                 unsigned short port;
 
-                if (socket.receive(pktBuf, ip, port) == sf::Socket::Status::Done)
+                if (socket.receive(packet, ip, port) == sf::Socket::Status::Done)
                 {
-                    packetQueue.emplace(PacketAddress{*ip, port}, std::move(pktBuf));
+                    {
+                        std::lock_guard<std::mutex> lock(mutex);
+                        packetQueue.emplace(PacketAddress{*ip, port}, std::move(packet));
+                    }
+
                     handler();
                 }
             }
@@ -47,35 +46,37 @@ void Server::listenerThread()
 
 void Server::handler()
 {
-    std::lock_guard<std::mutex> lock(mutex);
-
     while (auto opt = consumePacket())
     {
         auto &[pkt_addr, pkt] = *opt;
 
         std::string header, uuid;
         pkt >> header >> uuid;
-        std::cout << "received " << header << " " << uuid << std::endl;
+        // std::cout << "received " << header << " " << uuid << std::endl;
 
-        if (header == "ASK+UUID")
         {
-            handleAskUuid(uuid, pkt_addr.ip, pkt_addr.port);
-        }
-        else if (header == "INFO")
-        {
-            sendServerInfo(pkt_addr.ip, pkt_addr.port);
-        }
-        else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
-        {
-            continue;
-        }
-        else if (header == "KIL")
-        {
-            disconnectClient(uuid);
-        }
-        else if (header == "FILE")
-        {
-            receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server", pkt);
+            std::lock_guard<std::mutex> lock(mutex);
+
+            if (header == "ASK+UUID")
+            {
+                handleAskUuid(uuid, pkt_addr.ip, pkt_addr.port);
+            }
+            else if (header == "INFO")
+            {
+                sendServerInfo(pkt_addr.ip, pkt_addr.port);
+            }
+            else if (!isClientConnected(pkt_addr.ip, pkt_addr.port))
+            {
+                continue;
+            }
+            else if (header == "KIL")
+            {
+                disconnectClient(uuid);
+            }
+            else if (header == "FILE")
+            {
+                receiveFile(pkt_addr.ip, pkt_addr.port, "Assets/Server", pkt);
+            }
         }
     }
 }
@@ -84,6 +85,8 @@ void Server::handler()
 
 void Server::handleTimedOutConnections()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     std::vector<std::string> timed_out_connections;
     timed_out_connections.reserve(connections.size());
 
@@ -93,18 +96,19 @@ void Server::handleTimedOutConnections()
         {
             logger.logInfo(_("Connection with client ") + conn.ip.toString() + _(" timed out after ") +
                            std::to_string(conn.timeout) + _(" seconds."));
+
             timed_out_connections.push_back(uuid);
         }
     }
 
     for (const auto &uuid : timed_out_connections)
-    {
         disconnectClient(uuid);
-    }
 }
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port)
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (uuid == myUuid)
     {
         logger.logError(_("Connecting to self is not allowed."), false);
@@ -262,7 +266,7 @@ bool Server::send(sf::Packet &packet, const sf::IpAddress &ip, const unsigned sh
     std::string str;
     packet >> str;
 
-    std::cout << str << " packet to " << ip.toString() << ":" << std::to_string(port) << std::endl;
+    // std::cout << str << " packet to " << ip.toString() << ":" << std::to_string(port) << std::endl;
 
     return true;
 }
@@ -271,10 +275,9 @@ void Server::sendControlMessage(const std::string &header, const sf::IpAddress &
 {
     sf::Packet packet;
     packet << header;
+
     if (!send(packet, ip, port))
-    {
         logger.logError(_("Error while sending control message to: ") + ip.toString());
-    }
 }
 
 void Server::sendFile(const sf::IpAddress &ip, const unsigned short &port, const std::filesystem::path &path,
@@ -406,6 +409,8 @@ void Server::shutdown()
 
 std::optional<std::pair<PacketAddress, sf::Packet>> Server::consumePacket()
 {
+    std::lock_guard<std::mutex> lock(mutex);
+
     if (packetQueue.empty())
     {
         return std::nullopt;

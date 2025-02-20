@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-20 14:13-0300\n"
+"POT-Creation-Date: 2025-02-20 17:02-0300\n"
 "PO-Revision-Date: 2025-02-20 14:18-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -509,8 +509,8 @@ msgstr "Pendiente"
 #: src/States/Multiplayer/ServerSelectionState.cxx:190
 #: include/States/Multiplayer/ServerSelectionState.hxx:106
 #: include/States/Multiplayer/ServerSelectionState.hxx:221
-#: include/States/Multiplayer/ServerSelectionState.hxx:267
-#: include/States/Multiplayer/ServerSelectionState.hxx:284
+#: include/States/Multiplayer/ServerSelectionState.hxx:265
+#: include/States/Multiplayer/ServerSelectionState.hxx:282
 msgid "Status: "
 msgstr "Estado: "
 
@@ -539,13 +539,13 @@ msgstr ""
 "No se ha podido vincular el socket UDP del cliente a un puerto. Puede "
 "tratarse de un error del sistema o de una configuración no válida del socket."
 
-#: src/States/Multiplayer/ClientGameState.cxx:66
-#: src/States/Multiplayer/ClientGameState.cxx:74
-#: src/States/Multiplayer/ClientGameState.cxx:87
+#: src/States/Multiplayer/ClientGameState.cxx:65
+#: src/States/Multiplayer/ClientGameState.cxx:73
+#: src/States/Multiplayer/ClientGameState.cxx:81
 msgid "Connection error"
 msgstr "Error de conexión"
 
-#: src/States/Multiplayer/ClientGameState.cxx:67
+#: src/States/Multiplayer/ClientGameState.cxx:66
 msgid ""
 "The server did not respond after 10 seconds. Check if the server exists and "
 "if it is online, and if your internet connectivity is ok."
@@ -553,7 +553,7 @@ msgstr ""
 "El servidor no respondió después de 10 segundos. Verifique si el servidor "
 "existe y si está online, y si su conectividad a Internet está bien."
 
-#: src/States/Multiplayer/ClientGameState.cxx:75
+#: src/States/Multiplayer/ClientGameState.cxx:74
 msgid ""
 "The server refused to connect with this client. This might be because of a "
 "attempt to a self-connection or a server ban."
@@ -561,7 +561,7 @@ msgstr ""
 "El servidor se ha negado a conectar con este cliente. Esto puede deberse a "
 "un intento de autoconexión o a un bloqueo del servidor."
 
-#: src/States/Multiplayer/ClientGameState.cxx:87
+#: src/States/Multiplayer/ClientGameState.cxx:81
 msgid "Disconnected."
 msgstr "Desconectado."
 
@@ -769,96 +769,96 @@ msgstr "Servidor en online en: "
 msgid "Failed to start server."
 msgstr "No se pudo iniciar el servidor."
 
-#: src/Network/Client.cxx:16
+#: src/Network/Client.cxx:14
 msgid "Could not connect to "
 msgstr "Could not connect to "
 
-#: src/Network/Client.cxx:54
+#: src/Network/Client.cxx:55
 msgid "Connection timeout: "
 msgstr "Tiempo de espera de conexión expiró: "
 
-#: src/Network/Client.cxx:91
+#: src/Network/Client.cxx:86
 msgid "Connection with server "
 msgstr "Conexión con el servidor "
 
-#: src/Network/Client.cxx:91
+#: src/Network/Client.cxx:86
 msgid " timed out after 5 seconds."
 msgstr " se expiró después de 5 segundos."
 
-#: src/Network/Client.cxx:120
+#: src/Network/Client.cxx:117
 msgid "Connected to server: "
 msgstr "Conectado al servidor: "
 
-#: src/Network/Client.cxx:129
+#: src/Network/Client.cxx:130
 msgid "Reconnected to server: "
 msgstr "Reconectado al servidor: "
 
-#: src/Network/Client.cxx:139
+#: src/Network/Client.cxx:143
 msgid "Connection refused by server "
 msgstr "Conexión rechazada por el servidor "
 
-#: src/Network/Client.cxx:145
+#: src/Network/Client.cxx:152
 msgid "Bad response from server "
 msgstr "Mala respuesta del servidor "
 
-#: src/Network/Client.cxx:167
+#: src/Network/Client.cxx:169
 msgid "Could not bind to a port."
 msgstr "No se pudo vincular a una puerta."
 
-#: src/Network/Client.cxx:179
+#: src/Network/Client.cxx:183
 msgid "Already connected to "
 msgstr "Ya conectado a "
 
-#: src/Network/Client.cxx:190 src/Network/Client.cxx:242
+#: src/Network/Client.cxx:196 src/Network/Client.cxx:251
 msgid "Not connected to any server."
 msgstr "No conectado a ningún servidor."
 
-#: src/Network/Client.cxx:199
+#: src/Network/Client.cxx:205
 msgid "Failed to communicate with server. Disconnecting anyway."
 msgstr "No se puede comunicar con el servidor. Desconectando de todos modos."
 
-#: src/Network/Client.cxx:202
+#: src/Network/Client.cxx:208
 msgid "Disconnected from server "
 msgstr "Desconectado del servidor "
 
-#: src/Network/Client.cxx:219 src/Network/Client.cxx:230
+#: src/Network/Client.cxx:223 src/Network/Client.cxx:236
 msgid "Error sending packet to "
 msgstr "Error al enviar el paquete a "
 
-#: src/Network/Client.cxx:245
+#: src/Network/Client.cxx:254
 msgid "File \""
 msgstr "Archivo \""
 
-#: src/Network/Client.cxx:245
+#: src/Network/Client.cxx:254
 msgid "\" does not exist."
 msgstr "\"no existe."
 
-#: src/Network/Client.cxx:285 src/Network/Server.cxx:328
+#: src/Network/Client.cxx:294 src/Network/Server.cxx:338
 msgid "Error sending file part "
 msgstr "Error al enviar parte del archivo "
 
-#: src/Network/Client.cxx:286 src/Network/Client.cxx:292
-#: src/Network/Server.cxx:329 src/Network/Server.cxx:335
+#: src/Network/Client.cxx:295 src/Network/Client.cxx:301
+#: src/Network/Server.cxx:339 src/Network/Server.cxx:345
 msgid " B) of file "
 msgstr " B) de archivo "
 
-#: src/Network/Client.cxx:287 src/Network/Server.cxx:330
+#: src/Network/Client.cxx:296 src/Network/Server.cxx:340
 msgid "to: "
 msgstr "a: "
 
-#: src/Network/Client.cxx:291
+#: src/Network/Client.cxx:300
 msgid "Sent file part: "
 msgstr "Parte del archivo enviado: "
 
-#: src/Network/Client.cxx:315
+#: src/Network/Client.cxx:326
 msgid "Could not write to file: \""
 msgstr "No se pudo escribir en el archivo: \""
 
-#: src/Network/Client.cxx:336 src/Network/Server.cxx:384
+#: src/Network/Client.cxx:347 src/Network/Server.cxx:394
 msgid "Received file part "
 msgstr "Parte del archivo recibido "
 
-#: src/Network/Client.cxx:337
+#: src/Network/Client.cxx:348
 msgid " of file: "
 msgstr " del archivo: "
 
@@ -870,104 +870,104 @@ msgstr "Servidor"
 msgid "online."
 msgstr "online."
 
-#: src/Network/Server.cxx:43
+#: src/Network/Server.cxx:41
 msgid "Server's listener thread for ("
 msgstr "Thread de escucha del servidor para ("
 
-#: src/Network/Server.cxx:44
+#: src/Network/Server.cxx:42
 msgid ") is offline."
 msgstr ") cerrada."
 
-#: src/Network/Server.cxx:92
+#: src/Network/Server.cxx:97
 msgid "Connection with client "
 msgstr "Conexión con el cliente "
 
-#: src/Network/Server.cxx:92
+#: src/Network/Server.cxx:97
 msgid " timed out after "
 msgstr " expiró después de "
 
-#: src/Network/Server.cxx:93
+#: src/Network/Server.cxx:98
 msgid " seconds."
 msgstr " segundos."
 
-#: src/Network/Server.cxx:108
+#: src/Network/Server.cxx:114
 msgid "Connecting to self is not allowed."
 msgstr "No se permite conectarse consigo mismo."
 
-#: src/Network/Server.cxx:118
+#: src/Network/Server.cxx:124
 msgid "Client with IP reconnected: "
 msgstr "Cliente con IP reconectado: "
 
-#: src/Network/Server.cxx:124 src/Network/Server.cxx:218
+#: src/Network/Server.cxx:130 src/Network/Server.cxx:223
 msgid "Client with IP is already connected: "
 msgstr "El cliente con IP ya está conectado: "
 
-#: src/Network/Server.cxx:141
+#: src/Network/Server.cxx:147
 msgid "A Pixelminer Server."
 msgstr "Un servidor Pixelminer."
 
-#: src/Network/Server.cxx:171
+#: src/Network/Server.cxx:177
 msgid "Waiting for listener thread..."
 msgstr "Esperando por la thread escuchadora..."
 
-#: src/Network/Server.cxx:187
+#: src/Network/Server.cxx:193
 msgid "Already listening on port "
 msgstr "Ya escuchando en puerto "
 
-#: src/Network/Server.cxx:193
+#: src/Network/Server.cxx:199
 msgid "Could not bind to port "
 msgstr "No se pudo vincular a puerta "
 
-#: src/Network/Server.cxx:211
+#: src/Network/Server.cxx:216
 msgid "Maximum number of connections reached. Refused connection with client: "
 msgstr ""
 "Número máximo de conexiones alcanzadas. Conexión rechazada con el cliente: "
 
-#: src/Network/Server.cxx:223 src/Network/Server.cxx:238
+#: src/Network/Server.cxx:228 src/Network/Server.cxx:243
 msgid "Client with IP "
 msgstr "Cliente con IP "
 
-#: src/Network/Server.cxx:223
+#: src/Network/Server.cxx:228
 msgid " connected."
 msgstr " conectado."
 
-#: src/Network/Server.cxx:232
+#: src/Network/Server.cxx:237
 msgid "Client with UUID "
 msgstr "Cliente con UUID "
 
-#: src/Network/Server.cxx:232
+#: src/Network/Server.cxx:237
 msgid " is not connected."
 msgstr " o está conectado."
 
-#: src/Network/Server.cxx:238
+#: src/Network/Server.cxx:243
 msgid " is now disconnected."
 msgstr " ahora está desconectado."
 
-#: src/Network/Server.cxx:257
+#: src/Network/Server.cxx:262
 msgid "Could not send packet to: "
 msgstr "No se pudo enviar el paquete a: "
 
-#: src/Network/Server.cxx:269
+#: src/Network/Server.cxx:280
 msgid "Error while sending control message to: "
 msgstr "Error al enviar mensaje de control a: "
 
-#: src/Network/Server.cxx:280 src/Network/Server.cxx:349
+#: src/Network/Server.cxx:290 src/Network/Server.cxx:359
 msgid "Client is not connected: "
 msgstr "Cliente no está conectado: "
 
-#: src/Network/Server.cxx:286
+#: src/Network/Server.cxx:296
 msgid "Invalid file: "
 msgstr "Archivo no válido: "
 
-#: src/Network/Server.cxx:363
+#: src/Network/Server.cxx:373
 msgid "Could not write file: "
 msgstr "No se pudo escribir el archivo: "
 
-#: src/Network/Server.cxx:385
+#: src/Network/Server.cxx:395
 msgid "of file: "
 msgstr "de archivo: "
 
-#: src/Network/Server.cxx:397
+#: src/Network/Server.cxx:407
 msgid "Server is down"
 msgstr "Servidor cerrado"
 
@@ -1201,7 +1201,7 @@ msgstr "Jugado por último: "
 
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:95
 #: include/States/Multiplayer/ServerSelectionState.hxx:222
-#: include/States/Multiplayer/ServerSelectionState.hxx:268
+#: include/States/Multiplayer/ServerSelectionState.hxx:266
 msgid "Game Version: "
 msgstr "Versión del juego: "
 
@@ -1210,12 +1210,12 @@ msgid ", Difficulty: "
 msgstr ", Dificultad: "
 
 #: include/States/Multiplayer/ServerSelectionState.hxx:218
-#: include/States/Multiplayer/ServerSelectionState.hxx:280
+#: include/States/Multiplayer/ServerSelectionState.hxx:278
 msgid "Failed to reach server."
 msgstr "No se ha podido contactar con el servidor."
 
 #: include/States/Multiplayer/ServerSelectionState.hxx:219
-#: include/States/Multiplayer/ServerSelectionState.hxx:281
+#: include/States/Multiplayer/ServerSelectionState.hxx:279
 msgid "Offline"
 msgstr "Offline"
 

@@ -29,7 +29,7 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
                 std::string header;
                 packet >> header;
 
-                std::cout << "client received: " << header << "\n";
+                // std::cout << "client received: " << header << "\n";
 
                 if (header == "ACK")
                 {
