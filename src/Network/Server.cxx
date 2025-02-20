@@ -54,6 +54,7 @@ void Server::handler()
 
         std::string header, uuid;
         pkt >> header >> uuid;
+        std::cout << header << uuid << "\n";
 
         if (header == "ASK+UUID")
         {
@@ -194,7 +195,6 @@ const bool Server::listen(const unsigned short &port)
         return false;
     }
 
-    socket.setBlocking(true);
     socketSelector.add(socket);
 
     setOnline(true);

@@ -53,33 +53,27 @@ ClientGameState::~ClientGameState() = default;
 
 void ClientGameState::update(const float &dt)
 {
-    if (!ready)
+    if (client.getStatus() == ClientStatus::None)
     {
-        if (!client.isReady())
-        {
-            updateFeedbackScreen(dt);
-            return;
-        }
-        else if (client.getStatus() == ClientStatus::TimedOut)
-        {
-            replaceSelf(std::make_shared<MessageState>(
-                data, _("Connection error"),
-                _("The server did not respond after 10 seconds. Check if the server exists and if it is online, and if "
-                  "your internet connectivity is ok.")));
-            return;
-        }
-        else if (client.getStatus() == ClientStatus::Refused)
-        {
-            replaceSelf(
-                std::make_shared<MessageState>(data, _("Connection error"),
-                                               _("The server refused to connect with this client. This might be "
-                                                 "because of a attempt to a self-connection or a server ban.")));
-            return;
-        }
-        else
-        {
-            ready = true;
-        }
+        updateFeedbackScreen(dt);
+        return;
+    }
+
+    if (client.getStatus() == ClientStatus::TimedOut)
+    {
+        replaceSelf(std::make_shared<MessageState>(
+            data, _("Connection error"),
+            _("The server did not respond after 10 seconds. Check if the server exists and if it is online, and if "
+              "your internet connectivity is ok.")));
+        return;
+    }
+
+    if (client.getStatus() == ClientStatus::Refused)
+    {
+        replaceSelf(std::make_shared<MessageState>(data, _("Connection error"),
+                                                   _("The server refused to connect with this client. This might be "
+                                                     "because of a attempt to a self-connection or a server ban.")));
+        return;
     }
 
     if (client.getStatus() == ClientStatus::Disconnected)
@@ -91,7 +85,7 @@ void ClientGameState::update(const float &dt)
 
 void ClientGameState::render(sf::RenderTarget &target)
 {
-    if (!ready)
+    if (client.getStatus() == ClientStatus::None)
     {
         renderFeedbackScreen(target);
         return;

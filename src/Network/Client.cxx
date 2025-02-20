@@ -3,8 +3,6 @@
 
 void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port, const float &timeout)
 {
-    std::lock_guard<std::mutex> lock(mutex);
-    socket.setBlocking(true); // Blocking mode for connection
     setReady(false);
 
     sf::Packet pktBuf;
@@ -16,7 +14,6 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
         logger.logError(_("Could not connect to ") + ip.toString() + ":" + std::to_string(port) + "");
         setReady(true);
         setStatus(ClientStatus::SockError);
-        socket.setBlocking(false);
         return;
     }
 
@@ -24,6 +21,8 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
     {
         if (socketSelector.isReady(socket))
         {
+            std::lock_guard<std::mutex> lock(mutex);
+
             setReady(true);
             if (socket.receive(pktBuf, ipBuffer, portBuf) == sf::Socket::Status::Done)
             {
@@ -55,8 +54,6 @@ void Client::connectorThread(const sf::IpAddress &ip, const unsigned short &port
         setReady(true);
         setStatus(ClientStatus::TimedOut);
     }
-
-    socket.setBlocking(false);
 }
 
 void Client::listenerThread()
