@@ -105,12 +105,12 @@ void Server::handleTimedOutConnections()
 
 void Server::handleAskUuid(const std::string &uuid, const sf::IpAddress &ip, const unsigned short &port)
 {
-    // if (uuid == myUuid)
-    // {
-    //     logger.logError(_("Connecting to self is not allowed."), false);
-    //     sendControlMessage("RFS", ip, port);
-    //     return;
-    // }
+    if (uuid == myUuid)
+    {
+        logger.logError(_("Connecting to self is not allowed."), false);
+        sendControlMessage("RFS", ip, port);
+        return;
+    }
 
     auto it = connections.find(uuid);
     if (it != connections.end())

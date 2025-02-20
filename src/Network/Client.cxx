@@ -138,9 +138,11 @@ void Client::handleServerRcn(const sf::IpAddress &ip, const unsigned short &port
 
 void Client::handleServerRfs(const sf::IpAddress &ip, const unsigned short &port)
 {
-    std::lock_guard<std::mutex> lock(mutex);
-    logger.logError(_("Connection refused by server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
-    setStatus(ClientStatus::Refused);
+    {
+        std::lock_guard<std::mutex> lock(mutex);
+        logger.logError(_("Connection refused by server ") + ip.toString() + ":" + std::to_string(port) + ".", false);
+        setStatus(ClientStatus::Refused);
+    }
 }
 
 void Client::handleServerBadResponse(const sf::IpAddress &ip, const unsigned short &port)
@@ -154,10 +156,7 @@ void Client::handleServerBadResponse(const sf::IpAddress &ip, const unsigned sho
 
 void Client::setStatus(const ClientStatus &status)
 {
-    {
-        std::lock_guard<std::mutex> lock(mutex);
-        this->status = status;
-    }
+    this->status = status;
 }
 
 Client::Client(const std::string &uuid)
