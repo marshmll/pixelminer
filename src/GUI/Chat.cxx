@@ -3,13 +3,13 @@
 
 using namespace gui;
 
-Chat::Chat(const sf::String &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
+Chat::Chat(const std::string &this_author, const sf::Vector2f &size, const sf::Vector2f &position, sf::Font &font,
            sf::VideoMode &vm)
-    : thisAuthor(this_author), font(font), vm(vm), active(false)
+    : thisAuthor(sf::String::fromUtf8(this_author.begin(), this_author.end())), font(font), vm(vm), active(false)
 {
     float padding = gui::percent(vm.size.x, 1.f);
 
-    chatContainer = std::make_unique<gui::ScrollableContainer>(vm, size, position, 0.f, 2.f);
+    chatContainer = std::make_unique<gui::ScrollableContainer>(vm, size, position, 0.f, 5.f);
 
     input = std::make_unique<gui::Input>(sf::Vector2f(padding, vm.size.y - gui::percent(vm.size.y, 5.f) - padding),
                                          sf::Vector2f(vm.size.x - padding * 2.f, gui::percent(vm.size.y, 5.f)),
@@ -54,15 +54,13 @@ void Chat::render(sf::RenderTarget &target)
     for (auto &message : messages)
     {
         if (message)
-        {
             message->render(target, !active);
-        }
     }
 
     target.setView(target.getDefaultView());
 }
 
-void Chat::displayMessage(const sf::String &author, const sf::String &content, const sf::Color &color)
+void Chat::displayMessage(const std::string &content, const sf::Color &color)
 {
     sf::Vector2f next_pos =
         messages.empty()
@@ -70,7 +68,7 @@ void Chat::displayMessage(const sf::String &author, const sf::String &content, c
             : sf::Vector2f((chatContainer->getPosition().x),
                            static_cast<int>(messages.back()->getPosition().y + messages.back()->getSize().y));
 
-    messages.push_back(std::make_unique<Message>(author, content, next_pos, chatContainer->getSize().x,
+    messages.push_back(std::make_unique<Message>(content, next_pos, chatContainer->getSize().x,
                                                  gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
 
     chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
@@ -79,14 +77,75 @@ void Chat::displayMessage(const sf::String &author, const sf::String &content, c
     chatContainer->scrollToBottom();
 }
 
-void Chat::displayGameLog(const sf::String &log)
+void Chat::displayMessage(const std::string &author, const std::string &content, const sf::Color &color)
 {
-    displayMessage("", log, sf::Color::Yellow);
+    std::string string;
+    string += "[" + author + "] " + content;
+
+    sf::Vector2f next_pos =
+        messages.empty()
+            ? chatContainer->getPosition()
+            : sf::Vector2f((chatContainer->getPosition().x),
+                           static_cast<int>(messages.back()->getPosition().y + messages.back()->getSize().y));
+
+    messages.push_back(std::make_unique<Message>(string, next_pos, chatContainer->getSize().x,
+                                                 gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
+
+    chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
+                                     gui::percent(chatContainer->getSize().y, 2.f));
+
+    chatContainer->scrollToBottom();
 }
 
-void Chat::displayGameError(const sf::String &log)
+void Chat::displayMessage(const sf::String &content, const sf::Color &color)
 {
-    displayMessage("", log, sf::Color::Red);
+    sf::Vector2f next_pos =
+        messages.empty()
+            ? chatContainer->getPosition()
+            : sf::Vector2f((chatContainer->getPosition().x),
+                           static_cast<int>(messages.back()->getPosition().y + messages.back()->getSize().y));
+
+    messages.push_back(std::make_unique<Message>(content, next_pos, chatContainer->getSize().x,
+                                                 gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
+
+    chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
+                                     gui::percent(chatContainer->getSize().y, 2.f));
+
+    chatContainer->scrollToBottom();
+}
+
+void Chat::displayMessage(const sf::String &author, const sf::String &content, const sf::Color &color)
+{
+    sf::String string;
+    std::string left_bracket = "[";
+    std::string right_bracket_colon = "]: ";
+
+    string += sf::String::fromUtf8(left_bracket.begin(), left_bracket.end()) + author +
+              sf::String::fromUtf8(right_bracket_colon.begin(), right_bracket_colon.end()) + content;
+
+    sf::Vector2f next_pos =
+        messages.empty()
+            ? chatContainer->getPosition()
+            : sf::Vector2f((chatContainer->getPosition().x),
+                           static_cast<int>(messages.back()->getPosition().y + messages.back()->getSize().y));
+
+    messages.push_back(std::make_unique<Message>(string, next_pos, chatContainer->getSize().x,
+                                                 gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
+
+    chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
+                                     gui::percent(chatContainer->getSize().y, 2.f));
+
+    chatContainer->scrollToBottom();
+}
+
+void Chat::displayGameLog(const std::string &log)
+{
+    displayMessage(log, sf::Color::Yellow);
+}
+
+void Chat::displayGameError(const std::string &log)
+{
+    displayMessage(log, sf::Color::Red);
 }
 
 const bool &Chat::isActive() const
@@ -112,7 +171,7 @@ void Chat::sendMessageFromInput()
 {
     if (input->getValue().getSize() > 0)
     {
-        displayMessage(thisAuthor, input->getValue());
+        displayMessage(thisAuthor, input->getValue(), sf::Color::White);
         input->clear();
     }
 }

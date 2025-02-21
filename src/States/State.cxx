@@ -22,12 +22,14 @@ void State::updateMousePositions(std::optional<sf::View> view)
     mousePosScreen = sf::Mouse::getPosition();
     mousePosWindow = sf::Mouse::getPosition(*data.window);
 
-    if (view.has_value())
+    if (view)
         data.window->setView(view.value());
 
     mousePosView = data.window->mapPixelToCoords(mousePosWindow);
-    mousePosGrid = {static_cast<int>(mousePosView.x / data.gridSize), static_cast<int>(mousePosView.y / data.gridSize)};
-    if (view.has_value())
+    mousePosGrid = sf::Vector2i(static_cast<int>(mousePosView.x / (data.gridSize * data.scale)),
+                                static_cast<int>(mousePosView.y / (data.gridSize * data.scale)));
+
+    if (view)
         data.window->setView(data.window->getDefaultView());
 }
 
@@ -77,7 +79,7 @@ std::shared_ptr<State> &State::getReplacerState()
 const bool &State::isDead() const
 {
     return dead;
-};
+}
 
 const bool &State::wasReplaced() const
 {

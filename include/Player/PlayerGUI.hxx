@@ -30,6 +30,8 @@ class PlayerGUI
      */
     std::unique_ptr<Hotbar> hotbar;
 
+    sf::RectangleShape tileHoverIndicator;
+
     /**
      * @brief A shared pointer to the resource pack containing textures for the GUI.
      */
@@ -78,7 +80,7 @@ class PlayerGUI
      *
      * @param dt The delta time since the last update.
      */
-    void update(const float &dt);
+    void update(const float &dt, const sf::Vector2i &mouse_pos_grid);
 
     /**
      * @brief Renders the player GUI elements to the screen.
@@ -88,4 +90,8 @@ class PlayerGUI
      * @param target The render target to draw the player GUI elements on.
      */
     void render(sf::RenderTarget &target);
+
+    void updateTileHoverIndicator(const sf::Vector2i &mouse_pos_grid);
+
+    void renderTileHoverIndicator(sf::RenderTarget &target);
 };

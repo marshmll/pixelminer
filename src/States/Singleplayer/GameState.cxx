@@ -185,6 +185,10 @@ void GameState::update(const float &dt)
     updateChat(dt);
     updateEntityRenderPriorityQueue();
 
+    updateMousePositions(playerCamera);
+    if (!chat->isActive())
+        playerGUI->update(dt, mousePosGrid);
+
     if (debugInfo)
         updateDebugText(dt);
 
@@ -330,9 +334,6 @@ void GameState::updatePlayerCamera()
 
 void GameState::updateChat(const float &dt)
 {
-    if (!chat->isActive())
-        playerGUI->update(dt);
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl) && keyPressedWithin(250, sf::Keyboard::Key::C))
         chat->setActive(!chat->isActive());
     else if (keyPressedWithin(250, sf::Keyboard::Key::Enter) && chat->isActive())
@@ -388,6 +389,8 @@ void GameState::updateDebugText(const float &dt)
 
 void GameState::render(sf::RenderTarget &target)
 {
+    // DO NOT RENDER DIRECTLY TO TARGET!
+
     renderTexture.clear();
 
     if (!ctx.map->isReady())
@@ -401,6 +404,10 @@ void GameState::render(sf::RenderTarget &target)
 
     renderTexture.setView(playerCamera);
     ctx.map->render(renderTexture, sf::Vector2i(thisPlayer->getCenterGridPosition()), debugChunks);
+
+     if (!chat->isActive())
+        playerGUI->renderTileHoverIndicator(renderTexture);
+
     renderGlobalEntities(renderTexture);
 
     renderTexture.setView(renderTexture.getDefaultView());
