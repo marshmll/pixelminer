@@ -11,33 +11,33 @@ std::vector<Token> CommandInterpreter::tokenize(std::string_view command)
 
     while (end != std::string_view::npos)
     {
-        std::string_view tokenStr = command.substr(start, end - start);
+        std::string_view token_str = command.substr(start, end - start);
         TokenType type = TokenType::Unknown;
 
-        if (!tokenStr.empty())
+        if (!token_str.empty())
         {
-            if (tokenStr[0] == COMMAND_INVOKER_CHAR)
+            if (token_str[0] == COMMAND_INVOKER_CHAR)
             {
                 type = TokenType::Command;
             }
-            else if (tokenStr[0] == '@')
+            else if (token_str[0] == '@')
             {
                 type = TokenType::Target;
             }
-            else if (tokenStr.find_first_not_of("0123456789.") == std::string_view::npos)
+            else if (token_str.find_first_not_of("0123456789.") == std::string_view::npos)
             {
-                size_t dotCount = 0;
-                for (char ch : tokenStr)
+                size_t dot_count = 0;
+                for (char ch : token_str)
                 {
                     if (ch == '.')
-                        dotCount++;
+                        dot_count++;
                 }
 
-                if (dotCount == 0)
+                if (dot_count == 0)
                 {
                     type = TokenType::Integer;
                 }
-                else if (dotCount == 1)
+                else if (dot_count == 1)
                 {
                     type = TokenType::Decimal;
                 }
@@ -47,7 +47,7 @@ std::vector<Token> CommandInterpreter::tokenize(std::string_view command)
                 type = TokenType::String;
             }
 
-            tokens.emplace_back(Token{type, std::string(tokenStr)});
+            tokens.emplace_back(Token{type, std::string(token_str)});
         }
 
         start = end + 1;
@@ -57,33 +57,33 @@ std::vector<Token> CommandInterpreter::tokenize(std::string_view command)
     // Handle the last token
     if (start < command.size())
     {
-        std::string_view tokenStr = command.substr(start);
+        std::string_view token_str = command.substr(start);
         TokenType type = TokenType::Unknown;
 
-        if (!tokenStr.empty())
+        if (!token_str.empty())
         {
-            if (tokenStr[0] == COMMAND_INVOKER_CHAR)
+            if (token_str[0] == COMMAND_INVOKER_CHAR)
             {
                 type = TokenType::Command;
             }
-            else if (tokenStr[0] == '@')
+            else if (token_str[0] == '@')
             {
                 type = TokenType::Target;
             }
-            else if (tokenStr.find_first_not_of("0123456789.") == std::string_view::npos)
+            else if (token_str.find_first_not_of("0123456789.") == std::string_view::npos)
             {
-                size_t dotCount = 0;
-                for (char ch : tokenStr)
+                size_t dot_count = 0;
+                for (char ch : token_str)
                 {
                     if (ch == '.')
-                        dotCount++;
+                        dot_count++;
                 }
 
-                if (dotCount == 0)
+                if (dot_count == 0)
                 {
                     type = TokenType::Integer;
                 }
-                else if (dotCount == 1)
+                else if (dot_count == 1)
                 {
                     type = TokenType::Decimal;
                 }
@@ -93,7 +93,7 @@ std::vector<Token> CommandInterpreter::tokenize(std::string_view command)
                 type = TokenType::String;
             }
 
-            tokens.emplace_back(Token{type, std::string(tokenStr)});
+            tokens.emplace_back(Token{type, std::string(token_str)});
         }
     }
 
@@ -105,12 +105,10 @@ CommandInterpreter::CommandInterpreter(GameContext &ctx) : ctx(ctx)
 
 CommandInterpreter::~CommandInterpreter() = default;
 
-const std::string CommandInterpreter::interpret(std::string_view caller_name, std::optional<std::string> caller_uuid,
-                                                std::string_view command)
+const std::string CommandInterpreter::interpret(std::optional<std::string> caller_uuid, std::string_view command)
 {
     CommandContext cmd;
 
-    cmd.callerName = caller_name;
     cmd.callerUuid = caller_uuid;
     cmd.tokens = tokenize(command);
 

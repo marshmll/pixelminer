@@ -63,6 +63,12 @@ void GameState::initThisPlayer()
 void GameState::initPlayerGUI()
 {
     playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, *data.vm, data.scale);
+    lastHoveredTile = sf::Vector2i(-1, -1);
+}
+
+void GameState::initMiningClock()
+{
+    miningClock.reset();
 }
 
 void GameState::initPlayerCamera()
@@ -114,6 +120,60 @@ void GameState::resolveCollision(std::shared_ptr<Entity> &first_entity, std::sha
         first_entity->move(sf::Vector2f(0.f, (first_pos.y < second_pos.y ? -overlapY : overlapY)));
 }
 
+void GameState::handleTileMining()
+{
+    if (playerGUI->hasTileHovered())
+    {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {
+            auto &[x, y] = playerGUI->getHoveredTileGridPosition();
+
+            if (!ctx.map->getTile(x, y))
+            {
+                playerGUI->getTileHoverIndicator().setTextureRect(
+                    sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(GRID_SIZE, GRID_SIZE)));
+
+                miningClock.reset();
+                return;
+            }
+
+            if (!miningClock.isRunning() || (lastHoveredTile.x != x || lastHoveredTile.y != y))
+                miningClock.restart();
+
+            int index = 1 + static_cast<int>((miningClock.getElapsedTime().asMilliseconds() / 1500.f) * 7);
+
+            if (index > 7)
+                index = 0;
+
+            playerGUI->getTileHoverIndicator().setTextureRect(
+                sf::IntRect(sf::Vector2i(index * GRID_SIZE, 0), sf::Vector2i(GRID_SIZE, GRID_SIZE)));
+
+            lastHoveredTile.x = x;
+            lastHoveredTile.y = y;
+
+            if (miningClock.getElapsedTime().asMilliseconds() >= 1500)
+            {
+                ctx.map->removeTile(x, y);
+                miningClock.reset();
+                lastHoveredTile.x = -1;
+                lastHoveredTile.y = -1;
+            }
+        }
+        else
+        {
+            playerGUI->getTileHoverIndicator().setTextureRect(
+                sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(GRID_SIZE, GRID_SIZE)));
+            miningClock.reset();
+        }
+    }
+    else
+    {
+        playerGUI->getTileHoverIndicator().setTextureRect(
+            sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(GRID_SIZE, GRID_SIZE)));
+        miningClock.reset();
+    }
+}
+
 GameState::GameState(EngineData &data) : State(data), server(data.uuid)
 {
     ctx.currentState = this;
@@ -122,6 +182,7 @@ GameState::GameState(EngineData &data) : State(data), server(data.uuid)
     initEntitySpatialGridPartition();
     initThisPlayer();
     initPlayerGUI();
+    initMiningClock();
     initPlayerCamera();
     initChat();
     initPauseMenu();
@@ -184,6 +245,7 @@ void GameState::update(const float &dt)
     updatePlayerCamera();
     updateChat(dt);
     updateEntityRenderPriorityQueue();
+    handleTileMining();
 
     updateMousePositions(playerCamera);
     if (!chat->isActive())
@@ -229,7 +291,9 @@ void GameState::updateGlobalEntities(const float &dt)
 void GameState::updatePlayers(const float &dt)
 {
     for (auto &[_, player] : ctx.players)
+    {
         player->update(dt, player.get() == thisPlayer.get() && !chat->isActive());
+    }
 }
 
 void GameState::updateEntityRenderPriorityQueue()
@@ -342,9 +406,9 @@ void GameState::updateChat(const float &dt)
 
         if (value.size() > 0)
         {
-            if (chat->getInputValue()[0] == COMMAND_INVOKER_CHAR)
+            if (value[0] == COMMAND_INVOKER_CHAR)
             {
-                const std::string msg = cmd->interpret("marshmll", data.uuid, value);
+                const std::string msg = cmd->interpret(data.uuid, value);
                 chat->displayGameLog(msg);
                 chat->setActive(false);
                 chat->clearInput();
@@ -405,7 +469,7 @@ void GameState::render(sf::RenderTarget &target)
     renderTexture.setView(playerCamera);
     ctx.map->render(renderTexture, sf::Vector2i(thisPlayer->getCenterGridPosition()), debugChunks);
 
-     if (!chat->isActive())
+    if (!chat->isActive())
         playerGUI->renderTileHoverIndicator(renderTexture);
 
     renderGlobalEntities(renderTexture);

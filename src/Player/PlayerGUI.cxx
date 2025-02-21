@@ -6,9 +6,10 @@ void PlayerGUI::initGUI()
     hotbar = std::make_unique<Hotbar>(player.getAttributeFunctionality(), resourcePack, vm, scale);
 
     tileHoverIndicator.setSize(sf::Vector2f(GRID_SIZE * scale, GRID_SIZE * scale));
-    tileHoverIndicator.setFillColor(sf::Color::Transparent);
     tileHoverIndicator.setOutlineColor(sf::Color::Black);
     tileHoverIndicator.setOutlineThickness(1.f);
+    tileHoverIndicator.setTexture(&resourcePack->getTexture("TileBreaking"));
+    tileHoverIndicator.setTextureRect(sf::IntRect({0 * GRID_SIZE, 0 * GRID_SIZE}, {GRID_SIZE, GRID_SIZE}));
 }
 
 PlayerGUI::PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pack, sf::VideoMode &vm,
@@ -49,4 +50,20 @@ void PlayerGUI::updateTileHoverIndicator(const sf::Vector2i &mouse_pos_grid)
 void PlayerGUI::renderTileHoverIndicator(sf::RenderTarget &target)
 {
     target.draw(tileHoverIndicator);
+}
+
+const bool PlayerGUI::hasTileHovered() const
+{
+    return tileHoverIndicator.getOutlineThickness() > 0.f;
+}
+
+const sf::Vector2i PlayerGUI::getHoveredTileGridPosition()
+{
+    return sf::Vector2i(static_cast<int>(tileHoverIndicator.getPosition().x / GRID_SIZE / scale),
+                        static_cast<int>(tileHoverIndicator.getPosition().y / GRID_SIZE / scale));
+}
+
+sf::RectangleShape &PlayerGUI::getTileHoverIndicator()
+{
+    return tileHoverIndicator;
 }

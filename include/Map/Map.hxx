@@ -178,6 +178,12 @@ class Map
      */
     Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
+    Tile *getTile(const int &grid_x, const int &grid_y);
+
+    const bool removeTile(const int &grid_x, const int &grid_y, const int &grid_z);
+
+    const bool removeTile(const int &grid_x, const int &grid_y);
+
     /**
      * @brief Retrieves the spawn point of the map.
      * @return A vector representing the spawn point of the map.

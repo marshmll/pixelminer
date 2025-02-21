@@ -40,6 +40,10 @@
         "path": "Assets/Textures/Tiles/tile_sheet.png"
     },
     {
+        "key": "TileBreaking",
+        "path": "Assets/Textures/Tiles/tile_breaking.png"
+    },
+    {
         "key": "HeartEmpty",
         "path": "Assets/Textures/Icons/heart_empty.png"
     },

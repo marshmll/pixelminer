@@ -94,4 +94,10 @@ class PlayerGUI
     void updateTileHoverIndicator(const sf::Vector2i &mouse_pos_grid);
 
     void renderTileHoverIndicator(sf::RenderTarget &target);
+
+    const bool hasTileHovered() const;
+
+    const sf::Vector2i getHoveredTileGridPosition();
+
+    sf::RectangleShape &getTileHoverIndicator();
 };

@@ -49,7 +49,6 @@ struct Token
  */
 struct CommandContext
 {
-    std::string callerName;                ///< The name associated with the caller.
     std::optional<std::string> callerUuid; ///< A optional uuid associated with the caller.
     std::vector<Token> tokens;             ///< A tokenized command.
 };

@@ -507,6 +507,82 @@ Tile *Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
     return chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].get();
 }
 
+Tile *Map::getTile(const int &grid_x, const int &grid_y)
+{
+    if (grid_x < 0 || grid_y < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y >= MAX_WORLD_GRID_SIZE.y)
+        return nullptr;
+
+    const unsigned int chunk_x = grid_x / CHUNK_SIZE_IN_TILES.x;
+    const unsigned int chunk_y = grid_y / CHUNK_SIZE_IN_TILES.y;
+
+    const unsigned int tile_x = grid_x - (chunk_x * CHUNK_SIZE_IN_TILES.x);
+    const unsigned int tile_y = grid_y - (chunk_y * CHUNK_SIZE_IN_TILES.y);
+
+    if (!chunks[chunk_x][chunk_y] || chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y].empty())
+        return nullptr;
+
+    for (int i = chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y].size() - 1; i >= 0; i--)
+    {
+        if (chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i])
+        {
+            return chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i].get();
+        }
+    }
+
+    return nullptr;
+}
+
+const bool Map::removeTile(const int &grid_x, const int &grid_y, const int &grid_z)
+{
+    if (grid_x < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y < 0 || grid_y >= MAX_WORLD_GRID_SIZE.y || grid_z < 0 ||
+        grid_z >= CHUNK_SIZE_IN_TILES.z)
+        return false;
+
+    const unsigned int chunk_x = grid_x / CHUNK_SIZE_IN_TILES.x;
+    const unsigned int chunk_y = grid_y / CHUNK_SIZE_IN_TILES.y;
+
+    const unsigned int tile_x = grid_x - (chunk_x * CHUNK_SIZE_IN_TILES.x);
+    const unsigned int tile_y = grid_y - (chunk_y * CHUNK_SIZE_IN_TILES.y);
+
+    if (!chunks[chunk_x][chunk_y])
+        return false;
+
+    if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
+        return false;
+
+    chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].reset();
+    return true;
+}
+
+const bool Map::removeTile(const int &grid_x, const int &grid_y)
+{
+    if (grid_x < 0 || grid_x >= MAX_WORLD_GRID_SIZE.x || grid_y < 0 || grid_y >= MAX_WORLD_GRID_SIZE.y)
+        return false;
+
+    const unsigned int chunk_x = grid_x / CHUNK_SIZE_IN_TILES.x;
+    const unsigned int chunk_y = grid_y / CHUNK_SIZE_IN_TILES.y;
+
+    const unsigned int tile_x = grid_x - (chunk_x * CHUNK_SIZE_IN_TILES.x);
+    const unsigned int tile_y = grid_y - (chunk_y * CHUNK_SIZE_IN_TILES.y);
+
+    if (!chunks[chunk_x][chunk_y])
+        return false;
+
+    if (chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y].empty())
+        return false;
+
+    for (int i = chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y].size() - 1; i >= 0; i--)
+    {
+        if (chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i])
+        {
+            chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i].reset();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const sf::Vector2f Map::getSpawnPoint() const
 {
     return sf::Vector2f(metadata.spawnX, metadata.spawnY);

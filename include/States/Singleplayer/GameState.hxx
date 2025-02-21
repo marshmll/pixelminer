@@ -52,6 +52,9 @@ class GameState : public State
 
     std::unique_ptr<PlayerGUI> playerGUI; ///< Player's GUI interface.
 
+    sf::Clock miningClock;
+    sf::Vector2i lastHoveredTile;
+
     sf::RectangleShape loadingBg;          ///< Background rectangle for the loading screen.
     std::unique_ptr<sf::Text> loadingText; ///< Text for loading status.
     std::unique_ptr<sf::Text> loadingMsg;  ///< Message text for loading status.
@@ -101,6 +104,11 @@ class GameState : public State
     void initPlayerGUI();
 
     /**
+     * @brief Initializes the mining's clock.
+     */
+    void initMiningClock();
+
+    /**
      * @brief Initializes the camera view for the player.
      */
     void initPlayerCamera();
@@ -133,6 +141,8 @@ class GameState : public State
      */
     void resolveCollision(std::shared_ptr<Entity> &first_entity, std::shared_ptr<Entity> &second_entity,
                           const sf::FloatRect &intersection);
+
+    void handleTileMining();
 
   public:
     /**

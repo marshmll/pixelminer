@@ -53,5 +53,5 @@ class CommandInterpreter
      * @return The result of the command execution as a string.
      */
     const std::string
-    interpret(std::string_view caller_name, std::optional<std::string> caller_uuid, std::string_view command);
+    interpret(std::optional<std::string> caller_uuid, std::string_view command);
 };
