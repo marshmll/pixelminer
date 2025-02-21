@@ -54,7 +54,7 @@ void MainMenuState::initGUI()
 
     buttons["Lang"] = std::make_unique<gui::ImageButton>(
         sf::Vector2f(buttons["Options"]->getPosition().x - buttons["Options"]->getSize().y -
-                         gui::percent(buttons["Options"]->getSize().x, 4.f),
+                         gui::percent(buttons["Options"]->getSize().x, 6.f),
                      buttons["Options"]->getPosition().y),
         sf::Vector2f(buttons["Options"]->getSize().y, buttons["Options"]->getSize().y), sf::Color(200, 200, 200, 200),
         data.activeResourcePack->getTexture("World"),

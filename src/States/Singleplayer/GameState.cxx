@@ -52,9 +52,9 @@ void GameState::initEntitySpatialGridPartition()
 
 void GameState::initThisPlayer()
 {
-    ctx.globalEntities.emplace_back(
-        std::make_shared<Player>("marshmll", ctx.map->getFolderName(), data.uuid, ctx.map->getSpawnPoint(),
-                                 data.activeResourcePack->getTexture("Player1"), data.scale));
+    ctx.globalEntities.emplace_back(std::make_shared<Player>(
+        "marshmll", ctx.map->getFolderName(), data.uuid, ctx.map->getSpawnPoint(),
+        data.activeResourcePack->getTexture("Player1"), data.scale, data.activeResourcePack->soundBuffers));
     ctx.players[data.uuid] = std::static_pointer_cast<Player>(ctx.globalEntities.back());
     thisPlayer = ctx.players[data.uuid];
     entitySpacialGridPartition->put(ctx.globalEntities.back());
@@ -204,8 +204,9 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name) : Sta
     initCommandInterpreter();
     initDebugging();
 
-    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(
-        ctx.map->getSpawnPoint(), data.activeResourcePack->getTexture("PineTree"), data.scale));
+    ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint(),
+                                                               data.activeResourcePack->getTexture("PineTree"),
+                                                               data.scale, data.activeResourcePack->soundBuffers));
     entitySpacialGridPartition->put(ctx.globalEntities.back());
 }
 
@@ -292,7 +293,15 @@ void GameState::updatePlayers(const float &dt)
 {
     for (auto &[_, player] : ctx.players)
     {
-        player->update(dt, player.get() == thisPlayer.get() && !chat->isActive());
+        sf::Vector2f pos = player->getBottomGridPosition();
+
+        Tile *tile = ctx.map->getTile(pos.x, pos.y);
+        std::string tile_name_under = "Unknown";
+
+        if (tile)
+            tile_name_under = tile->getName();
+
+        player->update(dt, player.get() == thisPlayer.get() && !chat->isActive(), tile_name_under);
     }
 }
 

@@ -13,8 +13,7 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(PixelMiner src/main.cxx
-)
+add_executable(PixelMiner src/main.cxx)
 
 add_subdirectory(src)
 add_subdirectory(externals/minizip-ng)

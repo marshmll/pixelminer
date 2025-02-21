@@ -31,6 +31,9 @@ class Player : public Entity
   private:
     PlayerData playerData; ///< Stores player-specific data.
 
+    sf::Clock walkSoundClock;
+    uint32_t walkTimeMax;
+
     /**
      * @brief Initializes animations for the player.
      */
@@ -40,6 +43,11 @@ class Player : public Entity
      * @brief Initializes hitboxes for the player.
      */
     void initHitBoxes();
+
+    /**
+     * @brief Initializes sounds for the player.
+     */
+    void initSounds();
 
     /**
      * @brief Prepares player data for saving or loading.
@@ -66,7 +74,8 @@ class Player : public Entity
      * @param scale Scaling factor for the player's sprites.
      */
     Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
-           const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale);
+           const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale,
+           std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers);
 
     /**
      * @brief Destructor for the Player class.
@@ -90,8 +99,9 @@ class Player : public Entity
      * @brief Updates the player's state, optionally updating movement.
      * @param dt Delta time for frame-independent updates.
      * @param update_movement Whether to update movement.
+     * @param tile_name_under The name of the tile that the player is stepping on.
      */
-    void update(const float &dt, const bool &update_movement);
+    void update(const float &dt, const bool &update_movement, const std::string &tile_name_under);
 
     /**
      * @brief Renders the player on the target, optionally showing hitboxes.

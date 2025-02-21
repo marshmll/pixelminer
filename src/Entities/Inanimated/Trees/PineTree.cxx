@@ -12,8 +12,9 @@ void PineTree::initHitBoxes()
     collisionFunctionality->addHitBox("Trunk", sf::Vector2u(18, 5), sf::Vector2u(16, 76), scale);
 }
 
-PineTree::PineTree(const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
-    : Tree(_("Pine Tree"), spawn_grid_position, sprite_sheet, scale)
+PineTree::PineTree(const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale,
+                   std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers)
+    : Tree(_("Pine Tree"), spawn_grid_position, sprite_sheet, scale, sound_buffers)
 {
     addSpriteLayer("Top");
 

@@ -9,15 +9,33 @@ void Player::initAnimations()
     animationFunctionality->addAnimation("Base", "IdleUp", 10000, frame_size, {0, 1}, {0, 1});
     animationFunctionality->addAnimation("Base", "IdleLeft", 10000, frame_size, {0, 2}, {0, 2});
     animationFunctionality->addAnimation("Base", "IdleRight", 10000, frame_size, {0, 3}, {0, 3});
-    animationFunctionality->addAnimation("Base", "WalkDown", 150, frame_size, {0, 0}, {3, 0});
-    animationFunctionality->addAnimation("Base", "WalkUp", 150, frame_size, {0, 1}, {3, 1});
-    animationFunctionality->addAnimation("Base", "WalkLeft", 150, frame_size, {0, 2}, {3, 2});
-    animationFunctionality->addAnimation("Base", "WalkRight", 150, frame_size, {0, 3}, {3, 3});
+    animationFunctionality->addAnimation("Base", "WalkDown", 170, frame_size, {0, 0}, {3, 0});
+    animationFunctionality->addAnimation("Base", "WalkUp", 170, frame_size, {0, 1}, {3, 1});
+    animationFunctionality->addAnimation("Base", "WalkLeft", 170, frame_size, {0, 2}, {3, 2});
+    animationFunctionality->addAnimation("Base", "WalkRight", 170, frame_size, {0, 3}, {3, 3});
 }
 
 void Player::initHitBoxes()
 {
     collisionFunctionality->addHitBox("Body", sf::Vector2u(8, 2), sf::Vector2u(4, 20), scale);
+}
+
+void Player::initSounds()
+{
+    walkSoundClock.restart();
+    walkTimeMax = 360;
+
+    soundFunctionality->addSound("GrassWalk1", "GrassWalk1", 70.f);
+    soundFunctionality->addSound("GrassWalk2", "GrassWalk2", 70.f);
+    soundFunctionality->addSound("GrassWalk3", "GrassWalk3", 70.f);
+    soundFunctionality->addSound("GrassWalk4", "GrassWalk4", 70.f);
+    soundFunctionality->addSound("GrassWalk5", "GrassWalk5", 70.f);
+
+    soundFunctionality->addSound("StoneWalk1", "StoneWalk1", 100.f);
+    soundFunctionality->addSound("StoneWalk2", "StoneWalk2", 100.f);
+    soundFunctionality->addSound("StoneWalk3", "StoneWalk3", 100.f);
+    soundFunctionality->addSound("StoneWalk4", "StoneWalk4", 100.f);
+    soundFunctionality->addSound("StoneWalk5", "StoneWalk5", 100.f);
 }
 
 void Player::preparePlayerData(const std::string &uuid)
@@ -79,21 +97,27 @@ const bool Player::loadPlayerData(const std::string &folder_name, const std::str
 }
 
 Player::Player(const std::string &name, const std::string &folder_name, const std::string &uuid,
-               const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale)
-    : Entity(name, EntityType::PlayerEntity, spawn_grid_position, sprite_sheet, scale, RenderBehavior::Perspective)
+               const sf::Vector2f &spawn_grid_position, sf::Texture &sprite_sheet, const float &scale,
+               std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers)
+    : Entity(name, EntityType::PlayerEntity, spawn_grid_position, sprite_sheet, scale, sound_buffers,
+             RenderBehavior::Perspective)
 {
+    createAnimationFunctionality();
+    createCollisionFunctionality();
+    createSoundFunctionality();
+
+    initAnimations();
+    initHitBoxes();
+    initSounds();
+
     if (loadPlayerData(folder_name, uuid))
     {
         spawnGridPosition = playerData.spawnGridPosition;
         setGridPosition(playerData.currentGridPosition);
         createMovementFunctionality(playerData.maxVelocity, playerData.movFlags, playerData.movDirection);
-        createAnimationFunctionality();
         createAttributeFunctionality(playerData.maxHealth, playerData.maxHunger);
         attributeFunctionality->setHealth(playerData.health);
         attributeFunctionality->setHunger(playerData.hunger);
-        createCollisionFunctionality();
-        initAnimations();
-        initHitBoxes();
 
         logger.logInfo(_("Player \"") + name + _("\" with id ") + std::to_string(id) +
                        _(" loaded from file. Spawned at x: ") + std::to_string(getCenterGridPosition().x) +
@@ -102,11 +126,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
     else
     {
         createMovementFunctionality(100.f, MovementAllow::AllowAll);
-        createAnimationFunctionality();
         createAttributeFunctionality(20, 20);
-        createCollisionFunctionality();
-        initAnimations();
-        initHitBoxes();
 
         logger.logInfo(_("Player \"") + name + _("\" with id ") + std::to_string(id) + _(" spawned at x: ") +
                        std::to_string(getCenterGridPosition().x) + ", y: " + std::to_string(getCenterGridPosition().y));
@@ -115,7 +135,7 @@ Player::Player(const std::string &name, const std::string &folder_name, const st
 
 Player::~Player() = default;
 
-void Player::update(const float &dt, const bool &update_movement)
+void Player::update(const float &dt, const bool &update_movement, const std::string &tile_name_under)
 {
     movementFunctionality->update();
 
@@ -170,7 +190,21 @@ void Player::update(const float &dt, const bool &update_movement)
         animationFunctionality->play("Idle" + mov_direction, true);
 
     else if (mov_state == MovementState::Walking)
+    {
         animationFunctionality->play("Walk" + mov_direction, true);
+
+        if (walkSoundClock.getElapsedTime().asMilliseconds() >= walkTimeMax)
+        {
+            walkSoundClock.restart();
+
+            int i = (std::rand() % 5) + 1;
+
+            if (soundFunctionality->exists(tile_name_under + "Walk" + std::to_string(i)))
+                soundFunctionality->playSound(tile_name_under + "Walk" + std::to_string(i));
+            else
+                soundFunctionality->playSound("StoneWalk" + std::to_string(i));
+        }
+    }
 }
 
 void Player::update(const float &dt, const sf::Vector2f &mouse_pos)
@@ -196,7 +230,12 @@ void Player::update(const float &dt, const sf::Vector2f &mouse_pos)
         animationFunctionality->play("Idle" + mov_direction, true);
 
     else if (mov_state == MovementState::Walking)
+    {
         animationFunctionality->play("Walk" + mov_direction, true);
+
+        if (soundFunctionality->getSoundStatus("GrassWalk1") != sf::Sound::Status::Playing)
+            soundFunctionality->playSound("GrassWalk1");
+    }
 }
 
 void Player::render(sf::RenderTarget &target)

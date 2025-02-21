@@ -30,6 +30,31 @@
             "key": "GrassWalk5",
             "path": "Assets/Sounds/Effects/Entities/Walk/grass_walk_5.ogg",
             "global": false
+        },
+        {
+            "key": "StoneWalk1",
+            "path": "Assets/Sounds/Effects/Entities/Walk/stone_walk_1.ogg",
+            "global": false
+        },
+        {
+            "key": "StoneWalk2",
+            "path": "Assets/Sounds/Effects/Entities/Walk/stone_walk_2.ogg",
+            "global": false
+        },
+        {
+            "key": "StoneWalk3",
+            "path": "Assets/Sounds/Effects/Entities/Walk/stone_walk_3.ogg",
+            "global": false
+        },
+        {
+            "key": "StoneWalk4",
+            "path": "Assets/Sounds/Effects/Entities/Walk/stone_walk_4.ogg",
+            "global": false
+        },
+        {
+            "key": "StoneWalk5",
+            "path": "Assets/Sounds/Effects/Entities/Walk/stone_walk_5.ogg",
+            "global": false
         }
     ]
 }

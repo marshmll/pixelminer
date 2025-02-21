@@ -22,12 +22,18 @@ void Entity::createCollisionFunctionality()
     collisionFunctionality.emplace(*baseSprite);
 }
 
+void Entity::createSoundFunctionality()
+{
+    soundFunctionality.emplace(soundBuffers);
+}
+
 Entity::Entity(const std::string &name, const std::uint8_t &type, const sf::Vector2f &spawn_grid_position,
-               sf::Texture &sprite_sheet, const float &scale, const uint8_t &render_behavior)
+               sf::Texture &sprite_sheet, const float &scale,
+               std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers, const uint8_t &render_behavior)
 
     : logger(name), name(name), type(type), spawnGridPosition(spawn_grid_position),
-      id(reinterpret_cast<uint64_t>(this)), spriteSheet(sprite_sheet), scale(scale), renderBehavior(render_behavior),
-      collisionRect(std::nullopt)
+      id(reinterpret_cast<uint64_t>(this)), spriteSheet(sprite_sheet), scale(scale), soundBuffers(sound_buffers),
+      renderBehavior(render_behavior), collisionRect(std::nullopt)
 {
     addSpriteLayer("Base");
     baseSprite = layers.at("Base");
@@ -158,6 +164,12 @@ const sf::Vector2f Entity::getCenterGridPosition() const
 {
     return sf::Vector2f((getCenter().x / static_cast<float>(GRID_SIZE * scale)) * 100 / 100,
                         (getCenter().y / static_cast<float>(GRID_SIZE * scale)) * 100 / 100);
+}
+
+const sf::Vector2f Entity::getBottomGridPosition() const
+{
+    return sf::Vector2f((getCenter().x / static_cast<float>(GRID_SIZE * scale)) * 100 / 100,
+                        ((getPosition().y + getSize().y) / static_cast<float>(GRID_SIZE * scale)) * 100 / 100);
 }
 
 AttributeFunctionality &Entity::getAttributeFunctionality()

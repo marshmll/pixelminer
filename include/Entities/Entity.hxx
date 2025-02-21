@@ -10,6 +10,7 @@
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "Entities/Functionalities/CollisionFunctionality.hxx"
 #include "Entities/Functionalities/MovementFunctionality.hxx"
+#include "Entities/Functionalities/SoundFunctionality.hxx"
 #include "Entities/RenderBehavior.hxx"
 #include "Tools/Logger.hxx"
 
@@ -55,7 +56,10 @@ class Entity
 
     sf::Texture &spriteSheet; ///< Reference to the sprite sheet texture used by the entity.
     float scale;              ///< Scaling factor for the entity's sprites.
-    uint8_t renderBehavior;   ///< Rendering behavior relative to other entities.
+
+    std::unordered_map<std::string, sf::SoundBuffer> &soundBuffers;
+
+    uint8_t renderBehavior; ///< Rendering behavior relative to other entities.
 
     std::map<std::string, std::shared_ptr<sf::Sprite>> layers; ///< Map of sprite layers for the entity.
     std::shared_ptr<sf::Sprite> baseSprite;                    ///< Base sprite layer for the entity.
@@ -64,6 +68,7 @@ class Entity
     std::optional<AnimationFunctionality> animationFunctionality; ///< Optional animation functionality.
     std::optional<AttributeFunctionality> attributeFunctionality; ///< Optional attribute functionality.
     std::optional<CollisionFunctionality> collisionFunctionality; ///< Optional collision functionality.
+    std::optional<SoundFunctionality> soundFunctionality;         ///< Optional sound functionality.
 
     std::optional<sf::FloatRect> collisionRect; ///< Optional collision rectangle for the entity.
 
@@ -95,6 +100,11 @@ class Entity
      */
     void createCollisionFunctionality();
 
+    /**
+     * @brief Creates the sound functionality for the entity.
+     */
+    void createSoundFunctionality();
+
   public:
     /**
      * @brief Constructs an Entity object.
@@ -103,10 +113,13 @@ class Entity
      * @param spawn_grid_position Spawn position of the entity in grid coordinates.
      * @param sprite_sheet Reference to the sprite sheet texture.
      * @param scale Scaling factor for the entity's sprites.
+     * @param sound_buffers A reference to the resource pack sound buffers unordered_map.
      * @param render_behavior The render behavior for the entity's sprites.
      */
     Entity(const std::string &name, const std::uint8_t &type, const sf::Vector2f &spawn_grid_position,
-           sf::Texture &sprite_sheet, const float &scale, const uint8_t &render_behavior = RenderBehavior::Flat);
+           sf::Texture &sprite_sheet, const float &scale,
+           std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers,
+           const uint8_t &render_behavior = RenderBehavior::Flat);
 
     /**
      * @brief Destructor for the Entity class.
@@ -242,6 +255,12 @@ class Entity
      * @return Center grid position of the entity.
      */
     const sf::Vector2f getCenterGridPosition() const;
+
+    /**
+     * @brief Gets the bottom grid position of the entity.
+     * @return Bottom grid position of the entity.
+     */
+    const sf::Vector2f getBottomGridPosition() const;
 
     /**
      * @brief Gets the attribute functionality of the entity.

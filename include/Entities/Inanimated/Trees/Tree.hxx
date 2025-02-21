@@ -22,7 +22,7 @@ class Tree : public Entity
      * @param sprite_sheet Reference to the sprite sheet texture.
      * @param scale Scaling factor for the tree's sprites.
      */
-    Tree(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale);
+    Tree(const std::string name, const sf::Vector2f spawn_grid_position, sf::Texture &sprite_sheet, const float &scale, std::unordered_map<std::string, sf::SoundBuffer> &sound_buffers);
 
     /**
      * @brief Destructor for the Tree class.
