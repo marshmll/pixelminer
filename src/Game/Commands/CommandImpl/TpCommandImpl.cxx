@@ -104,11 +104,11 @@ const std::string CommandImpl::tp(GameContext &ctx, CommandContext &cmd)
                           ngettext(" entity to", " entities to", sourceEntities.size());
     if (destIsCoords)
     {
-        message += "x: " + std::to_string(destPos.x) + ", y: " + std::to_string(destPos.y);
+        message += " x: " + std::to_string(destPos.x) + ", y: " + std::to_string(destPos.y);
     }
     else
     {
-        message += _("position of ") + destTokens[0].literal;
+        message += _(" the position of ") + destTokens[0].literal;
         if (destTokens.size() > 1)
         {
             message += " " + destTokens[1].literal;

@@ -46,7 +46,7 @@ void Input::toggleCursorVisibility()
 
 void Input::handleKeyPress(char32_t c)
 {
-    if (std::iscntrl(c))
+    if (iscntrl(c))
         return;
 
     sf::String curr_str = text->getString();
@@ -106,6 +106,8 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Backspace))
     {
+        std::cout << "backspace" << "\n";
+
         if (lastKeyPressed == '\b' && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -127,6 +129,8 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
+        std::cout << "left" << "\n";
+
         if (lastKeyPressed == -2 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -148,6 +152,8 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
+        std::cout << "right" << "\n";
+
         if (lastKeyPressed == -3 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -169,7 +175,8 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (const auto *text_entered = event->getIf<sf::Event::TextEntered>())
     {
-        sf::String curr_str = text->getString();
+        std::cout << "text?" << "\n";
+
         char32_t unicode = text_entered->unicode;
 
         if (lastKeyPressed == unicode && keyTimer.getElapsedTime().asSeconds() > .5f)

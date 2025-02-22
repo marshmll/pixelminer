@@ -9,12 +9,12 @@ void Hotbar::initGUI()
     hungerBarRows = static_cast<uint8_t>(
         std::ceil(static_cast<float>(playerAttributes.getMaxHunger()) / static_cast<float>(maxCols) / 2.f));
 
-    hotbarContainer.setSize(sf::Vector2f(gui::percent(vm.size.x, 60.f), gui::percent(vm.size.y, 10.f)));
-    hotbarContainer.setPosition(
-        sf::Vector2f(vm.size.x / 2.f - hotbarContainer.getSize().x / 2.f, gui::percent(vm.size.y, 80.f)));
+    hotbar = std::make_unique<sf::Sprite>(resourcePack->getTexture("Hotbar"));
+    hotbar->setScale(sf::Vector2f(scale, scale));
+    hotbar->setPosition(sf::Vector2f(vm.size.x / 2.f - hotbar->getGlobalBounds().size.x / 2.f,
+                                     vm.size.y - hotbar->getGlobalBounds().size.y - gui::percent(vm.size.y, 2.f)));
 
-    sf::Vector2f health_icon_size = sf::Vector2f(resourcePack->getTexture("HeartFull").getSize());
-    sf::Vector2f hunger_icon_size = sf::Vector2f(resourcePack->getTexture("BreadFull").getSize());
+    sf::FloatRect hotbar_bounds = hotbar->getGlobalBounds();
 
     sf::Sprite heart_sprite(resourcePack->getTexture("HeartFull"));
     heart_sprite.setScale(sf::Vector2f(scale, scale));
@@ -24,10 +24,11 @@ void Hotbar::initGUI()
         {
             if (healthBar.size() * 2 < playerAttributes.getMaxHealth())
             {
-                heart_sprite.setPosition(sf::Vector2f(
-                    hotbarContainer.getPosition().x + (x * heart_sprite.getGlobalBounds().size.x) + 2.f,
-                    hotbarContainer.getPosition().y - (healthBarRows * heart_sprite.getGlobalBounds().size.y) +
-                        (y * heart_sprite.getGlobalBounds().size.y)));
+                heart_sprite.setPosition(
+                    sf::Vector2f(hotbar_bounds.position.x + (x * heart_sprite.getGlobalBounds().size.x) + 2.f,
+                                 hotbar_bounds.position.y - gui::percent(vm.size.y, 5.f) -
+                                     (healthBarRows * heart_sprite.getGlobalBounds().size.y) +
+                                     (y * heart_sprite.getGlobalBounds().size.y)));
 
                 healthBar.emplace_back(heart_sprite);
             }
@@ -42,10 +43,10 @@ void Hotbar::initGUI()
         {
             if (hungerBar.size() * 2 < playerAttributes.getMaxHunger())
             {
-                bread_sprite.setPosition(sf::Vector2f(hotbarContainer.getPosition().x + hotbarContainer.getSize().x -
+                bread_sprite.setPosition(sf::Vector2f(hotbar_bounds.position.x + hotbar_bounds.size.x -
                                                           (maxCols * bread_sprite.getGlobalBounds().size.x) +
                                                           (x * bread_sprite.getGlobalBounds().size.x) + 2.f,
-                                                      hotbarContainer.getPosition().y -
+                                                      hotbar_bounds.position.y - gui::percent(vm.size.y, 5.f) -
                                                           (hungerBarRows * bread_sprite.getGlobalBounds().size.y) +
                                                           (y * bread_sprite.getGlobalBounds().size.y)));
 
@@ -62,8 +63,7 @@ Hotbar::Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<Resour
     initGUI();
 }
 
-Hotbar::~Hotbar()
-{}
+Hotbar::~Hotbar() = default;
 
 void Hotbar::update(const float &dt)
 {
@@ -75,6 +75,8 @@ void Hotbar::render(sf::RenderTarget &target)
 {
     renderHealthBar(target);
     renderHungerBar(target);
+
+    target.draw(*hotbar);
 }
 
 void Hotbar::updateHealthBar()

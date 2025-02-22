@@ -36,11 +36,6 @@ class Hotbar
     sf::VideoMode &vm;
 
     /**
-     * @brief The container shape representing the hotbar.
-     */
-    sf::RectangleShape hotbarContainer;
-
-    /**
      * @brief Maximum number of columns for health and hunger bars.
      */
     uint8_t maxCols;
@@ -69,6 +64,10 @@ class Hotbar
      * @brief A vector of sprites representing the hunger bar.
      */
     std::vector<sf::Sprite> hungerBar;
+
+    std::unique_ptr<sf::Sprite> hotbar;
+
+    std::unique_ptr<sf::Sprite> hotbarSelector;
 
     /**
      * @brief Initializes the graphical user interface (GUI) elements for the hotbar.

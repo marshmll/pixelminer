@@ -28,6 +28,14 @@
         "path": "Assets/Textures/Sprites/UI/loader.png"
     },
     {
+        "key": "Hotbar",
+        "path": "Assets/Textures/Sprites/UI/hotbar.png"
+    },
+    {
+        "key": "HotbarSelector",
+        "path": "Assets/Textures/Sprites/UI/hotbar_selector.png"
+    },
+    {
         "key": "Player1",
         "path": "Assets/Textures/Sprites/Entities/Player/player_1.png"
     },
