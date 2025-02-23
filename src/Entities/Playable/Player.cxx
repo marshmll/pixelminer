@@ -23,7 +23,7 @@ void Player::initHitBoxes()
 void Player::initSounds()
 {
     walkSoundClock.restart();
-    walkTimeMax = 360;
+    walkTimeMax = 340;
 
     soundFunctionality->addSound("GrassWalk1", "GrassWalk1", 70.f);
     soundFunctionality->addSound("GrassWalk2", "GrassWalk2", 70.f);

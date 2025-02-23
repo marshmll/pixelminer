@@ -4,6 +4,8 @@
 void Hotbar::initGUI()
 {
     maxCols = 10;
+    hotbarSlot = 0;
+
     healthBarRows = static_cast<uint8_t>(
         std::ceil(static_cast<float>(playerAttributes.getMaxHealth()) / static_cast<float>(maxCols) / 2.f));
     hungerBarRows = static_cast<uint8_t>(
@@ -13,6 +15,10 @@ void Hotbar::initGUI()
     hotbar->setScale(sf::Vector2f(scale, scale));
     hotbar->setPosition(sf::Vector2f(vm.size.x / 2.f - hotbar->getGlobalBounds().size.x / 2.f,
                                      vm.size.y - hotbar->getGlobalBounds().size.y - gui::percent(vm.size.y, 2.f)));
+
+    hotbarSelector = std::make_unique<sf::Sprite>(resourcePack->getTexture("HotbarSelector"));
+    hotbarSelector->setScale(sf::Vector2f(scale, scale));
+    updateHotbarSlotSelector();
 
     sf::FloatRect hotbar_bounds = hotbar->getGlobalBounds();
 
@@ -56,6 +62,15 @@ void Hotbar::initGUI()
     }
 }
 
+void Hotbar::updateHotbarSlotSelector()
+{
+    hotbarSelector->setPosition(
+        sf::Vector2f(hotbar->getPosition().x + (hotbarSlot * (hotbar->getGlobalBounds().size.y - scale * 2)) +
+                         hotbar->getGlobalBounds().size.y / 2.f - hotbarSelector->getGlobalBounds().size.y / 2.f,
+                     hotbar->getGlobalBounds().position.y + hotbar->getGlobalBounds().size.y / 2.f -
+                         hotbarSelector->getGlobalBounds().size.y / 2.f));
+}
+
 Hotbar::Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<ResourcePack> &resorce_pack,
                sf::VideoMode &vm, const unsigned int &scale)
     : playerAttributes(player_attributes), resourcePack(resorce_pack), vm(vm), scale(scale)
@@ -65,18 +80,18 @@ Hotbar::Hotbar(AttributeFunctionality &player_attributes, std::shared_ptr<Resour
 
 Hotbar::~Hotbar() = default;
 
-void Hotbar::update(const float &dt)
+void Hotbar::update(const float &dt, std::optional<sf::Event::MouseWheelScrolled> &mouse_data)
 {
     updateHealthBar();
     updateHungerBar();
+    updateHotbar(mouse_data);
 }
 
 void Hotbar::render(sf::RenderTarget &target)
 {
     renderHealthBar(target);
     renderHungerBar(target);
-
-    target.draw(*hotbar);
+    renderHotbar(target);
 }
 
 void Hotbar::updateHealthBar()
@@ -119,6 +134,46 @@ void Hotbar::updateHungerBar()
     }
 }
 
+void Hotbar::updateHotbar(std::optional<sf::Event::MouseWheelScrolled> mouse_data)
+{
+    int8_t new_slot = hotbarSlot;
+
+    if (mouse_data)
+    {
+        new_slot += mouse_data->delta;
+
+        if (new_slot >= MAX_HOTBAR_SLOTS)
+            new_slot = 0;
+        else if (new_slot < 0)
+            new_slot = MAX_HOTBAR_SLOTS - 1;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1))
+        new_slot = 0;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2))
+        new_slot = 1;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3))
+        new_slot = 2;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4))
+        new_slot = 3;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num5))
+        new_slot = 4;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num6))
+        new_slot = 5;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num7))
+        new_slot = 6;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num8))
+        new_slot = 7;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num9))
+        new_slot = 8;
+
+    if (new_slot != hotbarSlot)
+    {
+        hotbarSlot = new_slot;
+        updateHotbarSlotSelector();
+    }
+}
+
 void Hotbar::renderHealthBar(sf::RenderTarget &target)
 {
     for (auto &bread : hungerBar)
@@ -129,4 +184,10 @@ void Hotbar::renderHungerBar(sf::RenderTarget &target)
 {
     for (auto &heart : healthBar)
         target.draw(heart);
+}
+
+void Hotbar::renderHotbar(sf::RenderTarget &target)
+{
+    target.draw(*hotbar);
+    target.draw(*hotbarSelector);
 }

@@ -142,7 +142,7 @@ void WorldSelectionMenuState::render(sf::RenderTarget &target)
 
 void WorldSelectionMenuState::updateGUI(const float &dt)
 {
-    worldSelectorsList->update(dt, mousePosView, *data.event);
+    worldSelectorsList->update(dt, mousePosView, data.mouseData);
 
     if (worldSelectorsList->isScrollLocked())
         return;

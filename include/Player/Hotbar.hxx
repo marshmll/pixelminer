@@ -9,6 +9,8 @@
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "GUI/GUI.hxx"
 
+static constexpr uint8_t MAX_HOTBAR_SLOTS = 9;
+
 /**
  * @class Hotbar
  * @brief A class that represents and manages the player's hotbar, including health and hunger bars.
@@ -50,6 +52,12 @@ class Hotbar
      */
     uint8_t hungerBarRows;
 
+    std::unique_ptr<sf::Sprite> hotbar;
+
+    std::unique_ptr<sf::Sprite> hotbarSelector;
+
+    int8_t hotbarSlot;
+
     /**
      * @brief Scale factor for the sprites in the hotbar.
      */
@@ -65,10 +73,6 @@ class Hotbar
      */
     std::vector<sf::Sprite> hungerBar;
 
-    std::unique_ptr<sf::Sprite> hotbar;
-
-    std::unique_ptr<sf::Sprite> hotbarSelector;
-
     /**
      * @brief Initializes the graphical user interface (GUI) elements for the hotbar.
      *
@@ -76,6 +80,8 @@ class Hotbar
      * of health and hunger bar sprites.
      */
     void initGUI();
+
+    void updateHotbarSlotSelector();
 
   public:
     /**
@@ -103,7 +109,7 @@ class Hotbar
      *
      * @param dt The delta time since the last update.
      */
-    void update(const float &dt);
+    void update(const float &dt, std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
 
     /**
      * @brief Renders the hotbar on the target.
@@ -124,6 +130,8 @@ class Hotbar
      */
     void updateHungerBar();
 
+    void updateHotbar(std::optional<sf::Event::MouseWheelScrolled> mouse_data);
+
     /**
      * @brief Renders the health bar on the target.
      *
@@ -141,4 +149,6 @@ class Hotbar
      * @param target The render target to draw the hunger bar.
      */
     void renderHungerBar(sf::RenderTarget &target);
+
+    void renderHotbar(sf::RenderTarget &target);
 };

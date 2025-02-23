@@ -21,9 +21,9 @@ PlayerGUI::PlayerGUI(Player &player, std::shared_ptr<ResourcePack> &resource_pac
 
 PlayerGUI::~PlayerGUI() = default;
 
-void PlayerGUI::update(const float &dt, const sf::Vector2i &mouse_pos_grid)
+void PlayerGUI::update(const float &dt, const sf::Vector2i &mouse_pos_grid, std::optional<sf::Event::MouseWheelScrolled> &mouse_data)
 {
-    hotbar->update(dt);
+    hotbar->update(dt, mouse_data);
     updateTileHoverIndicator(mouse_pos_grid);
 }
 

@@ -89,8 +89,8 @@ void AddServerState::update(const float &dt)
 {
     updateMousePositions();
 
-    nameInput->update(dt, mousePosView, *data.event);
-    addressInput->update(dt, mousePosView, *data.event);
+    nameInput->update(dt, mousePosView, data.event);
+    addressInput->update(dt, mousePosView, data.event);
 
     if (!addressInput->getValue().isEmpty())
         buttons.at("Add")->setState(gui::ButtonState::Idle);

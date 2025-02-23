@@ -31,7 +31,6 @@ class Engine
 
     sf::VideoMode vm;               ///< Video mode settings.
     sf::RenderWindow window;        ///< Main game window.
-    std::optional<sf::Event> event; ///< Event handling.
 
     float dt;              ///< Delta time for frame updates.
     sf::Clock dtClock;     ///< Clock to measure delta time.

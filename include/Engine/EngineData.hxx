@@ -22,5 +22,6 @@ struct EngineData
     std::shared_ptr<ResourcePack> activeResourcePack;             ///< The currently active resource pack.
     sf::RenderWindow *window;                                     ///< Pointer to the window being used for rendering.
     sf::VideoMode *vm;                                            ///< Pointer to the current video mode (resolution).
-    std::optional<sf::Event> *event;                              ///< Pointer to the current event.
+    std::optional<sf::Event> event;                               ///< Window events.
+    std::optional<sf::Event::MouseWheelScrolled> mouseData;       ///< Mouse scroll data if avaliable.
 };

@@ -80,7 +80,7 @@ class PlayerGUI
      *
      * @param dt The delta time since the last update.
      */
-    void update(const float &dt, const sf::Vector2i &mouse_pos_grid);
+    void update(const float &dt, const sf::Vector2i &mouse_pos_grid, std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
 
     /**
      * @brief Renders the player GUI elements to the screen.

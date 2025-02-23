@@ -111,7 +111,7 @@ namespace gui
          *
          * @param dt The delta time since the last update.
          * @param mouse_pos The position of the mouse on the screen.
-         * @param event An optional event that might trigger changes in the input.
+         * @param evnet An optional event that might trigger changes in the input.
          */
         void update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Event> &event);
 

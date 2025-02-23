@@ -250,7 +250,7 @@ void GameState::update(const float &dt)
 
     updateMousePositions(playerCamera);
     if (!chat->isActive())
-        playerGUI->update(dt, mousePosGrid);
+        playerGUI->update(dt, mousePosGrid, data.mouseData);
 
     if (debugInfo)
         updateDebugText(dt);
@@ -427,7 +427,7 @@ void GameState::updateChat(const float &dt)
         }
     }
 
-    chat->update(dt, mousePosView, *data.event);
+    chat->update(dt, mousePosView, data.event, data.mouseData);
 }
 
 void GameState::updateDebugText(const float &dt)

@@ -127,7 +127,7 @@ void LocalesState::update(const float &dt)
 {
     updateMousePositions();
 
-    scrollContainer->update(dt, mousePosView, *data.event);
+    scrollContainer->update(dt, mousePosView, data.mouseData);
 
     if (scrollContainer->isScrollLocked())
         return;

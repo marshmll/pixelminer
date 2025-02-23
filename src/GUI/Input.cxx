@@ -106,8 +106,6 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Backspace))
     {
-        std::cout << "backspace" << "\n";
-
         if (lastKeyPressed == '\b' && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -129,8 +127,6 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
-        std::cout << "left" << "\n";
-
         if (lastKeyPressed == -2 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -152,8 +148,6 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
-        std::cout << "right" << "\n";
-
         if (lastKeyPressed == -3 && keyTimer.getElapsedTime().asSeconds() > .5f)
         {
             repeat = true;
@@ -173,30 +167,31 @@ void Input::update(const float &dt, sf::Vector2f mouse_pos, std::optional<sf::Ev
         lastKeyPressed = -3;
         return;
     }
-    else if (const auto *text_entered = event->getIf<sf::Event::TextEntered>())
+    else if (event)
     {
-        std::cout << "text?" << "\n";
-
-        char32_t unicode = text_entered->unicode;
-
-        if (lastKeyPressed == unicode && keyTimer.getElapsedTime().asSeconds() > .5f)
+        if (const auto *text_entered = event->getIf<sf::Event::TextEntered>())
         {
-            repeat = true;
-            handleKeyPress(unicode);
-        }
-        else if (lastKeyPressed != unicode)
-        {
-            repeat = false;
-            handleKeyPress(unicode);
-            keyTimer.restart();
-        }
-        else if (repeat)
-        {
-            handleKeyPress(unicode);
-        }
+            char32_t unicode = text_entered->unicode;
 
-        lastKeyPressed = unicode;
-        return;
+            if (lastKeyPressed == unicode && keyTimer.getElapsedTime().asSeconds() > .5f)
+            {
+                repeat = true;
+                handleKeyPress(unicode);
+            }
+            else if (lastKeyPressed != unicode)
+            {
+                repeat = false;
+                handleKeyPress(unicode);
+                keyTimer.restart();
+            }
+            else if (repeat)
+            {
+                handleKeyPress(unicode);
+            }
+
+            lastKeyPressed = unicode;
+            return;
+        }
     }
 
     lastKeyPressed = -1;

@@ -41,7 +41,7 @@ DirectConnectState::~DirectConnectState() = default;
 void DirectConnectState::update(const float &dt)
 {
     updateMousePositions();
-    addrInput->update(dt, mousePosView, *data.event);
+    addrInput->update(dt, mousePosView, data.event);
 
     for (auto &[key, button] : buttons)
     {

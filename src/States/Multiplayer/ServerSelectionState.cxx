@@ -222,7 +222,7 @@ void ServerSelectionState::render(sf::RenderTarget &target)
 
 void ServerSelectionState::updateGUI(const float &dt)
 {
-    serverSelectorsList->update(dt, mousePosView, *data.event);
+    serverSelectorsList->update(dt, mousePosView, data.mouseData);
     if (serverSelectorsList->isScrollLocked())
         return;
 

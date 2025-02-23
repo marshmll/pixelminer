@@ -36,7 +36,8 @@ ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vect
 
 ScrollableContainer::~ScrollableContainer() = default;
 
-void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event)
+void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
+                                 std::optional<sf::Event::MouseWheelScrolled> &mouse_data)
 {
     if (maxScrollDelta <= 0.f)
         return;
@@ -69,9 +70,9 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
 
     if (!scrollBarLock)
     {
-        if (const auto *mouse_data = event->getIf<sf::Event::MouseWheelScrolled>())
+        if (mouse_data)
         {
-            float scrollDelta = 800.f * dt * -mouse_data->delta;
+            float scrollDelta = 1200.f * dt * -mouse_data->delta;
             float newViewCenterY = scrollView.getCenter().y + scrollDelta;
 
             // Clamp view center within scrollable bounds

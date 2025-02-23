@@ -99,7 +99,7 @@ void Engine::initGraphicsSettings()
 
         if (!vm.isValid() && gfx.fullscreen)
         {
-            logger.logInfo(_("Invalid resolution for fullscreen. Using windowed mode."));
+            logger.logWarning(_("Invalid resolution for fullscreen. Using windowed mode."));
             gfx.fullscreen = false;
         }
 
@@ -175,7 +175,8 @@ void Engine::initEngineData()
     engineData.activeResourcePack = activeResourcePack;
     engineData.window = &window;
     engineData.vm = &vm;
-    engineData.event = &event;
+    engineData.event = std::nullopt;
+    engineData.mouseData = std::nullopt;
 }
 
 void Engine::initMainMenuState()
@@ -185,10 +186,23 @@ void Engine::initMainMenuState()
 
 void Engine::pollWindowEvents()
 {
-    while ((event = window.pollEvent()))
+    engineData.mouseData = std::nullopt;
+
+    while (const auto event = window.pollEvent())
     {
+        engineData.event = event;
+
         if (event->is<sf::Event::Closed>())
+        {
             window.close();
+            return;
+        }
+
+        else if (event->is<sf::Event::MouseWheelScrolled>())
+        {
+            auto *mouse_data = event->getIf<sf::Event::MouseWheelScrolled>();
+            engineData.mouseData = *mouse_data;
+        }
     }
 }
 

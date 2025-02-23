@@ -268,9 +268,9 @@ namespace gui
          *
          * @param dt Delta time for frame updates.
          * @param mouse_pos The position of the mouse cursor.
-         * @param event Optional event data for user input.
+         * @param mouse_data Optional mouse_data data for user input.
          */
-        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event);
+        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event, std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
 
         /**
          * @brief Renders the chat interface and messages.
