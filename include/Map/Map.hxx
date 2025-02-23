@@ -178,10 +178,29 @@ class Map
      */
     Tile *getTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
+    /**
+     * @brief Retrieves the top-most tile at the specified coordinates.
+     * @param grid_x The x-coordinate in the grid.
+     * @param grid_y The y-coordinate in the grid.
+     * @return A pointer to the tile at the specified coordinates.
+     */
     Tile *getTile(const int &grid_x, const int &grid_y);
 
+    /**
+     * @brief Removes a tile at the specified coordinates.
+     * @param grid_x The x-coordinate in the grid.
+     * @param grid_y The y-coordinate in the grid.
+     * @param grid_z The z-coordinate in the grid.
+     * @return If the tile was removed.
+     */
     const bool removeTile(const int &grid_x, const int &grid_y, const int &grid_z);
 
+    /**
+     * @brief Removes the top-most tile at the specified coordinates.
+     * @param grid_x The x-coordinate in the grid.
+     * @param grid_y The y-coordinate in the grid.
+     * @return If the tile was removed.
+     */
     const bool removeTile(const int &grid_x, const int &grid_y);
 
     /**

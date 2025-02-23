@@ -15,9 +15,9 @@
  */
 enum ChunkFlags : uint8_t
 {
-    None = 0x0,       ///< No flags set for the chunk.
-    Modified = 0x1,   ///< Indicates that the chunk is different from default generation.
-    KeepLoaded = 0x2, ///< Indicates that the chunk should not be unloaded from memory.
+    None = (1 << 0),       ///< No flags set for the chunk.
+    Modified = (1 << 1),   ///< Indicates that the chunk is different from default generation.
+    KeepLoaded = (1 << 2), ///< Indicates that the chunk should not be unloaded from memory.
 };
 
 /**
@@ -48,8 +48,13 @@ using TileMatrix =
  * A chunk is a portion of the map consisting of a grid of tiles. The chunk is characterized by its size,
  * position, and state flags. It can be rendered and updated as part of the map.
  */
-class Chunk
+class Chunk : public sf::Drawable, public sf::Transformable
 {
+  private:
+    sf::Texture &texturePack;
+
+    void draw(sf::RenderTarget &target, sf::RenderStates states = sf::RenderStates::Default) const override;
+
   public:
     sf::RectangleShape chunkBorders;      ///< Visual border of the chunk for debugging.
     sf::Vector2<unsigned int> chunkIndex; ///< The index or position of the chunk in the grid.
@@ -61,6 +66,8 @@ class Chunk
 
     uint8_t flags; ///< Flags that specify properties or states of the chunk (from ChunkFlags enum).
 
+    sf::VertexArray vertices;
+
     /**
      * @brief Constructs a Chunk object with the specified parameters.
      *
@@ -69,7 +76,7 @@ class Chunk
      * @param scale The scaling factor applied to the chunk's size.
      * @param flags Optional flags to configure the chunk (default is `ChunkFlags::None`).
      */
-    Chunk(const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale,
+    Chunk(sf::Texture &texture_pack, const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale,
           uint8_t flags = ChunkFlags::None);
 
     /**
@@ -87,14 +94,5 @@ class Chunk
      */
     void update(const float &dt);
 
-    /**
-     * @brief Renders the chunk to the specified render target.
-     *
-     * This function draws all the tiles within the chunk to the provided render target. Optionally,
-     * a border can be drawn for debugging purposes.
-     *
-     * @param target The render target to draw the chunk to (e.g., a window or a texture).
-     * @param debug If true, the chunk's border is drawn for debugging.
-     */
-    void render(sf::RenderTarget &target, const bool &debug = false);
+    void updateVertexArray();
 };

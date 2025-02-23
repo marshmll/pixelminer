@@ -6,9 +6,9 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/EngineData.hxx"
 #include "Engine/Languages.hxx"
 #include "Engine/GraphicsSettings.hxx"
-#include "Engine/ResourcePack.hxx"
 #include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
 #include "Tools/JSON.hxx"
@@ -23,7 +23,7 @@
 class Engine
 {
   private:
-    std::string currentLocale;                        ///< The current locale used to game translations.
+    std::string currentLocale;                 ///< The current locale used to game translations.
     std::vector<std::string> availableLocales; ///< The locales available
     std::string myUuid;                        ///< Unique identifier for the engine instance.
     Logger logger;                             ///< Logger instance for logging messages.

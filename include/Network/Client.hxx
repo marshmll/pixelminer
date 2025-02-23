@@ -17,7 +17,7 @@
 #include "Tools/Logger.hxx"
 
 /**
- * @enum ConnectionStatus
+ * @enum ClientStatus
  * @brief Represents the current client connection status.
  */
 enum class ClientStatus

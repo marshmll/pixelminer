@@ -66,6 +66,11 @@ void State::replaceSelf(const std::shared_ptr<State> &state)
     replaced = true;
 }
 
+void State::createSubstate(const std::shared_ptr<Substate> &substate)
+{
+    this->substate = std::move(substate);
+}
+
 void State::restartStates()
 {
     restartAll = true;

@@ -10,6 +10,7 @@
 #include "States/LocalesState.hxx"
 #include "States/Multiplayer/ServerSelectionState.hxx"
 #include "States/Singleplayer/WorldSelectionMenuState.hxx"
+#include "States/Options/OptionsState.hxx"
 
 /**
  * @class MainMenuState

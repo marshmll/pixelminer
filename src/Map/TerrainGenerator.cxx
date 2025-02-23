@@ -131,10 +131,13 @@ void TerrainGenerator::putTile(Tile tile, const int &grid_x, const int &grid_y, 
 
     if (!chunks[chunk_x][chunk_y])
         chunks[chunk_x][chunk_y] =
-            std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, ChunkFlags::None);
+            std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale, ChunkFlags::None);
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
+    {
         chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z] = std::make_unique<Tile>(tile);
+        chunks[chunk_x][chunk_y]->updateVertexArray();
+    }
 }
 
 Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int &grid_z)

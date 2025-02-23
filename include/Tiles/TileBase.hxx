@@ -8,6 +8,8 @@
 #include "Engine/Configuration.hxx"
 #include "TileData.hxx"
 
+static constexpr int QUAD_VERTEX_COUNT = 6;
+
 /**
  * @class TileBase
  * @brief A base class representing a tile in the game world.
@@ -107,6 +109,8 @@ class TileBase
      * @return The center position of the tile.
      */
     const sf::Vector2f getCenter() const;
+
+    void getTriangles(sf::Vertex triangles[]);
 
     /**
      * @brief Set the position of the tile.

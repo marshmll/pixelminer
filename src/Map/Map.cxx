@@ -151,7 +151,7 @@ void Map::render(sf::RenderTarget &target, const bool &debug)
         for (auto &chunk : row)
         {
             if (chunk)
-                chunk->render(target, debug);
+                target.draw(*chunk);
         }
     }
 }
@@ -171,7 +171,7 @@ void Map::render(sf::RenderTarget &target, const sf::Vector2i &entity_pos_grid, 
             if (chunk_x + i < 0 || chunk_y + j < 0 || chunk_x + i >= MAX_CHUNKS.x || chunk_y + j >= MAX_CHUNKS.y)
                 continue;
             if (chunks[chunk_x + i][chunk_y + j])
-                chunks[chunk_x + i][chunk_y + j]->render(target, debug);
+                target.draw(*chunks[chunk_x + i][chunk_y + j]);
         }
     }
 }
@@ -383,7 +383,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
         if (!chunks[chunk_x][chunk_y])
         {
-            chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+            chunks[chunk_x][chunk_y] =
+                std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
         }
 
         for (int i = 0; i < tile_amount; i++)
@@ -421,6 +422,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
                 chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
             }
         }
+
+        chunks[chunk_x][chunk_y]->updateVertexArray();
 
         total_tiles += tile_amount;
     }
@@ -483,10 +486,14 @@ void Map::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &gr
     tile.setGridPosition(sf::Vector2u(grid_x, grid_y));
 
     if (!chunks[chunk_x][chunk_y])
-        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(sf::Vector2u(chunk_x, chunk_y), gridSize, scale);
+        chunks[chunk_x][chunk_y] =
+            std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale);
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
+    {
         chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z] = std::make_unique<Tile>(tile);
+        chunks[chunk_x][chunk_y]->updateVertexArray();
+    }
 }
 
 Tile *Map::getTile(const int &grid_x, const int &grid_y, const int &grid_z)
@@ -551,6 +558,7 @@ const bool Map::removeTile(const int &grid_x, const int &grid_y, const int &grid
         return false;
 
     chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z].reset();
+    chunks[chunk_x][chunk_y]->updateVertexArray();
     return true;
 }
 
@@ -576,6 +584,7 @@ const bool Map::removeTile(const int &grid_x, const int &grid_y)
         if (chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i])
         {
             chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][i].reset();
+            chunks[chunk_x][chunk_y]->updateVertexArray();
             return true;
         }
     }

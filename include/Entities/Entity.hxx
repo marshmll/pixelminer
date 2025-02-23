@@ -57,7 +57,8 @@ class Entity
     sf::Texture &spriteSheet; ///< Reference to the sprite sheet texture used by the entity.
     float scale;              ///< Scaling factor for the entity's sprites.
 
-    std::unordered_map<std::string, sf::SoundBuffer> &soundBuffers;
+    std::unordered_map<std::string, sf::SoundBuffer>
+        &soundBuffers; ///< A reference to the resource pack sound buffer map
 
     uint8_t renderBehavior; ///< Rendering behavior relative to other entities.
 

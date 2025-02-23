@@ -86,6 +86,9 @@ void MainMenuState::update(const float &dt)
     else if (buttons.at("Multiplayer")->isPressed())
         data.states->push(std::make_shared<ServerSelectionState>(data));
 
+    else if (buttons.at("Options")->isPressed())
+        data.states->push(std::make_shared<OptionsState>(data));
+
     else if (buttons.at("Lang")->isPressed())
         data.states->push(std::make_shared<LocalesState>(data));
     

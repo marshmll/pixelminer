@@ -56,6 +56,32 @@ const sf::Vector2f TileBase::getCenter() const
     return sprite.getGlobalBounds().getCenter();
 }
 
+void TileBase::getTriangles(sf::Vertex triangles[6])
+{
+    sf::Vector2f pos = getPosition();
+    float size = GRID_SIZE * sprite.getScale().x;
+
+    // define the 6 corners of the two triangles
+    triangles[0].position = sf::Vector2f(pos);
+    triangles[1].position = sf::Vector2f(pos.x + size, pos.y);
+    triangles[2].position = sf::Vector2f(pos.x, pos.y + size);
+    triangles[3].position = sf::Vector2f(pos.x, pos.y + size);
+    triangles[4].position = sf::Vector2f(pos.x + size, pos.y);
+    triangles[5].position = sf::Vector2f(pos.x + size, pos.y + size);
+
+    // define the 6 matching texture coordinates
+    triangles[0].texCoords = sf::Vector2f(textureRect.position);
+    triangles[1].texCoords = sf::Vector2f(textureRect.position.x + textureRect.size.x, textureRect.position.y);
+    triangles[2].texCoords = sf::Vector2f(textureRect.position.x, textureRect.position.y + textureRect.size.y);
+    triangles[3].texCoords = sf::Vector2f(textureRect.position.x, textureRect.position.y + textureRect.size.y);
+    triangles[4].texCoords = sf::Vector2f(textureRect.position.x + textureRect.size.x, textureRect.position.y);
+    triangles[5].texCoords =
+        sf::Vector2f(textureRect.position.x + textureRect.size.x, textureRect.position.y + textureRect.size.y);
+
+    for (int i = 0; i < QUAD_VERTEX_COUNT; i++)
+        triangles[i].color = sprite.getColor();
+}
+
 void TileBase::setPosition(const sf::Vector2f &position)
 {
     sprite.setPosition(position);

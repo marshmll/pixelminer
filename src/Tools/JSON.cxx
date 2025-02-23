@@ -1,7 +1,5 @@
 #include "Tools/JSON.hxx"
 #include "stdafx.hxx"
-#include <iomanip>
-#include <sstream>
 
 // Helper function to calculate line and column numbers
 std::pair<size_t, size_t> getLineAndColumn(const std::string &json, size_t pos)
@@ -56,7 +54,7 @@ std::string generateErrorMessage(const std::string &json, size_t pos, const std:
 
     // Build the error message
     std::ostringstream oss;
-    oss << "[ JSON ] -> " << _("Error at line ") << line << _(", column ") << column << ":\n"
+    oss << _("Error at line ") << line << _(", column ") << column << ":\n"
         << "    " << lineContent << "\n"
         << "    " << arrow << "\n"
         << "    " << message << "\n\n";
@@ -138,7 +136,7 @@ JValue JSON::parse(const std::filesystem::path path)
     std::ifstream file(path);
 
     if (!file.is_open())
-        throw std::runtime_error("[ JSON ] -> " + _("Could not open file: ") + path.string() + "\n");
+        throw std::runtime_error(_("Could not open file: ") + path.string() + "\n");
 
     std::ostringstream oss;
     oss << file.rdbuf();
@@ -183,7 +181,7 @@ JValue JSON::parseValue(const std::string &json, size_t &pos)
     {
         return parseObject(json, pos);
     }
-    else if (std::isdigit(json[pos]) || json[pos] == '-')
+    else if (isdigit(json[pos]) || json[pos] == '-')
     {
         return parseNumber(json, pos);
     }
@@ -244,7 +242,7 @@ JValue JSON::parseNumber(const std::string &json, size_t &pos)
 
     // Parse digits before the decimal point or exponent
     bool isInteger = true;
-    while (pos < json.size() && std::isdigit(json[pos]))
+    while (pos < json.size() && isdigit(json[pos]))
     {
         ++pos;
     }
@@ -254,7 +252,7 @@ JValue JSON::parseNumber(const std::string &json, size_t &pos)
     {
         isInteger = false;
         ++pos;
-        while (pos < json.size() && std::isdigit(json[pos]))
+        while (pos < json.size() && isdigit(json[pos]))
         {
             ++pos;
         }
@@ -269,7 +267,7 @@ JValue JSON::parseNumber(const std::string &json, size_t &pos)
         {
             ++pos;
         }
-        while (pos < json.size() && std::isdigit(json[pos]))
+        while (pos < json.size() && isdigit(json[pos]))
         {
             ++pos;
         }

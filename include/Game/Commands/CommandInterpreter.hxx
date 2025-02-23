@@ -47,7 +47,6 @@ class CommandInterpreter
      * Parses the provided command, determines the appropriate handler,
      * and executes it within the game context.
      *
-     * @param caller_name Name of the entity issuing the command.
      * @param caller_uuid Optional UUID of the entity issuing the command.
      * @param command The command string to interpret and execute.
      * @return The result of the command execution as a string.
