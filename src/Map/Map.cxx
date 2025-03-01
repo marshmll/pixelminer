@@ -33,8 +33,7 @@ void Map::initMetadata(const std::string &name, const long int &seed)
 void Map::initTerrainGenerator(const long int &seed)
 {
     std::lock_guard<std::mutex> lock(mutex);
-    terrainGenerator =
-        std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDb, gridSize, scale);
+    terrainGenerator = std::make_unique<TerrainGenerator>(msg, metadata, chunks, seed, texturePack, tileDb, scale);
     setReady(true);
     clock.restart();
 }
@@ -45,18 +44,18 @@ void Map::setReady(const bool ready)
 }
 
 Map::Map(const std::string &name, const long int &seed, TileDatabase &tile_db, sf::Texture &texture_pack,
-         const unsigned int &grid_size, const float &scale)
+         const float &scale)
     : logger("Map"), ready(false), msg(_("Preparing to load")), folderName(name), tileDb(tile_db),
-      texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(seed)
+      texturePack(texture_pack), scale(scale), rng(seed)
 {
     initRegionStatusArray();
     initMetadata(name, seed);
     std::thread(&Map::initTerrainGenerator, this, seed).detach();
 }
 
-Map::Map(TileDatabase &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale)
+Map::Map(TileDatabase &tile_db, sf::Texture &texture_pack, const float &scale)
     : logger("Map"), ready(false), msg(_("Preparing to load")), folderName("ERROR"), tileDb(tile_db),
-      texturePack(texture_pack), gridSize(grid_size), scale(scale), rng(0)
+      texturePack(texture_pack), scale(scale), rng(0)
 {
     initRegionStatusArray();
 }
@@ -384,7 +383,7 @@ void Map::loadRegion(const sf::Vector2i &region_index)
         if (!chunks[chunk_x][chunk_y])
         {
             chunks[chunk_x][chunk_y] =
-                std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale, flags);
+                std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), scale, flags);
         }
 
         for (int i = 0; i < tile_amount; i++)
@@ -404,13 +403,13 @@ void Map::loadRegion(const sf::Vector2i &region_index)
 
             TileData td = tileDb.getById(id);
 
-            sf::Vector2u grid_pos(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
+            sf::Vector2i grid_pos(x + (chunk_x * CHUNK_SIZE_IN_TILES.x), y + (chunk_y * CHUNK_SIZE_IN_TILES.y));
             BiomePreset biome_data = terrainGenerator->getBiomeData(grid_pos);
 
             if (td.tag != "unknown")
             {
-                Tile tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, grid_pos, scale, biome_data.color);
-                chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
+                chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(
+                    td.name, td.tag, td.id, texturePack, td.rect, grid_pos, scale, biome_data.color);
             }
             else
             {
@@ -418,8 +417,8 @@ void Map::loadRegion(const sf::Vector2i &region_index)
                                   std::to_string(y) + "][" + std::to_string(z) + "]" + _(" in Chunk") + "[" +
                                   std::to_string(chunk_x) + "][" + std::to_string(chunk_y) + "]");
 
-                Tile tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, grid_pos, scale);
-                chunks[chunk_x][chunk_y]->tiles[x][y][z] = std::make_unique<Tile>(tile);
+                chunks[chunk_x][chunk_y]->tiles[x][y][z] =
+                    std::make_unique<Tile>(td.name, td.tag, td.id, texturePack, td.rect, grid_pos, scale);
             }
         }
 
@@ -486,8 +485,7 @@ void Map::putTile(Tile tile, const int &grid_x, const int &grid_y, const int &gr
     tile.setGridPosition(sf::Vector2u(grid_x, grid_y));
 
     if (!chunks[chunk_x][chunk_y])
-        chunks[chunk_x][chunk_y] =
-            std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale);
+        chunks[chunk_x][chunk_y] = std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), scale);
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
     {
@@ -599,16 +597,15 @@ const sf::Vector2f Map::getSpawnPoint() const
 
 const sf::Vector2f Map::getRealDimensions() const
 {
-    return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * gridSize * scale, MAX_WORLD_GRID_SIZE.y * gridSize * scale);
+    return sf::Vector2f(MAX_WORLD_GRID_SIZE.x * GRID_SIZE * scale, MAX_WORLD_GRID_SIZE.y * GRID_SIZE * scale);
 }
 
-const BiomePreset Map::getBiomeAt(const sf::Vector2i &grid_coords) const
+const BiomePreset Map::getBiomeAt(const sf::Vector2i &grid_pos) const
 {
-    if (grid_coords.x < 0 || grid_coords.y < 0 || grid_coords.x >= MAX_WORLD_GRID_SIZE.x ||
-        grid_coords.y >= MAX_WORLD_GRID_SIZE.y)
+    if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
         return BiomePreset{};
 
-    return this->terrainGenerator->getBiomeData(sf::Vector2u(grid_coords));
+    return this->terrainGenerator->getBiomeData(grid_pos);
 }
 
 const float Map::getHeightAt(const sf::Vector2i &grid_pos) const
@@ -616,7 +613,7 @@ const float Map::getHeightAt(const sf::Vector2i &grid_pos) const
     if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
         return 0.f;
 
-    return terrainGenerator->getHeightAt(sf::Vector2u(grid_pos));
+    return terrainGenerator->getHeightAt(grid_pos);
 }
 
 const float Map::getMoistureAt(const sf::Vector2i &grid_pos) const
@@ -624,7 +621,7 @@ const float Map::getMoistureAt(const sf::Vector2i &grid_pos) const
     if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
         return 0.f;
 
-    return terrainGenerator->getMoistureAt(sf::Vector2u(grid_pos));
+    return terrainGenerator->getMoistureAt(grid_pos);
 }
 
 const float Map::getHeatAt(const sf::Vector2i &grid_pos) const
@@ -632,7 +629,7 @@ const float Map::getHeatAt(const sf::Vector2i &grid_pos) const
     if (grid_pos.x < 0 || grid_pos.y < 0 || grid_pos.x >= MAX_WORLD_GRID_SIZE.x || grid_pos.y >= MAX_WORLD_GRID_SIZE.y)
         return 0.f;
 
-    return terrainGenerator->getHeatAt(sf::Vector2u(grid_pos));
+    return terrainGenerator->getHeatAt(grid_pos);
 }
 
 const bool Map::isReady() const

@@ -39,7 +39,6 @@ class Map
     TileDatabase &tileDb;     ///< Reference to the tile database.
     sf::Texture &texturePack; ///< Reference to the texture pack used for tiles.
 
-    unsigned int gridSize; ///< Size of the grid (e.g., how many tiles per chunk).
     float scale;           ///< Scaling factor for rendering the map.
 
     ChunkMatrix chunks;                                           ///< 2D array of chunks in the map.
@@ -83,20 +82,18 @@ class Map
      * @param seed Seed for world generation.
      * @param tile_db Reference to the tile database.
      * @param texture_pack Reference to the texture pack used.
-     * @param grid_size Size of the grid (number of tiles per chunk).
      * @param scale Scaling factor for rendering the map.
      */
     Map(const std::string &name, const long int &seed, TileDatabase &tile_db, sf::Texture &texture_pack,
-        const unsigned int &grid_size, const float &scale);
+        const float &scale);
 
     /**
      * @brief Constructor that initializes an empty map.
      * @param tile_db Reference to the tile database.
      * @param texture_pack Reference to the texture pack used.
-     * @param grid_size Size of the grid (number of tiles per chunk).
      * @param scale Scaling factor for rendering the map.
      */
-    Map(TileDatabase &tile_db, sf::Texture &texture_pack, const unsigned int &grid_size, const float &scale);
+    Map(TileDatabase &tile_db, sf::Texture &texture_pack, const float &scale);
 
     /**
      * @brief Destructor for cleaning up the map.
@@ -217,10 +214,10 @@ class Map
 
     /**
      * @brief Retrieves the biome at the specified grid coordinates.
-     * @param grid_coords The grid coordinates to check.
+     * @param grid_pos The grid coordinates to check.
      * @return The biome preset at the specified grid coordinates.
      */
-    const BiomePreset getBiomeAt(const sf::Vector2i &grid_coords) const;
+    const BiomePreset getBiomeAt(const sf::Vector2i &grid_pos) const;
 
     /**
      * @brief Retrieves the height at the specified grid coordinates.

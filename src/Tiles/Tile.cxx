@@ -2,22 +2,21 @@
 #include "stdafx.hxx"
 
 Tile::Tile(const std::string name, const std::string &tag, const uint64_t &id, sf::Texture &texture,
-           const sf::IntRect &texture_rect, const unsigned int &grid_size, const sf::Vector2u &grid_position,
-           const unsigned int &scale, const sf::Color &color)
-    : TileBase(name, tag, id, texture, texture_rect)
+           const sf::IntRect &texture_rect, const sf::Vector2i &grid_position, const unsigned int &scale,
+           const sf::Color &color)
+    : TileBase(name, tag, id, texture, texture_rect, grid_position, scale)
 {
-    sprite.setScale(sf::Vector2f(scale, scale));
-    sprite.setPosition(
-        sf::Vector2f(std::floor(grid_position.x * grid_size * scale), std::floor(grid_position.y * grid_size * scale)));
-    sprite.setColor(color);
+    setColor(color);
+}
+
+Tile::Tile(const std::string name, const std::string &tag, const uint64_t &id, sf::Texture &texture,
+           const sf::IntRect &texture_rect, const unsigned int &scale, const sf::Color &color)
+    : TileBase(name, tag, id, texture, texture_rect, sf::Vector2i(), scale)
+{
+    setColor(color);
 }
 
 Tile::~Tile() = default;
 
 void Tile::update()
 {}
-
-void Tile::render(sf::RenderTarget &target)
-{
-    target.draw(sprite);
-}

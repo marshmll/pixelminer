@@ -46,7 +46,6 @@ class TerrainGenerator
     long int seed;            ///< Seed for random number generation and Perlin noise.
     sf::Texture &texturePack; ///< Texture pack for tile rendering.
     TileDatabase &tileDb;     ///< Tile database mapping tile tags to tile data.
-    unsigned int gridSize;    ///< Size of the world grid.
     float scale;              ///< Scale for terrain generation.
 
     Random rng;                      ///< Random number generator.
@@ -92,12 +91,10 @@ class TerrainGenerator
      * @param seed Seed for random number generation and Perlin noise.
      * @param texture_pack Reference to the texture pack for tile rendering.
      * @param tile_db Reference to the tile database.
-     * @param grid_size Grid size for world generation.
      * @param scale Scale factor for terrain generation.
      */
     TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, long int seed,
-                     sf::Texture &texture_pack, TileDatabase &tile_db, const unsigned int &grid_size,
-                     const float &scale);
+                     sf::Texture &texture_pack, TileDatabase &tile_db, const float &scale);
 
     /// Destructor for TerrainGenerator.
     ~TerrainGenerator();
@@ -115,7 +112,7 @@ class TerrainGenerator
      * @param grid_pos The position (x, y) on the world grid.
      * @return const BiomePreset& The biome data at the specified grid position.
      */
-    const BiomePreset &getBiomeData(const sf::Vector2u &grid_pos) const;
+    const BiomePreset &getBiomeData(const sf::Vector2i &grid_pos) const;
 
     /**
      * @brief Retrieves the height value at a specific grid position.
@@ -123,7 +120,7 @@ class TerrainGenerator
      * @param grid_pos The position (x, y) on the world grid.
      * @return const float& The height value at the specified grid position.
      */
-    const float &getHeightAt(const sf::Vector2u &grid_pos) const;
+    const float &getHeightAt(const sf::Vector2i &grid_pos) const;
 
     /**
      * @brief Retrieves the moisture value at a specific grid position.
@@ -131,7 +128,7 @@ class TerrainGenerator
      * @param grid_pos The position (x, y) on the world grid.
      * @return const float& The moisture value at the specified grid position.
      */
-    const float &getMoistureAt(const sf::Vector2u &grid_pos) const;
+    const float &getMoistureAt(const sf::Vector2i &grid_pos) const;
 
     /**
      * @brief Retrieves the heat value at a specific grid position.
@@ -139,5 +136,5 @@ class TerrainGenerator
      * @param grid_pos The position (x, y) on the world grid.
      * @return const float& The heat value at the specified grid position.
      */
-    const float &getHeatAt(const sf::Vector2u &grid_pos) const;
+    const float &getHeatAt(const sf::Vector2i &grid_pos) const;
 };

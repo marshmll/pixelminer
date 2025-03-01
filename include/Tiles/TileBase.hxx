@@ -8,7 +8,7 @@
 #include "Engine/Configuration.hxx"
 #include "TileData.hxx"
 
-static constexpr int QUAD_VERTEX_COUNT = 6;
+constexpr int QUAD_VERTEX_COUNT = 6;
 
 /**
  * @class TileBase
@@ -18,15 +18,25 @@ static constexpr int QUAD_VERTEX_COUNT = 6;
  * texture, position, grid positioning, and rendering. The tile is drawn as a sprite
  * with a specified texture and can be manipulated using the available methods.
  */
-class TileBase
+class TileBase : public sf::Drawable, public sf::Transformable
 {
+  private:
+    /**
+     * @brief Draws the tile into a render target.
+     *
+     * @param target The target to which the tile will be rendered.
+     * @param states The render states.
+     */
+    void draw(sf::RenderTarget &target, sf::RenderStates states = sf::RenderStates::Default) const override;
+
   protected:
-    std::string name;        ///< The name of the tile.
-    std::string tag;         ///< The tag of the tile in the format `domain:name`.
-    uint64_t id;             ///< The unique identifier of the tile.
-    sf::Texture &texture;    ///< The texture used for rendering the tile.
-    sf::IntRect textureRect; ///< The portion of the texture to use for the tile.
-    sf::Sprite sprite;       ///< The sprite used to render the tile.
+    std::string name;         ///< The name of the tile.
+    std::string tag;          ///< The tag of the tile in the format `domain:name`.
+    uint64_t id;              ///< The unique identifier of the tile.
+    sf::Texture &texture;     ///< The texture used for rendering the tile.
+    sf::IntRect textureRect;  ///< The portion of the texture to use for the tile.
+    sf::VertexArray vertices; ///< The render vertices of the tile.
+    float scaleScalar;        ///< The scale used in the game.
 
   public:
     /**
@@ -37,22 +47,16 @@ class TileBase
      * @param id The unique identifier of the tile.
      * @param texture The texture to be used for the tile.
      * @param texture_rect The portion of the texture to be used.
+     * @param grid_position The grid position of the tile
      * @param scale The scale factor for the tile (default is 1.f).
      */
     TileBase(const std::string &name, const std::string &tag, const uint64_t &id, sf::Texture &texture,
-             const sf::IntRect &texture_rect, const float &scale = 1.f);
+             const sf::IntRect &texture_rect, const sf::Vector2i &grid_position, const float &scale = 1.f);
 
     /**
      * @brief Destroy the TileBase object.
      */
     virtual ~TileBase();
-
-    /**
-     * @brief Renders the tile to the given render target.
-     *
-     * @param target The target to which the tile will be rendered.
-     */
-    virtual void render(sf::RenderTarget &target);
 
     /**
      * @brief Get the name of the tile.
@@ -110,7 +114,12 @@ class TileBase
      */
     const sf::Vector2f getCenter() const;
 
-    void getTriangles(sf::Vertex triangles[]);
+    /**
+     * @brief Returns the `sf::VertexArray` reference of the tile.
+     *
+     * @return The `sf::VertexArray` reference of the tile.
+     */
+    const sf::VertexArray &getVertexArray() const;
 
     /**
      * @brief Set the position of the tile.

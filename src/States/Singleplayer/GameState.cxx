@@ -34,13 +34,13 @@ void GameState::initLoadingScreen()
 void GameState::initMap()
 {
     ctx.map = std::make_unique<Map>(data.activeResourcePack->tileDb, data.activeResourcePack->getTexture("TileSheet"),
-                                    data.gridSize, data.scale);
+                                    data.scale);
 }
 
 void GameState::initMap(const std::string &map_folder_name)
 {
     ctx.map = std::make_unique<Map>(data.activeResourcePack->tileDb, data.activeResourcePack->getTexture("TileSheet"),
-                                    data.gridSize, data.scale);
+                                    data.scale);
     if (!map_folder_name.empty())
         ctx.map->load(map_folder_name);
 }

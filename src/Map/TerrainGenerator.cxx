@@ -131,7 +131,7 @@ void TerrainGenerator::putTile(Tile tile, const int &grid_x, const int &grid_y, 
 
     if (!chunks[chunk_x][chunk_y])
         chunks[chunk_x][chunk_y] =
-            std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), gridSize, scale, ChunkFlags::None);
+            std::make_unique<Chunk>(texturePack, sf::Vector2u(chunk_x, chunk_y), scale, ChunkFlags::None);
 
     if (!chunks[chunk_x][chunk_y]->tiles[tile_x][tile_y][grid_z])
     {
@@ -162,10 +162,9 @@ Tile *TerrainGenerator::getTile(const int &grid_x, const int &grid_y, const int 
 }
 
 TerrainGenerator::TerrainGenerator(std::string &msg, Metadata &metadata, ChunkMatrix &chunks, long int seed,
-                                   sf::Texture &texture_pack, TileDatabase &tile_db, const unsigned int &grid_size,
-                                   const float &scale)
+                                   sf::Texture &texture_pack, TileDatabase &tile_db, const float &scale)
     : logger("TerrainGenerator"), msg(msg), metadata(metadata), chunks(chunks), seed(seed), texturePack(texture_pack),
-      tileDb(tile_db), gridSize(grid_size), scale(scale), rng(seed), perlinNoise(seed)
+      tileDb(tile_db), scale(scale), rng(seed), perlinNoise(seed)
 {
     using namespace std::chrono_literals;
 
@@ -201,8 +200,7 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
             const BiomePreset &biome = biomeMap[x][y];
             TileData tile_data = tileDb.getByTag(biome.baseTileTag);
 
-            putTile(Tile(tile_data.name, tile_data.tag, tile_data.id, texturePack, tile_data.rect, gridSize, {}, scale,
-                         biome.color),
+            putTile(Tile(tile_data.name, tile_data.tag, tile_data.id, texturePack, tile_data.rect, scale, biome.color),
                     x, y, 0);
 
             if (tile_data.tag == "pixelminer:grass_tile")
@@ -212,20 +210,17 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                 if (randomValue < 0.005f)
                 {
                     TileData td = tileDb.getByTag("pixelminer:short_grass");
-                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                            1);
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, scale, biome.color), x, y, 1);
                 }
                 if (randomValue < 0.002f)
                 {
                     TileData td = tileDb.getByTag("pixelminer:arbust_1");
-                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                            1);
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, scale, biome.color), x, y, 1);
                 }
                 if (randomValue < 0.001f)
                 {
                     TileData td = tileDb.getByTag("pixelminer:arbust_2");
-                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                            1);
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, scale, biome.color), x, y, 1);
                 }
             }
             else if (tile_data.tag == "pixelminer:snowy_grass_tile")
@@ -235,30 +230,29 @@ void TerrainGenerator::generateRegion(const sf::Vector2i &region_index)
                 if (randomValue < 0.01f)
                 {
                     TileData td = tileDb.getByTag("pixelminer:snow_tile");
-                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, gridSize, {}, scale, biome.color), x, y,
-                            1);
+                    putTile(Tile(td.name, td.tag, td.id, texturePack, td.rect, scale, biome.color), x, y, 1);
                 }
             }
         }
     }
 }
 
-const BiomePreset &TerrainGenerator::getBiomeData(const sf::Vector2u &grid_pos) const
+const BiomePreset &TerrainGenerator::getBiomeData(const sf::Vector2i &grid_pos) const
 {
     return biomeMap[grid_pos.x][grid_pos.y];
 }
 
-const float &TerrainGenerator::getHeightAt(const sf::Vector2u &grid_pos) const
+const float &TerrainGenerator::getHeightAt(const sf::Vector2i &grid_pos) const
 {
     return heightMap[grid_pos.x][grid_pos.y];
 }
 
-const float &TerrainGenerator::getMoistureAt(const sf::Vector2u &grid_pos) const
+const float &TerrainGenerator::getMoistureAt(const sf::Vector2i &grid_pos) const
 {
     return moistureMap[grid_pos.x][grid_pos.y];
 }
 
-const float &TerrainGenerator::getHeatAt(const sf::Vector2u &grid_pos) const
+const float &TerrainGenerator::getHeatAt(const sf::Vector2i &grid_pos) const
 {
     return heatMap[grid_pos.x][grid_pos.y];
 }

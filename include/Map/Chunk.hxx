@@ -59,8 +59,7 @@ class Chunk : public sf::Drawable, public sf::Transformable
     sf::RectangleShape chunkBorders;      ///< Visual border of the chunk for debugging.
     sf::Vector2<unsigned int> chunkIndex; ///< The index or position of the chunk in the grid.
 
-    unsigned int gridSize; ///< Size of the grid (in pixels) used for each tile in the chunk.
-    float scale;           ///< The scaling factor applied to the chunk's size.
+    float scale; ///< The scaling factor applied to the chunk's size.
 
     TileMatrix tiles; ///< The 3D grid of tiles that make up the chunk.
 
@@ -72,11 +71,10 @@ class Chunk : public sf::Drawable, public sf::Transformable
      * @brief Constructs a Chunk object with the specified parameters.
      *
      * @param chunk_index The index (position) of the chunk within the larger grid.
-     * @param grid_size The size of each tile in the chunk, in pixels.
      * @param scale The scaling factor applied to the chunk's size.
      * @param flags Optional flags to configure the chunk (default is `ChunkFlags::None`).
      */
-    Chunk(sf::Texture &texture_pack, const sf::Vector2u chunk_index, const unsigned int &grid_size, const float &scale,
+    Chunk(sf::Texture &texture_pack, const sf::Vector2u chunk_index, const float &scale,
           uint8_t flags = ChunkFlags::None);
 
     /**

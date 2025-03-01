@@ -1,6 +1,6 @@
 {
-    "framerateLimit": 120,
-    "fullscreen": false,
+    "framerateLimit": 60,
+    "fullscreen": true,
     "resolution": {
         "width": 846,
         "height": 484
