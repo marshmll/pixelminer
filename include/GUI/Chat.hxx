@@ -58,12 +58,8 @@ namespace gui
                 if (text->findCharacterPos(i).x >= container.getPosition().x + container.getSize().x - padding)
                 {
                     sf::String str = text->getString();
-                    int j = i;
 
-                    while (j > 0 && str[j] != ' ')
-                        j--;
-
-                    str.replace(j, 1, "\n");
+                    str.insert(i, "\n");
                     text->setString(str);
                 }
             }
@@ -104,12 +100,8 @@ namespace gui
                 if (text->findCharacterPos(i).x >= container.getPosition().x + container.getSize().x - padding)
                 {
                     sf::String str = text->getString();
-                    int j = i;
 
-                    while (j > 0 && str[j] != ' ')
-                        j--;
-
-                    str.replace(j, 1, "\n");
+                    str.insert(i, "\n");
                     text->setString(str);
                 }
             }
@@ -270,7 +262,8 @@ namespace gui
          * @param mouse_pos The position of the mouse cursor.
          * @param mouse_data Optional mouse_data data for user input.
          */
-        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event, std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
+        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event> &event,
+                    std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
 
         /**
          * @brief Renders the chat interface and messages.

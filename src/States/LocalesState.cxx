@@ -56,8 +56,9 @@ void LocalesState::initGUI()
         }
     }
 
-    disclaimerText->setPosition(sf::Vector2f(data.vm->size.x / 2.f - disclaimerText->getGlobalBounds().size.x / 2.f,
-                                             footer.getPosition().y + gui::percent(2.5f, data.vm->size.y)));
+    disclaimerText->setPosition(
+        sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - disclaimerText->getGlobalBounds().size.x / 2.f),
+                     static_cast<int>(footer.getPosition().y + gui::percent(2.5f, data.vm->size.y))));
 
     float gap = gui::charSize(*data.vm, 110);
     int rows = 1;

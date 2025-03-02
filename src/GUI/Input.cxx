@@ -50,6 +50,10 @@ void Input::handleKeyPress(char32_t c)
         return;
 
     sf::String curr_str = text->getString();
+
+    if (curr_str.getSize() > 1024)
+        return;
+
     curr_str.insert(cursorIndex, sf::String(c));
     text->setString(curr_str);
 

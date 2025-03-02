@@ -73,7 +73,7 @@ void Chat::displayMessage(const std::string &content, const sf::Color &color)
                                                  gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
 
     chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
-                                     gui::percent(chatContainer->getSize().y, 2.f));
+                                     gui::percent(chatContainer->getSize().y, 1.f));
 
     chatContainer->scrollToBottom();
 }
@@ -93,7 +93,7 @@ void Chat::displayMessage(const std::string &author, const std::string &content,
                                                  gui::percent(vm.size.x, 1.f), font, gui::charSize(vm, 125), color));
 
     chatContainer->setMaxScrollDelta(messages.back()->getPosition().y + messages.back()->getSize().y,
-                                     gui::percent(chatContainer->getSize().y, 2.f));
+                                     gui::percent(chatContainer->getSize().y, 1.f));
 
     chatContainer->scrollToBottom();
 }
