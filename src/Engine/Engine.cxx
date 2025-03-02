@@ -114,7 +114,7 @@ void Engine::initGraphicsSettings()
                                             sf::VideoMode::getDesktopMode().size.y / 2 - window.getSize().y / 2));
         }
 
-        window.setVerticalSyncEnabled(false);
+        window.setVerticalSyncEnabled(gfx.vsync);
         window.setFramerateLimit(gfx.framerateLimit);
     }
     else
@@ -169,7 +169,7 @@ void Engine::initEngineData()
     engineData.currentLocale = &currentLocale;
     engineData.uuid = myUuid;
     engineData.gridSize = gridSize;
-    engineData.scale = scale;
+    engineData.scale = &scale;
     engineData.states = &states;
     engineData.resourcePacks = &resourcePacks;
     engineData.activeResourcePack = activeResourcePack;
@@ -177,6 +177,7 @@ void Engine::initEngineData()
     engineData.vm = &vm;
     engineData.event = std::nullopt;
     engineData.mouseData = std::nullopt;
+    engineData.gfx = &gfx;
 }
 
 void Engine::initMainMenuState()

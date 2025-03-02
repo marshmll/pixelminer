@@ -12,7 +12,8 @@ class Substate
     sf::Vector2f mousePosView;   ///< Mouse position in view coordinates.
     sf::Vector2i mousePosGrid;   ///< Mouse position in grid coordinates.
 
-    bool dead; ///< Flag indicating if the substate is marked as dead (should be removed).
+    bool dead;       ///< Flag indicating if the substate is marked as dead (should be removed).
+    bool restartAll; ///< Flag to tell engine to restart all states in the stack;
 
     sf::Clock keyClock;   ///< Clock used to track time for key press events.
     sf::Clock mouseClock; ///< Clock used to track time for mouse button press events.
@@ -62,8 +63,19 @@ class Substate
     virtual void killSelf();
 
     /**
+     * @brief Triggers the engine to pop all states in the stack and push a new `MainMenuState`.
+     */
+    void restartStates();
+
+    /**
      * @brief Checks if the current state is dead.
      * @return True if the state is dead, false otherwise.
      */
     const bool &isDead() const;
+
+    /**
+     * @brief Checks if the current state has asked to restart all states in the engine stack.
+     * @return True if the restart flag is on, false otherwise.
+     */
+    const bool &askedToRestartAllStates() const;
 };

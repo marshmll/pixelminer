@@ -23,8 +23,7 @@ TextButton::TextButton(const sf::Vector2f position, const sf::Vector2f size, con
                          char_size / 6.f - 2.f)));
 }
 
-TextButton::~TextButton()
-{}
+TextButton::~TextButton() = default;
 
 void TextButton::update(const sf::Vector2f &mouse_pos)
 {
@@ -78,4 +77,19 @@ void TextButton::render(sf::RenderTarget &target)
         target.draw(brightShadow);
     target.draw(*textShadow);
     target.draw(*text);
+}
+
+void TextButton::setString(const std::string &str)
+{
+    text->setString(sf::String::fromUtf8(str.begin(), str.end()));
+    text->setPosition(sf::Vector2f(
+        static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f),
+        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f -
+                         text->getCharacterSize() / 6.f)));
+
+    textShadow->setString(sf::String::fromUtf8(str.begin(), str.end()));
+    textShadow->setPosition(sf::Vector2f(
+        static_cast<int>(body.getPosition().x + body.getSize().x / 2.f - text->getGlobalBounds().size.x / 2.f - 2.f),
+        static_cast<int>(body.getPosition().y + body.getSize().y / 2.f - text->getGlobalBounds().size.y / 2.f -
+                         text->getCharacterSize() / 6.f - 2.f)));
 }

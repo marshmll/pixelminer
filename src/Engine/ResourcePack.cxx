@@ -150,8 +150,10 @@ const bool ResourcePack::load(const std::string &name)
         JObject obj = val.getAs<JObject>();
         std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
 
-        if (!musics[key]->openFromFile(root_path / path))
+        if (!std::filesystem::exists(root_path / path))
             logger.logWarning(_("Missing music ") + path + _(" in resource pack: ") + name);
+        else
+            musics[key] = std::make_shared<sf::Music>(root_path / path);
     }
 
     /* Tile Database ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -212,7 +214,7 @@ sf::Font &ResourcePack::getFont(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent font ") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent font ") + key + _(" in resource pack: ") + name);
     }
 
     return fonts.at(key); // SHOULD NEVER REACH HERE!
@@ -226,7 +228,7 @@ sf::Texture &ResourcePack::getTexture(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent texture ") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent texture ") + key + _(" in resource pack: ") + name);
     }
 
     return textures.at(key); // SHOULD NEVER REACH HERE!
@@ -240,7 +242,7 @@ sf::SoundBuffer &ResourcePack::getSoundBuffer(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent sound buffer") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent sound buffer") + key + _(" in resource pack: ") + name);
     }
 
     return soundBuffers.at(key); // SHOULD NEVER REACH HERE!
@@ -254,7 +256,7 @@ sf::Sound &ResourcePack::getSound(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent sound ") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent sound ") + key + _(" in resource pack: ") + name);
     }
 
     return *globalSounds.at(key); // SHOULD NEVER REACH HERE!
@@ -268,8 +270,14 @@ sf::Music &ResourcePack::getMusic(const std::string &key)
     }
     catch (std::out_of_range &)
     {
-        logger.logError(_("Inexistent music ") + key + _(" in resource pack") + name);
+        logger.logError(_("Inexistent music ") + key + _(" in resource pack: ") + name);
     }
 
     return *musics.at(key); // SHOULD NEVER REACH HERE!
+}
+
+void ResourcePack::stopAllMusics()
+{
+    for (auto &[_, music] : musics)
+        music->stop();
 }

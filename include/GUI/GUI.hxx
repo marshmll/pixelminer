@@ -39,6 +39,14 @@
 #include "GUI/Input.hxx"
 
 /**
+ * @brief Includes the SliderInput class for handling user input fields.
+ *
+ * This header defines the `SliderInput` class, which represents text input fields in the GUI. The
+ * `SliderInput` class allows users to select a option in a range of options.
+ */
+#include "GUI/SliderInput.hxx"
+
+/**
  * @brief Includes the PauseMenu class for handling the pause menu in the game.
  *
  * This header defines the `PauseMenu` class, which is responsible for displaying and managing
@@ -64,6 +72,14 @@
  * be performed when the button is clicked.
  */
 #include "GUI/TextButton.hxx"
+
+/**
+ * @brief Includes the ToggleButton class for handling switch buttons with text in the GUI.
+ *
+ * This header defines the `ToggleButton` class, which represents a button with a text label. The
+ * `ToggleButton` class allows users to interact with buttons that display text, enabling toggle when pressed.
+ */
+#include "GUI/ToggleButton.hxx"
 
 /**
  * @brief Includes the ImageButton class for handling buttons with text in the GUI.

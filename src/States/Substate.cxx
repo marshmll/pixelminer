@@ -1,6 +1,6 @@
 #include "States/Substate.hxx"
 
-Substate::Substate(EngineData &data) : data(data)
+Substate::Substate(EngineData &data) : data(data), dead(false), restartAll(false)
 {}
 
 Substate::~Substate() = default;
@@ -14,8 +14,8 @@ void Substate::updateMousePositions(std::optional<sf::View> view)
         data.window->setView(view.value());
 
     mousePosView = data.window->mapPixelToCoords(mousePosWindow);
-    mousePosGrid = sf::Vector2i(static_cast<int>(mousePosView.x / (data.gridSize * data.scale)),
-                                static_cast<int>(mousePosView.y / (data.gridSize * data.scale)));
+    mousePosGrid = sf::Vector2i(static_cast<int>(mousePosView.x / (data.gridSize * *data.scale)),
+                                static_cast<int>(mousePosView.y / (data.gridSize * *data.scale)));
 
     if (view)
         data.window->setView(data.window->getDefaultView());
@@ -48,7 +48,17 @@ void Substate::killSelf()
     dead = true;
 }
 
+void Substate::restartStates()
+{
+    restartAll = true;
+}
+
 const bool &Substate::isDead() const
 {
     return dead;
+}
+
+const bool &Substate::askedToRestartAllStates() const
+{
+    return restartAll;
 }

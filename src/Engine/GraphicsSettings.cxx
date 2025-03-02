@@ -2,7 +2,14 @@
 #include "stdafx.hxx"
 
 GraphicsSettings::GraphicsSettings() : logger("GraphicsSettings")
-{}
+{
+    screenWidth = sf::VideoMode::getDesktopMode().size.x;
+    screenHeight = sf::VideoMode::getDesktopMode().size.y;
+    framerateLimit = 0;
+    fullscreen = true;
+    vsync = false;
+    resourcePack = "Vanilla";
+}
 
 GraphicsSettings::~GraphicsSettings() = default;
 
@@ -22,6 +29,8 @@ const bool GraphicsSettings::loadFromFile(const std::filesystem::path path)
         framerateLimit = obj.at("framerateLimit").getAs<long long int>();
 
         fullscreen = obj.at("fullscreen").getAs<bool>();
+
+        vsync = obj.at("vsync").getAs<bool>();
 
         resourcePack = obj.at("resourcePack").getAs<std::string>();
 
@@ -50,6 +59,7 @@ const bool GraphicsSettings::saveToFile(const std::filesystem::path path)
     obj["resolution"] = JObject{{"width", screenWidth}, {"height", screenHeight}};
     obj["framerateLimit"] = framerateLimit;
     obj["fullscreen"] = fullscreen;
+    obj["vsync"] = vsync;
     obj["resourcePack"] = resourcePack;
 
     try

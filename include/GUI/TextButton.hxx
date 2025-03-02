@@ -19,7 +19,7 @@ namespace gui
      */
     class TextButton : public Button
     {
-      private:
+      protected:
         std::unique_ptr<sf::Text> text;       ///< The text displayed on the button.
         std::unique_ptr<sf::Text> textShadow; ///< The shadow effect of the text.
         sf::Color textColor;                  ///< The color of the text.
@@ -57,7 +57,7 @@ namespace gui
          *
          * @param mouse_pos The current position of the mouse.
          */
-        void update(const sf::Vector2f &mouse_pos);
+        virtual void update(const sf::Vector2f &mouse_pos);
 
         /**
          * @brief Renders the button to the specified render target.
@@ -67,6 +67,16 @@ namespace gui
          *
          * @param target The render target to draw the button on.
          */
-        void render(sf::RenderTarget &target);
+        virtual void render(sf::RenderTarget &target);
+
+        /**
+         * @brief Changes the button str.
+         *
+         * This method changes the str of the button.
+         * It adjusts the text position.
+         *
+         * @param str The new str to use.
+         */
+        void setString(const std::string &str);
     };
 } // namespace gui

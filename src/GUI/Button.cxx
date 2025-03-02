@@ -38,6 +38,7 @@ void Button::update(const sf::Vector2f &mouse_pos)
         body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 50.f)),
                            static_cast<uint8_t>(percent(fillColor.r, 50.f)),
                            static_cast<uint8_t>(percent(fillColor.r, 50.f)), fillColor.a});
+
         return;
     }
 
@@ -49,14 +50,14 @@ void Button::update(const sf::Vector2f &mouse_pos)
     if (body.getGlobalBounds().contains(mouse_pos))
     {
         state = ButtonState::Hover;
-        body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 70.f)),
-                           static_cast<uint8_t>(percent(fillColor.r, 70.f)),
-                           static_cast<uint8_t>(percent(fillColor.r, 70.f)), fillColor.a});
+        body.setFillColor(fillColor);
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
             state = ButtonState::Active;
-            body.setFillColor(fillColor);
+            body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 70.f)),
+                               static_cast<uint8_t>(percent(fillColor.r, 70.f)),
+                               static_cast<uint8_t>(percent(fillColor.r, 70.f)), fillColor.a});
         }
     }
 }
@@ -86,4 +87,30 @@ const sf::Vector2f Button::getSize() const
 void Button::setState(const ButtonState &state)
 {
     this->state = state;
+
+    if (state == gui::ButtonState::Idle)
+    {
+        body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 80.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 80.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 80.f)), fillColor.a});
+    }
+    else if (state == gui::ButtonState::Hover)
+    {
+        body.setFillColor(fillColor);
+    }
+    else if (state == gui::ButtonState::Active)
+    {
+        body.setFillColor({static_cast<uint8_t>(percent(fillColor.r, 70.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 70.f)),
+                           static_cast<uint8_t>(percent(fillColor.r, 70.f)), fillColor.a});
+    }
+}
+
+void Button::setPosition(const sf::Vector2f &position)
+{
+    sf::Vector2f offset = position - body.getPosition();
+
+    darkShadow.move(offset);
+    body.move(offset);
+    brightShadow.move(offset);
 }

@@ -25,8 +25,8 @@ void ClientGameState::initFeedbackScreen()
         static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
 
     loaderSprite = std::make_unique<sf::Sprite>(data.activeResourcePack->getTexture("Loader"));
-    loaderSprite->setScale(sf::Vector2f(data.scale, data.scale));
-    loaderSprite->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - (16.f * data.scale) / 2.f,
+    loaderSprite->setScale(sf::Vector2f(*data.scale, *data.scale));
+    loaderSprite->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - (16.f * *data.scale) / 2.f,
                                            gui::percent(data.vm->size.y, 60.f)));
 
     loaderAnimation = std::make_unique<Animation>(*loaderSprite, data.activeResourcePack->getTexture("Loader"), 100,

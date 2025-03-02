@@ -105,5 +105,12 @@ namespace gui
          * @param state The new state for the button.
          */
         void setState(const ButtonState &state);
+
+        /**
+         * @brief Sets the position of the button.
+         *
+         * @param position The new position for the button.
+         */
+        void setPosition(const sf::Vector2f &position);
     };
 } // namespace gui

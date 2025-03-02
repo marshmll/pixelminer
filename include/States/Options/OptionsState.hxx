@@ -1,6 +1,8 @@
 #pragma once
 
 #include "States/State.hxx"
+#include "States/LocalesState.hxx"
+#include "States/Options/VideoOptionsSubstate.hxx"
 #include "GUI/GUI.hxx"
 
 class OptionsState : public State
@@ -14,6 +16,8 @@ class OptionsState : public State
     std::unordered_map<std::string, std::unique_ptr<gui::Button>> buttons;
 
     void initGUI();
+
+    void initButtons();
 
   public:
     OptionsState(EngineData &data);

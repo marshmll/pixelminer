@@ -23,8 +23,8 @@ void GameState::initLoadingScreen()
                      static_cast<int>(gui::percent(data.vm->size.y, 50.f))));
 
     loaderSprite = std::make_unique<sf::Sprite>(data.activeResourcePack->getTexture("Loader"));
-    loaderSprite->setScale(sf::Vector2f(data.scale, data.scale));
-    loaderSprite->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - (16.f * data.scale) / 2.f,
+    loaderSprite->setScale(sf::Vector2f(*data.scale, *data.scale));
+    loaderSprite->setPosition(sf::Vector2f(gui::percent(data.vm->size.x, 50.f) - (16.f * *data.scale) / 2.f,
                                            gui::percent(data.vm->size.y, 60.f)));
 
     loaderAnimation = std::make_unique<Animation>(*loaderSprite, data.activeResourcePack->getTexture("Loader"), 100,
@@ -34,27 +34,27 @@ void GameState::initLoadingScreen()
 void GameState::initMap()
 {
     ctx.map = std::make_unique<Map>(data.activeResourcePack->tileDb, data.activeResourcePack->getTexture("TileSheet"),
-                                    data.scale);
+                                    *data.scale);
 }
 
 void GameState::initMap(const std::string &map_folder_name)
 {
     ctx.map = std::make_unique<Map>(data.activeResourcePack->tileDb, data.activeResourcePack->getTexture("TileSheet"),
-                                    data.scale);
+                                    *data.scale);
     if (!map_folder_name.empty())
         ctx.map->load(map_folder_name);
 }
 
 void GameState::initEntitySpatialGridPartition()
 {
-    entitySpacialGridPartition = std::make_unique<EntitySpatialGridPartition>(data.scale);
+    entitySpacialGridPartition = std::make_unique<EntitySpatialGridPartition>(*data.scale);
 }
 
 void GameState::initThisPlayer()
 {
     ctx.globalEntities.emplace_back(std::make_shared<Player>(
         "marshmll", ctx.map->getFolderName(), data.uuid, ctx.map->getSpawnPoint(),
-        data.activeResourcePack->getTexture("Player1"), data.scale, data.activeResourcePack->soundBuffers));
+        data.activeResourcePack->getTexture("Player1"), *data.scale, data.activeResourcePack->soundBuffers));
     ctx.players[data.uuid] = std::static_pointer_cast<Player>(ctx.globalEntities.back());
     thisPlayer = ctx.players[data.uuid];
     entitySpacialGridPartition->put(ctx.globalEntities.back());
@@ -62,7 +62,7 @@ void GameState::initThisPlayer()
 
 void GameState::initPlayerGUI()
 {
-    playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, *data.vm, data.scale);
+    playerGUI = std::make_unique<PlayerGUI>(*thisPlayer, data.activeResourcePack, *data.vm, *data.scale);
     lastHoveredTile = sf::Vector2i(-1, -1);
 }
 
@@ -206,7 +206,7 @@ GameState::GameState(EngineData &data, const std::string &map_folder_name) : Sta
 
     ctx.globalEntities.emplace_back(std::make_shared<PineTree>(ctx.map->getSpawnPoint(),
                                                                data.activeResourcePack->getTexture("PineTree"),
-                                                               data.scale, data.activeResourcePack->soundBuffers));
+                                                               *data.scale, data.activeResourcePack->soundBuffers));
     entitySpacialGridPartition->put(ctx.globalEntities.back());
 }
 
@@ -437,19 +437,19 @@ void GameState::updateDebugText(const float &dt)
        << std::fixed << std::setprecision(5) << dt << " ms\n"
        << _("grid x, y: ") << thisPlayer->getCenterGridPosition().x << " | " << thisPlayer->getCenterGridPosition().y
        << "\n"
-       << _("velocity x, y: ") << std::round(thisPlayer->getVelocity().x / data.scale / dt) << " | "
-       << std::round(thisPlayer->getVelocity().y / data.scale / dt) << "\n"
+       << _("velocity x, y: ") << std::round(thisPlayer->getVelocity().x / *data.scale / dt) << " | "
+       << std::round(thisPlayer->getVelocity().y / *data.scale / dt) << "\n"
        << _("chunk:") << " ["
-       << static_cast<unsigned int>(thisPlayer->getCenter().x / (CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+       << static_cast<unsigned int>(thisPlayer->getCenter().x / (CHUNK_SIZE_IN_TILES.x * data.gridSize * *data.scale))
        << ", "
-       << static_cast<unsigned int>(thisPlayer->getCenter().y / (CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+       << static_cast<unsigned int>(thisPlayer->getCenter().y / (CHUNK_SIZE_IN_TILES.y * data.gridSize * *data.scale))
        << "]\n"
        << _("region:") << " ["
        << static_cast<unsigned int>(thisPlayer->getCenter().x /
-                                    (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * data.gridSize * data.scale))
+                                    (REGION_SIZE_IN_CHUNKS.x * CHUNK_SIZE_IN_TILES.x * data.gridSize * *data.scale))
        << ", "
        << static_cast<unsigned int>(thisPlayer->getCenter().y /
-                                    (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * data.scale))
+                                    (REGION_SIZE_IN_CHUNKS.y * CHUNK_SIZE_IN_TILES.y * data.gridSize * *data.scale))
        << "]\n"
        << _("biome:") << " " << ctx.map->getBiomeAt(sf::Vector2i(thisPlayer->getCenterGridPosition())).name << "\n"
        << _("height: ") << ctx.map->getHeightAt(sf::Vector2i(thisPlayer->getCenterGridPosition())) << _(", moisture: ")

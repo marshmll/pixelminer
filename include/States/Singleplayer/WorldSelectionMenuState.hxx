@@ -65,10 +65,10 @@ class WorldSelectionMenuState : public State
         WorldSelector(EngineData &data, WorldMetadata metadata, const float y_position)
             : data(data), metadata(metadata), selected(false)
         {
-            container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 18.f)));
+            container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 13.f)));
             container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
                                                static_cast<int>(y_position)));
-            container.setFillColor(sf::Color(0, 0, 0, 80));
+            container.setFillColor(sf::Color::Transparent);
             container.setOutlineColor(sf::Color::White);
 
             if (!iconTexture.loadFromFile(MAPS_FOLDER + metadata.folderName + "/icon.png"))
@@ -82,7 +82,7 @@ class WorldSelectionMenuState : public State
             name =
                 std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"),
                                            sf::String::fromUtf8(metadata.worldName.begin(), metadata.worldName.end()),
-                                           gui::charSize(*data.vm, 100));
+                                           gui::charSize(*data.vm, 120));
 
             name->setPosition(sf::Vector2f(
                 static_cast<int>(icon.getPosition().x + icon.getSize().x + gui::percent(data.vm->size.x, 1.f)),
@@ -96,11 +96,11 @@ class WorldSelectionMenuState : public State
 
             description =
                 std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
-                                           sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 100));
+                                           sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 120));
 
             description->setPosition(
                 sf::Vector2f(static_cast<int>(name->getPosition().x),
-                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 5.f))));
+                             static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 3.f))));
 
             description->setFillColor(sf::Color(200, 200, 200, 255));
         }
@@ -120,7 +120,7 @@ class WorldSelectionMenuState : public State
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
                     selected = true;
-                    container.setOutlineThickness(1.f);
+                    container.setOutlineThickness(-1.f);
                 }
             }
         }
@@ -131,10 +131,10 @@ class WorldSelectionMenuState : public State
          */
         inline void render(sf::RenderTarget &target)
         {
-            target.draw(container);
             target.draw(icon);
             target.draw(*name);
             target.draw(*description);
+            target.draw(container);
         }
 
         /**

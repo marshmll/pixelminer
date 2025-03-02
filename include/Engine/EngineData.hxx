@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/ResourcePack.hxx"
+#include "Engine/GraphicsSettings.hxx"
 
 class State;
 
@@ -16,7 +17,7 @@ struct EngineData
     std::string *currentLocale;                 ///< The current locale. Used to select game translation.
     std::string uuid;                           ///< Unique identifier for the engine instance.
     unsigned int gridSize;                      ///< Size of the grid used for rendering.
-    unsigned int scale;                         ///< Scale factor for rendering.
+    unsigned int *scale;                         ///< Scale factor for rendering.
     std::stack<std::shared_ptr<State>> *states; ///< Stack of the current states in the game.
     std::unordered_map<std::string, ResourcePack> *resourcePacks; ///< Map of resource packs available in the game.
     std::shared_ptr<ResourcePack> activeResourcePack;             ///< The currently active resource pack.
@@ -24,4 +25,5 @@ struct EngineData
     sf::VideoMode *vm;                                            ///< Pointer to the current video mode (resolution).
     std::optional<sf::Event> event;                               ///< Window events.
     std::optional<sf::Event::MouseWheelScrolled> mouseData;       ///< Mouse scroll data if avaliable.
+    GraphicsSettings *gfx;
 };

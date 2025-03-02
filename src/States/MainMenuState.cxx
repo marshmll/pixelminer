@@ -58,12 +58,19 @@ void MainMenuState::initGUI()
                      buttons["Options"]->getPosition().y),
         sf::Vector2f(buttons["Options"]->getSize().y, buttons["Options"]->getSize().y), sf::Color(200, 200, 200, 200),
         data.activeResourcePack->getTexture("World"),
-        sf::Vector2f(data.activeResourcePack->getTexture("World").getSize() * data.scale), 2.f, sf::Color::Black);
+        sf::Vector2f(data.activeResourcePack->getTexture("World").getSize() * *data.scale), 2.f, sf::Color::Black);
 }
 
 MainMenuState::MainMenuState(EngineData &data) : State(data)
 {
     initGUI();
+
+    std::vector<std::string> musics = {"MoogCity", "Beginning"};
+    std::string music = musics[std::rand() % musics.size()];
+
+    if (data.activeResourcePack->getMusic("MoogCity").getStatus() != sf::SoundStream::Status::Playing &&
+        data.activeResourcePack->getMusic("Beginning").getStatus() != sf::SoundStream::Status::Playing)
+        data.activeResourcePack->getMusic(music).play();
 }
 
 MainMenuState::~MainMenuState() = default;
@@ -91,7 +98,7 @@ void MainMenuState::update(const float &dt)
 
     else if (buttons.at("Lang")->isPressed())
         data.states->push(std::make_shared<LocalesState>(data));
-    
+
     else if (buttons.at("Quit")->isPressed())
         killSelf();
 }

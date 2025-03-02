@@ -263,6 +263,7 @@ void ServerSelectionState::handleButtonActions()
     }
     else if (buttons.at("JoinServer")->isPressed() && selectedServer.has_value())
     {
+        data.activeResourcePack->stopAllMusics();
         joinSelectedServer();
     }
     else if (buttons.at("Refresh")->isPressed() && ready)

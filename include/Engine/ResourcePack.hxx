@@ -95,4 +95,8 @@ class ResourcePack
      * @throws Exception if the music is not found.
      */
     sf::Music &getMusic(const std::string &key);
+    /**
+     * @brief Stops all musics if playing.
+     */
+    void stopAllMusics();
 };

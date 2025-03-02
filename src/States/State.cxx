@@ -26,8 +26,8 @@ void State::updateMousePositions(std::optional<sf::View> view)
         data.window->setView(view.value());
 
     mousePosView = data.window->mapPixelToCoords(mousePosWindow);
-    mousePosGrid = sf::Vector2i(static_cast<int>(mousePosView.x / (data.gridSize * data.scale)),
-                                static_cast<int>(mousePosView.y / (data.gridSize * data.scale)));
+    mousePosGrid = sf::Vector2i(static_cast<int>(mousePosView.x / (data.gridSize * *data.scale)),
+                                static_cast<int>(mousePosView.y / (data.gridSize * *data.scale)));
 
     if (view)
         data.window->setView(data.window->getDefaultView());

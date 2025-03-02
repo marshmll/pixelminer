@@ -158,7 +158,10 @@ void WorldSelectionMenuState::updateGUI(const float &dt)
     if (buttons.at("Cancel")->isPressed())
         killSelf();
     if (buttons.at("PlaySelectedWorld")->isPressed() && selectedWorld.has_value())
+    {
+        data.activeResourcePack->stopAllMusics();
         replaceSelf(std::make_shared<GameState>(data, selectedWorld.value()->metadata.folderName));
+    }
 
     updateMousePositions(worldSelectorsList->getView());
     if (mouseButtonPressedWithin(200, sf::Mouse::Button::Left) && !worldSelectorsList->isScrollLocked())

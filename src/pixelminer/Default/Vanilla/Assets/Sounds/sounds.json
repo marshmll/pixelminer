@@ -1,5 +1,102 @@
 {
-    "musics": [],
+    "musics": [
+        {
+            "key": "Key",
+            "path": "Assets/Sounds/Musics/01 - Key.ogg"
+        },
+        {
+            "key": "Door",
+            "path": "Assets/Sounds/Musics/02 - Door.ogg"
+        },
+        {
+            "key": "SubwooferLullaby",
+            "path": "Assets/Sounds/Musics/03 - Subwoofer Lullaby.ogg"
+        },
+        {
+            "key": "Death",
+            "path": "Assets/Sounds/Musics/04 - Death.ogg"
+        },
+        {
+            "key": "LivingMice",
+            "path": "Assets/Sounds/Musics/05 - Living Mice.ogg"
+        },
+        {
+            "key": "MoogCity",
+            "path": "Assets/Sounds/Musics/06 - Moog City.ogg"
+        },
+        {
+            "key": "Haggstrom",
+            "path": "Assets/Sounds/Musics/07 - Haggstrom.ogg"
+        },
+        {
+            "key": "Minecraft",
+            "path": "Assets/Sounds/Musics/08 - Minecraft.ogg"
+        },
+        {
+            "key": "Oxigène",
+            "path": "Assets/Sounds/Musics/09 - Oxygène.ogg"
+        },
+        {
+            "key": "Equinòxe",
+            "path": "Assets/Sounds/Musics/10 - Équinoxe.ogg"
+        },
+        {
+            "key": "MiceOnVenus",
+            "path": "Assets/Sounds/Musics/11 - Mice on Venus.ogg"
+        },
+        {
+            "key": "DryHands",
+            "path": "Assets/Sounds/Musics/12 - Dry Hands.ogg"
+        },
+        {
+            "key": "WetHands",
+            "path": "Assets/Sounds/Musics/13 - Wet Hands.ogg"
+        },
+        {
+            "key": "Clark",
+            "path": "Assets/Sounds/Musics/14 - Clark.ogg"
+        },
+        {
+            "key": "Chris",
+            "path": "Assets/Sounds/Musics/15 - Chris.ogg"
+        },
+        {
+            "key": "Thirtheen",
+            "path": "Assets/Sounds/Musics/16 - Thirteen.ogg"
+        },
+        {
+            "key": "Excuse",
+            "path": "Assets/Sounds/Musics/17 - Excuse.ogg"
+        },
+        {
+            "key": "Sweden",
+            "path": "Assets/Sounds/Musics/18 - Sweden.ogg"
+        },
+        {
+            "key": "Cat",
+            "path": "Assets/Sounds/Musics/19 - Cat.ogg"
+        },
+        {
+            "key": "Dog",
+            "path": "Assets/Sounds/Musics/20 - Dog.ogg"
+        },
+        {
+            "key": "Danny",
+            "path": "Assets/Sounds/Musics/21 - Danny.ogg"
+        },
+        {
+            "key": "Beginning",
+            "path": "Assets/Sounds/Musics/22 - Beginning.ogg"
+        },
+        {
+            "key": "DroopyLikesRicochet",
+            "path": "Assets/Sounds/Musics/23 - Droopy Likes Ricochet.ogg"
+        },
+        {
+            "key": "DroopyLikesYourFace",
+            "path": "Assets/Sounds/Musics/24 - Droopy Likes Your Face.ogg"
+        }
+    ],
     "effects": [
         {
             "key": "Click",

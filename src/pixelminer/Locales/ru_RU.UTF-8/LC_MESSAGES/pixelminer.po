@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pixelminer 1.0\n"
 "Report-Msgid-Bugs-To: renandasilvaoliveiraandrade@gmail.com\n"
-"POT-Creation-Date: 2025-02-22 16:47-0300\n"
+"POT-Creation-Date: 2025-03-01 20:22-0300\n"
 "PO-Revision-Date: 2025-02-22 16:52-0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -19,33 +19,630 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.4.2\n"
 
-#: src/Entities/Functionalities/SoundFunctionality.cxx:23
-#: src/Entities/Functionalities/SoundFunctionality.cxx:35
-msgid "Inexistent sound: "
-msgstr "Несуществующий звук: "
+#: src/Map/Biome.cxx:8
+msgid "Desert"
+msgstr "Пустыня"
 
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
-msgid "Invalid layer \""
-msgstr "Неверный слой »"
+#: src/Map/Biome.cxx:9
+msgid "Forest"
+msgstr "Лес"
 
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
-msgid "\" for entity "
-msgstr "« для субъекта "
+#: src/Map/Biome.cxx:10
+msgid "Grassland"
+msgstr "Пастбище"
 
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
-#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
-msgid "Invalid animation \""
-msgstr "Неверная анимация »"
+#: src/Map/Biome.cxx:11
+msgid "Jungle"
+msgstr "Джунгли"
 
-#: src/Entities/Functionalities/CollisionFunctionality.cxx:41
-msgid "Failed to acesss first hitbox of entity."
-msgstr "Не удалось захватить первый хитбокс существа."
+#: src/Map/Biome.cxx:12
+msgid "Mountains"
+msgstr "Горы"
 
-#: src/Entities/Inanimated/Trees/PineTree.cxx:17
-msgid "Pine Tree"
-msgstr "Сосна"
+#: src/Map/Biome.cxx:13
+msgid "Ocean"
+msgstr "Океан"
+
+#: src/Map/Biome.cxx:14
+msgid "Tundra"
+msgstr "Тундра"
+
+#: src/Map/Biome.cxx:15 src/States/Multiplayer/ServerSelectionState.cxx:133
+msgid "Unknown"
+msgstr "Неизвестный"
+
+#: src/Map/EntitySpatialGridPartition.cxx:15
+msgid "Cell out of bounds: "
+msgstr "Клетка выходит за пределы: "
+
+#: src/Map/EntitySpatialGridPartition.cxx:30 src/Entities/Entity.cxx:178
+#: src/Entities/Entity.cxx:187
+msgid "Entity "
+msgstr "Сущность "
+
+#: src/Map/EntitySpatialGridPartition.cxx:30
+msgid " with id "
+msgstr " с ID "
+
+#: src/Map/EntitySpatialGridPartition.cxx:31
+msgid " was not found in the spatial grid partition."
+msgstr " не было найдено в разбиении пространственной сетки."
+
+#: src/Map/Map.cxx:15
+msgid "Generating world metadata..."
+msgstr "Создание метаданных о мире..."
+
+#: src/Map/Map.cxx:48 src/Map/Map.cxx:57
+msgid "Preparing to load"
+msgstr "Подготовка к загрузке"
+
+#: src/Map/Map.cxx:198
+msgid "Could not write world metadata: "
+msgstr "Не удалось записать метаданные о мире: "
+
+#: src/Map/Map.cxx:254
+msgid "Failed to write region file: "
+msgstr "Не удалось записать файл региона: "
+
+#: src/Map/Map.cxx:307
+msgid "Written "
+msgstr "Записано "
+
+#: src/Map/Map.cxx:307
+msgid " tiles to region: "
+msgstr " плитки в регион: "
+
+#: src/Map/Map.cxx:317
+msgid "Inexistent world: "
+msgstr "Несуществующий мир: "
+
+#: src/Map/Map.cxx:319
+msgid "Loading world metadata..."
+msgstr "Загрузка метаданных о мире..."
+
+#: src/Map/Map.cxx:323
+msgid "No world metadata found: "
+msgstr "Метаданные о мире не найдены: "
+
+#: src/Map/Map.cxx:327 src/Tools/Zip.cxx:157
+msgid "Failed to open file: "
+msgstr "Не удалось открыть файл: "
+
+#: src/Map/Map.cxx:336
+msgid "Initializing terrain generator..."
+msgstr "Инициализация генератора рельефа..."
+
+#: src/Map/Map.cxx:369
+msgid "Failed to read region file: "
+msgstr "Не удалось прочитать файл региона: "
+
+#: src/Map/Map.cxx:381
+msgid "Corrupted region file: Chunk index out of bounds"
+msgstr "Поврежденный файл региона: Индекс чанка выходит за пределы"
+
+#: src/Map/Map.cxx:400
+msgid "Corrupted region file: "
+msgstr "Поврежденный файл региона: "
+
+#: src/Map/Map.cxx:401
+msgid "out of bounds in Chunk"
+msgstr "за пределами границ в Чанке"
+
+#: src/Map/Map.cxx:416
+msgid "Invalid tile ID: "
+msgstr "Неверный идентификатор плитки: "
+
+#: src/Map/Map.cxx:417
+msgid " in Chunk"
+msgstr " в Чанке"
+
+#: src/Map/Map.cxx:432
+msgid "Read "
+msgstr "Было прочитано "
+
+#: src/Map/Map.cxx:432
+msgid " tiles from region: "
+msgstr " плитка из региона: "
+
+#: src/Map/Map.cxx:469 src/Map/Map.cxx:653
+msgid "Region ("
+msgstr "Регион ("
+
+#: src/Map/Map.cxx:470
+msgid ") unloaded from memory."
+msgstr ") выгружается из памяти."
+
+#: src/Map/Map.cxx:654
+msgid ") out of bounds."
+msgstr ") за пределы."
+
+#: src/Map/TerrainGenerator.cxx:6 src/Map/TerrainGenerator.cxx:7
+msgid "Initializing perlin waves..."
+msgstr "Инициализация волн Перлина..."
+
+#: src/Map/TerrainGenerator.cxx:16 src/Map/TerrainGenerator.cxx:17
+msgid "Generating noise maps..."
+msgstr "Создание карт шума..."
+
+#: src/Map/TerrainGenerator.cxx:28 src/Map/TerrainGenerator.cxx:29
+msgid "Precomputing biomes..."
+msgstr "Предварительный расчет биомов..."
+
+#: src/Map/TerrainGenerator.cxx:176
+msgid "Done!"
+msgstr "Готово!"
+
+#: src/Map/TerrainGenerator.cxx:187
+msgid "Failed to generate region: Indexes are out of bounds."
+msgstr "Не удалось сгенерировать регион: Индексы выходят за границы."
+
+#: src/Tools/JSON.cxx:57
+msgid "Error at line "
+msgstr "Ошибка в строке "
+
+#: src/Tools/JSON.cxx:57
+msgid ", column "
+msgstr ", колонна "
+
+#: src/Tools/JSON.cxx:139
+msgid "Could not open file: "
+msgstr "Не удалось открыть файл: "
+
+#: src/Tools/JSON.cxx:154
+msgid "Unexpected end of input"
+msgstr "Неожиданный конец ввода"
+
+#: src/Tools/JSON.cxx:189
+msgid "Invalid JSON value"
+msgstr "Недопустимое значение JSON"
+
+#: src/Tools/JSON.cxx:195 src/Tools/JSON.cxx:349
+msgid "Expected '\"'"
+msgstr "Ожидается '\"'"
+
+#: src/Tools/JSON.cxx:205
+msgid "Unexpected end of input in string"
+msgstr "Неожиданный конец ввода в строке символов"
+
+#: src/Tools/JSON.cxx:216
+msgid "Invalid escape character in string"
+msgstr "Недопустимый управляющий символ в строке"
+
+#: src/Tools/JSON.cxx:227
+msgid "Unterminated string"
+msgstr "Непрерванная строка"
+
+#: src/Tools/JSON.cxx:287
+msgid "Integer value out of range: "
+msgstr "Целочисленное значение выходит за пределы диапазона: "
+
+#: src/Tools/JSON.cxx:300
+msgid "Floating-point value out of range: "
+msgstr "Значение с плавающей точкой выходит за пределы диапазона: "
+
+#: src/Tools/JSON.cxx:317
+msgid "Invalid boolean value"
+msgstr "Недопустимое булево значение"
+
+#: src/Tools/JSON.cxx:327
+msgid "Invalid null value"
+msgstr "Недопустимое нулевое значение"
+
+#: src/Tools/JSON.cxx:334
+msgid "Expected '{'"
+msgstr "Ожидается '{'"
+
+#: src/Tools/JSON.cxx:354
+msgid "Expected ':'"
+msgstr "Ожидается ':'"
+
+#: src/Tools/JSON.cxx:371
+msgid "Expected ',' or '}'"
+msgstr "Ожидается ',' или '}'"
+
+#: src/Tools/JSON.cxx:380
+msgid "Expected '['"
+msgstr "Ожидается '['"
+
+#: src/Tools/JSON.cxx:407
+msgid "Expected ',' or ']'"
+msgstr "Ожидается ',' или ']'."
+
+#: src/Tools/JSON.cxx:423
+msgid "Expected '"
+msgstr "Ожидается '"
+
+#: src/Tools/Zip.cxx:13
+msgid "Failed to open ZIP archive for extraction: "
+msgstr "Не удалось открыть ZIP-архив для извлечения: "
+
+#: src/Tools/Zip.cxx:19
+msgid "Failed to locate first file of ZIP archive: "
+msgstr "Не удалось обнаружить первый файл архива ZIP: "
+
+#: src/Tools/Zip.cxx:28
+msgid "Failed to create output directory \""
+msgstr "Не удалось создать выходной каталог »"
+
+#: src/Tools/Zip.cxx:34
+msgid "Created output directory \""
+msgstr "Создан выходной каталог »"
+
+#: src/Tools/Zip.cxx:47
+msgid "Failed to get file info from ZIP archive: "
+msgstr "Не удалось получить информацию о файле из архива ZIP: "
+
+#: src/Tools/Zip.cxx:56
+msgid "Failed to open file inside ZIP archive: "
+msgstr "Не удалось открыть файл внутри ZIP-архива: "
+
+#: src/Tools/Zip.cxx:65
+msgid "Failed to create directory \""
+msgstr "Не удалось создать каталог »"
+
+#: src/Tools/Zip.cxx:71
+msgid "Created directory \""
+msgstr "Создан каталог »"
+
+#: src/Tools/Zip.cxx:80
+msgid "Failed to create output file: "
+msgstr "Не удалось создать выходной файл: "
+
+#: src/Tools/Zip.cxx:96
+msgid "Extracted file \""
+msgstr "Извлеченный файл »"
+
+#: src/Tools/Zip.cxx:107
+msgid "Successfully extracted "
+msgstr "Успешно извлечено "
+
+#: src/Tools/Zip.cxx:107
+msgid " files ("
+msgstr " файлы ("
+
+#: src/Tools/Zip.cxx:108
+msgid " KB) from ZIP archive: \""
+msgstr " KB) из архива ZIP: »"
+
+#: src/Tools/Zip.cxx:120
+msgid "Failed to create ZIP file: "
+msgstr "Не удалось создать ZIP-файл: "
+
+#: src/Tools/Zip.cxx:139
+msgid "Successfully compressed \""
+msgstr "Успешное сжатие »"
+
+#: src/Tools/Zip.cxx:139
+msgid "\" to ZIP archive: \""
+msgstr "« в архив ZIP: »"
+
+#: src/Tools/Zip.cxx:165
+msgid "Failed to add file to ZIP: "
+msgstr "Не удалось добавить файл в ZIP: "
+
+#: src/Tools/Zip.cxx:174
+msgid "Failed to write data to ZIP file: "
+msgstr "Не удалось записать данные в ZIP-файл: "
+
+#: src/Tools/Zip.cxx:183
+msgid "Added file: "
+msgstr "Добавлен файл: "
+
+#: src/Tools/Date.cxx:8
+msgid "Never"
+msgstr "Никогда"
+
+#: src/Tools/Date.cxx:20
+msgid "INVALID TIMESTAMP"
+msgstr "НЕДОПУСТИМАЯ ВРЕМЕННАЯ МЕТКА"
+
+#: src/Tools/Date.cxx:31
+msgid "FORMATTING ERROR"
+msgstr "ОШИБКА ФОРМАТИРОВАНИЯ"
+
+#: src/Tools/Logger.cxx:13
+msgid "INFO"
+msgstr "ИНФО"
+
+#: src/Tools/Logger.cxx:24
+msgid "WARNING"
+msgstr "ВНИМАНИЕ"
+
+#: src/Tools/Logger.cxx:35
+msgid "ERROR"
+msgstr "ОШИБКА"
+
+#: src/States/MainMenuState.cxx:30
+msgid "Singleplayer"
+msgstr "Одиночная игра"
+
+#: src/States/MainMenuState.cxx:38
+msgid "Multiplayer"
+msgstr "Мультиплеер"
+
+#: src/States/MainMenuState.cxx:44 src/GUI/PauseMenu.cxx:45
+msgid "Options"
+msgstr "Опции"
+
+#: src/States/MainMenuState.cxx:52
+msgid "Quit"
+msgstr "Увольнение"
+
+#: src/States/Singleplayer/GameState.cxx:10
+msgid "Loading world"
+msgstr "Мир загрузки"
+
+#: src/States/Singleplayer/GameState.cxx:438
+msgid "grid x, y: "
+msgstr "сетка x, y: "
+
+#: src/States/Singleplayer/GameState.cxx:440
+msgid "velocity x, y: "
+msgstr "cкорость x, y: "
+
+#: src/States/Singleplayer/GameState.cxx:442
+msgid "chunk:"
+msgstr "чанк:"
+
+#: src/States/Singleplayer/GameState.cxx:447
+msgid "region:"
+msgstr "регион:"
+
+#: src/States/Singleplayer/GameState.cxx:454
+msgid "biome:"
+msgstr "биом:"
+
+#: src/States/Singleplayer/GameState.cxx:455
+msgid "height: "
+msgstr "высота: "
+
+#: src/States/Singleplayer/GameState.cxx:455
+msgid ", moisture: "
+msgstr ", влажность: "
+
+#: src/States/Singleplayer/GameState.cxx:456
+msgid ", heat: "
+msgstr ", тепло: "
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:34
+msgid "Play Selected World"
+msgstr "Играть в избранном мире"
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:39
+msgid "Create New World"
+msgstr "Создать новый мир"
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:45
+#: src/States/Multiplayer/ServerSelectionState.cxx:59
+msgid "Edit"
+msgstr "Редактировать"
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:53
+#: src/States/Multiplayer/ServerSelectionState.cxx:63
+msgid "Delete"
+msgstr "Удалить"
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:59
+msgid "Re-Create"
+msgstr "Создайте заново"
+
+#: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
+#: src/States/LocalesState.cxx:48 src/States/LocalesState.cxx:181
+#: src/States/LocalesState.cxx:197
+#: src/States/Multiplayer/ServerSelectionState.cxx:71
+#: src/States/Multiplayer/DirectConnectState.cxx:28
+#: src/States/Multiplayer/AddServerState.cxx:35
+msgid "Cancel"
+msgstr "Отмена"
+
+#: src/States/Options/VideoOptionsSubstate.cxx:57
+#: src/States/Options/VideoOptionsSubstate.cxx:128
+msgid "Resolution: "
+msgstr ""
+
+#: src/States/Options/VideoOptionsSubstate.cxx:65
+#: src/States/Options/VideoOptionsSubstate.cxx:132
+#: src/States/Options/VideoOptionsSubstate.cxx:137
+msgid "Framerate Limit: "
+msgstr ""
+
+#: src/States/Options/VideoOptionsSubstate.cxx:71
+msgid "Fullscreen"
+msgstr ""
+
+#: src/States/Options/VideoOptionsSubstate.cxx:78
+msgid "VSync"
+msgstr ""
+
+#: src/States/Options/VideoOptionsSubstate.cxx:85
+msgid "Apply and Close"
+msgstr ""
+
+#: src/States/Options/VideoOptionsSubstate.cxx:92
+#: src/States/MessageState.cxx:53
+msgid "Back"
+msgstr "Вернуться"
+
+#: src/States/Options/VideoOptionsSubstate.cxx:132
+#: src/States/Options/VideoOptionsSubstate.cxx:138
+msgid " fps"
+msgstr ""
+
+#: src/States/Options/OptionsState.cxx:37
+msgid "Skin Customization"
+msgstr ""
+
+#: src/States/Options/OptionsState.cxx:42
+#, fuzzy
+msgid "Music and Sounds"
+msgstr "Отсутствующий звук "
+
+#: src/States/Options/OptionsState.cxx:47
+#, fuzzy
+msgid "Video Options"
+msgstr "Опции"
+
+#: src/States/Options/OptionsState.cxx:52
+msgid "Controls"
+msgstr ""
+
+#: src/States/Options/OptionsState.cxx:57
+msgid "Language"
+msgstr ""
+
+#: src/States/Options/OptionsState.cxx:62
+#, fuzzy
+msgid "Chat Options"
+msgstr "Опции"
+
+#: src/States/Options/OptionsState.cxx:67
+#, fuzzy
+msgid "Resource Packs"
+msgstr "Ресурсный пакет "
+
+#: src/States/Options/OptionsState.cxx:72
+msgid "Accessibility"
+msgstr ""
+
+#: src/States/Options/OptionsState.cxx:77 src/States/LocalesState.cxx:42
+#: src/States/LocalesState.cxx:176 src/States/LocalesState.cxx:192
+msgid "Done"
+msgstr "Готово"
+
+#: src/States/LocalesState.cxx:89
+msgid "Invalid locales file"
+msgstr "Недопустимый файл локалей"
+
+#: src/States/LocalesState.cxx:91
+msgid ""
+"The file \"locales.json\" in SETTINGS_FOLDER might be corrupted or ill-"
+"formed."
+msgstr ""
+"Файл «locales.json» в папке SETTINGS_FOLDER может быть поврежден или "
+"неправильно сформирован."
+
+#: src/States/LocalesState.cxx:106
+msgid "Failed to save locale files"
+msgstr "Не удалось сохранить файлы локали"
+
+#: src/States/LocalesState.cxx:107
+msgid "Could not open \"locales.json\" to save the new language preference."
+msgstr ""
+"Не удалось открыть файл «locales.json» для сохранения новых языковых "
+"предпочтений."
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:49
+#: src/States/Multiplayer/DirectConnectState.cxx:21
+msgid "Join Server"
+msgstr "Присоединиться к серверу"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:52
+msgid "Direct Connect"
+msgstr "Прямое соединение"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:56
+msgid "Add Server"
+msgstr "Добавить сервер"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:67
+msgid "Refresh"
+msgstr "Обновление"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:119
+msgid "Error parsing \"servers.json\": "
+msgstr "Ошибка при разборе файла «servers.json»: "
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:121
+msgid "Error parsing \"servers.json\" file"
+msgstr "Ошибка при разборе файла «servers.json»"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:122
+msgid "The file may be corrupted or ill-formed. Fix or delete the file:"
+msgstr ""
+"Файл может быть поврежден или неправильно сформирован. Исправьте или удалите "
+"файл:"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:132
+#: src/States/Multiplayer/ServerSelectionState.cxx:170
+msgid "Attempting to reach server..."
+msgstr "Попытка связаться с сервером..."
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:134
+#: src/States/Multiplayer/ServerSelectionState.cxx:171
+#: include/States/Multiplayer/ServerSelectionState.hxx:144
+msgid "Pending"
+msgstr "В ожидании"
+
+#: src/States/Multiplayer/ServerSelectionState.cxx:190
+#: include/States/Multiplayer/ServerSelectionState.hxx:106
+#: include/States/Multiplayer/ServerSelectionState.hxx:221
+#: include/States/Multiplayer/ServerSelectionState.hxx:265
+#: include/States/Multiplayer/ServerSelectionState.hxx:282
+msgid "Status: "
+msgstr "Статус: "
+
+#: src/States/Multiplayer/DirectConnectState.cxx:15
+#: src/States/Multiplayer/AddServerState.cxx:22
+msgid "Server Address"
+msgstr "Адрес сервера"
+
+#: src/States/Multiplayer/ClientGameState.cxx:10
+msgid "Joining server"
+msgstr "Присоединение к серверу"
+
+#: src/States/Multiplayer/ClientGameState.cxx:19
+msgid "Attempting to establish connection..."
+msgstr "Попытка установить соединение..."
+
+#: src/States/Multiplayer/ClientGameState.cxx:41
+msgid "Socket error"
+msgstr "Ошибка сокета"
+
+#: src/States/Multiplayer/ClientGameState.cxx:42
+msgid ""
+"Could not bind the client UDP socket to a port. This may be a system error "
+"or a invalid configuration of the socket."
+msgstr ""
+"Не удалось привязать UDP-сокет клиента к порту. Это может быть системная "
+"ошибка или неправильная конфигурация сокета."
+
+#: src/States/Multiplayer/ClientGameState.cxx:65
+#: src/States/Multiplayer/ClientGameState.cxx:73
+#: src/States/Multiplayer/ClientGameState.cxx:81
+msgid "Connection error"
+msgstr "Ошибка подключения"
+
+#: src/States/Multiplayer/ClientGameState.cxx:66
+msgid ""
+"The server did not respond after 10 seconds. Check if the server exists and "
+"if it is online, and if your internet connectivity is ok."
+msgstr ""
+"Сервер не отвечает через 10 секунд. Проверьте, существует ли сервер, "
+"находится ли он в сети, и все ли в порядке с подключением к Интернету."
+
+#: src/States/Multiplayer/ClientGameState.cxx:74
+msgid ""
+"The server refused to connect with this client. This might be because of a "
+"attempt to a self-connection or a server ban."
+msgstr ""
+"Сервер отказался соединиться с этим клиентом. Это может быть вызвано "
+"попыткой самостоятельного подключения или запретом сервера."
+
+#: src/States/Multiplayer/ClientGameState.cxx:81
+msgid "Disconnected."
+msgstr "Отключен."
+
+#: src/States/Multiplayer/AddServerState.cxx:15
+msgid "Server Name (optional)"
+msgstr "Имя сервера (необязательно)"
+
+#: src/States/Multiplayer/AddServerState.cxx:28
+msgid "Add"
+msgstr "Добавить"
+
+#: src/States/Multiplayer/AddServerState.cxx:67
+msgid "Pixelminer Server"
+msgstr "Сервер Pixelminer"
 
 #: src/Entities/Playable/Player.cxx:122 src/Entities/Playable/Player.cxx:131
 msgid "Player \""
@@ -104,11 +701,6 @@ msgid " tried to play an animation without an initialized animation component."
 msgstr ""
 " попытка воспроизвести анимацию без инициализированного компонента анимации."
 
-#: src/Entities/Entity.cxx:178 src/Entities/Entity.cxx:187
-#: src/Map/EntitySpatialGridPartition.cxx:30
-msgid "Entity "
-msgstr "Сущность "
-
 #: src/Entities/Entity.cxx:179
 msgid " accessed non-initialized AttributeFunctionality."
 msgstr " доступ к неинициализированному атрибуту Функциональность."
@@ -116,6 +708,239 @@ msgstr " доступ к неинициализированному атрибу
 #: src/Entities/Entity.cxx:187
 msgid " does not have a collision functionality."
 msgstr " не имеет функции столкновения."
+
+#: src/Entities/Inanimated/Trees/PineTree.cxx:17
+msgid "Pine Tree"
+msgstr "Сосна"
+
+#: src/Entities/Functionalities/CollisionFunctionality.cxx:41
+msgid "Failed to acesss first hitbox of entity."
+msgstr "Не удалось захватить первый хитбокс существа."
+
+#: src/Entities/Functionalities/SoundFunctionality.cxx:23
+#: src/Entities/Functionalities/SoundFunctionality.cxx:35
+msgid "Inexistent sound: "
+msgstr "Несуществующий звук: "
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
+msgid "Invalid layer \""
+msgstr "Неверный слой »"
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:21
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
+msgid "\" for entity "
+msgstr "« для субъекта "
+
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:49
+#: src/Entities/Functionalities/AnimationFunctionalitiy.cxx:63
+msgid "Invalid animation \""
+msgstr "Неверная анимация »"
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
+msgid "Usage: "
+msgstr "Использование: "
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
+msgid "tp [(targets...)] [(x y) OR (target)]"
+msgstr "tp [(цели...)] [(x y) ИЛИ (цель)]"
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:53
+msgid "Error: No targets to teleport specified."
+msgstr "Ошибка: Не указаны цели для телепортации."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:60
+msgid "Error: No targets to teleport found."
+msgstr "Ошибка: Не найдено целей для телепортации."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:74
+msgid "Error: World coordinate out of bounds."
+msgstr "Ошибка: Мировая координата выходит за пределы."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:78
+msgid "Error: Invalid coordinate format."
+msgstr "Ошибка: Недопустимый формат координат."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:87
+msgid "Error: No destination target found."
+msgstr "Ошибка: Цель назначения не найдена."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:91
+msgid "Error: Destination must resolve to exactly one target."
+msgstr "Ошибка: Пункт назначения должен разрешиться ровно на одну цель."
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
+msgid "Teleported "
+msgstr "Телепортироваться "
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
+msgid " entity to"
+msgid_plural " entities to"
+msgstr[0] " сущность к"
+msgstr[1] " сущности к"
+msgstr[2] " сущностей к"
+
+#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
+msgid " the position of "
+msgstr " на место "
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
+msgid "id [target]"
+msgstr "id [цель]"
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:20
+msgid "Error: No valid entity found for target \""
+msgstr "Ошибка: Не найдено ни одной действительной сущности для цели »"
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:25
+msgid "Error: Target \""
+msgstr "Ошибка: Цель »"
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:26
+msgid "\" resolved to multiple entities. Please specify a unique target."
+msgstr "« разрешено нескольким сущностям. Пожалуйста, укажите уникальную цель."
+
+#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:33
+msgid "Entity ID: "
+msgstr "ID сущность: "
+
+#: src/Game/Commands/CommandInterpreter.cxx:117
+msgid "Error: Empty command."
+msgstr "Ошибка: Пустая команда."
+
+#: src/Game/Commands/CommandInterpreter.cxx:123
+msgid "Unknown command: \""
+msgstr "Неизвестная команда: »"
+
+#: src/GUI/ToggleButton.cxx:10 src/GUI/ToggleButton.cxx:76
+msgid "ON"
+msgstr ""
+
+#: src/GUI/ToggleButton.cxx:10 src/GUI/ToggleButton.cxx:76
+msgid "OFF"
+msgstr ""
+
+#: src/GUI/PauseMenu.cxx:27
+msgid "Back to Game"
+msgstr "Назад к игре"
+
+#: src/GUI/PauseMenu.cxx:32
+msgid "Achievements"
+msgstr "Достижения"
+
+#: src/GUI/PauseMenu.cxx:40
+msgid "Statistics"
+msgstr "Статистика"
+
+#: src/GUI/PauseMenu.cxx:53
+msgid "Open To LAN"
+msgstr "Открыто для LAN"
+
+#: src/GUI/PauseMenu.cxx:58
+msgid "Save And Quit To Main Menu"
+msgstr "Сохранить и выйти в главное меню"
+
+#: src/GUI/PauseMenu.cxx:91
+msgid "Server online at: "
+msgstr "Сервер онлайн на сайте: "
+
+#: src/GUI/PauseMenu.cxx:95
+msgid "Failed to start server."
+msgstr "Не удалось запустить сервер."
+
+#: src/Network/Client.cxx:14
+msgid "Could not connect to "
+msgstr "Не удалось подключиться к "
+
+#: src/Network/Client.cxx:55
+msgid "Connection timeout: "
+msgstr "Таймаут соединения: "
+
+#: src/Network/Client.cxx:86
+msgid "Connection with server "
+msgstr "Соединение с сервером "
+
+#: src/Network/Client.cxx:86
+msgid " timed out after 5 seconds."
+msgstr " прервалось через 5 секунд."
+
+#: src/Network/Client.cxx:117
+msgid "Connected to server: "
+msgstr "Подключился к серверу: "
+
+#: src/Network/Client.cxx:130
+msgid "Reconnected to server: "
+msgstr "Снова подключился к серверу: "
+
+#: src/Network/Client.cxx:143
+msgid "Connection refused by server "
+msgstr "Соединение отклонено сервером "
+
+#: src/Network/Client.cxx:152
+msgid "Bad response from server "
+msgstr "Плохой ответ от сервера "
+
+#: src/Network/Client.cxx:169
+msgid "Could not bind to a port."
+msgstr "Не удалось привязаться к порту."
+
+#: src/Network/Client.cxx:183
+msgid "Already connected to "
+msgstr "Уже подключен к "
+
+#: src/Network/Client.cxx:196 src/Network/Client.cxx:251
+msgid "Not connected to any server."
+msgstr "Не подключен ни к одному серверу."
+
+#: src/Network/Client.cxx:205
+msgid "Failed to communicate with server. Disconnecting anyway."
+msgstr "Не удалось установить связь с сервером. Все равно отсоединяюсь."
+
+#: src/Network/Client.cxx:208
+msgid "Disconnected from server "
+msgstr "Отключен от сервера "
+
+#: src/Network/Client.cxx:223 src/Network/Client.cxx:236
+msgid "Error sending packet to "
+msgstr "Ошибка отправки пакета в "
+
+#: src/Network/Client.cxx:254
+msgid "File \""
+msgstr "Файл »"
+
+#: src/Network/Client.cxx:254
+msgid "\" does not exist."
+msgstr "« не существует."
+
+#: src/Network/Client.cxx:294 src/Network/Server.cxx:338
+msgid "Error sending file part "
+msgstr "Ошибка при отправке части файла "
+
+#: src/Network/Client.cxx:295 src/Network/Client.cxx:301
+#: src/Network/Server.cxx:339 src/Network/Server.cxx:345
+msgid " B) of file "
+msgstr " B) из файла "
+
+#: src/Network/Client.cxx:296 src/Network/Server.cxx:340
+msgid "to: "
+msgstr "к: "
+
+#: src/Network/Client.cxx:300
+msgid "Sent file part: "
+msgstr "Отправленная часть файла: "
+
+#: src/Network/Client.cxx:326
+msgid "Could not write to file: \""
+msgstr "Не удалось записать в файл: »"
+
+#: src/Network/Client.cxx:347 src/Network/Server.cxx:394
+msgid "Received file part "
+msgstr "Полученная часть файла "
+
+#: src/Network/Client.cxx:348
+msgid " of file: "
+msgstr " файла: "
 
 #: src/Network/Server.cxx:10
 msgid "Server"
@@ -215,26 +1040,9 @@ msgstr "Клиент не подключен: "
 msgid "Invalid file: "
 msgstr "Недопустимый файл: "
 
-#: src/Network/Server.cxx:338 src/Network/Client.cxx:294
-msgid "Error sending file part "
-msgstr "Ошибка при отправке части файла "
-
-#: src/Network/Server.cxx:339 src/Network/Server.cxx:345
-#: src/Network/Client.cxx:295 src/Network/Client.cxx:301
-msgid " B) of file "
-msgstr " B) из файла "
-
-#: src/Network/Server.cxx:340 src/Network/Client.cxx:296
-msgid "to: "
-msgstr "к: "
-
 #: src/Network/Server.cxx:373
 msgid "Could not write file: "
 msgstr "Не удалось записать файл: "
-
-#: src/Network/Server.cxx:394 src/Network/Client.cxx:347
-msgid "Received file part "
-msgstr "Полученная часть файла "
 
 #: src/Network/Server.cxx:395
 msgid "of file: "
@@ -244,312 +1052,136 @@ msgstr "файла: "
 msgid "Server is down"
 msgstr "Сервер выключен"
 
-#: src/Network/Client.cxx:14
-msgid "Could not connect to "
-msgstr "Не удалось подключиться к "
-
-#: src/Network/Client.cxx:55
-msgid "Connection timeout: "
-msgstr "Таймаут соединения: "
-
-#: src/Network/Client.cxx:86
-msgid "Connection with server "
-msgstr "Соединение с сервером "
-
-#: src/Network/Client.cxx:86
-msgid " timed out after 5 seconds."
-msgstr " прервалось через 5 секунд."
-
-#: src/Network/Client.cxx:117
-msgid "Connected to server: "
-msgstr "Подключился к серверу: "
-
-#: src/Network/Client.cxx:130
-msgid "Reconnected to server: "
-msgstr "Снова подключился к серверу: "
-
-#: src/Network/Client.cxx:143
-msgid "Connection refused by server "
-msgstr "Соединение отклонено сервером "
-
-#: src/Network/Client.cxx:152
-msgid "Bad response from server "
-msgstr "Плохой ответ от сервера "
-
-#: src/Network/Client.cxx:169
-msgid "Could not bind to a port."
-msgstr "Не удалось привязаться к порту."
-
-#: src/Network/Client.cxx:183
-msgid "Already connected to "
-msgstr "Уже подключен к "
-
-#: src/Network/Client.cxx:196 src/Network/Client.cxx:251
-msgid "Not connected to any server."
-msgstr "Не подключен ни к одному серверу."
-
-#: src/Network/Client.cxx:205
-msgid "Failed to communicate with server. Disconnecting anyway."
-msgstr "Не удалось установить связь с сервером. Все равно отсоединяюсь."
-
-#: src/Network/Client.cxx:208
-msgid "Disconnected from server "
-msgstr "Отключен от сервера "
-
-#: src/Network/Client.cxx:223 src/Network/Client.cxx:236
-msgid "Error sending packet to "
-msgstr "Ошибка отправки пакета в "
-
-#: src/Network/Client.cxx:254
-msgid "File \""
-msgstr "Файл »"
-
-#: src/Network/Client.cxx:254
-msgid "\" does not exist."
-msgstr "« не существует."
-
-#: src/Network/Client.cxx:300
-msgid "Sent file part: "
-msgstr "Отправленная часть файла: "
-
-#: src/Network/Client.cxx:326
-msgid "Could not write to file: \""
-msgstr "Не удалось записать в файл: »"
-
-#: src/Network/Client.cxx:348
-msgid " of file: "
-msgstr " файла: "
-
-#: src/States/Singleplayer/GameState.cxx:10
-msgid "Loading world"
-msgstr "Мир загрузки"
-
-#: src/States/Singleplayer/GameState.cxx:438
-msgid "grid x, y: "
-msgstr "сетка x, y: "
-
-#: src/States/Singleplayer/GameState.cxx:440
-msgid "velocity x, y: "
-msgstr "cкорость x, y: "
-
-#: src/States/Singleplayer/GameState.cxx:442
-msgid "chunk:"
-msgstr "чанк:"
-
-#: src/States/Singleplayer/GameState.cxx:447
-msgid "region:"
-msgstr "регион:"
-
-#: src/States/Singleplayer/GameState.cxx:454
-msgid "biome:"
-msgstr "биом:"
-
-#: src/States/Singleplayer/GameState.cxx:455
-msgid "height: "
-msgstr "высота: "
-
-#: src/States/Singleplayer/GameState.cxx:455
-msgid ", moisture: "
-msgstr ", влажность: "
-
-#: src/States/Singleplayer/GameState.cxx:456
-msgid ", heat: "
-msgstr ", тепло: "
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:34
-msgid "Play Selected World"
-msgstr "Играть в избранном мире"
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:39
-msgid "Create New World"
-msgstr "Создать новый мир"
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:45
-#: src/States/Multiplayer/ServerSelectionState.cxx:59
-msgid "Edit"
-msgstr "Редактировать"
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:53
-#: src/States/Multiplayer/ServerSelectionState.cxx:63
-msgid "Delete"
-msgstr "Удалить"
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:59
-msgid "Re-Create"
-msgstr "Создайте заново"
-
-#: src/States/Singleplayer/WorldSelectionMenuState.cxx:66
-#: src/States/Multiplayer/ServerSelectionState.cxx:71
-#: src/States/Multiplayer/AddServerState.cxx:35
-#: src/States/Multiplayer/DirectConnectState.cxx:28
-#: src/States/LocalesState.cxx:48 src/States/LocalesState.cxx:181
-#: src/States/LocalesState.cxx:197
-msgid "Cancel"
-msgstr "Отмена"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:49
-#: src/States/Multiplayer/DirectConnectState.cxx:21
-msgid "Join Server"
-msgstr "Присоединиться к серверу"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:52
-msgid "Direct Connect"
-msgstr "Прямое соединение"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:56
-msgid "Add Server"
-msgstr "Добавить сервер"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:67
-msgid "Refresh"
-msgstr "Обновление"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:119
-msgid "Error parsing \"servers.json\": "
-msgstr "Ошибка при разборе файла «servers.json»: "
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:121
-msgid "Error parsing \"servers.json\" file"
-msgstr "Ошибка при разборе файла «servers.json»"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:122
-msgid "The file may be corrupted or ill-formed. Fix or delete the file:"
-msgstr ""
-"Файл может быть поврежден или неправильно сформирован. Исправьте или удалите "
-"файл:"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:132
-#: src/States/Multiplayer/ServerSelectionState.cxx:170
-msgid "Attempting to reach server..."
-msgstr "Попытка связаться с сервером..."
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:133 src/Map/Biome.cxx:15
-msgid "Unknown"
-msgstr "Неизвестный"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:134
-#: src/States/Multiplayer/ServerSelectionState.cxx:171
-#: include/States/Multiplayer/ServerSelectionState.hxx:144
-msgid "Pending"
-msgstr "В ожидании"
-
-#: src/States/Multiplayer/ServerSelectionState.cxx:190
-#: include/States/Multiplayer/ServerSelectionState.hxx:106
-#: include/States/Multiplayer/ServerSelectionState.hxx:221
-#: include/States/Multiplayer/ServerSelectionState.hxx:265
-#: include/States/Multiplayer/ServerSelectionState.hxx:282
-msgid "Status: "
-msgstr "Статус: "
-
-#: src/States/Multiplayer/AddServerState.cxx:15
-msgid "Server Name (optional)"
-msgstr "Имя сервера (необязательно)"
-
-#: src/States/Multiplayer/AddServerState.cxx:22
-#: src/States/Multiplayer/DirectConnectState.cxx:15
-msgid "Server Address"
-msgstr "Адрес сервера"
-
-#: src/States/Multiplayer/AddServerState.cxx:28
-msgid "Add"
-msgstr "Добавить"
-
-#: src/States/Multiplayer/AddServerState.cxx:67
-msgid "Pixelminer Server"
-msgstr "Сервер Pixelminer"
-
-#: src/States/Multiplayer/ClientGameState.cxx:10
-msgid "Joining server"
-msgstr "Присоединение к серверу"
-
-#: src/States/Multiplayer/ClientGameState.cxx:19
-msgid "Attempting to establish connection..."
-msgstr "Попытка установить соединение..."
-
-#: src/States/Multiplayer/ClientGameState.cxx:41
-msgid "Socket error"
-msgstr "Ошибка сокета"
-
-#: src/States/Multiplayer/ClientGameState.cxx:42
-msgid ""
-"Could not bind the client UDP socket to a port. This may be a system error "
-"or a invalid configuration of the socket."
-msgstr ""
-"Не удалось привязать UDP-сокет клиента к порту. Это может быть системная "
-"ошибка или неправильная конфигурация сокета."
-
-#: src/States/Multiplayer/ClientGameState.cxx:65
-#: src/States/Multiplayer/ClientGameState.cxx:73
-#: src/States/Multiplayer/ClientGameState.cxx:81
-msgid "Connection error"
-msgstr "Ошибка подключения"
-
-#: src/States/Multiplayer/ClientGameState.cxx:66
-msgid ""
-"The server did not respond after 10 seconds. Check if the server exists and "
-"if it is online, and if your internet connectivity is ok."
-msgstr ""
-"Сервер не отвечает через 10 секунд. Проверьте, существует ли сервер, "
-"находится ли он в сети, и все ли в порядке с подключением к Интернету."
-
-#: src/States/Multiplayer/ClientGameState.cxx:74
-msgid ""
-"The server refused to connect with this client. This might be because of a "
-"attempt to a self-connection or a server ban."
-msgstr ""
-"Сервер отказался соединиться с этим клиентом. Это может быть вызвано "
-"попыткой самостоятельного подключения или запретом сервера."
-
-#: src/States/Multiplayer/ClientGameState.cxx:81
-msgid "Disconnected."
-msgstr "Отключен."
-
-#: src/States/MainMenuState.cxx:30
-msgid "Singleplayer"
-msgstr "Одиночная игра"
-
-#: src/States/MainMenuState.cxx:38
-msgid "Multiplayer"
-msgstr "Мультиплеер"
-
-#: src/States/MainMenuState.cxx:44 src/GUI/PauseMenu.cxx:45
-msgid "Options"
-msgstr "Опции"
-
-#: src/States/MainMenuState.cxx:52
-msgid "Quit"
-msgstr "Увольнение"
-
-#: src/States/LocalesState.cxx:42 src/States/LocalesState.cxx:176
-#: src/States/LocalesState.cxx:192
-msgid "Done"
-msgstr "Готово"
-
-#: src/States/LocalesState.cxx:89
-msgid "Invalid locales file"
-msgstr "Недопустимый файл локалей"
-
-#: src/States/LocalesState.cxx:91
-msgid ""
-"The file \"locales.json\" in SETTINGS_FOLDER might be corrupted or ill-"
-"formed."
-msgstr ""
-"Файл «locales.json» в папке SETTINGS_FOLDER может быть поврежден или "
-"неправильно сформирован."
-
-#: src/States/LocalesState.cxx:106
-msgid "Failed to save locale files"
-msgstr "Не удалось сохранить файлы локали"
-
-#: src/States/LocalesState.cxx:107
-msgid "Could not open \"locales.json\" to save the new language preference."
-msgstr ""
-"Не удалось открыть файл «locales.json» для сохранения новых языковых "
-"предпочтений."
-
-#: src/States/MessageState.cxx:53
-msgid "Back"
-msgstr "Вернуться"
+#: src/Engine/ResourcePack.cxx:23
+msgid "Inexistent resouce pack: "
+msgstr "Несостоявшийся пакет ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:29
+msgid "Failed to cache resource pack: "
+msgstr "Не удалось кэшировать пакет ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:36
+msgid "Resource pack "
+msgstr "Ресурсный пакет "
+
+#: src/Engine/ResourcePack.cxx:36
+msgid " does not have a \"pack.json\" file."
+msgstr " не имеет файла «pack.json»."
+
+#: src/Engine/ResourcePack.cxx:44
+msgid "Failed to open \"pack.json\" file in resource pack: "
+msgstr "Не удалось открыть файл «pack.json» в пакете ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:64
+msgid "Missing texture \"icon.png\" in resource pack: "
+msgstr "Отсутствует текстура «icon.png» в пакете ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:77
+msgid "Failed to open font file: "
+msgstr "Не удалось открыть файл шрифта: "
+
+#: src/Engine/ResourcePack.cxx:77
+msgid " from resource pack: "
+msgstr " из набора ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:91
+msgid "Failed to open \"textures.json\" file in resource pack: "
+msgstr "Не удалось открыть файл «textures.json» в пакете ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:108
+msgid "Missing texture "
+msgstr "Отсутствующая текстура "
+
+#: src/Engine/ResourcePack.cxx:108 src/Engine/ResourcePack.cxx:139
+#: src/Engine/ResourcePack.cxx:154 src/Engine/ResourcePack.cxx:217
+#: src/Engine/ResourcePack.cxx:231 src/Engine/ResourcePack.cxx:245
+#: src/Engine/ResourcePack.cxx:259 src/Engine/ResourcePack.cxx:273
+msgid " in resource pack: "
+msgstr " в наборе ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:120
+msgid "Failed to open \"sounds.json\" file in resource pack: "
+msgstr "Не удалось открыть файл «sounds.json» в пакете ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:139
+msgid "Missing sound "
+msgstr "Отсутствующий звук "
+
+#: src/Engine/ResourcePack.cxx:154
+msgid "Missing music "
+msgstr "Отсутствующая музыка "
+
+#: src/Engine/ResourcePack.cxx:164
+msgid "Failed to open \"tile_db.json\" file in resource pack: "
+msgstr "Не удалось открыть файл «tile_db.json» в пакете ресурсов: "
+
+#: src/Engine/ResourcePack.cxx:190
+msgid "Error while reading tile database: "
+msgstr "Ошибка при чтении базы данных плитки: "
+
+#: src/Engine/ResourcePack.cxx:195
+msgid "Sucessfully loaded resource pack "
+msgstr "Успешно загружен пакет ресурсов "
+
+#: src/Engine/ResourcePack.cxx:196
+msgid " textures, "
+msgstr " текстуры, "
+
+#: src/Engine/ResourcePack.cxx:196
+msgid " fonts, "
+msgstr " Шрифты, "
+
+#: src/Engine/ResourcePack.cxx:197
+msgid " sound buffers, "
+msgstr " звуковые буферы, "
+
+#: src/Engine/ResourcePack.cxx:198
+msgid " sounds, "
+msgstr " звуки, "
+
+#: src/Engine/ResourcePack.cxx:198
+msgid " musics."
+msgstr " музыка."
+
+#: src/Engine/ResourcePack.cxx:217
+msgid "Inexistent font "
+msgstr "Несуществующий шрифт "
+
+#: src/Engine/ResourcePack.cxx:231
+msgid "Inexistent texture "
+msgstr "Несуществующая текстура "
+
+#: src/Engine/ResourcePack.cxx:245
+msgid "Inexistent sound buffer"
+msgstr "Несуществующий звуковой буфер"
+
+#: src/Engine/ResourcePack.cxx:259
+msgid "Inexistent sound "
+msgstr "Несуществующий звук "
+
+#: src/Engine/ResourcePack.cxx:273
+msgid "Inexistent music "
+msgstr "Несуществующая музыка "
+
+#: src/Engine/GraphicsSettings.cxx:28
+msgid "Loaded settings from file: "
+msgstr "Загрузка настроек из файла: "
+
+#: src/Engine/GraphicsSettings.cxx:33
+msgid "Failed to load settings from file "
+msgstr "Не удалось загрузить настройки из файла "
+
+#: src/Engine/GraphicsSettings.cxx:45
+msgid "Failed to save settings to file "
+msgstr "Не удалось сохранить настройки в файл "
+
+#: src/Engine/GraphicsSettings.cxx:62
+msgid "Error while saving to file: "
+msgstr "Ошибка при сохранении в файл: "
+
+#: src/Engine/GraphicsSettings.cxx:67
+msgid "Saved settings to file: "
+msgstr "Сохранение настроек в файл: "
 
 #: src/Engine/Engine.cxx:21
 msgid "Current locale: "
@@ -630,569 +1262,6 @@ msgstr ""
 msgid "An error occured while loading resource pack "
 msgstr "Возникла ошибка при загрузке пакета ресурсов "
 
-#: src/Engine/ResourcePack.cxx:23
-msgid "Inexistent resouce pack: "
-msgstr "Несостоявшийся пакет ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:29
-msgid "Failed to cache resource pack: "
-msgstr "Не удалось кэшировать пакет ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:36
-msgid "Resource pack "
-msgstr "Ресурсный пакет "
-
-#: src/Engine/ResourcePack.cxx:36
-msgid " does not have a \"pack.json\" file."
-msgstr " не имеет файла «pack.json»."
-
-#: src/Engine/ResourcePack.cxx:44
-msgid "Failed to open \"pack.json\" file in resource pack: "
-msgstr "Не удалось открыть файл «pack.json» в пакете ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:64
-msgid "Missing texture \"icon.png\" in resource pack: "
-msgstr "Отсутствует текстура «icon.png» в пакете ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:77
-msgid "Failed to open font file: "
-msgstr "Не удалось открыть файл шрифта: "
-
-#: src/Engine/ResourcePack.cxx:77
-msgid " from resource pack: "
-msgstr " из набора ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:91
-msgid "Failed to open \"textures.json\" file in resource pack: "
-msgstr "Не удалось открыть файл «textures.json» в пакете ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:108
-msgid "Missing texture "
-msgstr "Отсутствующая текстура "
-
-#: src/Engine/ResourcePack.cxx:108 src/Engine/ResourcePack.cxx:139
-#: src/Engine/ResourcePack.cxx:154
-msgid " in resource pack: "
-msgstr " в наборе ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:120
-msgid "Failed to open \"sounds.json\" file in resource pack: "
-msgstr "Не удалось открыть файл «sounds.json» в пакете ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:139
-msgid "Missing sound "
-msgstr "Отсутствующий звук "
-
-#: src/Engine/ResourcePack.cxx:154
-msgid "Missing music "
-msgstr "Отсутствующая музыка "
-
-#: src/Engine/ResourcePack.cxx:162
-msgid "Failed to open \"tile_db.json\" file in resource pack: "
-msgstr "Не удалось открыть файл «tile_db.json» в пакете ресурсов: "
-
-#: src/Engine/ResourcePack.cxx:188
-msgid "Error while reading tile database: "
-msgstr "Ошибка при чтении базы данных плитки: "
-
-#: src/Engine/ResourcePack.cxx:193
-msgid "Sucessfully loaded resource pack "
-msgstr "Успешно загружен пакет ресурсов "
-
-#: src/Engine/ResourcePack.cxx:194
-msgid " textures, "
-msgstr " текстуры, "
-
-#: src/Engine/ResourcePack.cxx:194
-msgid " fonts, "
-msgstr " Шрифты, "
-
-#: src/Engine/ResourcePack.cxx:195
-msgid " sound buffers, "
-msgstr " звуковые буферы, "
-
-#: src/Engine/ResourcePack.cxx:196
-msgid " sounds, "
-msgstr " звуки, "
-
-#: src/Engine/ResourcePack.cxx:196
-msgid " musics."
-msgstr " музыка."
-
-#: src/Engine/ResourcePack.cxx:215
-msgid "Inexistent font "
-msgstr "Несуществующий шрифт "
-
-#: src/Engine/ResourcePack.cxx:215 src/Engine/ResourcePack.cxx:229
-#: src/Engine/ResourcePack.cxx:243 src/Engine/ResourcePack.cxx:257
-#: src/Engine/ResourcePack.cxx:271
-msgid " in resource pack"
-msgstr " в наборе ресурсов"
-
-#: src/Engine/ResourcePack.cxx:229
-msgid "Inexistent texture "
-msgstr "Несуществующая текстура "
-
-#: src/Engine/ResourcePack.cxx:243
-msgid "Inexistent sound buffer"
-msgstr "Несуществующий звуковой буфер"
-
-#: src/Engine/ResourcePack.cxx:257
-msgid "Inexistent sound "
-msgstr "Несуществующий звук "
-
-#: src/Engine/ResourcePack.cxx:271
-msgid "Inexistent music "
-msgstr "Несуществующая музыка "
-
-#: src/Engine/GraphicsSettings.cxx:28
-msgid "Loaded settings from file: "
-msgstr "Загрузка настроек из файла: "
-
-#: src/Engine/GraphicsSettings.cxx:33
-msgid "Failed to load settings from file "
-msgstr "Не удалось загрузить настройки из файла "
-
-#: src/Engine/GraphicsSettings.cxx:45
-msgid "Failed to save settings to file "
-msgstr "Не удалось сохранить настройки в файл "
-
-#: src/Engine/GraphicsSettings.cxx:62
-msgid "Error while saving to file: "
-msgstr "Ошибка при сохранении в файл: "
-
-#: src/Engine/GraphicsSettings.cxx:67
-msgid "Saved settings to file: "
-msgstr "Сохранение настроек в файл: "
-
-#: src/GUI/PauseMenu.cxx:27
-msgid "Back to Game"
-msgstr "Назад к игре"
-
-#: src/GUI/PauseMenu.cxx:32
-msgid "Achievements"
-msgstr "Достижения"
-
-#: src/GUI/PauseMenu.cxx:40
-msgid "Statistics"
-msgstr "Статистика"
-
-#: src/GUI/PauseMenu.cxx:53
-msgid "Open To LAN"
-msgstr "Открыто для LAN"
-
-#: src/GUI/PauseMenu.cxx:58
-msgid "Save And Quit To Main Menu"
-msgstr "Сохранить и выйти в главное меню"
-
-#: src/GUI/PauseMenu.cxx:91
-msgid "Server online at: "
-msgstr "Сервер онлайн на сайте: "
-
-#: src/GUI/PauseMenu.cxx:95
-msgid "Failed to start server."
-msgstr "Не удалось запустить сервер."
-
-#: src/Game/Commands/CommandInterpreter.cxx:117
-msgid "Error: Empty command."
-msgstr "Ошибка: Пустая команда."
-
-#: src/Game/Commands/CommandInterpreter.cxx:123
-msgid "Unknown command: \""
-msgstr "Неизвестная команда: »"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
-msgid "Usage: "
-msgstr "Использование: "
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:10
-msgid "tp [(targets...)] [(x y) OR (target)]"
-msgstr "tp [(цели...)] [(x y) ИЛИ (цель)]"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:53
-msgid "Error: No targets to teleport specified."
-msgstr "Ошибка: Не указаны цели для телепортации."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:60
-msgid "Error: No targets to teleport found."
-msgstr "Ошибка: Не найдено целей для телепортации."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:74
-msgid "Error: World coordinate out of bounds."
-msgstr "Ошибка: Мировая координата выходит за пределы."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:78
-msgid "Error: Invalid coordinate format."
-msgstr "Ошибка: Недопустимый формат координат."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:87
-msgid "Error: No destination target found."
-msgstr "Ошибка: Цель назначения не найдена."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:91
-msgid "Error: Destination must resolve to exactly one target."
-msgstr "Ошибка: Пункт назначения должен разрешиться ровно на одну цель."
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:103
-msgid "Teleported "
-msgstr "Телепортироваться "
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:104
-msgid " entity to"
-msgid_plural " entities to"
-msgstr[0] " сущность к"
-msgstr[1] " сущности к"
-msgstr[2] " сущностей к"
-
-#: src/Game/Commands/CommandImpl/TpCommandImpl.cxx:111
-msgid " the position of "
-msgstr " на место "
-
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:10
-msgid "id [target]"
-msgstr "id [цель]"
-
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:20
-msgid "Error: No valid entity found for target \""
-msgstr "Ошибка: Не найдено ни одной действительной сущности для цели »"
-
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:25
-msgid "Error: Target \""
-msgstr "Ошибка: Цель »"
-
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:26
-msgid "\" resolved to multiple entities. Please specify a unique target."
-msgstr "« разрешено нескольким сущностям. Пожалуйста, укажите уникальную цель."
-
-#: src/Game/Commands/CommandImpl/IdCommandImpl.cxx:33
-msgid "Entity ID: "
-msgstr "ID сущность: "
-
-#: src/Map/Map.cxx:15
-msgid "Generating world metadata..."
-msgstr "Создание метаданных о мире..."
-
-#: src/Map/Map.cxx:49 src/Map/Map.cxx:58
-msgid "Preparing to load"
-msgstr "Подготовка к загрузке"
-
-#: src/Map/Map.cxx:199
-msgid "Could not write world metadata: "
-msgstr "Не удалось записать метаданные о мире: "
-
-#: src/Map/Map.cxx:255
-msgid "Failed to write region file: "
-msgstr "Не удалось записать файл региона: "
-
-#: src/Map/Map.cxx:308
-msgid "Written "
-msgstr "Записано "
-
-#: src/Map/Map.cxx:308
-msgid " tiles to region: "
-msgstr " плитки в регион: "
-
-#: src/Map/Map.cxx:318
-msgid "Inexistent world: "
-msgstr "Несуществующий мир: "
-
-#: src/Map/Map.cxx:320
-msgid "Loading world metadata..."
-msgstr "Загрузка метаданных о мире..."
-
-#: src/Map/Map.cxx:324
-msgid "No world metadata found: "
-msgstr "Метаданные о мире не найдены: "
-
-#: src/Map/Map.cxx:328 src/Tools/Zip.cxx:157
-msgid "Failed to open file: "
-msgstr "Не удалось открыть файл: "
-
-#: src/Map/Map.cxx:337
-msgid "Initializing terrain generator..."
-msgstr "Инициализация генератора рельефа..."
-
-#: src/Map/Map.cxx:370
-msgid "Failed to read region file: "
-msgstr "Не удалось прочитать файл региона: "
-
-#: src/Map/Map.cxx:382
-msgid "Corrupted region file: Chunk index out of bounds"
-msgstr "Поврежденный файл региона: Индекс чанка выходит за пределы"
-
-#: src/Map/Map.cxx:400
-msgid "Corrupted region file: "
-msgstr "Поврежденный файл региона: "
-
-#: src/Map/Map.cxx:401
-msgid "out of bounds in Chunk"
-msgstr "за пределами границ в Чанке"
-
-#: src/Map/Map.cxx:416
-msgid "Invalid tile ID: "
-msgstr "Неверный идентификатор плитки: "
-
-#: src/Map/Map.cxx:417
-msgid " in Chunk"
-msgstr " в Чанке"
-
-#: src/Map/Map.cxx:430
-msgid "Read "
-msgstr "Было прочитано "
-
-#: src/Map/Map.cxx:430
-msgid " tiles from region: "
-msgstr " плитка из региона: "
-
-#: src/Map/Map.cxx:467 src/Map/Map.cxx:647
-msgid "Region ("
-msgstr "Регион ("
-
-#: src/Map/Map.cxx:468
-msgid ") unloaded from memory."
-msgstr ") выгружается из памяти."
-
-#: src/Map/Map.cxx:648
-msgid ") out of bounds."
-msgstr ") за пределы."
-
-#: src/Map/Biome.cxx:8
-msgid "Desert"
-msgstr "Пустыня"
-
-#: src/Map/Biome.cxx:9
-msgid "Forest"
-msgstr "Лес"
-
-#: src/Map/Biome.cxx:10
-msgid "Grassland"
-msgstr "Пастбище"
-
-#: src/Map/Biome.cxx:11
-msgid "Jungle"
-msgstr "Джунгли"
-
-#: src/Map/Biome.cxx:12
-msgid "Mountains"
-msgstr "Горы"
-
-#: src/Map/Biome.cxx:13
-msgid "Ocean"
-msgstr "Океан"
-
-#: src/Map/Biome.cxx:14
-msgid "Tundra"
-msgstr "Тундра"
-
-#: src/Map/EntitySpatialGridPartition.cxx:15
-msgid "Cell out of bounds: "
-msgstr "Клетка выходит за пределы: "
-
-#: src/Map/EntitySpatialGridPartition.cxx:30
-msgid " with id "
-msgstr " с ID "
-
-#: src/Map/EntitySpatialGridPartition.cxx:31
-msgid " was not found in the spatial grid partition."
-msgstr " не было найдено в разбиении пространственной сетки."
-
-#: src/Map/TerrainGenerator.cxx:6 src/Map/TerrainGenerator.cxx:7
-msgid "Initializing perlin waves..."
-msgstr "Инициализация волн Перлина..."
-
-#: src/Map/TerrainGenerator.cxx:16 src/Map/TerrainGenerator.cxx:17
-msgid "Generating noise maps..."
-msgstr "Создание карт шума..."
-
-#: src/Map/TerrainGenerator.cxx:28 src/Map/TerrainGenerator.cxx:29
-msgid "Precomputing biomes..."
-msgstr "Предварительный расчет биомов..."
-
-#: src/Map/TerrainGenerator.cxx:174
-msgid "Done!"
-msgstr "Готово!"
-
-#: src/Map/TerrainGenerator.cxx:185
-msgid "Failed to generate region: Indexes are out of bounds."
-msgstr "Не удалось сгенерировать регион: Индексы выходят за границы."
-
-#: src/Tools/Logger.cxx:13
-msgid "INFO"
-msgstr "ИНФО"
-
-#: src/Tools/Logger.cxx:24
-msgid "WARNING"
-msgstr "ВНИМАНИЕ"
-
-#: src/Tools/Logger.cxx:35
-msgid "ERROR"
-msgstr "ОШИБКА"
-
-#: src/Tools/Date.cxx:8
-msgid "Never"
-msgstr "Никогда"
-
-#: src/Tools/Date.cxx:20
-msgid "INVALID TIMESTAMP"
-msgstr "НЕДОПУСТИМАЯ ВРЕМЕННАЯ МЕТКА"
-
-#: src/Tools/Date.cxx:31
-msgid "FORMATTING ERROR"
-msgstr "ОШИБКА ФОРМАТИРОВАНИЯ"
-
-#: src/Tools/Zip.cxx:13
-msgid "Failed to open ZIP archive for extraction: "
-msgstr "Не удалось открыть ZIP-архив для извлечения: "
-
-#: src/Tools/Zip.cxx:19
-msgid "Failed to locate first file of ZIP archive: "
-msgstr "Не удалось обнаружить первый файл архива ZIP: "
-
-#: src/Tools/Zip.cxx:28
-msgid "Failed to create output directory \""
-msgstr "Не удалось создать выходной каталог »"
-
-#: src/Tools/Zip.cxx:34
-msgid "Created output directory \""
-msgstr "Создан выходной каталог »"
-
-#: src/Tools/Zip.cxx:47
-msgid "Failed to get file info from ZIP archive: "
-msgstr "Не удалось получить информацию о файле из архива ZIP: "
-
-#: src/Tools/Zip.cxx:56
-msgid "Failed to open file inside ZIP archive: "
-msgstr "Не удалось открыть файл внутри ZIP-архива: "
-
-#: src/Tools/Zip.cxx:65
-msgid "Failed to create directory \""
-msgstr "Не удалось создать каталог »"
-
-#: src/Tools/Zip.cxx:71
-msgid "Created directory \""
-msgstr "Создан каталог »"
-
-#: src/Tools/Zip.cxx:80
-msgid "Failed to create output file: "
-msgstr "Не удалось создать выходной файл: "
-
-#: src/Tools/Zip.cxx:96
-msgid "Extracted file \""
-msgstr "Извлеченный файл »"
-
-#: src/Tools/Zip.cxx:107
-msgid "Successfully extracted "
-msgstr "Успешно извлечено "
-
-#: src/Tools/Zip.cxx:107
-msgid " files ("
-msgstr " файлы ("
-
-#: src/Tools/Zip.cxx:108
-msgid " KB) from ZIP archive: \""
-msgstr " KB) из архива ZIP: »"
-
-#: src/Tools/Zip.cxx:120
-msgid "Failed to create ZIP file: "
-msgstr "Не удалось создать ZIP-файл: "
-
-#: src/Tools/Zip.cxx:139
-msgid "Successfully compressed \""
-msgstr "Успешное сжатие »"
-
-#: src/Tools/Zip.cxx:139
-msgid "\" to ZIP archive: \""
-msgstr "« в архив ZIP: »"
-
-#: src/Tools/Zip.cxx:165
-msgid "Failed to add file to ZIP: "
-msgstr "Не удалось добавить файл в ZIP: "
-
-#: src/Tools/Zip.cxx:174
-msgid "Failed to write data to ZIP file: "
-msgstr "Не удалось записать данные в ZIP-файл: "
-
-#: src/Tools/Zip.cxx:183
-msgid "Added file: "
-msgstr "Добавлен файл: "
-
-#: src/Tools/JSON.cxx:59
-msgid "Error at line "
-msgstr "Ошибка в строке "
-
-#: src/Tools/JSON.cxx:59
-msgid ", column "
-msgstr ", колонна "
-
-#: src/Tools/JSON.cxx:141
-msgid "Could not open file: "
-msgstr "Не удалось открыть файл: "
-
-#: src/Tools/JSON.cxx:156
-msgid "Unexpected end of input"
-msgstr "Неожиданный конец ввода"
-
-#: src/Tools/JSON.cxx:191
-msgid "Invalid JSON value"
-msgstr "Недопустимое значение JSON"
-
-#: src/Tools/JSON.cxx:197 src/Tools/JSON.cxx:351
-msgid "Expected '\"'"
-msgstr "Ожидается '\"'"
-
-#: src/Tools/JSON.cxx:207
-msgid "Unexpected end of input in string"
-msgstr "Неожиданный конец ввода в строке символов"
-
-#: src/Tools/JSON.cxx:218
-msgid "Invalid escape character in string"
-msgstr "Недопустимый управляющий символ в строке"
-
-#: src/Tools/JSON.cxx:229
-msgid "Unterminated string"
-msgstr "Непрерванная строка"
-
-#: src/Tools/JSON.cxx:289
-msgid "Integer value out of range: "
-msgstr "Целочисленное значение выходит за пределы диапазона: "
-
-#: src/Tools/JSON.cxx:302
-msgid "Floating-point value out of range: "
-msgstr "Значение с плавающей точкой выходит за пределы диапазона: "
-
-#: src/Tools/JSON.cxx:319
-msgid "Invalid boolean value"
-msgstr "Недопустимое булево значение"
-
-#: src/Tools/JSON.cxx:329
-msgid "Invalid null value"
-msgstr "Недопустимое нулевое значение"
-
-#: src/Tools/JSON.cxx:336
-msgid "Expected '{'"
-msgstr "Ожидается '{'"
-
-#: src/Tools/JSON.cxx:356
-msgid "Expected ':'"
-msgstr "Ожидается ':'"
-
-#: src/Tools/JSON.cxx:373
-msgid "Expected ',' or '}'"
-msgstr "Ожидается ',' или '}'"
-
-#: src/Tools/JSON.cxx:382
-msgid "Expected '['"
-msgstr "Ожидается '['"
-
-#: src/Tools/JSON.cxx:409
-msgid "Expected ',' or ']'"
-msgstr "Ожидается ',' или ']'."
-
-#: src/Tools/JSON.cxx:425
-msgid "Expected '"
-msgstr "Ожидается '"
-
 #: include/States/Singleplayer/WorldSelectionMenuState.hxx:75
 msgid "Error while loading image: "
 msgstr "Ошибка при загрузке изображения: "
@@ -1224,6 +1293,9 @@ msgstr "Offline"
 #: include/States/Multiplayer/ServerSelectionState.hxx:256
 msgid "Online"
 msgstr "Online"
+
+#~ msgid " in resource pack"
+#~ msgstr " в наборе ресурсов"
 
 #~ msgid "Unreacheable"
 #~ msgstr "Недостижимое"

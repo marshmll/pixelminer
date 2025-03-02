@@ -74,10 +74,10 @@ class ServerSelector
           connAnimation(connSprite, texture, 100, sf::Vector2u(10, 10), sf::Vector2u(1, 0), sf::Vector2u(5, 0), true)
     {
         // Initialize container
-        container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 18.f)));
+        container.setSize(sf::Vector2f(gui::percent(data.vm->size.x, 60.f), gui::percent(data.vm->size.y, 13.f)));
         container.setPosition(sf::Vector2f(static_cast<int>(data.vm->size.x / 2.f - container.getSize().x / 2.f),
                                            static_cast<int>(y_position)));
-        container.setFillColor(sf::Color(0, 0, 0, 80));
+        container.setFillColor(sf::Color::Transparent);
         container.setOutlineColor(sf::Color::White);
 
         // Initialize icon
@@ -87,15 +87,15 @@ class ServerSelector
         icon.setTexture(&iconTexture);
 
         // Initialize connection sprite
-        connSprite.setScale(sf::Vector2f(data.scale, data.scale));
+        connSprite.setScale(sf::Vector2f(*data.scale, *data.scale));
         connSprite.setPosition(sf::Vector2f(container.getPosition().x + container.getSize().x -
-                                                texture.getSize().y * data.scale - gui::percent(data.vm->size.x, 1.f),
+                                                texture.getSize().y * *data.scale - gui::percent(data.vm->size.x, 1.f),
                                             container.getPosition().y));
 
         // Initialize server name text
         name = std::make_unique<sf::Text>(data.activeResourcePack->getFont("Bold"),
                                           sf::String::fromUtf8(metadata.serverName.begin(), metadata.serverName.end()),
-                                          gui::charSize(*data.vm, 100));
+                                          gui::charSize(*data.vm, 120));
         name->setPosition(
             sf::Vector2f(static_cast<int>(icon.getPosition().x + icon.getSize().x + gui::percent(data.vm->size.x, 1.f)),
                          static_cast<int>(icon.getPosition().y + gui::percent(data.vm->size.y, 1.f))));
@@ -106,10 +106,10 @@ class ServerSelector
             metadata.serverDescription + "\n" + _("Status: ") + metadata.status + "\n" + metadata.serverAddress;
         description =
             std::make_unique<sf::Text>(data.activeResourcePack->getFont("Regular"),
-                                       sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 100));
+                                       sf::String::fromUtf8(str.begin(), str.end()), gui::charSize(*data.vm, 120));
         description->setPosition(
             sf::Vector2f(static_cast<int>(name->getPosition().x),
-                         static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 4.f))));
+                         static_cast<int>(name->getPosition().y + gui::percent(data.vm->size.y, 3.f))));
         description->setFillColor(sf::Color::Yellow);
     }
 
@@ -129,7 +129,7 @@ class ServerSelector
             if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             {
                 selected = true;
-                container.setOutlineThickness(1.f);
+                container.setOutlineThickness(-1.f);
             }
         }
     }
@@ -144,11 +144,11 @@ class ServerSelector
         if (metadata.status == _("Pending"))
             connAnimation.play();
 
-        target.draw(container);
         target.draw(icon);
         target.draw(connSprite);
         target.draw(*name);
         target.draw(*description);
+        target.draw(container);
     }
 
     /**
@@ -193,7 +193,7 @@ class ServerSelector
         if (!selected)
             container.setOutlineThickness(0.f);
         else
-            container.setOutlineThickness(1.f);
+            container.setOutlineThickness(-1.f);
     }
 
     /**

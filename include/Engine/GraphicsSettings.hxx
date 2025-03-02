@@ -22,6 +22,7 @@ class GraphicsSettings
     unsigned int screenHeight;   ///< Height of the screen resolution.
     unsigned int framerateLimit; ///< Limit for the framerate.
     bool fullscreen;             ///< Flag to determine if fullscreen mode is enabled.
+    bool vsync;                  ///< Flag to determine if V-Sync is enabled.
     std::string resourcePack;    ///< Name of the active resource pack.
 
     /**
