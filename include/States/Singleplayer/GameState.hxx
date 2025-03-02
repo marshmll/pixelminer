@@ -70,7 +70,7 @@ class GameState : public State
 
     std::unique_ptr<gui::Chat> chat; ///< Chat interface.
 
-    Server server;
+    Server server; ///< Server component for multiplayer gamess
 
     /**
      * @brief Initializes the loading screen.

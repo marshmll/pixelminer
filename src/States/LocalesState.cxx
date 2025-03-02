@@ -32,6 +32,33 @@ void LocalesState::initGUI()
         sf::Vector2f(footer.getPosition().x + footer.getSize().x / 2.f - buttonContainer.getSize().x / 2.f,
                      footer.getPosition().y + footer.getSize().y / 2.f - buttonContainer.getSize().y / 2.f));
 
+    disclaimerText = std::make_unique<sf::Text>(data.activeResourcePack->getFont("SemiBold"),
+                                                _("(Translations may not be 100% accurate. Also check if the selected "
+                                                  "locale is installed globally in your system.)"),
+                                                gui::charSize(*data.vm, 120));
+
+    disclaimerText->setFillColor(sf::Color(200, 200, 200, 255));
+    disclaimerText->setPosition(sf::Vector2f(0.f, 0.f));
+
+    for (int i = 0; i < disclaimerText->getString().getSize(); i++)
+    {
+        if ((disclaimerText->findCharacterPos(i).x - disclaimerText->getPosition().x) >=
+            gui::percent(data.vm->size.x, 80.f))
+        {
+            sf::String str = disclaimerText->getString();
+            int j = i;
+
+            while (j > 0 && str[j] != ' ')
+                j--;
+
+            str.replace(j, 1, "\n");
+            disclaimerText->setString(str);
+        }
+    }
+
+    disclaimerText->setPosition(sf::Vector2f(data.vm->size.x / 2.f - disclaimerText->getGlobalBounds().size.x / 2.f,
+                                             footer.getPosition().y + gui::percent(2.5f, data.vm->size.y)));
+
     float gap = gui::charSize(*data.vm, 110);
     int rows = 1;
     int cols = 2;
@@ -206,6 +233,7 @@ void LocalesState::render(sf::RenderTarget &target)
     target.draw(background);
     target.draw(header);
     target.draw(footer);
+    target.draw(*disclaimerText);
 
     scrollContainer->render(target);
 

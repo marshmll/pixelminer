@@ -1,6 +1,6 @@
 /**
  * @file LinearCongruentialGenerator.hxx
- * @brief Declares the LinearCongruentialGenerator class to create a deterministic Random Number Generator (RNG).
+ * @brief Declares the Random class to create a deterministic Random Number Generator (RNG).
  */
 
 #pragma once

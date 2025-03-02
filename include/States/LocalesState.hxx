@@ -138,10 +138,11 @@ class LangOption
 class LocalesState : public State
 {
   private:
-    sf::RectangleShape background;      ///< Background rectangle of the menu.
-    sf::RectangleShape header;          ///< Header section rectangle of the menu.
-    sf::RectangleShape footer;          ///< Footer section rectangle of the menu.
-    sf::RectangleShape buttonContainer; ///< A container used to position and size button.
+    sf::RectangleShape background;            ///< Background rectangle of the menu.
+    sf::RectangleShape header;                ///< Header section rectangle of the menu.
+    sf::RectangleShape footer;                ///< Footer section rectangle of the menu.
+    sf::RectangleShape buttonContainer;       ///< A container used to position and size button.
+    std::unique_ptr<sf::Text> disclaimerText; ///< A text warning for the user.
 
     std::unique_ptr<gui::ScrollableContainer> scrollContainer; ///< A scrollable container to deal with option scrolling.
 

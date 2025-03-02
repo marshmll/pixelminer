@@ -9,7 +9,10 @@
 #include "Entities/Functionalities/AttributeFunctionality.hxx"
 #include "GUI/GUI.hxx"
 
-static constexpr uint8_t MAX_HOTBAR_SLOTS = 9;
+/**
+ * @brief Represents how many slots the hotbar has.
+ */
+constexpr uint8_t MAX_HOTBAR_SLOTS = 9;
 
 /**
  * @class Hotbar
@@ -52,10 +55,19 @@ class Hotbar
      */
     uint8_t hungerBarRows;
 
+    /**
+     * @brief The sprite of the hotbar slots.
+     */
     std::unique_ptr<sf::Sprite> hotbar;
 
+    /**
+     * @brief The sprite of the hotbar slot selector.
+     */
     std::unique_ptr<sf::Sprite> hotbarSelector;
 
+    /**
+     * @brief Which hotbar slot is selected from 0 to `MAX_HOTBAR_SLOTS` - 1;
+     */
     int8_t hotbarSlot;
 
     /**
@@ -81,6 +93,9 @@ class Hotbar
      */
     void initGUI();
 
+    /**
+     * @brief Updates the hotbar slot selector.
+     */
     void updateHotbarSlotSelector();
 
   public:
@@ -130,6 +145,9 @@ class Hotbar
      */
     void updateHungerBar();
 
+    /**
+     * @brief Updates the hotbar.
+     */
     void updateHotbar(std::optional<sf::Event::MouseWheelScrolled> mouse_data);
 
     /**
@@ -150,5 +168,8 @@ class Hotbar
      */
     void renderHungerBar(sf::RenderTarget &target);
 
+    /**
+     * @brief Renders the hotbar.
+     */
     void renderHotbar(sf::RenderTarget &target);
 };

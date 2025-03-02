@@ -11,6 +11,8 @@ SliderInput::SliderInput(const sf::Vector2f &position, const sf::Vector2f &size,
                          const unsigned int selected_option)
     : maxOption(max_option), selectedOption(selected_option)
 {
+    ASSERT_ALWAYS((selected_option < max_option), _("The selected option needs to be less than the max option."));
+
     body.setSize(size);
     body.setPosition(position);
     body.setFillColor(body_color);

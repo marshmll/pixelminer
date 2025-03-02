@@ -65,7 +65,7 @@ namespace File
      * @return True if the file exists, false otherwise.
      */
     const bool validatePath(const std::filesystem::path &path);
-}; // namespace File
+} // namespace File
 
 /**
  * @brief Serializes a `FileDescriptor` object into an SFML packet.

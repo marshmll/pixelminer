@@ -23,6 +23,8 @@ class GraphicsSettings
     unsigned int framerateLimit; ///< Limit for the framerate.
     bool fullscreen;             ///< Flag to determine if fullscreen mode is enabled.
     bool vsync;                  ///< Flag to determine if V-Sync is enabled.
+    bool fontSmoothness;         ///< Flag to determine if font smoothness should be enabled.
+    bool textureSmoothness;      ///< Flag to determine if texture smoothness should be enabled.
     std::string resourcePack;    ///< Name of the active resource pack.
 
     /**

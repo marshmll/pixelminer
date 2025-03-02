@@ -104,8 +104,26 @@ const bool Zip::extract(const std::filesystem::path &src, const std::filesystem:
 
     } while (unzGoToNextFile(zip_file) == UNZ_OK);
 
+    std::string unit = " B";
+
+    if (total_size > 1024)
+    {
+        total_size /= 1024;
+        unit = " KB";
+    }
+    if (total_size > 1024)
+    {
+        total_size /= 1024;
+        unit = " MB";
+    }
+    if (total_size > 1024)
+    {
+        total_size /= 1024;
+        unit = " GB";
+    }
+
     logger.logInfo(_("Successfully extracted ") + std::to_string(files_extracted) + _(" files (") +
-                   std::to_string(total_size / 1024) + _(" KB) from ZIP archive: \"") + src.string());
+                   std::to_string(total_size) + unit + ") " + _("from ZIP archive: \"") + src.string());
 
     return true;
 }

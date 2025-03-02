@@ -78,8 +78,6 @@ const bool ResourcePack::load(const std::string &name)
                             false);
             return false;
         }
-
-        this->fonts.at(key).setSmooth(false);
     }
 
     /* Default images +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -106,9 +104,6 @@ const bool ResourcePack::load(const std::string &name)
 
         if (!textures[key].loadFromFile(root_path / path))
             logger.logWarning(_("Missing texture ") + path + _(" in resource pack: ") + name);
-
-        // Ensure that texture smoothing is off
-        textures.at(key).setSmooth(false);
     }
 
     /* Default Sounds +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -280,4 +275,16 @@ void ResourcePack::stopAllMusics()
 {
     for (auto &[_, music] : musics)
         music->stop();
+}
+
+void ResourcePack::setFontSmoothness(const bool smoothness)
+{
+    for (auto &[_, font] : fonts)
+        font.setSmooth(smoothness);
+}
+
+void ResourcePack::setTextureSmoothness(const bool smoothness)
+{
+    for (auto &[_, texture] : textures)
+        texture.setSmooth(smoothness);
 }

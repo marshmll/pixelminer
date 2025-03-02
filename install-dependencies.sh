@@ -5,6 +5,9 @@ sudo apt install \
     cmake \
     clang \
     ninja-build \
+    libx11-dev \
+    libxi-dev \
+    libxinerama-dev \
     libxrandr-dev \
     libxcursor-dev \
     libudev-dev \

@@ -1,3 +1,9 @@
+/**
+ * @file EngineData.hxx
+ * @brief Defines the EngineData struct which is a group of important engine information and resources to be
+ * shared throughout the application.
+ */
+
 #pragma once
 
 #include "Engine/ResourcePack.hxx"

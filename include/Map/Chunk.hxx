@@ -15,9 +15,9 @@
  */
 enum ChunkFlags : uint8_t
 {
-    None = (1 << 0),       ///< No flags set for the chunk.
-    Modified = (1 << 1),   ///< Indicates that the chunk is different from default generation.
-    KeepLoaded = (1 << 2), ///< Indicates that the chunk should not be unloaded from memory.
+    None        = 0,        ///< No flags set for the chunk.
+    Modified    = (1 << 0), ///< Indicates that the chunk is different from default generation.
+    KeepLoaded  = (1 << 1), ///< Indicates that the chunk should not be unloaded from memory.
 };
 
 /**

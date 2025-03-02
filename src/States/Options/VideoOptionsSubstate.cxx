@@ -78,9 +78,23 @@ void VideoOptionsSubstate::initButtons()
     buttons["VSync"] = std::make_unique<gui::ToggleButton>(
         sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
                      buttonContainer.getPosition().y + (btn_height * 1) + (gap_y * 1)),
-        sf::Vector2f(btn_width, btn_height), sf::Color(200, 200, 200, 200), _("VSync"),
+        sf::Vector2f(btn_width, btn_height), sf::Color(200, 200, 200, 200), _("V-Sync"),
         data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White, data.gfx->vsync,
         200, 2.f, sf::Color::Black);
+
+    buttons["FontSmoothness"] = std::make_unique<gui::ToggleButton>(
+        sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
+                     buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
+        sf::Vector2f(btn_width, btn_height), sf::Color(200, 200, 200, 200), _("Font Smoothness"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
+        data.gfx->fontSmoothness, 200, 2.f, sf::Color::Black);
+
+    buttons["TextureSmoothness"] = std::make_unique<gui::ToggleButton>(
+        sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
+                     buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
+        sf::Vector2f(btn_width, btn_height), sf::Color(200, 200, 200, 200), _("Texture Smoothness"),
+        data.activeResourcePack->getFont("Regular"), gui::charSize(*data.vm, 95), sf::Color::White,
+        data.gfx->textureSmoothness, 200, 2.f, sf::Color::Black);
 
     buttons["ApplyAndClose"] = std::make_unique<gui::TextButton>(
         sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
@@ -123,6 +137,8 @@ void VideoOptionsSubstate::applyVideoSettings()
     data.gfx->vsync = dynamic_cast<gui::ToggleButton *>(buttons.at("VSync").get())->isOn();
     data.gfx->screenWidth = std::stoi(currentResolution.substr(0, currentResolution.find("x")));
     data.gfx->screenHeight = std::stoi(currentResolution.substr(currentResolution.find("x") + 1));
+    data.gfx->fontSmoothness = dynamic_cast<gui::ToggleButton *>(buttons.at("FontSmoothness").get())->isOn();
+    data.gfx->textureSmoothness = dynamic_cast<gui::ToggleButton *>(buttons.at("TextureSmoothness").get())->isOn();
 
     *data.vm = sf::VideoMode(sf::Vector2u(data.gfx->screenWidth, data.gfx->screenHeight));
 
@@ -154,6 +170,9 @@ void VideoOptionsSubstate::applyVideoSettings()
 
     if (!data.gfx->saveToFile(SETTINGS_FOLDER + "graphics.json"))
         logger.logWarning(_("Failed to save new video settings to file: graphics.json"));
+
+    data.activeResourcePack->setFontSmoothness(data.gfx->fontSmoothness);
+    data.activeResourcePack->setTextureSmoothness(data.gfx->textureSmoothness);
 }
 
 VideoOptionsSubstate::VideoOptionsSubstate(EngineData &data) : logger("VideoOptionsSubstate"), Substate(data)

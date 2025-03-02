@@ -6,11 +6,13 @@
 #pragma once
 
 #include "Engine/Configuration.hxx"
+#include "Engine/ResourcePack.hxx"
 #include "Engine/EngineData.hxx"
 #include "Engine/Languages.hxx"
 #include "Engine/GraphicsSettings.hxx"
 #include "States/MainMenuState.hxx"
 #include "Tiles/TileData.hxx"
+#include "Tools/Assert.hxx"
 #include "Tools/JSON.hxx"
 #include "Tools/Logger.hxx"
 #include "Tools/UUID.hxx"
@@ -48,6 +50,9 @@ class Engine
      */
     void seedRandom();
 
+    /**
+     * @brief `Reads the locales.json` file and setups i18n.
+     */
     void initLocales();
 
     /**

@@ -1,7 +1,9 @@
 {
+    "fontSmoothness": false,
     "framerateLimit": 60,
     "fullscreen": true,
     "vsync": false,
     "resolution": {},
-    "resourcePack": "Vanilla"
+    "resourcePack": "Vanilla",
+    "textureSmoothness": false
 }

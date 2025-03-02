@@ -15,26 +15,39 @@
 #include "Tools/Logger.hxx"
 #include "Tools/PerlinNoise.hxx"
 
-/// Maximum number of regions in the world grid (16x16).
+/**
+ * @brief
+ */
 static constexpr sf::Vector2u MAX_REGIONS = {16, 16};
 
-/// Maximum number of chunks in the world grid based on regions.
+/**
+ * @brief Maximum number of chunks in the world grid based on regions.
+ */
 static constexpr sf::Vector2u MAX_CHUNKS = {MAX_REGIONS.x * REGION_SIZE_IN_CHUNKS.x,
                                             MAX_REGIONS.y *REGION_SIZE_IN_CHUNKS.y};
 
-/// Maximum world grid size in tiles (based on chunks and region sizes).
+/**
+ * @brief Maximum world grid size in tiles (based on chunks and region sizes).
+ */
 static constexpr sf::Vector2u MAX_WORLD_GRID_SIZE = {
     MAX_CHUNKS.x * CHUNK_SIZE_IN_TILES.x,
     MAX_CHUNKS.y *CHUNK_SIZE_IN_TILES.y,
 };
 
-/// Defines a matrix of chunks for the world.
+/**
+ * @brief Defines a matrix of chunks for the world.
+ */
 using ChunkMatrix = std::array<std::array<std::unique_ptr<Chunk>, MAX_CHUNKS.x>, MAX_CHUNKS.y>;
 
-/// Defines the biome map for the world grid.
+/**
+ * @brief Defines the biome map for the world grid.
+ */
 using BiomeMap = std::array<std::array<BiomePreset, MAX_WORLD_GRID_SIZE.y>, MAX_WORLD_GRID_SIZE.x>;
 
-/// Class responsible for terrain generation in the world grid.
+/**
+ * @class TerrainGenerator.
+ * @brief Class responsible for terrain generation in the world grid.
+ */
 class TerrainGenerator
 {
   private:
@@ -48,7 +61,7 @@ class TerrainGenerator
     TileDatabase &tileDb;     ///< Tile database mapping tile tags to tile data.
     float scale;              ///< Scale for terrain generation.
 
-    Random rng;                      ///< Random number generator.
+    Random rng;                      ///< Linear-Congruential pseudo-random number generator.
     PerlinNoise perlinNoise;         ///< Perlin noise generator for terrain features.
     std::vector<Wave> heightWaves;   ///< Waves for heightmap generation.
     std::vector<Wave> moistureWaves; ///< Waves for moisture map generation.

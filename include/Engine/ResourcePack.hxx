@@ -95,8 +95,21 @@ class ResourcePack
      * @throws Exception if the music is not found.
      */
     sf::Music &getMusic(const std::string &key);
+
     /**
      * @brief Stops all musics if playing.
      */
     void stopAllMusics();
+
+    /**
+     * @brief Sets the fonts smoothness.
+     * @param smoothness If the font smoothness should be on.
+     */
+    void setFontSmoothness(const bool smoothness);
+
+    /**
+     * @brief Sets the textures smoothness.
+     * @param smoothness If the texture smoothness should be on.
+     */
+    void setTextureSmoothness(const bool smoothness);
 };

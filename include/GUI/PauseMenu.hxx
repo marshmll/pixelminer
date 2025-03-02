@@ -37,10 +37,8 @@ namespace gui
         bool quit;   ///< Flag to track whether the user wants to quit.
 
         EngineData &data; ///< The reference to the engine's data, providing access to resources and data.
-
-        Server &server;
-
-        Chat &chat;
+        Server &server; ///< The reference to the game's server instance.
+        Chat &chat; ///< The referente to the game's chat instance.
 
       public:
         /**

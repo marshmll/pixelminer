@@ -72,7 +72,7 @@ void Engine::identificateSelf()
             logger.logError(_("Could not identificate self."));
 
         char uuid[37];
-        fUuid.read(uuid, sizeof(uuid));
+        ASSERT_ALWAYS((fUuid.read(uuid, sizeof(uuid))), "Invalid UUID read.");
         myUuid.append(uuid);
 
         fUuid.close();
@@ -157,6 +157,8 @@ void Engine::initResourcePacks()
     {
         resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
         activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+        activeResourcePack->setFontSmoothness(gfx.fontSmoothness);
+        activeResourcePack->setTextureSmoothness(gfx.textureSmoothness);
     }
     catch (std::exception &e)
     {
