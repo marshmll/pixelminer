@@ -5,19 +5,21 @@ using namespace gui;
 
 ScrollableContainer::ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size,
                                          const sf::Vector2f &position, const float &max_scroll_delta,
-                                         const float &scrollbar_width, const sf::Color &scrollbar_color)
+                                         const float &scrollbar_width, const sf::Color &scrollbar_color,
+                                         const sf::Color &container_color)
     : maxScrollDelta(max_scroll_delta), scrollBarLock(false), scrollBarVisibility(true)
 {
     // Cache container position and size
     container.setSize(size);
     container.setPosition(position);
+    container.setFillColor(container_color);
 
     const float containerCenterX = container.getPosition().x + container.getSize().x / 2.f;
     const float containerCenterY = container.getPosition().y + container.getSize().y / 2.f;
 
     // Scrollbar
     scrollBar.setSize(sf::Vector2f(scrollbar_width, container.getSize().y / 4.f));
-    scrollBar.setPosition(sf::Vector2f(container.getPosition().x + container.getSize().x + scrollBar.getSize().x / 2.f,
+    scrollBar.setPosition(sf::Vector2f(container.getPosition().x + container.getSize().x + gui::percent(vm.size.x, .5f),
                                        container.getPosition().y));
     scrollBar.setFillColor(scrollbar_color);
 
@@ -68,7 +70,7 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
         scrollBarLock = false;
     }
 
-    if (!scrollBarLock)
+    if (!scrollBarLock && container.getGlobalBounds().contains(mouse_pos))
     {
         if (mouse_data)
         {
@@ -89,7 +91,7 @@ void ScrollableContainer::update(const float &dt, const sf::Vector2f &mouse_pos,
 
 void ScrollableContainer::render(sf::RenderTarget &target)
 {
-    // target.draw(container);
+    target.draw(container);
 
     if (maxScrollDelta > 0.f && scrollBarVisibility)
         target.draw(scrollBar);

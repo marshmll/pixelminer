@@ -153,17 +153,23 @@ void Engine::initVariables()
 
 void Engine::initResourcePacks()
 {
-    try
+    for (auto const &entry : std::filesystem::directory_iterator{RESOURCES_FOLDER})
     {
-        resourcePacks[gfx.resourcePack].load(gfx.resourcePack);
-        activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
-        activeResourcePack->setFontSmoothness(gfx.fontSmoothness);
-        activeResourcePack->setTextureSmoothness(gfx.textureSmoothness);
+        std::string filename = entry.path().filename();
+        std::string key = filename.substr(0, filename.size() - 4);
+
+        if (!resourcePacks[key].load(filename))
+        {
+            if (key == "Vanilla")
+                logger.logError(_("Failed to load default resource pack (Vanilla)."));
+            else
+                logger.logWarning(_("An error occured while loading resource pack ") + key);
+        }
     }
-    catch (std::exception &e)
-    {
-        logger.logError(_("An error occured while loading resource pack ") + gfx.resourcePack + ": " + e.what());
-    }
+
+    activeResourcePack = std::make_shared<ResourcePack>(resourcePacks.at(gfx.resourcePack));
+    activeResourcePack->setFontSmoothness(gfx.fontSmoothness);
+    activeResourcePack->setTextureSmoothness(gfx.textureSmoothness);
 }
 
 void Engine::initEngineData()

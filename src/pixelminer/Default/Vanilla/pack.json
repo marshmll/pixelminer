@@ -1,4 +1,5 @@
 {
     "name": "Vanilla",
+    "tag": "vanilla",
     "description": "The default flavor of Pixelminer."
 }

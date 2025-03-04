@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "GUI/Utils.hxx"
+
 namespace gui
 {
     /**
@@ -40,10 +42,12 @@ namespace gui
          * @param max_scroll_delta The maximum scrollable distance inside the container.
          * @param scrollbar_width The width of the scrollbar.
          * @param scrollbar_color The color of the scrollbar (default is white).
+         * @param container_color The color of the contianer (default is transparent).
          */
         ScrollableContainer(const sf::VideoMode &vm, const sf::Vector2f &size, const sf::Vector2f &position,
                             const float &max_scroll_delta, const float &scrollbar_width,
-                            const sf::Color &scrollbar_color = sf::Color::White);
+                            const sf::Color &scrollbar_color = sf::Color::White,
+                            const sf::Color &container_color = sf::Color::Transparent);
 
         /** Destructor for ScrollableContainer */
         ~ScrollableContainer();
@@ -58,7 +62,8 @@ namespace gui
          * @param mouse_pos The current position of the mouse.
          * @param mouse_data An optional mouse_data that might contain mouse wheel scroll information.
          */
-        void update(const float &dt, const sf::Vector2f &mouse_pos, std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
+        void update(const float &dt, const sf::Vector2f &mouse_pos,
+                    std::optional<sf::Event::MouseWheelScrolled> &mouse_data);
 
         /**
          * @brief Renders the scrollable container to the given render target.

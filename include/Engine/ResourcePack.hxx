@@ -33,9 +33,11 @@ class ResourcePack
      */
     ~ResourcePack();
 
-    std::string name;        ///< Name of the resource pack.
-    std::string description; ///< Description of the resource pack.
-    sf::Texture icon;        ///< Icon representing the resource pack.
+    std::string name;                    ///< Name of the resource pack.
+    std::string tag;                     ///< Unique tag of the resource pack.
+    std::string description;             ///< Description of the resource pack.
+    sf::Texture icon;                    ///< Icon representing the resource pack.
+    std::filesystem::path cacheRootPath; ///< The cache root path of the resource pack.
 
     std::unordered_map<std::string, sf::Font> fonts;                          ///< Loaded fonts.
     std::unordered_map<std::string, sf::Texture> textures;                    ///< Loaded textures.
@@ -45,11 +47,11 @@ class ResourcePack
     TileDatabase tileDb;                                                      ///< Tile database.
 
     /**
-     * @brief Loads the resource pack by name.
-     * @param name Name of the resource pack to load.
+     * @brief Loads the resource pack by filename.
+     * @param filename Filename of the resource pack to load.
      * @return True if the resource pack was successfully loaded, false otherwise.
      */
-    const bool load(const std::string &name);
+    const bool load(const std::string &filename);
 
     /**
      * @brief Deletes the resource pack cache files.

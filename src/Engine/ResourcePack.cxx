@@ -9,39 +9,40 @@ ResourcePack::~ResourcePack()
     deleteCache();
 }
 
-const bool ResourcePack::load(const std::string &name)
+const bool ResourcePack::load(const std::string &filename)
 {
     if (!std::filesystem::exists(CACHE_FOLDER + "ResourcePacks/"))
         std::filesystem::create_directories(CACHE_FOLDER + "ResourcePacks/");
 
-    std::filesystem::path root_path = CACHE_FOLDER + "ResourcePacks/" + name;
+    cacheRootPath = CACHE_FOLDER + "ResourcePacks/" + filename.substr(0, filename.size() - 4);
 
-    if (!std::filesystem::exists(root_path))
+    if (!std::filesystem::exists(cacheRootPath))
     {
-        if (!std::filesystem::exists(RESOURCES_FOLDER + name + ".zip"))
+        if (!std::filesystem::exists(RESOURCES_FOLDER + filename))
         {
-            logger.logError(_("Inexistent resouce pack: ") + root_path.string(), false);
+            logger.logError(_("Inexistent resouce pack: ") + cacheRootPath.string(), false);
             return false;
         }
 
-        if (!Zip::extract(RESOURCES_FOLDER + name + ".zip", CACHE_FOLDER + "ResourcePacks/"))
+        if (!Zip::extract(RESOURCES_FOLDER + filename, CACHE_FOLDER + "ResourcePacks/"))
         {
-            logger.logError(_("Failed to cache resource pack: ") + name, false);
+            logger.logError(_("Failed to cache resource pack: ") + filename, false);
             return false;
         }
     }
 
-    if (!std::filesystem::exists(root_path / "pack.json"))
+    if (!std::filesystem::exists(cacheRootPath / "pack.json"))
     {
-        logger.logError(_("Resource pack ") + root_path.string() + _(" does not have a \"pack.json\" file."), false);
+        logger.logError(_("Resource pack ") + cacheRootPath.string() + _(" does not have a \"pack.json\" file."),
+                        false);
         return false;
     }
 
-    std::ifstream pack_file(root_path / "pack.json");
+    std::ifstream pack_file(cacheRootPath / "pack.json");
 
     if (!pack_file.is_open())
     {
-        logger.logError(_("Failed to open \"pack.json\" file in resource pack: ") + root_path.string(), false);
+        logger.logError(_("Failed to open \"pack.json\" file in resource pack: ") + cacheRootPath.string(), false);
         return false;
     }
 
@@ -52,14 +53,15 @@ const bool ResourcePack::load(const std::string &name)
 
     pack_file.close();
 
-    /* Name and description +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+    /* Name, tag and description +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    this->name = pack_obj.at("name").getAs<std::string>();
-    this->description = pack_obj.at("description").getAs<std::string>();
+    name = pack_obj.at("name").getAs<std::string>();
+    tag= pack_obj.at("tag").getAs<std::string>();
+    description = pack_obj.at("description").getAs<std::string>();
 
     /* Icon +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    if (!this->icon.loadFromFile(root_path / "icon.png"))
+    if (!this->icon.loadFromFile(cacheRootPath / "icon.png"))
     {
         logger.logError(_("Missing texture \"icon.png\" in resource pack: ") + name, false);
         return false;
@@ -67,7 +69,7 @@ const bool ResourcePack::load(const std::string &name)
 
     /* Fonts ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    for (auto const &entry : std::filesystem::directory_iterator{root_path / "Assets/Fonts"})
+    for (auto const &entry : std::filesystem::directory_iterator{cacheRootPath / "Assets/Fonts"})
     {
         std::string filename = entry.path().filename();
         std::string key = filename.substr(0, filename.size() - 4);
@@ -82,11 +84,11 @@ const bool ResourcePack::load(const std::string &name)
 
     /* Default images +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    std::ifstream images_file(root_path / "Assets/Textures/textures.json");
+    std::ifstream images_file(cacheRootPath / "Assets/Textures/textures.json");
 
     if (!images_file.is_open())
     {
-        logger.logError(_("Failed to open \"textures.json\" file in resource pack: ") + root_path.string(), false);
+        logger.logError(_("Failed to open \"textures.json\" file in resource pack: ") + cacheRootPath.string(), false);
         return false;
     }
 
@@ -102,17 +104,17 @@ const bool ResourcePack::load(const std::string &name)
         JObject entry = val.getAs<JObject>();
         std::string key = entry.at("key").getAs<std::string>(), path = entry.at("path").getAs<std::string>();
 
-        if (!textures[key].loadFromFile(root_path / path))
+        if (!textures[key].loadFromFile(cacheRootPath / path))
             logger.logWarning(_("Missing texture ") + path + _(" in resource pack: ") + name);
     }
 
     /* Default Sounds +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    std::ifstream sounds_file(root_path / "Assets/Sounds/sounds.json");
+    std::ifstream sounds_file(cacheRootPath / "Assets/Sounds/sounds.json");
 
     if (!sounds_file.is_open())
     {
-        logger.logError(_("Failed to open \"sounds.json\" file in resource pack: ") + root_path.string(), false);
+        logger.logError(_("Failed to open \"sounds.json\" file in resource pack: ") + cacheRootPath.string(), false);
         return false;
     }
 
@@ -129,7 +131,7 @@ const bool ResourcePack::load(const std::string &name)
         std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
         const bool global = obj.at("global").getAs<bool>();
 
-        if (!soundBuffers[key].loadFromFile(root_path / path))
+        if (!soundBuffers[key].loadFromFile(cacheRootPath / path))
         {
             logger.logWarning(_("Missing sound ") + path + _(" in resource pack: ") + name);
             continue;
@@ -145,15 +147,15 @@ const bool ResourcePack::load(const std::string &name)
         JObject obj = val.getAs<JObject>();
         std::string key = obj.at("key").getAs<std::string>(), path = obj.at("path").getAs<std::string>();
 
-        if (!std::filesystem::exists(root_path / path))
+        if (!std::filesystem::exists(cacheRootPath / path))
             logger.logWarning(_("Missing music ") + path + _(" in resource pack: ") + name);
         else
-            musics[key] = std::make_shared<sf::Music>(root_path / path);
+            musics[key] = std::make_shared<sf::Music>(cacheRootPath / path);
     }
 
     /* Tile Database ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
 
-    std::ifstream tile_data_file(root_path / "tile_db.json");
+    std::ifstream tile_data_file(cacheRootPath / "tile_db.json");
 
     if (!tile_data_file.is_open())
         logger.logError(_("Failed to open \"tile_db.json\" file in resource pack: ") + name, false);
@@ -197,8 +199,8 @@ const bool ResourcePack::load(const std::string &name)
 
 void ResourcePack::deleteCache()
 {
-    if (name.size() != 0 && std::filesystem::exists(CACHE_FOLDER + "ResourcePacks/" + name))
-        std::filesystem::remove_all(CACHE_FOLDER + "ResourcePacks/" + name);
+    if (std::filesystem::exists(cacheRootPath))
+        std::filesystem::remove_all(cacheRootPath);
 }
 
 sf::Font &ResourcePack::getFont(const std::string &key)

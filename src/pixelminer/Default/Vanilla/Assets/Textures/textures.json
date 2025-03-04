@@ -28,6 +28,18 @@
         "path": "Assets/Textures/Sprites/UI/loader.png"
     },
     {
+        "key": "ButtonArrowLeft",
+        "path": "Assets/Textures/Sprites/UI/button_arrow_left.png"
+    },
+    {
+        "key": "ButtonArrowRight",
+        "path": "Assets/Textures/Sprites/UI/button_arrow_right.png"
+    },
+    {
+        "key": "Forbidden",
+        "path": "Assets/Textures/Sprites/UI/forbidden.png"
+    },
+    {
         "key": "Hotbar",
         "path": "Assets/Textures/Sprites/UI/hotbar.png"
     },

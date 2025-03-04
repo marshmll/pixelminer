@@ -7,8 +7,19 @@ Substate::~Substate() = default;
 
 void Substate::updateMousePositions(std::optional<sf::View> view)
 {
-    mousePosScreen = sf::Mouse::getPosition();
-    mousePosWindow = sf::Mouse::getPosition(*data.window);
+    if (data.window->hasFocus())
+    {
+        mousePosScreen = sf::Mouse::getPosition();
+        mousePosWindow = sf::Mouse::getPosition(*data.window);
+    }
+    else
+    {
+        mousePosScreen.x = 0.f;
+        mousePosScreen.y = 0.f;
+
+        mousePosWindow.x = 0.f;
+        mousePosWindow.y = 0.f;
+    }
 
     if (view)
         data.window->setView(view.value());

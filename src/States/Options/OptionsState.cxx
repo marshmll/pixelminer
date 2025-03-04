@@ -33,48 +33,48 @@ void OptionsState::initButtons()
 
     createButton("SkinCustomization",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
-                              buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
+                              buttonContainer.getPosition().y + (btn_height * 1) + (gap_y * 1)),
                  sf::Vector2f(btn_width, btn_height), _("Skin Customization"));
 
     createButton("MusicAndSounds",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
-                              buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
+                              buttonContainer.getPosition().y + (btn_height * 1) + (gap_y * 1)),
                  sf::Vector2f(btn_width, btn_height), _("Music and Sounds"));
 
     createButton("VideoOptions",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
-                              buttonContainer.getPosition().y + (btn_height * 3) + (gap_y * 3)),
+                              buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
                  sf::Vector2f(btn_width, btn_height), _("Video Options"));
 
     createButton("Controls",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
-                              buttonContainer.getPosition().y + (btn_height * 3) + (gap_y * 3)),
+                              buttonContainer.getPosition().y + (btn_height * 2) + (gap_y * 2)),
                  sf::Vector2f(btn_width, btn_height), _("Controls"));
 
     createButton("Language",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
-                              buttonContainer.getPosition().y + (btn_height * 4) + (gap_y * 4)),
+                              buttonContainer.getPosition().y + (btn_height * 3) + (gap_y * 3)),
                  sf::Vector2f(btn_width, btn_height), _("Language"));
 
     createButton("ChatOptions",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
-                              buttonContainer.getPosition().y + (btn_height * 4) + (gap_y * 4)),
+                              buttonContainer.getPosition().y + (btn_height * 3) + (gap_y * 3)),
                  sf::Vector2f(btn_width, btn_height), _("Chat Options"));
 
     createButton("ResourcePacks",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 0) + (gap_x * 0),
-                              buttonContainer.getPosition().y + (btn_height * 5) + (gap_y * 5)),
+                              buttonContainer.getPosition().y + (btn_height * 4) + (gap_y * 4)),
                  sf::Vector2f(btn_width, btn_height), _("Resource Packs"));
 
     createButton("Accessibility",
                  sf::Vector2f(buttonContainer.getPosition().x + (btn_width * 1) + (gap_x * 1),
-                              buttonContainer.getPosition().y + (btn_height * 5) + (gap_y * 5)),
+                              buttonContainer.getPosition().y + (btn_height * 4) + (gap_y * 4)),
                  sf::Vector2f(btn_width, btn_height), _("Accessibility"));
 
     createButton("Done",
-                 sf::Vector2f(data.vm->size.x / 2.f - gui::percent(data.vm->size.x, 40.f) / 2.f,
+                 sf::Vector2f(data.vm->size.x / 2.f - gui::percent(data.vm->size.x, 35.f) / 2.f,
                               gui::percent(data.vm->size.y, 85.f)),
-                 sf::Vector2f(gui::percent(data.vm->size.x, 40.f), gui::percent(data.vm->size.y, 6.f)), _("Done"));
+                 sf::Vector2f(gui::percent(data.vm->size.x, 35.f), gui::percent(data.vm->size.y, 6.f)), _("Done"));
 }
 
 OptionsState::OptionsState(EngineData &data) : State(data)
@@ -123,6 +123,9 @@ void OptionsState::update(const float &dt)
 
         else if (buttons.at("Language")->isPressed())
             replaceSelf(std::make_shared<LocalesState>(data));
+
+        else if (buttons.at("ResourcePacks")->isPressed())
+            createSubstate(std::make_shared<ResourcePacksSubstate>(data));
     }
 }
 

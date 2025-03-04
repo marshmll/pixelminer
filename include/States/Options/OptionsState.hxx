@@ -8,6 +8,7 @@
 #include "States/State.hxx"
 #include "States/LocalesState.hxx"
 #include "States/Options/VideoOptionsSubstate.hxx"
+#include "States/Options/ResourcePacksSubstate.hxx"
 #include "GUI/GUI.hxx"
 
 /**

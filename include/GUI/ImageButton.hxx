@@ -43,5 +43,9 @@ namespace gui
         ~ImageButton();
 
         void render(sf::RenderTarget &target) override;
+        
+        void setImage(sf::Texture &image);
+
+        void move(const sf::Vector2f &offset) override;
     };
 } // namespace gui

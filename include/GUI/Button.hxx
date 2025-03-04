@@ -100,6 +100,13 @@ namespace gui
         const sf::Vector2f getSize() const;
 
         /**
+         * @brief Gets the current button's state.
+         *
+         * @return The state of the button.
+         */
+        const ButtonState &getState() const;
+
+        /**
          * @brief Sets the state of the button.
          *
          * @param state The new state for the button.
@@ -112,5 +119,12 @@ namespace gui
          * @param position The new position for the button.
          */
         void setPosition(const sf::Vector2f &position);
+
+        /**
+         * @brief Moves the button with a given offset.
+         *
+         * @param offset The offset to move the button.
+         */
+        virtual void move(const sf::Vector2f &offset);
     };
 } // namespace gui

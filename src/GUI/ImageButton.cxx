@@ -23,3 +23,16 @@ void ImageButton::render(sf::RenderTarget &target)
     target.draw(brightShadow);
     target.draw(imageRect);
 }
+
+void ImageButton::setImage(sf::Texture &image)
+{
+    imageRect.setTexture(&image);
+}
+
+void ImageButton::move(const sf::Vector2f &offset)
+{
+    darkShadow.move(offset);
+    body.move(offset);
+    brightShadow.move(offset);
+    imageRect.move(offset);
+}

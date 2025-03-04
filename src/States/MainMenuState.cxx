@@ -65,11 +65,12 @@ MainMenuState::MainMenuState(EngineData &data) : State(data)
 {
     initGUI();
 
-    std::vector<std::string> musics = {"MoogCity", "Beginning"};
+    std::vector<std::string> musics = {"MoogCity", "Beginning", "Key"};
     std::string music = musics[std::rand() % musics.size()];
 
     if (data.activeResourcePack->getMusic("MoogCity").getStatus() != sf::SoundStream::Status::Playing &&
-        data.activeResourcePack->getMusic("Beginning").getStatus() != sf::SoundStream::Status::Playing)
+        data.activeResourcePack->getMusic("Beginning").getStatus() != sf::SoundStream::Status::Playing &&
+        data.activeResourcePack->getMusic("Key").getStatus() != sf::SoundStream::Status::Playing)
         data.activeResourcePack->getMusic(music).play();
 }
 

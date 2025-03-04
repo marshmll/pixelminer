@@ -84,6 +84,11 @@ const sf::Vector2f Button::getSize() const
     return body.getSize();
 }
 
+const ButtonState &Button::getState() const
+{
+    return state;
+}
+
 void Button::setState(const ButtonState &state)
 {
     this->state = state;
@@ -110,6 +115,11 @@ void Button::setPosition(const sf::Vector2f &position)
 {
     sf::Vector2f offset = position - body.getPosition();
 
+    move(offset);
+}
+
+void Button::move(const sf::Vector2f &offset)
+{
     darkShadow.move(offset);
     body.move(offset);
     brightShadow.move(offset);
